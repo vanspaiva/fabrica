@@ -1,0 +1,16 @@
+[29-Nov-2021 21:02:04 UTC] PHP Warning:  include(php/head_index.php): failed to open stream: No such file or directory in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/index.php on line 2
+[29-Nov-2021 21:02:04 UTC] PHP Warning:  include(): Failed opening 'php/head_index.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/index.php on line 2
+[29-Nov-2021 21:02:04 UTC] PHP Warning:  include(php/head_login.php): failed to open stream: No such file or directory in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/login.php on line 3
+[29-Nov-2021 21:02:04 UTC] PHP Warning:  include(): Failed opening 'php/head_login.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/login.php on line 3
+[29-Nov-2021 21:12:32 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[30-Nov-2021 00:33:46 UTC] PHP Notice:  Undefined offset: 2 in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 47
+[30-Nov-2021 00:33:46 UTC] PHP Notice:  Undefined offset: 1 in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 47
+[30-Nov-2021 00:33:46 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[30-Nov-2021 00:35:53 UTC] PHP Notice:  Undefined offset: 2 in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 47
+[30-Nov-2021 00:35:53 UTC] PHP Notice:  Undefined offset: 1 in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 47
+[30-Nov-2021 00:35:53 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[30-Nov-2021 16:34:52 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[30-Nov-2021 17:48:48 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[30-Nov-2021 21:36:54 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[01-Dec-2021 21:49:27 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
+[08-Dec-2021 13:19:29 UTC] PHP Notice:  Undefined variable: cdg in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/os.php on line 296
