@@ -28,7 +28,7 @@ if (isset($_POST["submit"])) {
     $aprovacao = "APROV";    
     
 
-    require_once '../db/dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     $username = extrairNomeUsuario($email);

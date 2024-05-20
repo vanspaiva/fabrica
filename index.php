@@ -170,7 +170,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    require_once 'db/dbh.inc.php';
+                                                    require_once 'db/dbh.php';
                                                     $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('CRIADO', 'EM ANDAMENTO', 'PAUSADO');");
                                                     while ($row = mysqli_fetch_array($ret)) {
                                                         //Data Entrada
@@ -276,7 +276,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    require_once 'db/dbh.inc.php';
+                                                    require_once 'db/dbh.php';
                                                     $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('EM ANDAMENTO');");
                                                     while ($row = mysqli_fetch_array($ret)) {
                                                         //Data Entrada
@@ -382,7 +382,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    require_once 'db/dbh.inc.php';
+                                                    require_once 'db/dbh.php';
                                                     $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('PAUSADO');");
                                                     while ($row = mysqli_fetch_array($ret)) {
                                                         //Data Entrada
@@ -488,7 +488,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    require_once 'db/dbh.inc.php';
+                                                    require_once 'db/dbh.php';
                                                     $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('CONCLUÍDO');");
                                                     while ($row = mysqli_fetch_array($ret)) {
                                                         //Data Entrada

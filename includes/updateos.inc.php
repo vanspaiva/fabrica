@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require_once '../db/dbh.inc.php';
+require_once '../db/dbh.php';
 require_once 'functions.inc.php';
 
 if (isset($_POST["update"])) {

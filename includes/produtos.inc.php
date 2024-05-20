@@ -7,7 +7,7 @@ if (isset($_POST["submit"])) {
     $descricao = addslashes($_POST["descricao"]); 
     $anvisa = addslashes($_POST["anvisa"]);
 
-    require_once '../db/dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     createProduto($conn, $categoria, $cdg, $descricao, $anvisa);
@@ -19,7 +19,7 @@ if (isset($_POST["submit"])) {
     $descricao = addslashes($_POST["descricao"]);
     $anvisa = addslashes($_POST["anvisa"]);
 
-    require_once '../db/dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     editProduto($conn, $prodid, $categoria, $cdg, $descricao, $anvisa);

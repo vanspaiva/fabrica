@@ -2,7 +2,7 @@
 
 if(isset($_POST["submit"]))
 {
-    require_once '../db/dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
 

@@ -1,1 +1,2 @@
-db/dbh.inc.php
+# Ignore a pasta db
+db

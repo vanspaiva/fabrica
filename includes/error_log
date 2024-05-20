@@ -1,1 +1,1 @@
-[29-Nov-2021 21:08:28 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/includes/dbh.inc.php on line 14
+[29-Nov-2021 21:08:28 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/u777557116/domains/fabrica.cpmh.com.br/public_html/includes/dbh.php on line 14

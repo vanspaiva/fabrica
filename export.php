@@ -10,7 +10,7 @@ header("Content-Disposition: attachment; filename=OrdensServico_".$today.".xls")
 header("Pragma: no-cache");
 header("Expires: 0");
 
-require_once 'db/dbh.inc.php';
+require_once 'db/dbh.php';
 
 $output = "";
 

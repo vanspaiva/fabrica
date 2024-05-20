@@ -7,7 +7,7 @@ if (isset($_SESSION["useruid"])) {
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
-        require_once 'db/dbh.inc.php';
+        require_once 'db/dbh.php';
 
         $listaHoje = array();
         $listaAmanha = array();

@@ -27,7 +27,7 @@
     <div class="">
         <div class="row bg-light-gray" id="user-box">
             <?php
-            require_once 'db/dbh.inc.php';
+            require_once 'db/dbh.php';
             $user = $_SESSION["useruid"];
             ?>
             <div class="col-sm-3">
