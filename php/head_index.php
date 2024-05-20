@@ -32,6 +32,9 @@ session_start();
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+
 </head>
 <style>
   .btn-fab {

@@ -45,16 +45,15 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                                 <?php
                                 if ($fileNameOs != null) {
-                                    $retFile = mysqli_query($conn, "SELECT * FROM filedownload WHERE fileOsRef= '" . $osid . "' ;");
-                                    while ($rowFile = mysqli_fetch_array($retFile)) {
                                 ?>
                                         <div class="col-sm pt-2">
                                             <div class="d-flex justify-content-center p-1">
-                                                <a href="download?file=<?php echo $rowFile['fileRealName'] ?>&id=<?php echo $osid ?>" class="btn btn-outline-fab"><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
+                                                <!-- <a href="<?php //echo $fileNameOs ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
+                                                <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
+
                                             </div>
                                         </div>
                                 <?php
-                                    }
                                 }
                                 ?>
 
@@ -217,7 +216,6 @@ if (isset($_SESSION["useruid"])) {
                                                                     <input class='form-control' name='obs' id='obs' type='text' value="<?php echo $row['osObs']; ?>">
                                                                 </div>
                                                             </div>
-
 
 
                                                             <div class="d-flex justify-content-end">

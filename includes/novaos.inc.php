@@ -14,6 +14,8 @@ if (isset($_POST["submit"])) {
     $descricao = addslashes($_POST["descricao"]);
     $grauurgencia = addslashes($_POST["grauurgencia"]);
 
+    $urlArquivo = addslashes($_POST["urlThrowback"]);
+
     if (empty($_POST['lote'])) {
         $lote = null;
     } else {
@@ -45,7 +47,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $lote, $nped, $obs, $tname, $pname);
+    createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $lote, $nped, $obs, $tname, $urlArquivo);
 } else {
     header("location: ../solicitacao");
     exit();

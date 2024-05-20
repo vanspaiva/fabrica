@@ -1,4 +1,6 @@
-<?php include("php/head_index.php");
+<?php
+include("php/head_index.php");
+
 
 require_once 'db/dbh.php';
 
@@ -203,9 +205,12 @@ if (isset($_SESSION["useruid"])) {
                                                 <div>
                                                     <label class="d-block" for="formFile" style="text-align: center;"><i class="fas fa-upload fa-3x hovericon"></i></label>
                                                     <small class="d-block" id="file-name" style="text-align: center; color: green;"></small>
+                                                    <span class="filedata"></span>
+                                                    <span class="loading d-none" >Carregando arquivo...</span>
                                                 </div>
                                             </div>
-                                            <input class="form-control" type="file" id="formFile" name="formFile" onchange="javascript:updateList()" hidden>
+                                            <!-- <input class="form-control" type="file" id="formFile" name="formFile" onchange="javascript:updateList()" hidden> -->
+                                            <input class="form-control" type="file" id="formFile" name="formFile" onchange="getImageData(event)" hidden>
                                             <small class="text-muted">Imagens, dxf, desenhos...</small>
                                             <script>
                                                 updateList = function() {
@@ -230,6 +235,12 @@ if (isset($_SESSION["useruid"])) {
                                             </style>
                                         </div>
 
+                                    </div>
+                                    <div class='d-none'>
+                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                            <label class='control-label' style='color:black;'>Url</label>
+                                            <input class='form-control urlThrowback' name='urlThrowback' id='urlThrowback' type='text'>
+                                        </div>
                                     </div>
                                     <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
@@ -260,6 +271,7 @@ if (isset($_SESSION["useruid"])) {
 
         <script src="js/scripts.js"></script>
         <script src="js/menu.js"></script>
+        <script src="js/uploadToFirebase.js"></script>
 
     </body>
 
