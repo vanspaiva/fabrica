@@ -17,7 +17,7 @@
 
 <body class="bg-ligth bg-image-2">
     <?php
-    include_once 'includes/dbh.inc.php';
+    include_once 'db/dbh.inc.php';
     ?>
     <style>
         .btn-fab {

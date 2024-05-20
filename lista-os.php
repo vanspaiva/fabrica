@@ -71,7 +71,7 @@ if (isset($_SESSION["useruid"])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            require_once 'includes/dbh.inc.php';
+                                            require_once 'db/dbh.inc.php';
                                             $ret = mysqli_query($conn, "SELECT * FROM ordenservico");
 
                                             while ($row = mysqli_fetch_array($ret)) {

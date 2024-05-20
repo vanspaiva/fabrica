@@ -1,6 +1,6 @@
 <?php include("php/head_index.php");
 
-require_once 'includes/dbh.inc.php';
+require_once 'db/dbh.inc.php';
 
 if (isset($_SESSION["useruid"])) {
 

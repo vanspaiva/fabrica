@@ -3,7 +3,7 @@
 session_start();
 
 if (isset($_SESSION["useruid"])) {   
-    require_once 'includes/dbh.inc.php';
+    require_once 'db/dbh.inc.php';
 
     $id = $_GET['id'];
 

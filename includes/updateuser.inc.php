@@ -13,7 +13,7 @@ if (isset($_POST["update"])) {
 
     
     
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.inc.php';
     require_once 'functions.inc.php';
 
     editUser($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $usersid);

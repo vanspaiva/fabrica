@@ -1,6 +1,6 @@
 <?php
 //Incluir a conexão com banco de dados
-require_once 'includes/dbh.inc.php';
+require_once 'db/dbh.inc.php';
 
 
 $cdg = $_POST['cdg'];

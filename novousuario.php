@@ -1,7 +1,7 @@
 <?php include("php/head_index.php");
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
-    require_once 'includes/dbh.inc.php';
+    require_once 'db/dbh.inc.php';
 
 
 
