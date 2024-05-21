@@ -206,12 +206,15 @@ if (isset($_SESSION["useruid"])) {
                                                     <label class="d-block" for="formFile" style="text-align: center;"><i class="fas fa-upload fa-3x hovericon"></i></label>
                                                     <small class="d-block" id="file-name" style="text-align: center; color: green;"></small>
                                                     <span class="filedata"></span>
-                                                    <span class="loading d-none" >Carregando arquivo...</span>
+                                                    <span class="loading d-none">Carregando arquivo...</span>
                                                 </div>
                                             </div>
-                                            <!-- <input class="form-control" type="file" id="formFile" name="formFile" onchange="javascript:updateList()" hidden> -->
+                                            
                                             <input class="form-control" type="file" id="formFile" name="formFile" onchange="getImageData(event)" hidden>
                                             <small class="text-muted">Imagens, dxf, desenhos...</small>
+                                            <div class="progressBar">
+                                                <div class="progress"></div>
+                                            </div>
                                             <script>
                                                 updateList = function() {
                                                     var input = document.getElementById('formFile');
@@ -232,6 +235,28 @@ if (isset($_SESSION["useruid"])) {
                                                     transform: scale(0.9);
                                                     cursor: pointer;
                                                 }
+
+
+                                                .progressBar {
+                                                    width: 100%;
+                                                    background: rgb(196, 193, 193);
+                                                    padding: 15px 20px;
+                                                    position: relative;
+                                                }
+
+                                                .progress {
+                                                    height: 100%;
+                                                    width: 0%;
+                                                    background: linear-gradient(90deg, rgba(213,213,213,1) 0%, rgba(0,122,90,1) 71%);
+                                                    position: absolute;
+                                                    left: 0;
+                                                    top: 0;
+                                                    bottom: 0;
+                                                    display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;
+                                                    color: white;
+                                                }
                                             </style>
                                         </div>
 
@@ -251,7 +276,7 @@ if (isset($_SESSION["useruid"])) {
 
 
                                     <div class="py-4 col d-flex justify-content-center">
-                                        <button class="btn btn-fab" type="submit" name="submit" id="submit">Enviar</button>
+                                        <button class="btn btn-fab" type="submit" name="submit" id="submit" disabled>Enviar</button>
                                     </div>
 
                                 </form>
@@ -271,6 +296,11 @@ if (isset($_SESSION["useruid"])) {
 
         <script src="js/scripts.js"></script>
         <script src="js/menu.js"></script>
+        <script>
+            <?php require_once "config/firebaseConfig.php"; ?>
+            const firebaseConfig = <?php echo json_encode($firebaseConfig); ?>;
+        </script>
+
         <script src="js/uploadToFirebase.js"></script>
 
     </body>
