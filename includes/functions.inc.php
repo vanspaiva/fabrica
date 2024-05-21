@@ -1245,3 +1245,17 @@ function sendEmailNotificationNewAccount($username, $pwd, $email)
 
     geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
 }
+
+function cleanString($string)
+{
+    // 1. Remover acentos
+    $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+    // 2. Converter para minúsculas
+    $string = strtolower($string);
+
+    // 3. Remover caracteres especiais
+    $string = preg_replace('/[^a-z0-9]/', '', $string);
+
+    return $string;
+}
