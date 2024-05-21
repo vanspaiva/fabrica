@@ -3,9 +3,9 @@ require_once 'includes/functions.inc.php';
 
 $username = "vanespaiva";
 $pwd = "123";
+$destino = 'vanespaiva@gmail.com';
 
-$arquivo = '
-<!DOCTYPE html>
+$arquivo = '<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -105,13 +105,14 @@ $arquivo = '
 </div>
 </body>
 
-</html>
+</html>';
 
-';
-
-$assunto = "Bem vindo ao Sistema da Fábrica!";
+$assunto = "Bem vindo ao Sistema da Fábrica";
 
 $returnTrue = "location: ../cadastro?error=none";
 $returnFalse = "location: ../cadastro?error=emailfailed";
+
+// echo $assunto;
+// exit();
 
 geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $returnFalse);
