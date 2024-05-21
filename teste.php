@@ -1,5 +1,5 @@
 <?php
-require_once 'functions.inc.php';
+require_once 'includes/functions.inc.php';
 
 $destino = 'vanespaiva@gmail.com';
 $assunto = "Assunto teste";
