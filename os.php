@@ -2,7 +2,7 @@
 
 session_start();
 
-if (isset($_SESSION["useruid"])) {   
+if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
 
     $id = $_GET['id'];
@@ -42,9 +42,13 @@ if (isset($_SESSION["useruid"])) {
 
         $dataBDEntrega = $dataEHoraEntrega[0];
 
-        $dataBDEntrega = explode("-", $dataBDEntrega);
+        if ($dataBDEntrega) {
+            $dataBDEntrega = explode("-", $dataBDEntrega);
+            $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
+        } else{
+            $dataEntrega = "";
+        }
 
-        $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
 
         //Responsável Abertura
         $responsavel = $row["osNomeCriador"];
@@ -303,11 +307,11 @@ if (isset($_SESSION["useruid"])) {
                             <tbody>
                                 <tr>
                                     <td style="width: 100px;"> Código: </td>
-                                    <td><?php echo $cdg; ?></td>
+                                    <td><?php //echo $cdg; ?></td>
                                 </tr>
                                 <tr>
                                     <td style="width: 100px;"> Lote: </td>
-                                    <td><?php echo $lote; ?></td>
+                                    <td><?php //echo $lote; ?></td>
                                 </tr>
                             </tbody>
                         </table>
