@@ -94,7 +94,7 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
 
     mysqli_stmt_bind_param($stmt, "sssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+    
 
     // sendEmailNotificationCreate($email, $name);
 
@@ -211,6 +211,7 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
     geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
 
     // header("location: ../cadastro?error=none");
+    mysqli_stmt_close($stmt);
     exit();
 }
 
@@ -1228,8 +1229,18 @@ function extrairNomeUsuario($email)
 
 function geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $returnFalse)
 {
-    echo true;
-    exit();
+    // echo $destino;
+    // echo "<br>";
+    // echo $assunto;
+    // echo "<br>";
+    // echo $arquivo;
+    // echo "<br>";
+    // echo $returnTrue;
+    // echo "<br>";
+    // echo $returnFalse;
+    // echo "<br>";
+    // exit();
+    
 
     $headers  = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
