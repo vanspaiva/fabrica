@@ -94,123 +94,10 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
 
     mysqli_stmt_bind_param($stmt, "sssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao);
     mysqli_stmt_execute($stmt);
-    
 
-    // sendEmailNotificationCreate($email, $name);
 
-    $arquivo = '
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Bem vindo ao Sistema Fábrica!</title>
-            <style>
-                /* Estilos para tornar o email mais atraente */
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .container {
-                    max-width: 600px;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #EDEDED;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-        
-                h1,
-                h3 {
-                    text-align: start;
-                    padding-top: 0;
-                    margin-top: 0;
-                }
-        
-                h3 {
-                    color: rgb(0, 212, 111);
-                }
-        
-                a {
-                    color: #fff;
-                }
-        
-                .btn-container {
-                    text-align: center;
-                }
-        
-                .btn {
-                    display: inline-block;
-                    background-color: rgb(0, 212, 111);
-                    color: #fff !important;
-                    text-decoration: none;
-                    padding: 10px 20px;
-                    border-radius: 5px;
-                    margin-top: 20px;
-                    font-weight: bold;
-                }
-        
-                img {
-                    width: 180px;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .d-flex {
-                    display: flex;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .justify-content-center {
-                    justify-content: center;
-                }
-        
-                .justify-content-around {
-                    justify-content: space-around;
-                }
-        
-                .align-items-center {
-                    align-items: center;
-                }
-        
-            </style>
-        </head>
-        
-        <body>
-        <div class="container">              
-        
-        <p>Olá! Você foi convidado a se juntar ao <strong>Sistema Fábrica</strong>. Nele você terá acesso a criação de OS e lista de prioridades para execução do seu trabalho.</p>
+    sendEmailNotificationNewAccount($username, $pwd, $email);
 
-        <p>
-            <strong>Usuário: </strong> ' . $username . '<br>
-            <strong>Senha: </strong> ' . $pwd . '
-        </p>
-        
-        <div class="btn-container">
-            <a href="http://fabrica.cpmh.com.br/" class="btn">Entar no sistema</a>
-        </div>
-        <p>Att,</p>
-        <p>Equipe de Desenvolvimento</p>
-    </div>
-        </body>
-        
-        </html>
-
-    ';
-
-    $assunto = "Bem vindo ao Sistema da Fábrica!";
-
-    $returnTrue = "location: ../cadastro?error=none";
-    $returnFalse = "location: ../cadastro?error=emailfailed";
-
-    geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
-
-    // header("location: ../cadastro?error=none");
     mysqli_stmt_close($stmt);
     exit();
 }
@@ -1229,18 +1116,6 @@ function extrairNomeUsuario($email)
 
 function geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $returnFalse)
 {
-    // echo $destino;
-    // echo "<br>";
-    // echo $assunto;
-    // echo "<br>";
-    // echo $arquivo;
-    // echo "<br>";
-    // echo $returnTrue;
-    // echo "<br>";
-    // echo $returnFalse;
-    // echo "<br>";
-    // exit();
-    
 
     $headers  = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -1254,9 +1129,119 @@ function geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $
     $enviaremail = mail($destino, $assunto, $arquivo, $headers);
     if ($enviaremail) {
         header($returnTrue);
-        // echo "enviado";
     } else {
         header($returnFalse);
-        // echo "erro";
     }
+}
+
+function sendEmailNotificationNewAccount($username, $pwd, $email)
+{
+    $arquivo = '<!DOCTYPE html>
+        <html lang="pt-br">
+        
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Bem vindo ao Sistema Fábrica!</title>
+            <style>
+                /* Estilos para tornar o email mais atraente */
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    background-color: #EDEDED;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+        
+                h1,
+                h3 {
+                    text-align: start;
+                    padding-top: 0;
+                    margin-top: 0;
+                }
+        
+                h3 {
+                    color: rgb(0, 212, 111);
+                }
+        
+                a {
+                    color: #fff;
+                }
+        
+                .btn-container {
+                    text-align: center;
+                }
+        
+                .btn {
+                    display: inline-block;
+                    background-color: rgb(0, 212, 111);
+                    color: #fff !important;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+        
+                img {
+                    width: 180px;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .d-flex {
+                    display: flex;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .justify-content-center {
+                    justify-content: center;
+                }
+        
+                .justify-content-around {
+                    justify-content: space-around;
+                }
+        
+                .align-items-center {
+                    align-items: center;
+                }
+        
+            </style>
+        </head>
+        
+        <body>
+        <div class="container">              
+        
+        <p>Olá! Você foi convidado a se juntar ao <strong>Sistema Fábrica</strong>. Nele você terá acesso a criação de OS e lista de prioridades para execução do seu trabalho.</p>
+
+        <p>
+            <strong>Usuário: </strong> ' . $username . '<br>
+            <strong>Senha: </strong> ' . $pwd . '
+        </p>
+        
+        <div class="btn-container">
+            <a href="http://fabrica.cpmh.com.br/" class="btn">Entar no sistema</a>
+        </div>
+        <p>Att,</p>
+        <p>Equipe de Desenvolvimento</p>
+    </div>
+        </body>
+        
+        </html>';
+
+    $assunto = "Bem vindo ao Sistema da Fábrica";
+
+    $returnTrue = "location: ../cadastro?error=none";
+    $returnFalse = "location: ../cadastro?error=emailfailed";
+
+    geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
 }
