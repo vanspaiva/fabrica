@@ -35,6 +35,7 @@ const uploadImage = () => {
     if (!lote) {
         alert("Número do lote não fornecido!");
         document.getElementById("formFile").value = "";
+        fileData.innerHTML = "";
         return;
     }
 
