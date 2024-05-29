@@ -276,7 +276,7 @@ if (isset($_SESSION["useruid"])) {
 
 
                                     <div class="py-4 col d-flex justify-content-center">
-                                        <button class="btn btn-fab" type="submit" name="submit" id="submit" disabled>Enviar</button>
+                                        <button class="btn btn-fab" type="submit" name="submit" id="submit" >Enviar</button>
                                     </div>
 
                                 </form>
