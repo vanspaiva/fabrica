@@ -1,9 +1,13 @@
 <?php
+$serverName = "localhost";
+$dbUsername = "u777557116_adminconecta";
+$dbPassword = "YDT8HJPHc!";
+$dbName = "u777557116_bdcpmhconecta";
 
-$serverName_b = "localhost";
-$dbUsername_b = "root";
-$dbPassword_b = "";
-$dbName_b = "conecta";
+// $serverName_b = "localhost";
+// $dbUsername_b = "root";
+// $dbPassword_b = "";
+// $dbName_b = "conecta";
 
 $conn_b = mysqli_connect($serverName_b, $dbUsername_b, $dbPassword_b, $dbName_b);
 
