@@ -7701,11 +7701,11 @@ button.bg-dark:focus {
 }
 
 .bg-image {
-  background: url('../assets/img/Grupo\ 939.png') center top no-repeat;
+  background: url('../assetsnew/img/Grupo\ 939.png') center top no-repeat;
 }
 
 .bg-image-2 {
-  background: url('../assets/img/Grupo\ 940.png') center top no-repeat;
+  background: url('../assetsnew/img/Grupo\ 940.png') center top no-repeat;
 }
 
 .bg-transparent {
@@ -12190,7 +12190,7 @@ body {
 } */
 
 .bg-agendar {
-  background-image: url("../assets/img/agend-icon-bg.png");
+  background-image: url("../assetsnew/img/agend-icon-bg.png");
   background-repeat: no-repeat;
   margin: auto;
   padding: auto;
@@ -12200,7 +12200,7 @@ body {
 }
 
 .bg-visualizar {
-  background-image: url("../assets/img/proj-icon-bg.png");
+  background-image: url("../assetsnew/img/proj-icon-bg.png");
   background-repeat: no-repeat;
   margin: auto;
   padding: auto;
@@ -12210,7 +12210,7 @@ body {
 }
 
 .bg-aceite {
-  background-image: url("../assets/img/aceite-icon-bg.png");
+  background-image: url("../assetsnew/img/aceite-icon-bg.png");
   background-repeat: no-repeat;
   margin: auto;
   padding: auto;
@@ -12629,11 +12629,11 @@ input:focus {
 }
 
 .ata {
-  background-image: url("../assets/img/icons/produtos/ata.png");
+  background-image: url("../assetsnew/img/icons/produtos/ata.png");
 }
 
 .biomodelo {
-  background-image: url("../assets/img/icons/produtos/biomodelo.png");
+  background-image: url("../assetsnew/img/icons/produtos/biomodelo.png");
 }
 
 .product-selector input:active+.product-card {

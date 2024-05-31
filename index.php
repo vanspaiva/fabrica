@@ -164,7 +164,7 @@
                             <div class="profile">
                                 < !-- TIP: For best results, use a photo with a transparent background like the demo example below-- >
                                 < !-- Watch a tutorial on how to do this on YouTube (link)-- >
-                                <img class="profile-img" src="index/assets/trator2.png" alt="..." />
+                                <img class="profile-img" src="index/assetsnew/trator2.png" alt="..." />
 
                             </div>
                         </div> -->

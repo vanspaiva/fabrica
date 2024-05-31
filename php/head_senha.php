@@ -8,7 +8,7 @@
   <title>Fábrica</title>
   <link href="css/reset.css" rel="stylesheet" />
   <link href="css/styles.css" rel="stylesheet" />
-  <link href="css/system.css" rel="stylesheet" />
+  <link href="css/systemnew.css" rel="stylesheet" />
   <link href="css/jquery-ui.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
   <!-- Bootstrap -->

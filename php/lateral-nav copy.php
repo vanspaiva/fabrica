@@ -50,7 +50,7 @@
         </div>
         <div class="row">
             <div class="col d-flex justify-content-around align-items-center">
-                <span class="bg-orange-conecta p-1 mx-2" style="border-radius: 5px;"> <?php include_once("assets/img/favicon-conecta-bigger.svg") ?></span>
+                <span class="bg-orange-conecta p-1 mx-2" style="border-radius: 5px;"> <?php include_once("assetsnew/img/favicon-conecta-bigger.svg") ?></span>
                 <div>
                     <small class="p-0" style="font-weight: 700; color: #ee7624; font-size: 10pt;">Portal Conecta</small>
                     <br>

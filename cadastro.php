@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_354996bcb85d6a2dac07942e7066358d.png" />
     <title>Fábrica</title>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
-    <link href="css/system.css" rel="stylesheet" />
+    <link href="css/systemnew.css" rel="stylesheet" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
@@ -239,11 +239,11 @@
     <script src="js/scripts.js"></script>
     <script src="js/standart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="assets/demo/chart-area-demo.js"></script>
-    <script src="assets/demo/chart-bar-demo.js"></script>
+    <script src="assetsnew/demo/chart-area-demo.js"></script>
+    <script src="assetsnew/demo/chart-bar-demo.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-    <script src="assets/demo/datatables-demo.js"></script>
+    <script src="assetsnew/demo/datatables-demo.js"></script>
 </body>
 
 </html>
