@@ -23,8 +23,8 @@
                 <div class="d-flex justify-content-around align-items-center">
                     <span class="px-2 text-white"><i class="fas fa-comments"></i></span>
                     <span class="px-2 text-white"><i class="fas fa-bell"></i></span>
-                    <span class="px-2 text-white"><a href="https://cpmhindustria.sharepoint.com/sites/IntranetGrupofix?sw=auth" target="_blank"><i class="far fa-life-ring"></i> </a></span>
-                    <span class="px-2 text-white"><a href="dash"><i class="fas fa-home"></i> </a></span>
+                    <span class="px-2 text-white"><a href="https://cpmhindustria.sharepoint.com/sites/IntranetGrupofix?sw=auth" target="_blank" class="text-white"><i class="far fa-life-ring"></i> </a></span>
+                    <span class="px-2 text-white"><a href="dash" class="text-white"><i class="fas fa-home"></i> </a></span>
                     <span class="px-2 text-white">|</span>
                     <span class="px-2 text-white">
                         <div class="dropdown">
