@@ -1,7 +1,13 @@
-<?php include("php/head_tables.php");
+<?php
+include("php/head_tables.php");
 
 if (isset($_SESSION["useruid"])) {
+    $user = $_SESSION["useruid"];
+    require_once 'db/dbh.php';
+    require_once 'includes/functions.inc.php';
+
 ?>
+
 
     <body class="bg-light-gray2">
         <?php
@@ -35,21 +41,8 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>OS - Ordens de Serviço</b></h5>
-                                <small class="text-muted">Gerenciamento de pedidos</small>
-                            </div>
-                            <div class="col-sm d-none d-sm-block">
-                                <div class="d-flex justify-content-evenly">
-                                    <div class="d-flex justify-content-center p-1">
-                                        <a href="novaos"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir OS</button></a>
-                                    </div>
-                                    <div class="d-flex justify-content-center p-1">
-                                        <a href="atividades"><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
-                                    </div>
-                                    <div class="d-flex justify-content-center p-1">
-                                        <a href="export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
-                                    </div>
-                                </div>
+                                <h5 class="text-muted"><b>PCP - Planejamento e Controle da Produção</b></h5>
+                                <small class="text-muted">Chegada de pedidos e encaminhamento para produção</small>
                             </div>
                         </div>
                         <hr>
@@ -72,7 +65,6 @@ if (isset($_SESSION["useruid"])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            require_once 'db/dbh.php';
                                             $ret = mysqli_query($conn, "SELECT * FROM ordenservico");
 
                                             while ($row = mysqli_fetch_array($ret)) {
@@ -91,13 +83,13 @@ if (isset($_SESSION["useruid"])) {
 
                                                     <td>
                                                         <a href="editaros?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
+                                                            <button class="btn btn-info btn-xs"><i class="far fa-edit"></i></button></a>
                                                         <a href="os?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
+                                                            <button class="btn btn-warning btn-xs"><i class="far fa-file-pdf"></i></button></a>
 
                                                         <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                             <a href="manageOs?id=<?php echo $row['osId']; ?>">
-                                                                <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
+                                                                <button class="btn btn-danger btn-xs" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
                                                         <?php
                                                         }
                                                         ?>
@@ -112,6 +104,8 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                         </div>
                     </div>
+
+
                 </div>
 
             </div>
@@ -133,84 +127,26 @@ if (isset($_SESSION["useruid"])) {
                         },
                         "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                         "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma proposta encontrada"
+                        "zeroRecords": "Nenhuma item encontrado"
                     },
                     "order": [
                         [0, "desc"]
                     ]
                 });
-                $('#tableEnviada').DataTable({
-                    "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
-                    ],
-                    "language": {
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        },
-                        "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                        "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma proposta encontrada"
-                    },
-                    "order": [
-                        [0, "desc"]
-                    ]
-                });
-                $('#tableAprov').DataTable({
-                    "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
-                    ],
-                    "language": {
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        },
-                        "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                        "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma proposta encontrada"
-                    },
-                    "order": [
-                        [0, "desc"]
-                    ]
-                });
-                $('#tablePed').DataTable({
-                    "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
-                    ],
-                    "language": {
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        },
-                        "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                        "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma proposta encontrada"
-                    },
-                    "order": [
-                        [0, "desc"]
-                    ]
-                });
+
             });
         </script>
-        <?php include_once 'php/footer_index.php' ?>
 
-    <?php
 
+    </body>
+
+
+
+    <?php include_once 'php/footer_index.php' ?>
+
+<?php
 } else {
-    header("location: index");
+    header("location: login");
     exit();
 }
-
-    ?>
+?>

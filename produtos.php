@@ -3,7 +3,7 @@
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';

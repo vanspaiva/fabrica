@@ -6,7 +6,7 @@ if (isset($_SESSION["useruid"])) {
 
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';

@@ -7,7 +7,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';

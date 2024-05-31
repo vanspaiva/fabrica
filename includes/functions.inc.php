@@ -265,7 +265,7 @@ function loginUser($conn, $username, $pwd)
         $_SESSION["userperm"]  = getPermission($uidExists);
         $_SESSION["userfirstname"] = getNameUser($uidExists);
 
-        header("location: ../index");
+        header("location: ../dash");
         exit();
     }
 }
@@ -435,7 +435,7 @@ function concluirAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -452,7 +452,7 @@ function iniciarAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -469,7 +469,7 @@ function pausarAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -1258,4 +1258,90 @@ function cleanString($string)
     $string = preg_replace('/[^a-z0-9]/', '', $string);
 
     return $string;
+}
+
+function getPrzEntrega($pedID){
+    // $url = 'http://localhost/conecta/conecta/api/pedido?r=prz&id='.$pedID;
+    $url = 'https://conecta.cpmhdigital.com.br/api/pedido?r=prz&id='.$pedID;
+    $json_data = file_get_contents($url);
+    $prz = json_decode($json_data, true);
+
+    
+    return $prz;
+}
+
+function dateFormat($data)
+{
+
+    $dataRaw = explode(" ", $data);
+    $newData = $dataRaw[0];
+
+    $newData = explode("-", $newData);
+
+    $res = $newData[2] . "/" . $newData[1] . "/" . $newData[0];
+
+    return $res;
+}
+
+
+function getMonthNumber($conn, $data)
+{
+
+    $data = explode("-", $data);
+    $month = $data[1];
+
+    return $month;
+}
+
+function getMonthName($conn, $month)
+{
+
+    $sql = "SELECT * FROM `mesesano` WHERE mesNum = '" . $month . "';";
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $monthName = $row["mesNome"];
+    }
+
+    return $monthName;
+}
+
+function getMonthAbrv($conn, $month)
+{
+
+    $sql = "SELECT * FROM `mesesano` WHERE mesNum = '" . $month . "';";
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $monthAbrv = $row["mesAbrv"];
+    }
+
+    return $monthAbrv;
+}
+
+function hoje()
+{
+    date_default_timezone_set('UTC');
+    $dtz = new DateTimeZone("America/Sao_Paulo");
+    $dt = new DateTime("now", $dtz);
+    $hoje = $dt->format("Y-m-d");
+    // $horaAtual = $dt->format("H:i:s");
+
+    // $thisMonth = date('m');
+    // $thisYear = date('Y');
+    // $thisDay = date('d');
+    // $hoje = $thisYear . "-" . $thisMonth . "-" . $thisDay;
+
+    return $hoje;
+}
+
+function agora()
+{
+
+    date_default_timezone_set('UTC');
+    $dtz = new DateTimeZone("America/Sao_Paulo");
+    $dt = new DateTime("now", $dtz);
+    // $hoje = $dt->format("Y-m-d");
+    $thisHour = $dt->format("H:i:s");
+    // $thisHour = date("H:i:s");
+
+    return $thisHour;
 }
