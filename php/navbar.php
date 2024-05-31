@@ -32,7 +32,7 @@
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <span class="px-2 py-1">
-                                    <h5 class="text-center" style="font-size: 10pt; color: #8c8c8c;"><?php echo $_SESSION["userperm"]; ?></h5>
+                                    <h5 class="text-center text-white" style="font-size: 10pt; color: #8c8c8c;"><?php echo $_SESSION["userperm"]; ?></h5>
                                 </span>
                                 <!-- <li class="px-2 py-1"><a class="" href="index" style="color: black; text-decoration: none;"> <i class="fas fa-grip-vertical mr-1"></i> Módulos</a></li> -->
                                 <li class="px-2 py-1"><a class="" href="profile" style="color: black; text-decoration: none;"> <i class="far fa-id-badge mr-1"></i> Meu Perfil</a></li>
