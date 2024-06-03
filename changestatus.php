@@ -25,6 +25,6 @@ if (isset($_SESSION["useruid"])){
     }
 
 } else {
-    header("location: index");
+    header("location: dash");
     exit();
 }

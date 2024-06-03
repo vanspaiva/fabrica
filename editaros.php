@@ -1,7 +1,10 @@
-<?php ob_start();
-include("php/head_updateprop.php");
-require_once 'db/dbh.php';
+<?php 
+session_start();
+
 if (isset($_SESSION["useruid"])) {
+    
+    include("php/head_updateprop.php");
+    require_once 'db/dbh.php';
     $user = $_SESSION["useruid"];
 
 ?>

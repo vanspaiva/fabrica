@@ -1,7 +1,8 @@
-<?php ob_start();
-include("php/head_index.php");
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"])) {
+    include("php/head_index.php");
 ?>
 
     <body class="bg-light text-dark">

@@ -1,8 +1,9 @@
-<?php include("php/head_index.php");
-
-require_once 'db/dbh.php';
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
+    include("php/head_index.php");
+    require_once 'db/dbh.php';
 
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->

@@ -1,6 +1,8 @@
-<?php include("php/head_index.php");
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
+    include("php/head_index.php");
 ?>
 
     <body class="bg-light-gray2">

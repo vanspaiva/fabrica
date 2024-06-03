@@ -1,6 +1,8 @@
-<?php include("php/head_tables.php");
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
+    include("php/head_tables.php");
 ?>
 
     <body class="bg-light-gray2">

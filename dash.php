@@ -1,7 +1,10 @@
 <?php
-include("php/head_tables.php");
+
+session_start();
 
 if (isset($_SESSION["useruid"])) {
+    
+    include("php/head_tables.php");
     $user = $_SESSION["useruid"];
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';

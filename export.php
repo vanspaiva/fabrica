@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 date_default_timezone_set('UTC');
 $dtz = new DateTimeZone("America/Sao_Paulo");

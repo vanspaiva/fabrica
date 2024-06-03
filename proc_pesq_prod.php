@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 //Incluir a conexão com banco de dados
 require_once 'db/dbh.php';
 

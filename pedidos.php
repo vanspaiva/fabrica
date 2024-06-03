@@ -1,8 +1,9 @@
-<?php include("php/head_tables.php");
-
-include_once "includes/functions.inc.php";
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"])) {
+    include("php/head_tables.php");
+    include_once "includes/functions.inc.php";
 
     $url = 'https://conecta.cpmhdigital.com.br/api/pedido?r=all';
     // $url = "http://localhost/conecta/conecta/api/pedido?r=all";

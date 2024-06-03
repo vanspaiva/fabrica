@@ -1,8 +1,9 @@
-<?php include("php/head_index.php");
-
-require_once 'db/dbh.php';
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Comercial'))) {
+    include("php/head_index.php");
+    require_once 'db/dbh.php';
 
 ?>
 
