@@ -130,7 +130,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="card border-left-primary shadow py-2 d-flex justify-content-center">
                                 <div class="card-header">
                                     <span class="text-muted">KPI's OS</span>
-                                    <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small>
+                                    <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
                                 </div>
                                 <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
                                     <div class="row no-gutters align-items-center">
@@ -172,7 +172,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="card border-left-primary shadow h-100 py-2 d-flex justify-content-center">
                                 <div class="card-header">
                                     <span class="text-muted">KPI's OP</span>
-                                    <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small>
+                                    <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
                                 </div>
                                 <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
                                     <div class="row no-gutters align-items-center">
