@@ -83,9 +83,9 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
-                                        <a href="pcp" class="btn btn-outline-info mx-1 disabled"><i class="fas fa-users-cog"></i> PCP </a>
-                                        <a href="opplanejamento" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
-                                        <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
+                                        <a href="pcp" class="btn btn-outline-info mx-1"><i class="fas fa-users-cog"></i> PCP </a>
+                                        <a href="opplanejamento" class="btn btn-outline-info mx-1"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
+                                        <a href="opetapas" class="btn btn-outline-info mx-1"> <i class="fas fa-th-large"></i> Etapas</a>
                                     </div>
                                 </div>
                             </div>
@@ -97,13 +97,15 @@ if (isset($_SESSION["useruid"])) {
                     <?php
                     if (($_SESSION["userperm"] == 'Gestor(a)') || ($_SESSION["userperm"] == 'Administrador')) {
 
-                        $contagem = 0;
+                        $contagemCriado = 0;
                         $contagemAndamento = 0;
                         $contagemPausado = 0;
+                        $contagemConcluido = 0;
+                        $contagemAbertas = 0;
 
                         $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CRIADO';");
                         while ($row = mysqli_fetch_array($ret)) {
-                            $contagem++;
+                            $contagemCriado++;
                         }
 
                         $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='EM ANDAMENTO';");
@@ -116,6 +118,12 @@ if (isset($_SESSION["useruid"])) {
                             $contagemPausado++;
                         }
 
+                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CONCLUÍDO';");
+                        while ($row = mysqli_fetch_array($ret)) {
+                            $contagemConcluido++;
+                        }
+
+                        $contagemAbertas = $contagemCriado + $contagemAndamento + $contagemPausado;
 
                     ?>
                         <div class="col-sm my-1">
@@ -130,7 +138,7 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 CONCLUÍDAS</div>
                                             <div class="flex-dashed-line text-success"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-success"><?php echo $contagem; ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-success"><?php echo $contagemConcluido; ?></div>
                                         </div>
                                     </div>
                                     <div class="row no-gutters align-items-center">
@@ -138,7 +146,7 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                 ABERTAS</div>
                                             <div class="flex-dashed-line text-info"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemAndamento + $contagemPausado; ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemAbertas; ?></div>
                                         </div>
                                     </div>
                                     <div class="row no-gutters align-items-center">
