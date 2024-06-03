@@ -42,8 +42,8 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>PCP - Planejamento e Controle da Produção</b></h5>
-                                <small class="text-muted">Chegada de pedidos e encaminhamento para produção</small>
+                                <h5 class="text-muted"><b>OP - Planejamento de Etapas da Produção</b></h5>
+                                <small class="text-muted">Conferência de datas e prazos das etapas da OP</small>
                             </div>
                         </div>
                         <hr>
@@ -51,18 +51,19 @@ if (isset($_SESSION["useruid"])) {
                         <div class="">
                             <div class="card-body">
                                 <div class="content-panel">
-                                    <table id="tableProp" class="table table-striped table-advance table-hover">
+                                    <table id="tableOPPlan" class="table table-striped table-advance table-hover">
 
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Dt Chegada</th>
-                                                <th>Cód Produto</th>
-                                                <th>Produto</th>
-                                                <th>Fluxo</th>
-                                                <th>Dr(a)</th>
-                                                <th>Pac</th>
-                                                <th>Dt Aceite</th>
+                                                <th>Entrega</th>
+                                                <th>Pedido</th>
+                                                <th>Status</th>
+                                                <th>Tipo Produto</th>
+                                                <th>Etapa Atual</th>
+                                                <th>Dias na Etapa</th>
+                                                <th>Prazo Etapa</th>
+                                                <th>Etapa Próxima</th>
+                                                <th>Prazo Etapa</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -93,35 +94,39 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
+
+
     </body>
+
+
 
     <?php include_once 'php/footer_index.php' ?>
 
     <script>
-        // $(document).ready(function() {
-        //     $('#tableProp').DataTable({
-        //         "lengthMenu": [
-        //             [20, 40, 80, -1],
-        //             [20, 40, 80, "Todos"],
-        //         ],
-        //         "language": {
-        //             "search": "Pesquisar:",
-        //             "paginate": {
-        //                 "first": "Primeiro",
-        //                 "last": "Último",
-        //                 "next": "Próximo",
-        //                 "previous": "Anterior"
-        //             },
-        //             "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-        //             "lengthMenu": "Mostrar _MENU_ itens",
-        //             "zeroRecords": "Nenhuma item encontrado"
-        //         },
-        //         "order": [
-        //             [0, "desc"]
-        //         ]
-        //     });
+        $(document).ready(function() {
+            $('#tableOPPlan').DataTable({
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma item encontrado"
+                },
+                "order": [
+                    [0, "desc"]
+                ]
+            });
 
-        // });
+        });
     </script>
 
 <?php

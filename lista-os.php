@@ -118,6 +118,7 @@ if (isset($_SESSION["useruid"])) {
 
             </div>
         </div>
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             $(document).ready(function() {
                 $('#tableProp').DataTable({
@@ -206,7 +207,7 @@ if (isset($_SESSION["useruid"])) {
                 });
             });
         </script>
-        <?php include_once 'php/footer_index.php' ?>
+        
 
     <?php
 

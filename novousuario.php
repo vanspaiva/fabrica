@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
     include("php/head_index.php");
@@ -156,27 +156,27 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                         </div>
                     </div>
 
-                    <script>
-                        function showPass() {
 
-                            event.preventDefault();
-                            var passInput = document.getElementById('pwd');
-                            if (passInput.type == 'password') {
-                                passInput.type = 'text';
-
-                            } else {
-                                passInput.type = 'password';
-
-                            }
-                        }
-                    </script>
                 </div>
 
             </div>
         </div>
 
         <?php include_once 'php/footer_index.php' ?>
+        <script>
+            function showPass() {
 
+                event.preventDefault();
+                var passInput = document.getElementById('pwd');
+                if (passInput.type == 'password') {
+                    passInput.type = 'text';
+
+                } else {
+                    passInput.type = 'password';
+
+                }
+            }
+        </script>
     <?php
 
 } else {

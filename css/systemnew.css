@@ -12930,31 +12930,31 @@ p:hover {
 
 .dataTables_wrapper .dataTables_filter input {
   border: none !important;
-  border-radius: 3px;
-  padding: 5px;
+  border-radius: 3px !important;
+  padding: 5px !important;
   background-color: white !important;
-  margin-left: 3px;
+  margin-left: 3px !important;
 }
 
 div.dataTables_wrapper div.dataTables_length select {
-  border: none;
-  background-color: white;
+  border: none !important;
+  background-color: white !important;
 }
 
 .page-item.active .page-link {
-  z-index: 3;
-  color: #fff;
-  background-color: #007a5a;
-  border-color: #007a5a;
+  z-index: 3 !important;
+  color: #fff !important;
+  background-color: #007a5a !important;
+  border-color: #007a5a !important;
 }
 
 .page-link {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  margin-left: -1px;
-  line-height: 1.25;
-  color: #007a5a;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
+  position: relative !important;
+  display: block !important;
+  padding: 0.5rem 0.75rem !important;
+  margin-left: -1px !important;
+  line-height: 1.25 !important;
+  color: #007a5a !important;
+  background-color: #fff !important;
+  border: 1px solid #dee2e6 !important;
 }

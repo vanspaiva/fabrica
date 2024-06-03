@@ -320,36 +320,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
 
                                 </div>
 
-                                <script>
-                                    function show(elem) {
-                                        elem = elem.text;
-                                        var tabAgenda = document.getElementById("v-pills-home");
-                                        var tabConfig = document.getElementById("v-pills-settings");
-                                        var linkAgenda = document.getElementById("v-pills-home-tab");
-                                        var linkConfig = document.getElementById("v-pills-settings-tab");
 
-                                        switch (elem) {
-                                            case 'Agenda':
-                                                tabAgenda.classList.add('show', 'active');
-                                                tabConfig.classList.remove('show', 'active');
-                                                linkAgenda.classList.add('active');
-                                                linkConfig.classList.remove('active');
-                                                break;
-
-                                            case 'Configurações':
-                                                tabAgenda.classList.remove('show', 'active');
-                                                tabConfig.classList.add('show', 'active');
-                                                linkAgenda.classList.remove('active');
-                                                linkConfig.classList.add('active');
-                                                break;
-
-                                            default:
-                                                console.log('erro');
-                                        }
-
-
-                                    }
-                                </script>
 
                             </div>
 
@@ -361,6 +332,10 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
         </div>
         </div>
         </div>
+
+
+
+        <?php include_once 'php/footer_index.php' ?>
 
         <script>
             $(document).ready(function() {
@@ -385,7 +360,36 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
             });
         </script>
 
-        <?php include_once 'php/footer_index.php' ?>
+        <script>
+            function show(elem) {
+                elem = elem.text;
+                var tabAgenda = document.getElementById("v-pills-home");
+                var tabConfig = document.getElementById("v-pills-settings");
+                var linkAgenda = document.getElementById("v-pills-home-tab");
+                var linkConfig = document.getElementById("v-pills-settings-tab");
+
+                switch (elem) {
+                    case 'Agenda':
+                        tabAgenda.classList.add('show', 'active');
+                        tabConfig.classList.remove('show', 'active');
+                        linkAgenda.classList.add('active');
+                        linkConfig.classList.remove('active');
+                        break;
+
+                    case 'Configurações':
+                        tabAgenda.classList.remove('show', 'active');
+                        tabConfig.classList.add('show', 'active');
+                        linkAgenda.classList.remove('active');
+                        linkConfig.classList.add('active');
+                        break;
+
+                    default:
+                        console.log('erro');
+                }
+
+
+            }
+        </script>
 
     <?php
 

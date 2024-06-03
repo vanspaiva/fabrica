@@ -3,7 +3,6 @@
 session_start();
 
 if (isset($_SESSION["useruid"])) {
-    
     include("php/head_tables.php");
     $user = $_SESSION["useruid"];
     require_once 'db/dbh.php';

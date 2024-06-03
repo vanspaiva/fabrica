@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Comercial'))) {
@@ -15,14 +15,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
 
         <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
         <script src="https://cdn.tiny.cloud/1/zjf2h1vx7aqnqpv1gai59eeqiqb64jvhdg2tfv34o6i9i7lm/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-        <script>
-            tinymce.init({
-                selector: 'textarea',
-                plugin: 'a_tinymce_plugin',
-                a_plugin_option: true,
-                a_configuration_option: 400
-            });
-        </script>
+
 
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
@@ -127,6 +120,14 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
         </div>
 
         <?php include_once 'php/footer_index.php' ?>
+        <script>
+            tinymce.init({
+                selector: 'textarea',
+                plugin: 'a_tinymce_plugin',
+                a_plugin_option: true,
+                a_configuration_option: 400
+            });
+        </script>
 
     <?php
 

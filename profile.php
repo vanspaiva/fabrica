@@ -196,6 +196,8 @@ if (isset($_SESSION["useruid"])) {
 
             </div>
         </div>
+
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             function showPass(tipo) {
                 event.preventDefault();
@@ -292,8 +294,6 @@ if (isset($_SESSION["useruid"])) {
 
             // }
         </script>
-
-        <?php include_once 'php/footer_index.php' ?>
 
     <?php
 

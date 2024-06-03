@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"])) {
@@ -78,7 +78,7 @@ if (isset($_SESSION["useruid"])) {
 
 
 
-                                                
+
                                                 if (($andamento != "FINALIZADO") && ($andamento != "ARQUIVADO")) {
                                             ?>
                                                     <tr>
@@ -87,7 +87,8 @@ if (isset($_SESSION["useruid"])) {
                                                         </td>
                                                         <td><?php echo $value['pedNumPedido']; ?></td>
                                                         <td><?php echo dateFormat($value['pedDtCriacaoPed']); ?></td>
-                                                        <td><?php //echo $preventrega; ?></td>
+                                                        <td><?php //echo $preventrega; 
+                                                            ?></td>
                                                         <td> <span class='badge <?php echo $bgColor . " " . $txColor; ?>'> <?php echo $value['stpedNome']; ?></span></td>
                                                         <td><?php echo $value['pedNomeDr']; ?></td>
                                                         <td><?php echo $value['pedNomePac']; ?></td>
@@ -109,6 +110,52 @@ if (isset($_SESSION["useruid"])) {
 
             </div>
         </div>
+
+        <!-- Modal View Cirurgia -->
+        <div class="modal fade" id="viewped" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-fab">
+                        <h5 class="modal-title text-white">Informações do Pedido</h5>
+                        <span class="px-3" id="btnaddposcirurgia"></span>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-row">
+                            <div class="form-group col-md p-2 mx-2 rounded">
+                                <h5 class="txt-ciano-agiliza" for="numpedido"><b> Nº Ped</b></h5>
+                                <span id="numpedido" name="numpedido"></span>
+                            </div>
+
+                            <div class="form-group col-md p-2 mx-2 rounded">
+                                <h5 class="txt-ciano-agiliza" for="status"><b> Status</b></h5>
+                                <span id="status" name="status"></span>
+                            </div>
+
+                            <div class="form-group col-md p-2 mx-2 rounded">
+                                <h5 class="txt-ciano-agiliza" for="dtcriacao"><b>Dt Criação</b></h5>
+                                <span id="dtcriacao" name="dtcriacao"></span>
+                            </div>
+
+                            <div class="form-group col-md p-2 mx-2 rounded">
+                                <h5 class="txt-ciano-agiliza" for="dtentrega"><b>Dt Entrega</b></h5>
+                                <span id="dataentrega" name="dtentrega"></span>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <?php include_once 'php/footer_index.php' ?>
+
         <script>
             // Função para fazer a chamada à API
             function populate(id) {
@@ -155,7 +202,7 @@ if (isset($_SESSION["useruid"])) {
 
             function feedModal(data) {
                 var id = data.pedNumPedido;
-                
+
                 document.getElementById('numpedido').innerHTML = data.pedNumPedido;
                 document.getElementById('status').innerHTML = `<span class="badge px-2 ${data.stpedCorBg} ${data.stpedCorTexto}"> ${data.stpedNome} </span>`;
                 document.getElementById('dtcriacao').innerHTML = data.pedDtCriacaoPed;
@@ -227,48 +274,6 @@ if (isset($_SESSION["useruid"])) {
 
             // }
         </script>
-        <!-- Modal View Cirurgia -->
-        <div class="modal fade" id="viewped" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-fab">
-                        <h5 class="modal-title text-white">Informações do Pedido</h5>
-                        <span class="px-3" id="btnaddposcirurgia"></span>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="form-row">
-                            <div class="form-group col-md p-2 mx-2 rounded">
-                                <h5 class="txt-ciano-agiliza" for="numpedido"><b> Nº Ped</b></h5>
-                                <span id="numpedido" name="numpedido"></span>
-                            </div>
-
-                            <div class="form-group col-md p-2 mx-2 rounded">
-                                <h5 class="txt-ciano-agiliza" for="status"><b> Status</b></h5>
-                                <span id="status" name="status"></span>
-                            </div>
-
-                            <div class="form-group col-md p-2 mx-2 rounded">
-                                <h5 class="txt-ciano-agiliza" for="dtcriacao"><b>Dt Criação</b></h5>
-                                <span id="dtcriacao" name="dtcriacao"></span>
-                            </div>
-
-                            <div class="form-group col-md p-2 mx-2 rounded">
-                                <h5 class="txt-ciano-agiliza" for="dtentrega"><b>Dt Entrega</b></h5>
-                                <span id="dataentrega" name="dtentrega"></span>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
         <script>
             $(document).ready(function() {
                 $('#pedidos').DataTable({
@@ -294,7 +299,6 @@ if (isset($_SESSION["useruid"])) {
                 });
             });
         </script>
-        <?php include_once 'php/footer_index.php' ?>
 
     <?php
 

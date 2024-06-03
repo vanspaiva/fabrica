@@ -153,6 +153,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
         </div>
         
 
+        <?php include_once 'php/footer_index.php'; ?>
         <script>
             $(document).ready(function() {
                 $('#usersTable').DataTable({
@@ -175,9 +176,6 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                 });
             });
         </script>
-
-        <?php include_once 'php/footer_index.php'; ?>
-
     <?php
 
 } else {

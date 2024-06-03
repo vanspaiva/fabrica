@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
@@ -85,7 +85,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                                     </table>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="col-sm-1"></div>
@@ -147,12 +147,14 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                 </div>
             </div>
         </div>
+
+
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             function populateModal(element) {
                 console.log(element);
             }
-        </script>
-        <script>
+
             $(document).ready(function() {
                 $('#myTable').DataTable({
                     "lengthMenu": [
@@ -174,8 +176,6 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                 });
             });
         </script>
-        <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-        <?php include_once 'php/footer_index.php' ?>
 
     <?php
 

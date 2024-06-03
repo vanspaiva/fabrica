@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"])) {
@@ -31,8 +31,8 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>Configurações de Cadastro</b></h5>
-                                <small class="text-muted">Configurações gerais do sistema</small>
+                                <h5 class="text-muted"><b>Ajustes de Cadastro</b></h5>
+                                <small class="text-muted">Criação, exclusão e edição de propriedades do sistema</small>
                             </div>
                         </div>
                         <hr>
@@ -315,36 +315,7 @@ if (isset($_SESSION["useruid"])) {
 
                                 </div>
 
-                                <script>
-                                    function show(elem) {
-                                        elem = elem.text;
-                                        var tabAgenda = document.getElementById("v-pills-home");
-                                        var tabConfig = document.getElementById("v-pills-settings");
-                                        var linkAgenda = document.getElementById("v-pills-home-tab");
-                                        var linkConfig = document.getElementById("v-pills-settings-tab");
 
-                                        switch (elem) {
-                                            case 'Agenda':
-                                                tabAgenda.classList.add('show', 'active');
-                                                tabConfig.classList.remove('show', 'active');
-                                                linkAgenda.classList.add('active');
-                                                linkConfig.classList.remove('active');
-                                                break;
-
-                                            case 'Configurações':
-                                                tabAgenda.classList.remove('show', 'active');
-                                                tabConfig.classList.add('show', 'active');
-                                                linkAgenda.classList.remove('active');
-                                                linkConfig.classList.add('active');
-                                                break;
-
-                                            default:
-                                                console.log('erro');
-                                        }
-
-
-                                    }
-                                </script>
 
                             </div>
 
@@ -354,6 +325,8 @@ if (isset($_SESSION["useruid"])) {
 
             </div>
         </div>
+
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             function show(elem) {
                 elem = elem.text;
@@ -384,7 +357,37 @@ if (isset($_SESSION["useruid"])) {
 
             }
         </script>
-        <?php include_once 'php/footer_index.php' ?>
+
+        <script>
+            function show(elem) {
+                elem = elem.text;
+                var tabAgenda = document.getElementById("v-pills-home");
+                var tabConfig = document.getElementById("v-pills-settings");
+                var linkAgenda = document.getElementById("v-pills-home-tab");
+                var linkConfig = document.getElementById("v-pills-settings-tab");
+
+                switch (elem) {
+                    case 'Agenda':
+                        tabAgenda.classList.add('show', 'active');
+                        tabConfig.classList.remove('show', 'active');
+                        linkAgenda.classList.add('active');
+                        linkConfig.classList.remove('active');
+                        break;
+
+                    case 'Configurações':
+                        tabAgenda.classList.remove('show', 'active');
+                        tabConfig.classList.add('show', 'active');
+                        linkAgenda.classList.remove('active');
+                        linkConfig.classList.add('active');
+                        break;
+
+                    default:
+                        console.log('erro');
+                }
+
+
+            }
+        </script>
 
     <?php
 

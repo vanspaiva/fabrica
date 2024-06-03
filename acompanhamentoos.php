@@ -522,102 +522,7 @@ if (isset($_SESSION["useruid"])) {
                 </div>
             </div>
 
-            <script>
-                $(document).ready(function() {
-                    $('#tableOs').DataTable({
-                        responsive: true,
-                        "lengthMenu": [
-                            [20, 40, 80, -1],
-                            [20, 40, 80, "Todos"],
-                        ],
-                        "language": {
-                            "search": "Pesquisar:",
-                            "paginate": {
-                                "first": "Primeiro",
-                                "last": "Último",
-                                "next": "Próximo",
-                                "previous": "Anterior"
-                            },
-                            "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                            "lengthMenu": "Mostrar _MENU_ itens",
-                            "zeroRecords": "Nenhuma proposta encontrada"
-                        },
-                        "order": [
-                            [1, "desc"]
-                        ]
-                    });
 
-                    $('#tableandamento').DataTable({
-                        responsive: true,
-                        "lengthMenu": [
-                            [20, 40, 80, -1],
-                            [20, 40, 80, "Todos"],
-                        ],
-                        "language": {
-                            "search": "Pesquisar:",
-                            "paginate": {
-                                "first": "Primeiro",
-                                "last": "Último",
-                                "next": "Próximo",
-                                "previous": "Anterior"
-                            },
-                            "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                            "lengthMenu": "Mostrar _MENU_ itens",
-                            "zeroRecords": "Nenhuma proposta encontrada"
-                        },
-                        "order": [
-                            [1, "desc"]
-                        ]
-                    });
-
-                    $('#tablepausado').DataTable({
-                        responsive: true,
-                        "lengthMenu": [
-                            [20, 40, 80, -1],
-                            [20, 40, 80, "Todos"],
-                        ],
-                        "language": {
-                            "search": "Pesquisar:",
-                            "paginate": {
-                                "first": "Primeiro",
-                                "last": "Último",
-                                "next": "Próximo",
-                                "previous": "Anterior"
-                            },
-                            "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                            "lengthMenu": "Mostrar _MENU_ itens",
-                            "zeroRecords": "Nenhuma proposta encontrada"
-                        },
-                        "order": [
-                            [1, "desc"]
-                        ]
-                    });
-
-                    $('#tableconcluido').DataTable({
-                        responsive: true,
-                        "lengthMenu": [
-                            [20, 40, 80, -1],
-                            [20, 40, 80, "Todos"],
-                        ],
-                        "language": {
-                            "search": "Pesquisar:",
-                            "paginate": {
-                                "first": "Primeiro",
-                                "last": "Último",
-                                "next": "Próximo",
-                                "previous": "Anterior"
-                            },
-                            "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                            "lengthMenu": "Mostrar _MENU_ itens",
-                            "zeroRecords": "Nenhuma proposta encontrada"
-                        },
-                        "order": [
-                            [1, "desc"]
-                        ]
-                    });
-
-                });
-            </script>
         </div>
 
     </body>
@@ -625,6 +530,103 @@ if (isset($_SESSION["useruid"])) {
 
 
     <?php include_once 'php/footer_index.php' ?>
+
+    <script>
+        $(document).ready(function() {
+            $('#tableOs').DataTable({
+                responsive: true,
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma proposta encontrada"
+                },
+                "order": [
+                    [1, "desc"]
+                ]
+            });
+
+            $('#tableandamento').DataTable({
+                responsive: true,
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma proposta encontrada"
+                },
+                "order": [
+                    [1, "desc"]
+                ]
+            });
+
+            $('#tablepausado').DataTable({
+                responsive: true,
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma proposta encontrada"
+                },
+                "order": [
+                    [1, "desc"]
+                ]
+            });
+
+            $('#tableconcluido').DataTable({
+                responsive: true,
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma proposta encontrada"
+                },
+                "order": [
+                    [1, "desc"]
+                ]
+            });
+
+        });
+    </script>
 
 <?php
 } else {

@@ -1260,13 +1260,14 @@ function cleanString($string)
     return $string;
 }
 
-function getPrzEntrega($pedID){
+function getPrzEntrega($pedID)
+{
     // $url = 'http://localhost/conecta/conecta/api/pedido?r=prz&id='.$pedID;
-    $url = 'https://conecta.cpmhdigital.com.br/api/pedido?r=prz&id='.$pedID;
+    $url = 'https://conecta.cpmhdigital.com.br/api/pedido?r=prz&id=' . $pedID;
     $json_data = file_get_contents($url);
     $prz = json_decode($json_data, true);
 
-    
+
     return $prz;
 }
 
@@ -1283,6 +1284,36 @@ function dateFormat($data)
     return $res;
 }
 
+function hourFormat($hora)
+{
+    $horaRaw = explode(":", $hora);
+    $res = $horaRaw[0] . ":" . $horaRaw[1];
+
+    return $res;
+}
+
+function dateFormatByHifen($data)
+{
+    $dataRaw = explode("-", $data);
+    $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+
+    return $res;
+}
+
+function dateAndHourFormat($data)
+{
+    $dataRaw = explode(" ", $data);
+
+    $data = $dataRaw[0];
+    $data = dateFormatByHifen($data);
+
+    $hora = $dataRaw[1];
+    $hora = hourFormat($hora);
+
+    $res = $data . " " . $hora;
+
+    return $res;
+}
 
 function getMonthNumber($conn, $data)
 {
@@ -1344,4 +1375,390 @@ function agora()
     // $thisHour = date("H:i:s");
 
     return $thisHour;
+}
+
+function novaEtapa($conn, $nome, $parametro1, $parametro2, $iterev)
+{
+    $sqlProd = "INSERT INTO etapa (nome, parametro1, parametro2, iterev) VALUES (?,?,?,?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_etapas?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ssss", $nome, $parametro1, $parametro2, $iterev);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function editarEtapa($conn, $id, $nome, $parametro1, $parametro2, $iterev)
+{
+    $sql = "UPDATE etapa SET nome= ?, parametro1= ?, parametro2= ?, iterev= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sssss", $nome, $parametro1, $parametro2, $iterev, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteEtapa($conn, $id)
+{
+    $sql = "DELETE FROM etapa WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_etapas?error=stmtfaileddltconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getNomeEtapa($conn, $id)
+{
+    $sql = "SELECT nome FROM etapa WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedgetnomefluxo");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['nome'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function novaFluxo($conn, $nome)
+{
+    $sqlProd = "INSERT INTO fluxo (nome) VALUES (?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_fluxo?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function editarFluxo($conn, $id, $nome)
+{
+    $sql = "UPDATE fluxo SET nome= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $nome, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteFluxo($conn, $id)
+{
+    $sql = "DELETE FROM fluxo WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfaileddltconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getNomeFluxo($conn, $id)
+{
+    $sql = "SELECT nome FROM fluxo WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedgetnomefluxo");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['nome'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function novaEtapaEmFluxo($conn, $idfluxo, $idetapa, $duracao)
+{
+    $ordem = intval(ultimoNumeroFluxo($conn, $idfluxo)) + 1;
+
+    $sqlProd = "INSERT INTO etapa_fluxo (idfluxo, idetapa, ordem, duracao) VALUES (?,?,?,?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_fluxo?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ssss", $idfluxo, $idetapa, $ordem, $duracao);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function ultimoNumeroFluxo($conn, $idfluxo)
+{
+    $sql = "SELECT COUNT(idetapa) as total_etapas FROM etapa_fluxo WHERE idfluxo = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedcount");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $idfluxo);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['total_etapas'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function arrayIdEtapas($conn, $idfluxo)
+{
+    $sql = "SELECT *
+    FROM etapa_fluxo
+    WHERE idfluxo = ?
+    ORDER BY ordem;";
+
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $idfluxo);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    $result = [];
+    while ($row = mysqli_fetch_array($resultData)) {
+        array_push($result, $row["id"]);
+    }
+
+    return $result;
+
+    mysqli_stmt_close($stmt);
+}
+
+function getposicaofromidstatus($conn, $id)
+{
+    $sql = "SELECT * FROM etapa_fluxo WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['ordem'];
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function trocarposicaostatus($conn, $id, $outro)
+// somarposicao($conn, $id, $posicao)
+{
+
+    $posicaoatual = getposicaofromidstatus($conn, $id);
+    $posicaoproximo = getposicaofromidstatus($conn, $outro);
+
+    // echo "posicaoatual: " . $posicaoatual . "<br>";
+    // echo "posicaoproximo: " . $posicaoproximo . "<br>";
+    // exit();
+
+    $sql = "UPDATE etapa_fluxo SET ordem=? WHERE id=? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $posicaoproximo, $id);
+    mysqli_stmt_execute($stmt);
+
+    $sql = "UPDATE etapa_fluxo SET ordem=? WHERE id=? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $posicaoatual, $outro);
+    mysqli_stmt_execute($stmt);
+
+
+    mysqli_stmt_close($stmt);
+}
+
+function editEtapaEmFluxo($conn, $id, $idetapa, $duracao)
+{
+    $sql = "UPDATE etapa_fluxo SET idetapa=?, duracao=? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sss", $idetapa, $duracao, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+// function deleteEtapaEmFluxo($conn, $id)
+// {
+//     $sql = "DELETE FROM etapa_fluxo WHERE id = ? ";
+//     $stmt = mysqli_stmt_init($conn);
+
+
+//     if (!mysqli_stmt_prepare($stmt, $sql)) {
+//         header("location: ../config_fluxo?error=stmtfaileddltconsulta");
+//         exit();
+//     }
+
+//     mysqli_stmt_bind_param($stmt, "s", $id);
+//     mysqli_stmt_execute($stmt);
+//     mysqli_stmt_close($stmt);
+// }
+
+function deleteEtapaEmFluxo($conn, $id)
+{
+    // Iniciar transação
+    mysqli_begin_transaction($conn);
+
+    try {
+        // Obter idfluxo e ordem da etapa a ser deletada
+        $sql = "SELECT idfluxo, ordem FROM ETAPA_FLUXO WHERE id = ?;";
+        $stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para obter idfluxo e ordem");
+        }
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($resultData)) {
+            $idfluxo = $row['idfluxo'];
+            $ordem = $row['ordem'];
+        } else {
+            throw new Exception("Etapa não encontrada");
+        }
+
+        mysqli_stmt_close($stmt);
+
+        // Deletar a etapa
+        $sqlDelete = "DELETE FROM ETAPA_FLUXO WHERE id = ?;";
+        $stmtDelete = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmtDelete, $sqlDelete)) {
+            throw new Exception("Erro ao preparar a consulta para deletar a etapa");
+        }
+
+        mysqli_stmt_bind_param($stmtDelete, "i", $id);
+        mysqli_stmt_execute($stmtDelete);
+        mysqli_stmt_close($stmtDelete);
+
+        // Atualizar a ordem das etapas subsequentes
+        $sqlUpdate = "UPDATE ETAPA_FLUXO SET ordem = ordem - 1 WHERE idfluxo = ? AND ordem > ?;";
+        $stmtUpdate = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmtUpdate, $sqlUpdate)) {
+            throw new Exception("Erro ao preparar a consulta para atualizar as ordens");
+        }
+
+        mysqli_stmt_bind_param($stmtUpdate, "ii", $idfluxo, $ordem);
+        mysqli_stmt_execute($stmtUpdate);
+        mysqli_stmt_close($stmtUpdate);
+
+        // Commit da transação
+        mysqli_commit($conn);
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../config_fluxo?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+
+function hashItemNatural($id)
+{
+    $random = rand() * 7;
+    $idhashed = $id * $random / 7;
+    return $idhashed . "y" . $random;
+}
+
+function deshashItemNatural($hash)
+{
+    $exploded = explode("y", $hash);
+    $hash = $exploded[0];
+    $encryption_key = $exploded[1];
+    $id = $hash * 7 / $encryption_key;
+    return $id;
 }
