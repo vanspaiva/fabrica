@@ -54,8 +54,8 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
                                         <a href="novaos" class="btn btn-fab mx-1"><i class="fas fa-plus"></i> Nova OS </a>
-                                        <a href="lista-os" class="btn btn-outline-fab mx-1"> <i class="fas fa-list"></i> Lista de OS</a>
-                                        <a href="atividades" class="btn btn-outline-fab mx-1"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                        <a href="lista-os" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-list"></i> Lista de OS</a>
+                                        <a href="atividades" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">
@@ -76,14 +76,14 @@ if (isset($_SESSION["useruid"])) {
                                 <hr>
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
-                                        <a href="#" class="btn btn-info mx-1 disabled" disabled><i class="fas fa-plus"></i> Nova OP </a>
-                                        <a href="#" class="btn btn-info mx-1 disabled" disabled> <i class="fas fa-list"></i> Lista de OP</a>
-                                        <a href="#" class="btn btn-info mx-1 disabled" disabled> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                        <a href="#" class="btn btn-info mx-1 disabled"><i class="fas fa-plus"></i> Nova OP </a>
+                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de OP</a>
+                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
-                                        <a href="pcp" class="btn btn-outline-info mx-1"><i class="fas fa-users-cog"></i> PCP </a>
+                                        <a href="pcp" class="btn btn-outline-info mx-1 disabled"><i class="fas fa-users-cog"></i> PCP </a>
                                         <a href="opplanejamento" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
                                         <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
                                     </div>
@@ -138,7 +138,7 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                 ABERTAS</div>
                                             <div class="flex-dashed-line text-info"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemAndamento; ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemAndamento + $contagemPausado; ?></div>
                                         </div>
                                     </div>
                                     <div class="row no-gutters align-items-center">
