@@ -56,48 +56,29 @@ if (isset($_SESSION["useruid"])) {
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Data Chegada</th>
-                                                <th>User Criador</th>
-                                                <th>Status</th>
-                                                <th>Data Solicitada</th>
-                                                <th>Descricao</th>
+                                                <th>Dt Chegada</th>
+                                                <th>Cód Produto</th>
+                                                <th>Produto</th>
+                                                <th>Fluxo</th>
+                                                <th>Dr(a)</th>
+                                                <th>Pac</th>
+                                                <th>Dt Aceite</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico");
+                                            // $ret = mysqli_query($conn, "SELECT * FROM producao");
 
-                                            while ($row = mysqli_fetch_array($ret)) {
+                                            // while ($row = mysqli_fetch_array($ret)) {
 
 
                                             ?>
 
-                                                <tr>
-                                                    <td><?php echo $row['osId']; ?></td>
-                                                    <td><?php echo $row['osDtCriacao']; ?></td>
-                                                    <td><?php echo $row['osNomeCriador']; ?></td>
-                                                    <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
-                                                    <td><?php echo $row['osDtEntregasDesejada']; ?></td>
-                                                    <td><?php echo substr($row['osDescricao'], 0, 50) . '...'; ?></td>
 
-
-                                                    <td>
-                                                        <a href="editaros?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-info btn-xs"><i class="far fa-edit"></i></button></a>
-                                                        <a href="os?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-warning btn-xs"><i class="far fa-file-pdf"></i></button></a>
-
-                                                        <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
-                                                            <a href="manageOs?id=<?php echo $row['osId']; ?>">
-                                                                <button class="btn btn-danger btn-xs" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
-                                                        <?php
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                </tr>
                                             <?php
-                                            } ?>
+                                            //} 
+                                            ?>
 
                                         </tbody>
                                     </table>
@@ -112,30 +93,30 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
         <script>
-            $(document).ready(function() {
-                $('#tableProp').DataTable({
-                    "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
-                    ],
-                    "language": {
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        },
-                        "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                        "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma item encontrado"
-                    },
-                    "order": [
-                        [0, "desc"]
-                    ]
-                });
+            // $(document).ready(function() {
+            //     $('#tableProp').DataTable({
+            //         "lengthMenu": [
+            //             [20, 40, 80, -1],
+            //             [20, 40, 80, "Todos"],
+            //         ],
+            //         "language": {
+            //             "search": "Pesquisar:",
+            //             "paginate": {
+            //                 "first": "Primeiro",
+            //                 "last": "Último",
+            //                 "next": "Próximo",
+            //                 "previous": "Anterior"
+            //             },
+            //             "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+            //             "lengthMenu": "Mostrar _MENU_ itens",
+            //             "zeroRecords": "Nenhuma item encontrado"
+            //         },
+            //         "order": [
+            //             [0, "desc"]
+            //         ]
+            //     });
 
-            });
+            // });
         </script>
 
 
