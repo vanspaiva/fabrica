@@ -146,7 +146,7 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                 ABERTAS</div>
                                             <div class="flex-dashed-line text-info"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemAbertas; ?></div>
+                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemCriado; ?></div>
                                         </div>
                                     </div>
                                     <div class="row no-gutters align-items-center">
