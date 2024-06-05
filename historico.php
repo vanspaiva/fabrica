@@ -1,9 +1,14 @@
-<?php include("php/head_tables.php");
-
+<?php
+session_start();
 if (isset($_SESSION["useruid"])) {
+    include("php/head_tables.php");
+
+    require_once 'db/dbh.php';
+    require_once 'includes/functions.inc.php';
+
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -30,13 +35,18 @@ if (isset($_SESSION["useruid"])) {
                 }
                 ?>
             </div>
-            <div class="container-fluid">
-                <div class="row row-3">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10 justify-content-start" id="titulo-pag">
-                        <h2>Log de Atividades</h2>
-                        <br>
-                        <div class="card">
+            <div class="container-fluid py-4">
+                <div class="row d-flex justify-content-center">
+
+                    <div class="col-sm-10">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
+                                <h5 class="text-muted"><b>Log de Atividades</b></h5>
+                                <small class="text-muted">Histórico de Atividades das OS</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="">
                             <div class="card-body">
                                 <div class="content-panel">
                                     <table id="table" class="table table-striped table-advance table-hover">
@@ -51,19 +61,42 @@ if (isset($_SESSION["useruid"])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            require_once 'includes/dbh.inc.php';
-                                            $ret = mysqli_query($conn, "SELECT * FROM logatividades");
+                                            $ret = mysqli_query($conn, "SELECT * FROM logatividades ORDER BY logId DESC;");
 
                                             while ($row = mysqli_fetch_array($ret)) {
+                                                $OsRef = $row['logOsRef'];
+                                                $Horario = $row['logHorario'];
+                                                $User = $row['logUser'];
+                                                $Status = $row['logStatus'];
 
+                                                switch ($Status) {
+                                                    case 'PAUSADO':
+                                                        $badgeStatus = "badge-danger";
+                                                        break;
+                                                    case 'EM ANDAMENTO':
+                                                        $badgeStatus = "badge-warning";
+                                                        break;
+                                                    case 'CONCLUÍDO':
+                                                        $badgeStatus = "badge-success";
+                                                        break;
+                                                    case 'CRIADO':
+                                                        $badgeStatus = "badge-info";
+                                                        break;
+
+                                                    default:
+                                                        $badgeStatus = "badge-secondary";
+                                                        break;
+                                                }
+
+                                                $data = dateAndHourFormat($Horario);
 
                                             ?>
 
                                                 <tr>
-                                                    <td><?php echo $row['logOsRef']; ?></td>
-                                                    <td><?php echo $row['logHorario']; ?></td>
-                                                    <td><?php echo $row['logUser']; ?></td>
-                                                    <td><span class="badge bg-secondary text-white"><?php echo $row['logStatus']; ?></span></td>
+                                                    <td><?php echo $OsRef; ?></td>
+                                                    <td><?php echo $data; ?></td>
+                                                    <td><?php echo $User; ?></td>
+                                                    <td><span class="badge <?php echo $badgeStatus; ?>"><?php echo $Status; ?></span></td>
                                                 </tr>
                                             <?php
                                             } ?>
@@ -74,12 +107,13 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-1"></div>
 
                 </div>
-
             </div>
+
         </div>
+        </div>
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             $(document).ready(function() {
                 $('#table').DataTable({
@@ -98,15 +132,12 @@ if (isset($_SESSION["useruid"])) {
                         "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                         "lengthMenu": "Mostrar _MENU_ itens",
                         "zeroRecords": "Nenhuma proposta encontrada"
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ]
+                    },order: []
                 });
-                
+
             });
         </script>
-        <?php include_once 'php/footer_index.php' ?>
+
 
     <?php
 

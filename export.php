@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 date_default_timezone_set('UTC');
 $dtz = new DateTimeZone("America/Sao_Paulo");
@@ -10,7 +11,7 @@ header("Content-Disposition: attachment; filename=OrdensServico_".$today.".xls")
 header("Pragma: no-cache");
 header("Expires: 0");
 
-require_once 'includes/dbh.inc.php';
+require_once 'db/dbh.php';
 
 $output = "";
 

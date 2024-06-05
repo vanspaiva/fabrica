@@ -1,12 +1,15 @@
-<?php ob_start();
-include("php/head_updateprop.php");
-require_once 'includes/dbh.inc.php';
+<?php 
+session_start();
+
 if (isset($_SESSION["useruid"])) {
+    
+    include("php/head_updateprop.php");
+    require_once 'db/dbh.php';
     $user = $_SESSION["useruid"];
 
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -45,16 +48,15 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                                 <?php
                                 if ($fileNameOs != null) {
-                                    $retFile = mysqli_query($conn, "SELECT * FROM filedownload WHERE fileOsRef= '" . $osid . "' ;");
-                                    while ($rowFile = mysqli_fetch_array($retFile)) {
                                 ?>
                                         <div class="col-sm pt-2">
                                             <div class="d-flex justify-content-center p-1">
-                                                <a href="download?file=<?php echo $rowFile['fileRealName'] ?>&id=<?php echo $osid ?>" class="btn btn-outline-fab"><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
+                                                <!-- <a href="<?php //echo $fileNameOs ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
+                                                <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
+
                                             </div>
                                         </div>
                                 <?php
-                                    }
                                 }
                                 ?>
 
@@ -217,7 +219,6 @@ if (isset($_SESSION["useruid"])) {
                                                                     <input class='form-control' name='obs' id='obs' type='text' value="<?php echo $row['osObs']; ?>">
                                                                 </div>
                                                             </div>
-
 
 
                                                             <div class="d-flex justify-content-end">

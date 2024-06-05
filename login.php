@@ -120,7 +120,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group d-flex align-items-center justify-content-end mt-4 mb-0">
+                                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                    <a href="index" class="btn btn-outline-dark" id="index">Início</a>
                                     <button class="btn btn-fab" type="submit" name="submit" id="login">Login</button>
                                 </div>
                             </form>

@@ -94,123 +94,11 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
 
     mysqli_stmt_bind_param($stmt, "sssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao);
     mysqli_stmt_execute($stmt);
+
+
+    sendEmailNotificationNewAccount($username, $pwd, $email);
+
     mysqli_stmt_close($stmt);
-
-    // sendEmailNotificationCreate($email, $name);
-
-    $arquivo = '
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Bem vindo ao Sistema Fábrica!</title>
-            <style>
-                /* Estilos para tornar o email mais atraente */
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .container {
-                    max-width: 600px;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #EDEDED;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-        
-                h1,
-                h3 {
-                    text-align: start;
-                    padding-top: 0;
-                    margin-top: 0;
-                }
-        
-                h3 {
-                    color: rgb(0, 212, 111);
-                }
-        
-                a {
-                    color: #fff;
-                }
-        
-                .btn-container {
-                    text-align: center;
-                }
-        
-                .btn {
-                    display: inline-block;
-                    background-color: rgb(0, 212, 111);
-                    color: #fff !important;
-                    text-decoration: none;
-                    padding: 10px 20px;
-                    border-radius: 5px;
-                    margin-top: 20px;
-                    font-weight: bold;
-                }
-        
-                img {
-                    width: 180px;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .d-flex {
-                    display: flex;
-                    margin: 0;
-                    padding: 0;
-                }
-        
-                .justify-content-center {
-                    justify-content: center;
-                }
-        
-                .justify-content-around {
-                    justify-content: space-around;
-                }
-        
-                .align-items-center {
-                    align-items: center;
-                }
-        
-            </style>
-        </head>
-        
-        <body>
-        <div class="container">              
-        
-        <p>Olá! Você foi convidado a se juntar ao <strong>Sistema Fábrica</strong>. Nele você terá acesso a criação de OS e lista de prioridades para execução do seu trabalho.</p>
-
-        <p>
-            <strong>Usuário: </strong> ' . $username . '<br>
-            <strong>Senha: </strong> ' . $pwd . '
-        </p>
-        
-        <div class="btn-container">
-            <a href="http://fabrica.cpmh.com.br/" class="btn">Entar no sistema</a>
-        </div>
-        <p>Att,</p>
-        <p>Equipe de Desenvolvimento</p>
-    </div>
-        </body>
-        
-        </html>
-
-    ';
-
-    $assunto = "Bem vindo ao Sistema da Fábrica!";
-
-    $returnTrue = "location: ../cadastro?error=none";
-    $returnFalse = "location: ../cadastro?error=emailfailed";
-
-    geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
-
-    // header("location: ../cadastro?error=none");
     exit();
 }
 
@@ -377,7 +265,7 @@ function loginUser($conn, $username, $pwd)
         $_SESSION["userperm"]  = getPermission($uidExists);
         $_SESSION["userfirstname"] = getNameUser($uidExists);
 
-        header("location: ../index");
+        header("location: ../dash");
         exit();
     }
 }
@@ -547,7 +435,7 @@ function concluirAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -564,7 +452,7 @@ function iniciarAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -581,7 +469,7 @@ function pausarAtividade($conn, $id, $user)
     $sql = "UPDATE ordenservico SET osStatus='$status' WHERE osId='$id'";
 
     if (mysqli_query($conn, $sql)) {
-        header("location: index");
+        header("location: acompanhamentoos");
     } else {
         header("location: lista-os?error=stmfailed");
     }
@@ -1228,8 +1116,6 @@ function extrairNomeUsuario($email)
 
 function geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $returnFalse)
 {
-    echo true;
-    exit();
 
     $headers  = 'MIME-Version: 1.0' . "\r\n";
     $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -1243,9 +1129,636 @@ function geralSendEmailNotification($destino, $assunto, $arquivo, $returnTrue, $
     $enviaremail = mail($destino, $assunto, $arquivo, $headers);
     if ($enviaremail) {
         header($returnTrue);
-        // echo "enviado";
     } else {
         header($returnFalse);
-        // echo "erro";
     }
+}
+
+function sendEmailNotificationNewAccount($username, $pwd, $email)
+{
+    $arquivo = '<!DOCTYPE html>
+        <html lang="pt-br">
+        
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Bem vindo ao Sistema Fábrica!</title>
+            <style>
+                /* Estilos para tornar o email mais atraente */
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    background-color: #EDEDED;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+        
+                h1,
+                h3 {
+                    text-align: start;
+                    padding-top: 0;
+                    margin-top: 0;
+                }
+        
+                h3 {
+                    color: rgb(0, 212, 111);
+                }
+        
+                a {
+                    color: #fff;
+                }
+        
+                .btn-container {
+                    text-align: center;
+                }
+        
+                .btn {
+                    display: inline-block;
+                    background-color: rgb(0, 212, 111);
+                    color: #fff !important;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+        
+                img {
+                    width: 180px;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .d-flex {
+                    display: flex;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .justify-content-center {
+                    justify-content: center;
+                }
+        
+                .justify-content-around {
+                    justify-content: space-around;
+                }
+        
+                .align-items-center {
+                    align-items: center;
+                }
+        
+            </style>
+        </head>
+        
+        <body>
+        <div class="container">              
+        
+        <p>Olá! Você foi convidado a se juntar ao <strong>Sistema Fábrica</strong>. Nele você terá acesso a criação de OS e lista de prioridades para execução do seu trabalho.</p>
+
+        <p>
+            <strong>Usuário: </strong> ' . $username . '<br>
+            <strong>Senha: </strong> ' . $pwd . '
+        </p>
+        
+        <div class="btn-container">
+            <a href="http://fabrica.cpmh.com.br/" class="btn">Entar no sistema</a>
+        </div>
+        <p>Att,</p>
+        <p>Equipe de Desenvolvimento</p>
+    </div>
+        </body>
+        
+        </html>';
+
+    $assunto = "Bem vindo ao Sistema da Fábrica";
+
+    $returnTrue = "location: ../cadastro?error=none";
+    $returnFalse = "location: ../cadastro?error=emailfailed";
+
+    geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
+}
+
+function cleanString($string)
+{
+    // 1. Remover acentos
+    $string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+    // 2. Converter para minúsculas
+    $string = strtolower($string);
+
+    // 3. Remover caracteres especiais
+    $string = preg_replace('/[^a-z0-9]/', '', $string);
+
+    return $string;
+}
+
+function getPrzEntrega($pedID)
+{
+    // $url = 'http://localhost/conecta/conecta/api/pedido?r=prz&id='.$pedID;
+    $url = 'https://conecta.cpmhdigital.com.br/api/pedido?r=prz&id=' . $pedID;
+    $json_data = file_get_contents($url);
+    $prz = json_decode($json_data, true);
+
+
+    return $prz;
+}
+
+function dateFormat($data)
+{
+
+    $dataRaw = explode(" ", $data);
+    $newData = $dataRaw[0];
+
+    $newData = explode("-", $newData);
+
+    $res = $newData[2] . "/" . $newData[1] . "/" . $newData[0];
+
+    return $res;
+}
+
+function hourFormat($hora)
+{
+    $horaRaw = explode(":", $hora);
+    $res = $horaRaw[0] . ":" . $horaRaw[1];
+
+    return $res;
+}
+
+function dateFormatByHifen($data)
+{
+    $dataRaw = explode("-", $data);
+    $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+
+    return $res;
+}
+
+function dateAndHourFormat($data)
+{
+    $dataRaw = explode(" ", $data);
+
+    $data = $dataRaw[0];
+    $data = dateFormatByHifen($data);
+
+    $hora = $dataRaw[1];
+    $hora = hourFormat($hora);
+
+    $res = $data . " " . $hora;
+
+    return $res;
+}
+
+function getMonthNumber($conn, $data)
+{
+
+    $data = explode("-", $data);
+    $month = $data[1];
+
+    return $month;
+}
+
+function getMonthName($conn, $month)
+{
+
+    $sql = "SELECT * FROM `mesesano` WHERE mesNum = '" . $month . "';";
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $monthName = $row["mesNome"];
+    }
+
+    return $monthName;
+}
+
+function getMonthAbrv($conn, $month)
+{
+
+    $sql = "SELECT * FROM `mesesano` WHERE mesNum = '" . $month . "';";
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $monthAbrv = $row["mesAbrv"];
+    }
+
+    return $monthAbrv;
+}
+
+function hoje()
+{
+    date_default_timezone_set('UTC');
+    $dtz = new DateTimeZone("America/Sao_Paulo");
+    $dt = new DateTime("now", $dtz);
+    $hoje = $dt->format("Y-m-d");
+    // $horaAtual = $dt->format("H:i:s");
+
+    // $thisMonth = date('m');
+    // $thisYear = date('Y');
+    // $thisDay = date('d');
+    // $hoje = $thisYear . "-" . $thisMonth . "-" . $thisDay;
+
+    return $hoje;
+}
+
+function agora()
+{
+
+    date_default_timezone_set('UTC');
+    $dtz = new DateTimeZone("America/Sao_Paulo");
+    $dt = new DateTime("now", $dtz);
+    // $hoje = $dt->format("Y-m-d");
+    $thisHour = $dt->format("H:i:s");
+    // $thisHour = date("H:i:s");
+
+    return $thisHour;
+}
+
+function novaEtapa($conn, $nome, $parametro1, $parametro2, $iterev)
+{
+    $sqlProd = "INSERT INTO etapa (nome, parametro1, parametro2, iterev) VALUES (?,?,?,?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_etapas?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ssss", $nome, $parametro1, $parametro2, $iterev);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function editarEtapa($conn, $id, $nome, $parametro1, $parametro2, $iterev)
+{
+    $sql = "UPDATE etapa SET nome= ?, parametro1= ?, parametro2= ?, iterev= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sssss", $nome, $parametro1, $parametro2, $iterev, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteEtapa($conn, $id)
+{
+    $sql = "DELETE FROM etapa WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_etapas?error=stmtfaileddltconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getNomeEtapa($conn, $id)
+{
+    $sql = "SELECT nome FROM etapa WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedgetnomefluxo");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['nome'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function novaFluxo($conn, $nome)
+{
+    $sqlProd = "INSERT INTO fluxo (nome) VALUES (?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_fluxo?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function editarFluxo($conn, $id, $nome)
+{
+    $sql = "UPDATE fluxo SET nome= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $nome, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteFluxo($conn, $id)
+{
+    $sql = "DELETE FROM fluxo WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfaileddltconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getNomeFluxo($conn, $id)
+{
+    $sql = "SELECT nome FROM fluxo WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedgetnomefluxo");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['nome'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function novaEtapaEmFluxo($conn, $idfluxo, $idetapa, $duracao)
+{
+    $ordem = intval(ultimoNumeroFluxo($conn, $idfluxo)) + 1;
+
+    $sqlProd = "INSERT INTO etapa_fluxo (idfluxo, idetapa, ordem, duracao) VALUES (?,?,?,?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_fluxo?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ssss", $idfluxo, $idetapa, $ordem, $duracao);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function ultimoNumeroFluxo($conn, $idfluxo)
+{
+    $sql = "SELECT COUNT(idetapa) as total_etapas FROM etapa_fluxo WHERE idfluxo = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_fluxo?error=stmtfailedcount");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $idfluxo);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['total_etapas'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function arrayIdEtapas($conn, $idfluxo)
+{
+    $sql = "SELECT *
+    FROM etapa_fluxo
+    WHERE idfluxo = ?
+    ORDER BY ordem;";
+
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $idfluxo);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    $result = [];
+    while ($row = mysqli_fetch_array($resultData)) {
+        array_push($result, $row["id"]);
+    }
+
+    return $result;
+
+    mysqli_stmt_close($stmt);
+}
+
+function getposicaofromidstatus($conn, $id)
+{
+    $sql = "SELECT * FROM etapa_fluxo WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['ordem'];
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function trocarposicaostatus($conn, $id, $outro)
+// somarposicao($conn, $id, $posicao)
+{
+
+    $posicaoatual = getposicaofromidstatus($conn, $id);
+    $posicaoproximo = getposicaofromidstatus($conn, $outro);
+
+    // echo "posicaoatual: " . $posicaoatual . "<br>";
+    // echo "posicaoproximo: " . $posicaoproximo . "<br>";
+    // exit();
+
+    $sql = "UPDATE etapa_fluxo SET ordem=? WHERE id=? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $posicaoproximo, $id);
+    mysqli_stmt_execute($stmt);
+
+    $sql = "UPDATE etapa_fluxo SET ordem=? WHERE id=? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $posicaoatual, $outro);
+    mysqli_stmt_execute($stmt);
+
+
+    mysqli_stmt_close($stmt);
+}
+
+function editEtapaEmFluxo($conn, $id, $idetapa, $duracao)
+{
+    $sql = "UPDATE etapa_fluxo SET idetapa=?, duracao=? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sss", $idetapa, $duracao, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+// function deleteEtapaEmFluxo($conn, $id)
+// {
+//     $sql = "DELETE FROM etapa_fluxo WHERE id = ? ";
+//     $stmt = mysqli_stmt_init($conn);
+
+
+//     if (!mysqli_stmt_prepare($stmt, $sql)) {
+//         header("location: ../config_fluxo?error=stmtfaileddltconsulta");
+//         exit();
+//     }
+
+//     mysqli_stmt_bind_param($stmt, "s", $id);
+//     mysqli_stmt_execute($stmt);
+//     mysqli_stmt_close($stmt);
+// }
+
+function deleteEtapaEmFluxo($conn, $id)
+{
+    // Iniciar transação
+    mysqli_begin_transaction($conn);
+
+    try {
+        // Obter idfluxo e ordem da etapa a ser deletada
+        $sql = "SELECT idfluxo, ordem FROM ETAPA_FLUXO WHERE id = ?;";
+        $stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para obter idfluxo e ordem");
+        }
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($resultData)) {
+            $idfluxo = $row['idfluxo'];
+            $ordem = $row['ordem'];
+        } else {
+            throw new Exception("Etapa não encontrada");
+        }
+
+        mysqli_stmt_close($stmt);
+
+        // Deletar a etapa
+        $sqlDelete = "DELETE FROM ETAPA_FLUXO WHERE id = ?;";
+        $stmtDelete = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmtDelete, $sqlDelete)) {
+            throw new Exception("Erro ao preparar a consulta para deletar a etapa");
+        }
+
+        mysqli_stmt_bind_param($stmtDelete, "i", $id);
+        mysqli_stmt_execute($stmtDelete);
+        mysqli_stmt_close($stmtDelete);
+
+        // Atualizar a ordem das etapas subsequentes
+        $sqlUpdate = "UPDATE ETAPA_FLUXO SET ordem = ordem - 1 WHERE idfluxo = ? AND ordem > ?;";
+        $stmtUpdate = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmtUpdate, $sqlUpdate)) {
+            throw new Exception("Erro ao preparar a consulta para atualizar as ordens");
+        }
+
+        mysqli_stmt_bind_param($stmtUpdate, "ii", $idfluxo, $ordem);
+        mysqli_stmt_execute($stmtUpdate);
+        mysqli_stmt_close($stmtUpdate);
+
+        // Commit da transação
+        mysqli_commit($conn);
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../config_fluxo?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+
+function hashItemNatural($id)
+{
+    $random = rand() * 7;
+    $idhashed = $id * $random / 7;
+    return $idhashed . "y" . $random;
+}
+
+function deshashItemNatural($hash)
+{
+    $exploded = explode("y", $hash);
+    $hash = $exploded[0];
+    $encryption_key = $exploded[1];
+    $id = $hash * 7 / $encryption_key;
+    return $id;
 }

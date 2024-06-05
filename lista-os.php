@@ -1,9 +1,11 @@
-<?php include("php/head_tables.php");
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"])) {
+    include("php/head_tables.php");
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -31,29 +33,30 @@ if (isset($_SESSION["useruid"])) {
                 ?>
             </div>
             <div class="container-fluid">
-                <div class="row row-3">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10 justify-content-start" id="titulo-pag">
+                <div class="row py-4 d-flex justify-content-center">
+                    <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
-                            <div class="col-sm d-flex justify-content-start">
-                                <h2>Ordens de Serviço</h2>
+                            <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
+                                <h5 class="text-muted"><b>OS - Ordens de Serviço</b></h5>
+                                <small class="text-muted">Gerenciamento de pedidos</small>
                             </div>
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="novaos"><button class="btn btn-fab"><i class="fas fa-plus"></i> Abrir OS</button></a>
+                                        <a href="novaos"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir OS</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="atividades"><button class="btn btn-outline-fab"><i class="fas fa-thumbtack"></i> Atividades</button></a>
+                                        <a href="atividades"><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="export"><button class="btn btn-outline-fab"><i class="far fa-file-excel"></i> Exportar</button></a>
+                                        <a href="export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <hr>
                         <br>
-                        <div class="card">
+                        <div class="">
                             <div class="card-body">
                                 <div class="content-panel">
                                     <table id="tableProp" class="table table-striped table-advance table-hover">
@@ -71,7 +74,7 @@ if (isset($_SESSION["useruid"])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            require_once 'includes/dbh.inc.php';
+                                            require_once 'db/dbh.php';
                                             $ret = mysqli_query($conn, "SELECT * FROM ordenservico");
 
                                             while ($row = mysqli_fetch_array($ret)) {
@@ -90,13 +93,13 @@ if (isset($_SESSION["useruid"])) {
 
                                                     <td>
                                                         <a href="editaros?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-info btn-xs"><i class="far fa-edit"></i></button></a>
+                                                            <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
                                                         <a href="os?id=<?php echo $row['osId']; ?>">
-                                                            <button class="btn btn-warning btn-xs"><i class="far fa-file-pdf"></i></button></a>
+                                                            <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
                                                         <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                             <a href="manageOs?id=<?php echo $row['osId']; ?>">
-                                                                <button class="btn btn-danger btn-xs" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
+                                                                <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
                                                         <?php
                                                         }
                                                         ?>
@@ -111,12 +114,11 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-1"></div>
-
                 </div>
 
             </div>
         </div>
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             $(document).ready(function() {
                 $('#tableProp').DataTable({
@@ -205,7 +207,7 @@ if (isset($_SESSION["useruid"])) {
                 });
             });
         </script>
-        <?php include_once 'php/footer_index.php' ?>
+        
 
     <?php
 

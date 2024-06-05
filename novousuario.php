@@ -1,7 +1,8 @@
-<?php include("php/head_index.php");
-
+<?php
+session_start();
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
-    require_once 'includes/dbh.inc.php';
+    include("php/head_index.php");
+    require_once 'db/dbh.php';
 
 
 
@@ -10,7 +11,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -155,27 +156,27 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                         </div>
                     </div>
 
-                    <script>
-                        function showPass() {
 
-                            event.preventDefault();
-                            var passInput = document.getElementById('pwd');
-                            if (passInput.type == 'password') {
-                                passInput.type = 'text';
-
-                            } else {
-                                passInput.type = 'password';
-
-                            }
-                        }
-                    </script>
                 </div>
 
             </div>
         </div>
 
         <?php include_once 'php/footer_index.php' ?>
+        <script>
+            function showPass() {
 
+                event.preventDefault();
+                var passInput = document.getElementById('pwd');
+                if (passInput.type == 'password') {
+                    passInput.type = 'text';
+
+                } else {
+                    passInput.type = 'password';
+
+                }
+            }
+        </script>
     <?php
 
 } else {

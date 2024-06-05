@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST["submit"])) {
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     $tp_contacriador = addslashes($_POST["tp_contacriador"]);
@@ -13,6 +13,8 @@ if (isset($_POST["submit"])) {
     $setor = addslashes($_POST["setor"]);
     $descricao = addslashes($_POST["descricao"]);
     $grauurgencia = addslashes($_POST["grauurgencia"]);
+
+    $urlArquivo = addslashes($_POST["urlThrowback"]);
 
     if (empty($_POST['lote'])) {
         $lote = null;
@@ -45,7 +47,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $lote, $nped, $obs, $tname, $pname);
+    createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $lote, $nped, $obs, $tname, $urlArquivo);
 } else {
     header("location: ../solicitacao");
     exit();

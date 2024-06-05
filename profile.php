@@ -1,12 +1,13 @@
-<?php include("php/head_index.php");
+<?php 
+session_start();
 
-require_once 'includes/dbh.inc.php';
-
-if (isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == $_GET['usuario'])) {
+if (isset($_SESSION["useruid"])) {
+    include("php/head_index.php");
+    require_once 'db/dbh.php';
 
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -22,7 +23,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == $_GET['usuario'])) {
                             <div class="card-body">
                                 <?php
 
-                                $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_GET['usuario'] . "';");
+                                $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_SESSION["useruid"] . "';");
                                 while ($row = mysqli_fetch_array($ret)) {
                                     $userName = $row['usersName'];
                                     $userPerm = $row['usersPerm'];
@@ -195,6 +196,8 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == $_GET['usuario'])) {
 
             </div>
         </div>
+
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             function showPass(tipo) {
                 event.preventDefault();
@@ -291,8 +294,6 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["useruid"] == $_GET['usuario'])) {
 
             // }
         </script>
-
-        <?php include_once 'php/footer_index.php' ?>
 
     <?php
 

@@ -28,10 +28,10 @@ if (isset($_POST["submit"])) {
     $aprovacao = "APROV";    
     
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
-    $username = extrairNomeUsuario($email);
+    $username = cleanString(extrairNomeUsuario($email));
 
     if (emptyInputSignup($name, $username, $email, $celular, $identificador, $uf, $pwd ,$pwdrepeat) !== false) {
         header("location: ../cadastro?error=emptyinput");

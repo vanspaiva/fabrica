@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 if(!empty($_GET['file'])){
     $fileName  = basename($_GET['file']);

@@ -12,7 +12,7 @@
                 <div class="d-flex justify-content-center align-items-center">
                     <!--
                                             <div class="row justify-content-center">
-                                                <img src="assets/img/nuvem-upload.png" alt="Upload">
+                                                <img src="assetsnew/img/nuvem-upload.png" alt="Upload">
                                             </div>
                                             <div class="row justify-content-center">
                                                 <form class="upload-form justify-content-center"

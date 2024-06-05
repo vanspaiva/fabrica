@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ session_start();
   <title>Fábrica</title>
   <link href="css/reset.css" rel="stylesheet" />
   <!-- <link href="css/styles.css" rel="stylesheet" /> -->
-  <link href="css/system.css" rel="stylesheet" />
+  <link href="css/systemnew.css" rel="stylesheet" />
   <link href="css/jquery-ui.css" rel="stylesheet" />
   <!-- Bootstrap -->
   <link rel="stylesheet" href="../src/css/bootstrap.min.css" />

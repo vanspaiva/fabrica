@@ -1,13 +1,15 @@
-<?php include("php/head_index.php");
+<?php
+session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
+    include("php/head_index.php");
 ?>
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
-        require_once 'includes/dbh.inc.php';
+        require_once 'db/dbh.php';
         $ret = mysqli_query($conn, "SELECT * FROM produtos");
         $cnt = 1;
         ?>
@@ -83,7 +85,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                                     </table>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="col-sm-1"></div>
@@ -145,12 +147,14 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                 </div>
             </div>
         </div>
+
+
+        <?php include_once 'php/footer_index.php' ?>
         <script>
             function populateModal(element) {
                 console.log(element);
             }
-        </script>
-        <script>
+
             $(document).ready(function() {
                 $('#myTable').DataTable({
                     "lengthMenu": [
@@ -172,8 +176,6 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                 });
             });
         </script>
-        <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-        <?php include_once 'php/footer_index.php' ?>
 
     <?php
 

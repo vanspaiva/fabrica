@@ -1,13 +1,14 @@
-<?php include("php/head_index.php");
-
-require_once 'includes/dbh.inc.php';
+<?php 
+session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
+    include("php/head_index.php");
+    require_once 'db/dbh.php';
 
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
 
-    <body class="bg-conecta">
+    <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';

@@ -2,8 +2,8 @@
 
 session_start();
 
-if (isset($_SESSION["useruid"])) {   
-    require_once 'includes/dbh.inc.php';
+if (isset($_SESSION["useruid"])) {
+    require_once 'db/dbh.php';
 
     $id = $_GET['id'];
 
@@ -42,9 +42,13 @@ if (isset($_SESSION["useruid"])) {
 
         $dataBDEntrega = $dataEHoraEntrega[0];
 
-        $dataBDEntrega = explode("-", $dataBDEntrega);
+        if ($dataBDEntrega) {
+            $dataBDEntrega = explode("-", $dataBDEntrega);
+            $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
+        } else {
+            $dataEntrega = "";
+        }
 
-        $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
 
         //Responsável Abertura
         $responsavel = $row["osNomeCriador"];
@@ -217,9 +221,15 @@ if (isset($_SESSION["useruid"])) {
 
                                 </tr>
                                 <tr style="height: 30px;">
-                                    <td rowspan="7"><?php echo $descricao; ?></td>
+                                    <td rowspan="8"><?php echo $descricao; ?></td>
                                     <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>IMPRESSÃO</td>
+                                    <td>IMPRESSÃO TITÂNIO</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr style="height: 30px;">
+                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
+                                    <td>IMPRESSÃO FILAMENTO/RESINA</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -303,11 +313,13 @@ if (isset($_SESSION["useruid"])) {
                             <tbody>
                                 <tr>
                                     <td style="width: 100px;"> Código: </td>
-                                    <td><?php echo $cdg; ?></td>
+                                    <td><?php //echo $cdg; 
+                                        ?></td>
                                 </tr>
                                 <tr>
                                     <td style="width: 100px;"> Lote: </td>
-                                    <td><?php echo $lote; ?></td>
+                                    <td><?php //echo $lote; 
+                                        ?></td>
                                 </tr>
                             </tbody>
                         </table>

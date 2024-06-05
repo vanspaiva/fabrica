@@ -5,7 +5,7 @@ use function PHPSTORM_META\type;
 ob_start();
 include("php/head_index.php");
 
-require_once 'includes/dbh.inc.php';
+require_once 'db/dbh.php';
 require_once 'includes/functions.inc.php';
 
 if (isset($_SESSION["useruid"])){
@@ -25,6 +25,6 @@ if (isset($_SESSION["useruid"])){
     }
 
 } else {
-    header("location: index");
+    header("location: dash");
     exit();
 }

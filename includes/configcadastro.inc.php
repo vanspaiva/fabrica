@@ -7,7 +7,7 @@ if (isset($_POST["novoestado"])) {
     $abrev = addslashes($_POST['abrev']);
 
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     addEstado($conn, $nome, $abrev);
@@ -18,7 +18,7 @@ if (isset($_POST["novoestado"])) {
     $codigo = addslashes($_POST['codigo']);
    
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     addCadin($conn, $nome, $codigo);
@@ -29,7 +29,7 @@ if (isset($_POST["novoestado"])) {
     $codigo = addslashes($_POST['codigo']);
    
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     addCadex($conn, $nome, $codigo);
@@ -39,7 +39,7 @@ if (isset($_POST["novoestado"])) {
     $nome = addslashes($_POST['nome']);
    
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     addEtapaOs($conn, $nome);
@@ -50,7 +50,7 @@ if (isset($_POST["novoestado"])) {
     $posicao = addslashes($_POST['posicao']);
    
 
-    require_once 'dbh.inc.php';
+    require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     addStatusOs($conn, $nome, $posicao);
