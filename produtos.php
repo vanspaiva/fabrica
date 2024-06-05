@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
-    include("php/head_index.php");
+    include("php/head_tables.php");
 ?>
 
     <body class="bg-light-gray2">
@@ -10,7 +10,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         require_once 'db/dbh.php';
-        $ret = mysqli_query($conn, "SELECT * FROM produtos");
+        $ret = mysqli_query($conn, "SELECT * FROM produto");
         $cnt = 1;
         ?>
 
