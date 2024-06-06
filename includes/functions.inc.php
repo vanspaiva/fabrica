@@ -1762,3 +1762,44 @@ function deshashItemNatural($hash)
     $id = $hash * 7 / $encryption_key;
     return $id;
 }
+
+function diasFaltandoParaData($dataReferencia)
+{
+    // Definir o timezone para São Paulo
+    date_default_timezone_set('America/Sao_Paulo');
+
+    // Obter a data atual
+    $dataAtual = new DateTime();
+
+    // Criar um objeto DateTime para a data de referência
+    $dataRef = DateTime::createFromFormat('Y-m-d', $dataReferencia);
+
+    if (!$dataRef) {
+        return "Formato de data inválido. Use o formato Y-m-d.";
+    }
+
+    // Calcular a diferença entre as duas datas
+    $intervalo = $dataAtual->diff($dataRef);
+
+    // Retornar o número de dias
+    return $intervalo->days;
+}
+
+function diasDentroFluxo($conn, $fluxo)
+{
+    $ret = mysqli_query($conn, "SELECT * FROM etapa_fluxo WHERE idfluxo = '{$fluxo}' ORDER BY ordem ASC ;");
+
+    $contagemDias = 0;
+    while ($row = mysqli_fetch_array($ret)) {
+        $duracao = $row["duracao"];
+
+        $contagemDias = $contagemDias + $duracao;
+        if (floatval($duracao) == 1) {
+            $s = "dia";
+        } else {
+            $s = "dias";
+        }
+    }
+
+    return $contagemDias;
+}
