@@ -758,7 +758,8 @@ CREATE TABLE PRODUTO (
     idFluxo INT NOT NULL
 );
 
----- Estrutura da tabela `correlacao_produtos`
+---- Estrutura da tabela `correlacao_produtos`q
+
 
 CREATE TABLE CORRELACAO_PRODUTO (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
