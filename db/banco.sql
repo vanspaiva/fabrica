@@ -754,11 +754,12 @@ ALTER TABLE `etapa_fluxo`
 CREATE TABLE PRODUTO (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao TEXT NOT NULL,
-    codigoCliente VARCHAR(100) NOT NULL,
+    codigoCllisto VARCHAR(100) NOT NULL,
     idFluxo INT NOT NULL
 );
 
----- Estrutura da tabela `correlacao_produtos`
+---- Estrutura da tabela `correlacao_produtos`q
+
 
 CREATE TABLE CORRELACAO_PRODUTO (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,

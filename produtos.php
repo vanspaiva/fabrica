@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
+/*if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {*/
     include("php/head_index.php");
 ?>
 
@@ -43,7 +43,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                         <div class="card">
 
                             <div class="card-body">
-                                <div class="content-panel">
+                               <!-- <div class="content-panel">
                                     <table id="myTable" class="display table table-striped table-advance table-hover">
 
                                         <thead>
@@ -83,7 +83,7 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
 
                                         </tbody>
                                     </table>
-                                </div>
+                                </div>-->
                             </div>
 
                         </div>
@@ -106,42 +106,30 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="prodForm" action="includes/produtos.inc.php" method="post">
-                            <div class="form-row">
-                                <div class="form-group col-md">
-                                    <label for="categoria">Categoria</label>
-                                    <select class="form-control" id="categoria" name="categoria" required>
-                                        <option>Selecione categoria</option>
-                                        <option value="CMF">CMF</option>
-                                        <option value="CRÂNIO">CRÂNIO</option>
-                                        <option value="BIOMODELO">BIOMODELO</option>
-                                        <option value="COLUNA">COLUNA</option>
-                                        <option value="ATA">ATA</option>
-                                        <option value="EXTRA">EXTRA</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="cdg">Callisto</label>
-                                    <input type="text" class="form-control" id="cdg" name="cdg" required>
-                                    <small class="text-muted">Código cadastrado no callisto</small>
-                                </div>
-                            </div>
-                            <div class="form-row">
+                    <form class="prodForm" action="includes/produtos.inc.php" method="post">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="descricao">Descrição</label>
+            <input type="text" class="form-control" id="descricao" name="descricao" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="cdg">Callisto</label>
+            <input type="text" class="form-control" id="cdg" name="cdg" required>
+            <small class="text-muted">Código cadastrado no callisto</small>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md">
+            <label for="fluxo">Fluxo</label>
+            <input type="text" class="form-control" id="fluxo" name="fluxo" required>
+        </div>
+    </div>
 
-                                <div class="form-group col-md-6">
-                                    <label for="descricao">Descrição</label>
-                                    <input type="text" class="form-control" id="descricao" name="descricao" required>
-                                </div>
-                                <div class="form-group col-md">
-                                    <label for="anvisa">Anvisa</label>
-                                    <input type="text" class="form-control" id="anvisa" name="anvisa" required>
-                                </div>
-                            </div>
+    <div class="d-flex justify-content-end">
+        <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
+    </div>
+</form>
 
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
-                            </div>
-                        </form>
                     </div>
 
                 </div>
@@ -178,10 +166,10 @@ if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') |
         </script>
 
     <?php
-
+/*
 } else {
     header("location: index");
     exit();
 }
-
+*/
     ?>
