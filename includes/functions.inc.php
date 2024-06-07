@@ -1762,3 +1762,48 @@ function deshashItemNatural($hash)
     $id = $hash * 7 / $encryption_key;
     return $id;
 }
+
+function inserirProduto($conn, $descricao, $codigoCliente, $idfluxo) {
+    
+    $sql = "INSERT INTO PRODUTO (descricao, codigoCliente, idFluxo) VALUES (?, ?, ?)";
+    
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("sii", $descricao, $codigoCliente, $idfluxo);
+
+    $stmt->execute();
+
+    if ($stmt->errno) {
+        echo "Error: " . $stmt->error;
+    } else {
+        echo "Product inserted successfully.";
+    }
+
+    $stmt->close();
+}
+
+function inserirCorrelacao($conn, $idMaster, $idSecundario) {
+
+    $sql = "INSERT INTO TABELA_CORRELACAO (idMaster, idSecundario) VALUES (?, ?)";
+    
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("ii", $idMaster, $idSecundario);
+
+    $stmt->execute();
+
+    if ($stmt->errno) {
+        echo "Error: " . $stmt->error;
+    } else {
+        echo "Correlation inserted successfully.";
+    }
+
+    $stmt->close();
+}
+
+function updateProduto($conn,){
+
+    
+
+
+}
