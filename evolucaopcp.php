@@ -22,10 +22,17 @@ if (isset($_SESSION["useruid"])) {
         while ($row = mysqli_fetch_array($ret)) {
             $numPed = $row['pedido'];
             $fluxo = $row['fluxo'];
+            $lote = $row["lote"];
+            $diasparaproduzir = $row["diasparaproduzir"];
 
+            if ($diasparaproduzir < 20) {
+                $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+            } else {
+                $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
+            }
             $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
             $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-            // $dtEx = '2024-07-09';
+            // $dtEx = '2024-07-05';
             // $diasFaltantes = diasFaltandoParaData($dtEx);
             // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
@@ -38,15 +45,15 @@ if (isset($_SESSION["useruid"])) {
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
 
-            if (($diasFuturosNumber >= $diasFaltantesNumber)){
-                $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
-            } else {
-                if ($diasFaltantes < 21) {
-                    $statusPrevio = "<span class='alert alert-warning'><b class='text-warning'> POSSÍVEL ATRASO </b></span>";
-                } else {
-                    $statusPrevio = "<span class='alert alert-success'><b class='text-success'> DENTRO DO PRAZO </b></span>";
-                }
-            }
+            // if (($diasFuturosNumber >= $diasFaltantesNumber)){
+            //     $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
+            // } else {
+            //     if ($diasFaltantes < 21) {
+            //         $statusPrevio = "<span class='alert alert-warning'><b class='text-warning'> POSSÍVEL ATRASO </b></span>";
+            //     } else {
+            //         $statusPrevio = "<span class='alert alert-success'><b class='text-success'> DENTRO DO PRAZO </b></span>";
+            //     }
+            // }
 
         ?>
 
@@ -80,7 +87,7 @@ if (isset($_SESSION["useruid"])) {
                             <br>
                             <div class="div">
                                 <div class="row">
-                                    <div class="col-5">
+                                    <div class="col-4">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="text-muted">Dados do Pedido</h6>
@@ -119,6 +126,26 @@ if (isset($_SESSION["useruid"])) {
                                                                             <small><?php echo $row['produto']; ?></small>
                                                                         </div>
                                                                     </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="text-muted">Datas Importantes</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <section id="main-content">
+                                                    <section class="wrapper">
+                                                        <div class="row">
+                                                            <div class="col-md">
+                                                                <div class="content-panel">
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Dt Entrega (Após Aceite)</b></label>

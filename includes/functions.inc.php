@@ -1823,3 +1823,79 @@ function diasDentroFluxo($conn, $fluxo)
 
     return $contagemDias;
 }
+
+function buscarFluxoPorProduto($conn, $produto)
+{
+    $fluxo = '';
+
+    // Preparar a consulta SQL
+    $stmtFluxo = $conn->prepare("SELECT id FROM fluxo WHERE nome LIKE CONCAT('%', ?, '%') LIMIT 1");
+
+    // Verificar se a preparação da declaração foi bem-sucedida
+    if ($stmtFluxo === false) {
+        return null;
+    }
+
+
+    // Vincular o parâmetro
+    $stmtFluxo->bind_param("s", $produto);
+
+    // Executar a declaração
+    $stmtFluxo->execute();
+
+    // Vincular o resultado
+    $stmtFluxo->bind_result($fluxo);
+
+    // Buscar o resultado
+    $stmtFluxo->fetch();
+
+    // Fechar a declaração
+    $stmtFluxo->close();
+
+    // Retornar o ID do fluxo
+    return $fluxo;
+}
+
+function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produto, $dataEntrega, $fluxo, $lote, $cdgprod, $qtds, $descricao, $diasparaproduzir)
+{
+    // Preparar a consulta SQL para inserção
+    $stmt = $conn->prepare("INSERT INTO pedidos (projetista, dr, pac, rep, pedido, dt, produto, dataEntrega, fluxo, lote, cdgprod, qtds, descricao, diasparaproduzir) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    // Verificar se a preparação da declaração foi bem-sucedida
+    if ($stmt === false) {
+        return ["status" => "error", "message" => "Erro ao preparar a declaração!"];
+    }
+
+    // Vincular os parâmetros
+    $stmt->bind_param("ssssssssssssss", $projetista, $dr, $pac, $rep, $pedido, $dt, $produto, $dataEntrega, $fluxo, $lote, $cdgprod, $qtds, $descricao, $diasparaproduzir);
+
+    // Executar a declaração
+    if ($stmt->execute()) {
+        $response = ["status" => "success", "message" => "Pedido inserido com sucesso!"];
+    } else {
+        $response = ["status" => "error", "message" => "Erro ao inserir o pedido!"];
+    }
+
+    // Fechar a declaração
+    $stmt->close();
+
+    // Retornar a resposta
+    return $response;
+}
+
+
+function reduzirString($string, $quantidadeCaracteres)
+{
+    // Verificar se a quantidade de caracteres é válida
+    if ($quantidadeCaracteres < 0) {
+        return "Quantidade de caracteres inválida.";
+    }
+
+    // Verificar se a string precisa ser truncada
+    if (strlen($string) > $quantidadeCaracteres) {
+        return substr($string, 0, $quantidadeCaracteres);
+    }
+
+    // Retornar a string original se não precisar ser truncada
+    return $string;
+}

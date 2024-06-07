@@ -72,6 +72,8 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
                                                 <th>Num Ped</th>
+                                                <th>Lote</th>
+                                                <th>Dias P/ Prod</th>
                                                 <th>Dt Entrega</th>
                                                 <th>Situação</th>
                                                 <th></th>
@@ -84,39 +86,48 @@ if (isset($_SESSION["useruid"])) {
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
                                                 $dt = dateFormatByHifen($row["dt"]);
-                                                $produto = $row["produto"];
-                                                $dr = $row["dr"];
+                                                $produto = reduzirString($row["produto"], 15);
+                                                $dr = reduzirString($row["dr"], 15);
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
                                                 $fluxo = $row['fluxo'];
                                                 $dataEntrega = dateFormatByHifen($row["dataEntrega"]);
 
-                                                // $diasOnPCP = calcularDiasAteHoje($conn, $dt);
+                                                $lote = $row["lote"];
+                                                $diasparaproduzir = $row["diasparaproduzir"];
 
-                                                $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
-                                                $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-                                                // $dtEx = '2024-07-09';
-                                                // $diasFaltantes = diasFaltandoParaData($dtEx);
-                                                // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
-
-                                                if ($diasFaltantes <= 0) {
-                                                    $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
-                                                } else {
-                                                    $diasFaltantes = $diasFaltantes . ' dias';
-                                                }
-
-                                                $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
-                                                $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
-                                                if (($diasFuturosNumber >= $diasFaltantesNumber)) {
+                                                if ($diasparaproduzir < 20) {
                                                     $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
                                                 } else {
-                                                    if ($diasFaltantes < 21) {
-                                                        $statusPrevio = "<span class='badge badge-warning'><b class='text-white'> POSSÍVEL ATRASO </b></span>";
-                                                    } else {
-                                                        $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
-                                                    }
+                                                    $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
                                                 }
+
+                                                // $diasOnPCP = calcularDiasAteHoje($conn, $dt);
+
+                                                // $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
+                                                // $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
+                                                // // $dtEx = '2024-07-09';
+                                                // // $diasFaltantes = diasFaltandoParaData($dtEx);
+                                                // // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
+
+                                                // if ($diasFaltantes <= 0) {
+                                                //     $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                // } else {
+                                                //     $diasFaltantes = $diasFaltantes . ' dias';
+                                                // }
+
+                                                // $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
+                                                // $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
+
+                                                // if (($diasFuturosNumber >= $diasFaltantesNumber)) {
+                                                //     $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+                                                // } else {
+                                                //     if ($diasFaltantes < 21) {
+                                                //         $statusPrevio = "<span class='badge badge-warning'><b class='text-white'> POSSÍVEL ATRASO </b></span>";
+                                                //     } else {
+                                                //         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
+                                                //     }
+                                                // }
 
                                             ?>
                                                 <tr>
@@ -128,8 +139,12 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $dr; ?></th>
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
+                                                    <th><?php echo $lote; ?></th>
+                                                    <th class="text-center"><?php echo $diasparaproduzir; ?></th>
                                                     <th><?php echo $dataEntrega; ?></th>
-                                                    <th><div class="d-flex"><?php echo $statusPrevio; ?></div></th>
+                                                    <th>
+                                                        <div class="d-flex"><?php echo $statusPrevio; ?></div>
+                                                    </th>
                                                     <th>
                                                         <div class="d-flex">
                                                             <a href="evolucaopcp?id=<?php echo $id; ?>">
