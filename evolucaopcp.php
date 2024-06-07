@@ -23,17 +23,22 @@ if (isset($_SESSION["useruid"])) {
             $numPed = $row['pedido'];
             $fluxo = $row['fluxo'];
 
-            // $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
-            $diasFaltantes = diasFaltandoParaData('2024-06-28');
+            $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
+            $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
+            // $dtEx = '2024-07-09';
+            // $diasFaltantes = diasFaltandoParaData($dtEx);
+            // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
+
             if ($diasFaltantes <= 0) {
                 $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
             } else {
                 $diasFaltantes = $diasFaltantes . ' dias';
             }
 
+            $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
 
-            if ($diasFuturos >= $diasFaltantes) {
+            if (($diasFuturosNumber >= $diasFaltantesNumber)){
                 $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
             } else {
                 if ($diasFaltantes < 21) {
@@ -124,7 +129,7 @@ if (isset($_SESSION["useruid"])) {
                                                                             <small><?php echo $diasFaltantes; ?></small>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
-                                                                            <label for=""><b>Dias no Fluxo</b></label>
+                                                                            <label for=""><b>Duração do Fluxo</b></label>
                                                                             <small><?php echo $diasFuturos; ?></small>
                                                                         </div>
                                                                     </div>

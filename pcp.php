@@ -39,7 +39,7 @@ if (isset($_SESSION["useruid"])) {
             </div>
             <div class="container-fluid">
                 <div class="row py-4 d-flex justify-content-center">
-                    <div class="col-sm-10">
+                    <div class="col-sm">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
                                 <h5 class="text-muted"><b>PCP - Planejamento e Controle da Produção</b></h5>
@@ -73,6 +73,7 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Pac</th>
                                                 <th>Num Ped</th>
                                                 <th>Dt Entrega</th>
+                                                <th>Situação</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -87,9 +88,35 @@ if (isset($_SESSION["useruid"])) {
                                                 $dr = $row["dr"];
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
+                                                $fluxo = $row['fluxo'];
                                                 $dataEntrega = dateFormatByHifen($row["dataEntrega"]);
 
                                                 // $diasOnPCP = calcularDiasAteHoje($conn, $dt);
+
+                                                $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
+                                                $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
+                                                // $dtEx = '2024-07-09';
+                                                // $diasFaltantes = diasFaltandoParaData($dtEx);
+                                                // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
+
+                                                if ($diasFaltantes <= 0) {
+                                                    $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                } else {
+                                                    $diasFaltantes = $diasFaltantes . ' dias';
+                                                }
+
+                                                $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
+                                                $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
+
+                                                if (($diasFuturosNumber >= $diasFaltantesNumber)) {
+                                                    $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+                                                } else {
+                                                    if ($diasFaltantes < 21) {
+                                                        $statusPrevio = "<span class='badge badge-warning'><b class='text-white'> POSSÍVEL ATRASO </b></span>";
+                                                    } else {
+                                                        $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
+                                                    }
+                                                }
 
                                             ?>
                                                 <tr>
@@ -102,6 +129,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $dataEntrega; ?></th>
+                                                    <th><div class="d-flex"><?php echo $statusPrevio; ?></div></th>
                                                     <th>
                                                         <div class="d-flex">
                                                             <a href="evolucaopcp?id=<?php echo $id; ?>">

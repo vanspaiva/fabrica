@@ -1770,6 +1770,7 @@ function diasFaltandoParaData($dataReferencia)
 
     // Obter a data atual
     $dataAtual = new DateTime();
+    $dataAtual->setTime(0, 0); // Resetar a hora para comparar apenas as datas
 
     // Criar um objeto DateTime para a data de referência
     $dataRef = DateTime::createFromFormat('Y-m-d', $dataReferencia);
@@ -1778,12 +1779,31 @@ function diasFaltandoParaData($dataReferencia)
         return "Formato de data inválido. Use o formato Y-m-d.";
     }
 
-    // Calcular a diferença entre as duas datas
-    $intervalo = $dataAtual->diff($dataRef);
+    $dataRef->setTime(0, 0); // Resetar a hora para comparar apenas as datas
 
-    // Retornar o número de dias
-    return $intervalo->days;
+    // Verificar se a data de referência já passou
+    if ($dataRef < $dataAtual) {
+        return 0;
+    }
+
+    // Contar dias úteis
+    $diasUteis = 0;
+    $dataAtualClone = clone $dataAtual; // Clonar para não modificar o original
+
+    while ($dataAtualClone < $dataRef) {
+        // Incrementar a data atual em um dia
+        $dataAtualClone->modify('+1 day');
+
+        // Verificar se o dia não é sábado (6) ou domingo (0)
+        if ($dataAtualClone->format('N') < 6) {
+            $diasUteis++;
+        }
+    }
+
+    return $diasUteis;
 }
+
+
 
 function diasDentroFluxo($conn, $fluxo)
 {
