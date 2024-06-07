@@ -41,7 +41,7 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="col-sm py-2">
                                     <h3 class="font-weight-semibold" style="text-align: center;">Procedimento do Sistema de Gestão da Qualidade</h3>
                                     <h5 class="font-weight-regular" style="text-align: center;">ORDEM DE SERVIÇO</h5>
-                                    <h6 class="font-weight-regular" style="text-align: center;">FRM.PRO.012 Rev.03</h6>
+                                    <h6 class="font-weight-regular" style="text-align: center;">Form 006 Rev 00</h6>
                                 </div>
                             </div>
                         </div>
