@@ -1917,3 +1917,108 @@ function updateFluxoPedido($conn, $id, $fluxo)
     mysqli_stmt_close($stmt);
 
 }
+
+function novaRealizacaoProducao($conn, $idPedido, $idFluxo, $numOrdem, $idEtapa, $dataRealizacao) {
+    // Instrução SQL para inserir dados na tabela realizacaoproducao
+    $sqlProd = "INSERT INTO realizacaoproducao (idPedido, idFluxo, numOrdem, idEtapa, dataRealizacao) VALUES (?, ?, ?, ?, ?);";
+    
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+    
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        // Redireciona para uma página de erro em caso de falha
+        header("location: ../config_producao?error=stmtfailedaddrealizacao");
+        exit();
+    }
+    
+    // Liga os parâmetros à declaração preparada
+    mysqli_stmt_bind_param($stmt, "iiiss", $idPedido, $idFluxo, $numOrdem, $idEtapa, $dataRealizacao);
+    
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+    
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+}
+
+function obterEtapasPorFluxo($conn, $idfluxo) {
+    // Instrução SQL para selecionar as etapas com base no idfluxo
+    $sql = "SELECT idetapa, ordem, duracao FROM etapa_fluxo WHERE idfluxo = ? ORDER BY ordem asc;";
+    
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+    
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Redireciona para uma página de erro em caso de falha
+        // header("location: ../config_etapa_fluxo?error=stmtfailed");
+        exit();
+    }
+    
+    // Liga o parâmetro à declaração preparada
+    mysqli_stmt_bind_param($stmt, "i", $idfluxo);
+    
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+    
+    // Obtém o resultado da execução da consulta
+    $result = mysqli_stmt_get_result($stmt);
+    
+    // Inicializa o array para armazenar as etapas
+    $etapas = array();
+    
+    // Itera sobre o resultado e popula o array
+    while ($row = mysqli_fetch_assoc($result)) {
+        $etapas[] = array(
+            'idetapa' => $row['idetapa'],
+            'ordem' => $row['ordem'],
+            'duracao' => $row['duracao']
+        );
+    }
+    
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+    
+    // Retorna o array com as etapas
+    return $etapas;
+}
+
+function dataReferenciaPedido($conn, $id) {
+    // Instrução SQL para selecionar a data 'dt' do pedido com base no 'id'
+    $sql = "SELECT dt FROM pedidos WHERE id = ?;";
+    
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+    
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Redireciona para uma página de erro em caso de falha
+        header("location: ../config_pedidos?error=stmtfailed");
+        exit();
+    }
+    
+    // Liga o parâmetro à declaração preparada
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+    
+    // Obtém o resultado da execução da consulta
+    $result = mysqli_stmt_get_result($stmt);
+    
+    // Verifica se um registro foi encontrado
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Retorna a data 'dt' do pedido
+        $data = $row['dt'];
+    } else {
+        // Se nenhum registro foi encontrado, define a data como null
+        $data = null;
+    }
+    
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+    
+    // Retorna a data 'dt'
+    return $data;
+}
