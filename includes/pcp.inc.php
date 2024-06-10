@@ -33,9 +33,11 @@ if (isset($_POST["update"])) {
 
         // Formata a data de realização para o formato de banco de dados
         $dataRealizacaoStr = $dataRealizacao->format('Y-m-d');
+        $idStatus = 1;
 
         // Insere os dados na tabela realizacaoproducao
-        novaRealizacaoProducao($conn, $id, $fluxo, $numOrdem, $idEtapa, $dataRealizacaoStr);
+        novaRealizacaoProducao($conn, $id, $fluxo, $numOrdem, $idEtapa, $idStatus, $dataRealizacaoStr);
+
 
         // Atualiza a data de referência para a próxima iteração
         $dataAtual = clone $dataRealizacao;
@@ -43,10 +45,8 @@ if (isset($_POST["update"])) {
     }
 
     //redirecionar para pagina de acompanhamento desse pedido
-    header("location: ../evolucaopcp?id=" . $id);
+    header("location: ../visualizarpedido?id=" . $id);
 } else {
     header("location: ../evolucaopcp");
     exit();
 }
-
-

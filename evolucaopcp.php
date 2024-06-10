@@ -277,7 +277,7 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                                         <div class="d-flex justify-content-end pt-4">
-                                                                            <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Enviar</button>
+                                                                            <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Gerar</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -293,29 +293,29 @@ if (isset($_SESSION["useruid"])) {
                                     <div class="col p-2">
                                         <h5 class="alert alert-light text-center shadow">Produtos detalhados</h5>
                                         <div class="d-flex justify-content-center align-items-center">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th><b>CDG</b></th>
-                                                    <th><b>DESCRIÇÃO</b></th>
-                                                    <th><b>QTD</b></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                foreach ($listaCdgs as $key => $cdg) {
-
-                                                ?>
+                                            <table class="table table-striped">
+                                                <thead>
                                                     <tr>
-                                                        <td><?php echo $listaCdgs[$key]; ?></td>
-                                                        <td><?php echo $listaDescricao[$key]; ?></td>
-                                                        <td><?php echo $listaQtds[$key]; ?></td>
+                                                        <th><b>CDG</b></th>
+                                                        <th><b>DESCRIÇÃO</b></th>
+                                                        <th><b>QTD</b></th>
                                                     </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    foreach ($listaCdgs as $key => $cdg) {
+
+                                                    ?>
+                                                        <tr>
+                                                            <td><?php echo $listaCdgs[$key]; ?></td>
+                                                            <td><?php echo $listaDescricao[$key]; ?></td>
+                                                            <td><?php echo $listaQtds[$key]; ?></td>
+                                                        </tr>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

@@ -90,6 +90,7 @@
             </summary>
             <div>
                 <a href='historico'> <i class='fas fa-history fa-1x'></i> Histórico</a>
+                <a href='logproducao'> <i class='fas fa-history fa-1x'></i> Log Produção</a>
                 <a href='pcp'> <i class="fas fa-users-cog"></i> PCP</a>
                 <!--<a href='bi'><i class="bi bi-file-bar-graph"></i> BI</a>-->
             </div>
@@ -109,6 +110,7 @@
             </summary>
             <div>
                 <a href='historico'> <i class='fas fa-history fa-1x'></i> Histórico</a>
+                <a href='logproducao'> <i class='fas fa-history fa-1x'></i> Log Produção</a>
                 <a href='pcp'> <i class="fas fa-users-cog"></i> PCP</a>
                 <!--<a href='bi'><i class="bi bi-file-bar-graph"></i> BI</a>-->
             </div>

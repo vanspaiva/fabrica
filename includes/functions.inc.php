@@ -1915,59 +1915,60 @@ function updateFluxoPedido($conn, $id, $fluxo)
     mysqli_stmt_bind_param($stmt, "ss", $fluxo, $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
-
 }
 
-function novaRealizacaoProducao($conn, $idPedido, $idFluxo, $numOrdem, $idEtapa, $dataRealizacao) {
+function novaRealizacaoProducao($conn, $idPedido, $idFluxo, $numOrdem, $idEtapa, $idStatus, $dataRealizacao)
+{
     // Instrução SQL para inserir dados na tabela realizacaoproducao
-    $sqlProd = "INSERT INTO realizacaoproducao (idPedido, idFluxo, numOrdem, idEtapa, dataRealizacao) VALUES (?, ?, ?, ?, ?);";
-    
+    $sqlProd = "INSERT INTO realizacaoproducao (idPedido, idFluxo, numOrdem, idEtapa, idStatus, dataRealizacao) VALUES (?, ?, ?, ?, ?, ?);";
+
     // Inicializa uma declaração preparada
     $stmt = mysqli_stmt_init($conn);
-    
+
     // Verifica se a declaração preparada foi bem-sucedida
     if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
         // Redireciona para uma página de erro em caso de falha
         header("location: ../config_producao?error=stmtfailedaddrealizacao");
         exit();
     }
-    
+
     // Liga os parâmetros à declaração preparada
-    mysqli_stmt_bind_param($stmt, "iiiss", $idPedido, $idFluxo, $numOrdem, $idEtapa, $dataRealizacao);
-    
+    mysqli_stmt_bind_param($stmt, "iiiiis", $idPedido, $idFluxo, $numOrdem, $idEtapa, $idStatus, $dataRealizacao);
+
     // Executa a declaração preparada
     mysqli_stmt_execute($stmt);
-    
+
     // Fecha a declaração preparada
     mysqli_stmt_close($stmt);
 }
 
-function obterEtapasPorFluxo($conn, $idfluxo) {
+function obterEtapasPorFluxo($conn, $idfluxo)
+{
     // Instrução SQL para selecionar as etapas com base no idfluxo
     $sql = "SELECT idetapa, ordem, duracao FROM etapa_fluxo WHERE idfluxo = ? ORDER BY ordem asc;";
-    
+
     // Inicializa uma declaração preparada
     $stmt = mysqli_stmt_init($conn);
-    
+
     // Verifica se a declaração preparada foi bem-sucedida
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         // Redireciona para uma página de erro em caso de falha
         // header("location: ../config_etapa_fluxo?error=stmtfailed");
         exit();
     }
-    
+
     // Liga o parâmetro à declaração preparada
     mysqli_stmt_bind_param($stmt, "i", $idfluxo);
-    
+
     // Executa a declaração preparada
     mysqli_stmt_execute($stmt);
-    
+
     // Obtém o resultado da execução da consulta
     $result = mysqli_stmt_get_result($stmt);
-    
+
     // Inicializa o array para armazenar as etapas
     $etapas = array();
-    
+
     // Itera sobre o resultado e popula o array
     while ($row = mysqli_fetch_assoc($result)) {
         $etapas[] = array(
@@ -1976,37 +1977,38 @@ function obterEtapasPorFluxo($conn, $idfluxo) {
             'duracao' => $row['duracao']
         );
     }
-    
+
     // Fecha a declaração preparada
     mysqli_stmt_close($stmt);
-    
+
     // Retorna o array com as etapas
     return $etapas;
 }
 
-function dataReferenciaPedido($conn, $id) {
+function dataReferenciaPedido($conn, $id)
+{
     // Instrução SQL para selecionar a data 'dt' do pedido com base no 'id'
     $sql = "SELECT dt FROM pedidos WHERE id = ?;";
-    
+
     // Inicializa uma declaração preparada
     $stmt = mysqli_stmt_init($conn);
-    
+
     // Verifica se a declaração preparada foi bem-sucedida
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         // Redireciona para uma página de erro em caso de falha
         header("location: ../config_pedidos?error=stmtfailed");
         exit();
     }
-    
+
     // Liga o parâmetro à declaração preparada
     mysqli_stmt_bind_param($stmt, "i", $id);
-    
+
     // Executa a declaração preparada
     mysqli_stmt_execute($stmt);
-    
+
     // Obtém o resultado da execução da consulta
     $result = mysqli_stmt_get_result($stmt);
-    
+
     // Verifica se um registro foi encontrado
     if ($row = mysqli_fetch_assoc($result)) {
         // Retorna a data 'dt' do pedido
@@ -2015,10 +2017,229 @@ function dataReferenciaPedido($conn, $id) {
         // Se nenhum registro foi encontrado, define a data como null
         $data = null;
     }
-    
+
     // Fecha a declaração preparada
     mysqli_stmt_close($stmt);
-    
+
     // Retorna a data 'dt'
     return $data;
+}
+
+function inserirLogAtividade($conn, $idRealizacaoProducao, $idEtapa, $idUsuario, $idStatus, $data, $hora)
+{
+    $sql = "INSERT INTO log_atividades_producao (idRealizacaoProducao, idEtapa, idUsuario, idStatus, data, hora) VALUES (?, ?, ?, ?, ?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../your_redirect_page.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "iiiiss", $idRealizacaoProducao, $idEtapa, $idUsuario, $idStatus, $data, $hora);
+    mysqli_stmt_execute($stmt);
+    // mysqli_stmt_close($stmt);
+}
+
+function inserirTempoCorrido($conn, $idPedido, $idEtapa, $tempoCorrido)
+{
+    $sql = "INSERT INTO tempo_corrido (idPedido, idEtapa, tempoCorrido) VALUES (?, ?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../your_redirect_page.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "iis", $idPedido, $idEtapa, $tempoCorrido);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+
+function iniciarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function pausarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function concluirAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function getProximoStatus($statual, $type)
+{
+    $proximoStatus = '';
+
+    switch ($statual) {
+        case 1: // 'Aguardando'
+            $proximoStatus = 2; //'Fazendo';
+            break;
+        case 2: // 'Fazendo'
+            if ($type == 'pause') {
+                $proximoStatus = 3; //'Pausado';
+            } elseif ($type == 'check') {
+                $proximoStatus = 4; //'Concluído';
+            }
+            break;
+        case 3: // 'Pausado'
+            $proximoStatus = 2; //'Fazendo';
+            break;
+        case 4: // 'Concluído'
+            $proximoStatus = 4; //'Concluído'; // No next state mentioned
+            break;
+        case 5: // 'Aprovado'
+            $proximoStatus = 5; //'Aprovado'; // No next state mentioned
+            break;
+        case 6: // 'Reprovado'
+            $proximoStatus = 6; // 'Reprovado' // No next state mentioned
+            break;
+        case  7: //'Aguardando R.'
+            $proximoStatus = 8; //'Fazendo R.';
+            break;
+        case  8: //'Fazendo R.'
+            if ($type == 'pause') {
+                $proximoStatus = 9; //'Pausado R.';
+            } elseif ($type == 'check') {
+                $proximoStatus = 10; //'Concluído R.';
+            }
+            break;
+        case  9: //'Pausado R.'
+            $proximoStatus = 8; //'Fazendo R.';
+            break;
+        case  10: //'Concluído R.'
+            $proximoStatus = 10; //'Concluído R.'; // No next state mentioned
+            break;
+        default:
+            // Handle unknown statuses
+            $proximoStatus = 'Status desconhecido';
+            break;
+    }
+
+    return $proximoStatus;
+}
+
+function getIdStatusByName($conn, $nome)
+{
+    $sql = "SELECT id FROM statusetapa WHERE nome = ?";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Se houver um erro na preparação da declaração
+        return "Erro na declaração SQL";
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Se houver um resultado, retorna o ID
+        return $row['id'];
+    } else {
+        // Se não houver nenhum resultado
+        return "Nenhum ID encontrado para o status: $nome";
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function contarEtapasConcluidas($conn, $idPedido)
+{
+    $count = 0;
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE pd.id = $idPedido ORDER BY r.numOrdem ASC;";
+
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+
+        if ((($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5) || ($idStatus == 6))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function contarEtapasAtrasadas($conn, $idPedido)
+{
+    $count = 0;
+    $hoje = hoje();
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE pd.id = $idPedido ORDER BY r.numOrdem ASC;";
+
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
 }

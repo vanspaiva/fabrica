@@ -82,7 +82,11 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
 
                                             <?php
-                                            $ret = mysqli_query($conn, "SELECT * FROM pedidos ORDER BY dt ASC;");
+                                            $ret = mysqli_query($conn, "SELECT p.*
+                                            FROM pedidos p
+                                            LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
+                                            WHERE rp.idPedido IS NULL
+                                            ORDER BY p.dt ASC;");
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
                                                 $dt = dateFormatByHifen($row["dt"]);
