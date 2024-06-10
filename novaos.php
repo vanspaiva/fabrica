@@ -98,6 +98,20 @@ if (isset($_SESSION["useruid"])) {
                                         <hr>
                                     </div>
                                     <h4 class="text-fab">Dados da OS</h4>
+
+                                    <!-- Componentes radios para criar a condição de mudança do formulário -->
+                                    <div class="col form-group d-inline-block flex m-2 p-0">
+                                            <label class='d-block control-label' style='color:black;'>Selecione o tipo de serviço <b style='color: red;'>*</b></label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" value="Ordem de Serviço(OS)" name="ordemdeservico" id="radioOS" required />
+                                                <label class="form-check-label">Ordem de Serviço(OS)</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" value="Ordem de Manutenção(OM)" name="ordemdeservico" id="radioOM" required />
+                                                <label class="form-check-label">Ordem de Manutenção(OM)</label>
+                                            </div>
+                                    </div>
+
                                     <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
@@ -131,16 +145,63 @@ if (isset($_SESSION["useruid"])) {
                                             $('#dtentrega').attr('min', minData);
                                         </script>
                                     </div>
-                                    <div class='d-flex d-block justify-content-around'>
+
+
+                                    <!-- removido as classes bootstrap d-flex e d-block e substitutindo por um style -->
+                                    <div style="display: none;" class='justify-content-around' id="lote-pedido" >
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Lote </label>
-                                            <input class='form-control' name='lote' id='lote' type='text'>
+                                            <input class='form-control' name='lote' id='lote' type='text' placeholder="Digite o número do lote...">
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Nº Pedido </label>
-                                            <input class='form-control' name='nped' id='nped' type='text'>
+                                            <input class='form-control' name='nped' id='nped' type='text' placeholder="Digite o número do pedido...">
                                         </div>
                                     </div>
+
+
+                                    <!-- nova propriedade caso o fomulário seja para OM -->
+                                    <div style="display: none;" class='justify-content-around' id="nomeNumero-maquina" >
+                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                            <label class='control-label' style='color:black;'>Máquina </label>
+                                            <input class='form-control' name='nomeMaquina' id='inomeMaquina' type='text' placeholder="Digite o nome da máquina...">
+                                        </div>
+                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                            <label class='control-label' style='color:black;'>Nº Máquina</label>
+                                            <input class='form-control' name='nmaquina' id='nmaquina' type='text' placeholder="Digite o número da máquina...">
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        // Capturando os elementos do formulário
+                                        var lotePedido = document.getElementById('lote-pedido');
+                                        var maquina = document.getElementById('nomeNumero-maquina');
+                                        var radioOS = document.getElementById('radioOS');
+                                        var radioOM = document.getElementById('radioOM');
+
+                                        // Função para verificar o tipo de formulário se é OM ou OS
+                                        function verificarSelecao() {
+                                            if (radioOS.checked) {
+
+                                                lotePedido.style.display= "flex";
+
+                                            } else {
+                                                lotePedido.style.display= "none";
+                                            }
+
+                                            if (radioOM.checked) {
+                                                maquina.style.display= "flex";
+                                            } else {
+                                                maquina.style.display= "none";
+                                            }
+                                        }
+
+                                        // Adiciona um event listener para o evento 'change' em ambos os botões de rádio
+                                        radioOS.addEventListener('change', verificarSelecao);
+                                        radioOM.addEventListener('change', verificarSelecao);
+
+                                    </script>
+
                                     <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Descrição da Tarefa, detalhar de <b>forma clara</b> as informações mais importantes <b style='color: red;'>*</b></label>

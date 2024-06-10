@@ -1762,3 +1762,183 @@ function deshashItemNatural($hash)
     $id = $hash * 7 / $encryption_key;
     return $id;
 }
+
+/* Funções abaixo foram criadas para inserir novos produtos, atualizar e deletar produtos e correlações*/
+
+function inserirProduto($conn, $descricao, $codigoCilisto, $idFluxo) {
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "INSERT INTO PRODUTO (descricao, codigoCilisto, idFluxo) VALUES (?, ?, ?)";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção do produto.");
+        }
+
+        mysqli_stmt_bind_param($stmt, "ssi", $descricao, $codigoCilisto, $idFluxo);
+
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Produto inserido com sucesso.";
+        }
+
+        mysqli_stmt_close($stmt);
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function inserirCorrelacao($conn, $idMaster, $idSecundario) {
+    
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "INSERT INTO CORRELACAO_PRODUTO (idMaster, idSecundario) VALUES (?, ?)";
+            
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+    
+        mysqli_stmt_bind_param($stmt, "ii", $idMaster, $idSecundario);
+    
+        mysqli_stmt_execute($stmt);
+    
+        if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Correlação inserida com sucesso.";
+        }
+
+        mysqli_stmt_close($stmt);
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+    
+}
+
+function deleteProduto($conn, $idProduto) {
+
+    $stmt = mysqli_stmt_init($conn);
+    try{
+        $sql = "DELETE FROM PRODUTO WHERE id = ?";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+    
+        $stmt->bind_param("i", $idProduto); 
+
+        mysqli_stmt_bind_param($stmt, "i", $idProduto);
+
+       if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Correlação inserida com sucesso.";
+        }
+        mysqli_stmt_close($stmt);
+
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function deleteCorrelacao($conn, $idCorrelacao) {
+    $stmt = mysqli_stmt_init($conn);
+
+    try{
+        $sql = "DELETE FROM CORRELACAO_PRODUTO WHERE id = ?";
+
+        // Prepara a declaração SQL
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+
+        // Liga os parâmetros
+        mysqli_stmt_bind_param($stmt, "i", $idCorrelacao);
+
+        // Executa a declaração
+        if ($stmt->execute()) {
+            echo "Correlação deletada com sucesso.";
+        } else {
+            echo "Erro ao deletar correlação" . $conn->error;
+        }
+
+        // Fecha a declaração
+        mysqli_stmt_close($stmt);
+
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function updateProduto($conn, $idProduto, $descricao, $codigoCilisto, $idFluxo) {
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "UPDATE PRODUTO SET descricao = ?, codigoCilisto = ?, idFluxo = ? WHERE id = ?";
+    
+        // Prepara a declaração SQL
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para atualização do produto.");
+        }
+    
+        mysqli_stmt_bind_param($stmt, "ssii", $descricao, $codigoCilisto, $idFluxo, $idProduto);
+    
+        if(mysqli_stmt_execute($stmt)){
+            echo "Produto atualizado com sucesso";
+        } else {
+            echo "Erro ao atualizar produto: " . $conn->error;
+        }
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+    
+    }
+
+
+function updateCorrelacao($conn,$idMaster, $idSecundario){
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "UPDATE CORRELACAO_PRODUTO SET idMaster = ?, IdSecundario = ? WHERE id = ?";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para atualização da correlação.");
+        }
+
+        mysqli_stmt_bind_param($stmt, "iii", $idMaster, $idSecundario, $idCorrelacao);
+
+        if(mysqli_stmt_execute($stmt)){
+            echo "Correlação atualizada com sucesso";
+        } else {
+            echo "Erro ao atualizar correlação: " . $conn->error;
+        }
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../correlacoes?error=" . $e->getMessage());
+        exit();
+    }
+
+}
+
