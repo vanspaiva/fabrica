@@ -10,7 +10,26 @@ include("php/head_index.php");
     include_once 'php/navbar.php';
     include_once 'php/lateral-nav.php';
     require_once 'db/dbh.php';
-    $ret = mysqli_query($conn, "SELECT * FROM produtoteste");
+
+    if (isset($_POST['search']) && isset($_POST['search_type'])) {
+        $search = $_POST['search'];
+        $search_type = $_POST['search_type'];
+        if ($search_type === 'produto') {
+            $query = "SELECT * FROM produtoteste WHERE prodId = '$search'";
+        } elseif ($search_type === 'correlacao_produto') {
+            $query = "SELECT * FROM correlacao_produto WHERE correlacao_produtoId = '$search'";
+        } elseif ($search_type === 'relacionados') {
+            // Lógica para visualização de produtos relacionados
+        }
+    } else {
+        // Se nenhum tipo de pesquisa foi especificado, selecione todos os registros de produtoteste
+        $query = "SELECT * FROM produtoteste";
+    }
+    
+    // Executar a consulta apenas se a variável $query estiver definida
+    if (isset($query)) {
+        $ret = mysqli_query($conn, $query);
+    }
     $cnt = 1;
     ?>
 
@@ -35,16 +54,30 @@ include("php/head_index.php");
             <div class="row row-3">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10 justify-content-start" id="titulo-pag">
-                    <div class="d-flex justify-content-between">
+                    <div class="justify-content-between">
                         <h2>Produtos</h2>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus"></i> Novo Produto</button>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal2"><i class="fas fa-plus"></i> Nova Correção</button>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal3"><i class="fas fa-plus"></i> Atualizar Produto</button>
-                        <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal4"><i class="fas fa-plus"></i> Atualizar Produto</button>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal4"><i class="fas fa-plus"></i> Atualizar Correlação Produto</button>
                     </div>
                     <br>
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="search_type" class="text-black">Tipo de Pesquisa:</label>
+                            <select class="form-control" id="search_type" name="search_type">
+                                <option value="produto">Visualização de Produto</option>
+                                <option value="correlacao">Visualização de Correlação</option>
+                                <option value="relacionados">Visualização de Produtos Relacionados</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="search" placeholder="Pesquisar por ID">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Pesquisar</button>
+                    </form>
 
-                    <div class="card">
+                    <div class="m-2 card">
 
                         <div class="card-body">
                             <div class="content-panel">
@@ -151,12 +184,12 @@ include("php/head_index.php");
                     <form class="prodForm" action="includes/produtos.inc.php" method="post">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="parametro1">Produto</label>
-                                <input type="text" class="form-control" id="parametro1" name="parametro1" required>
+                                <label for="produto">Produto</label>
+                                <input type="text" class="form-control" id="produto" name="produto" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="parametro2">Subproduto</label>
-                                <input type="text" class="form-control" id="parametro2" name="parametro2" required>
+                                <label for="subproduto">Subproduto</label>
+                                <input type="text" class="form-control" id="subproduto" name="subproduto" required>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -184,12 +217,12 @@ include("php/head_index.php");
                     <form class="prodForm" action="includes/produtos.inc.php" method="post">
                         <div class="form-group">
                             <div class="form-group">
-                                <label for="parametro1">Parâmetro 1</label>
+                                <label for="parametro1">produto/label>
                                 <input type="text" class="form-control" id="parametro1" name="parametro1" required>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
+                            <button type="update" name="update" class="btn btn-fab">Cadastrar</button>
                         </div>
                     </form>
 
@@ -216,18 +249,9 @@ include("php/head_index.php");
                                 <label for="parametro1">Correlação</label>
                                 <input type="text" class="form-control" id="parametro1" name="parametro1" required>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="parametro2">Parâmetro 1</label>
-                                <input type="text" class="form-control" id="parametro2" name="parametro2" required>
+                            <div class="d-flex justify-content-end">
+                                <button type="update" name="update" class="btn btn-fab">Cadastrar</button>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="parametro2">Parâmetro 2</label>
-                                <input type="text" class="form-control" id="parametro2" name="parametro2" required>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
-                        </div>
                     </form>
 
                 </div>
@@ -236,35 +260,7 @@ include("php/head_index.php");
         </div>
     </div>
 
-
     <?php include_once 'php/footer_index.php' ?>
-    <script>
-        function populateModal(element) {
-            console.log(element);
-        }
-
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                "lengthMenu": [
-                    [20, 40, 80, -1],
-                    [20, 40, 80, "Todos"],
-                ],
-                "language": {
-                    "search": "Pesquisar:",
-                    "paginate": {
-                        "first": "Primeiro",
-                        "last": "Último",
-                        "next": "Próximo",
-                        "previous": "Anterior"
-                    },
-                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                    "lengthMenu": "Mostrar _MENU_ itens",
-                    "zeroRecords": "Nenhum item encontrado"
-                }
-            });
-        });
-    </script>
-
     <?php
     /*
 } else {

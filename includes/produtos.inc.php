@@ -1,28 +1,24 @@
 <?php
+//verificar se esta logado
 
-
-if (isset($_POST["submit"])) {
-    $categoria = addslashes($_POST["categoria"]);
-    $cdg = addslashes($_POST["cdg"]);
-    $descricao = addslashes($_POST["descricao"]); 
-    $anvisa = addslashes($_POST["anvisa"]);
+if (isset($_POST) && isset($_POST["submit"])) {
+    $descricao = addslashes($_POST["descricao"]);
+    $codigoCilisto = addslashes($_POST["cdg"]); 
+    $fluxo = addslashes($_POST["fluxo"]);
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
-    createProduto($conn, $categoria, $cdg, $descricao, $anvisa);
+    createProduto($conn, $descricao, $cdg, $fluxo);
 
 } else if (isset($_POST["update"])) {
     $prodid = addslashes($_POST["prodid"]);
-    $categoria = addslashes($_POST["categoria"]);
-    $cdg = addslashes($_POST["cdg"]);
-    $descricao = addslashes($_POST["descricao"]);
-    $anvisa = addslashes($_POST["anvisa"]);
+    $produto= addslashes($_POST["subproduto"]);
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
-    editProduto($conn, $prodid, $categoria, $cdg, $descricao, $anvisa);
+    editProduto($conn, $prodid, $produto, $subproduto);
 } else {
     header("location: ../produtos");
     exit();
