@@ -5,6 +5,14 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 
+
+    if(isset($_GET["t"]) && ($_GET["t"] == "om")){
+        $tipo = "om";
+    } else if(isset($_GET["t"]) && ($_GET["t"] == "os")){
+        $tipo = "os";
+    } else{
+        $tipo = null;
+    }
 ?>
 
 

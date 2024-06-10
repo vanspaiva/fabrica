@@ -39,7 +39,7 @@ if (isset($_SESSION["useruid"])) {
             </div>
             <div class="container-fluid">
                 <div class="row py-4 d-flex justify-content-center">
-                    <div class="col-sm-10">
+                    <div class="col-sm">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
                                 <h5 class="text-muted"><b>OP - Planejamento de Etapas da Produção</b></h5>
@@ -51,34 +51,105 @@ if (isset($_SESSION["useruid"])) {
                         <div class="">
                             <div class="card-body">
                                 <div class="content-panel">
-                                    <table id="tableOPPlan" class="table table-striped table-advance table-hover">
+                                    <table id="tablePedido" class="table table-striped table-advance table-hover">
 
                                         <thead>
                                             <tr>
-                                                <th>Entrega</th>
-                                                <th>Pedido</th>
-                                                <th>Status</th>
-                                                <th>Tipo Produto</th>
-                                                <th>Etapa Atual</th>
-                                                <th>Dias na Etapa</th>
-                                                <th>Prazo Etapa</th>
-                                                <th>Etapa Próxima</th>
-                                                <th>Prazo Etapa</th>
+                                                <th>ID</th>
+                                                <th>Num Ped</th>
+                                                <th>Produto</th>
+                                                <th>Fluxo</th>
+                                                <th>Fases</th>
+                                                <th class="text-center">Dias P/ Produzir</th>
+                                                <th>Dias Faltantes</th>
+                                                <th>Situação</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
+
                                             <?php
-                                            // $ret = mysqli_query($conn, "SELECT * FROM producao");
+                                            $sql = "SELECT p.id AS idPedido, 
+                                            p.projetista, 
+                                            p.dr, 
+                                            p.pac, 
+                                            p.rep, 
+                                            p.pedido AS numPedido, 
+                                            p.dt, 
+                                            p.produto AS Produto, 
+                                            p.dataEntrega, 
+                                            p.fluxo AS Fluxo, 
+                                            p.lote, 
+                                            p.cdgprod, 
+                                            p.qtds, 
+                                            p.descricao, 
+                                            p.diasparaproduzir AS DiasProduzir,
+                                            MIN(rp.id) AS rp_id, 
+                                            MIN(rp.idFluxo) AS idFluxo, 
+                                            MIN(rp.numOrdem) AS numOrdem, 
+                                            MIN(rp.idEtapa) AS idEtapa, 
+                                            MIN(rp.dataRealizacao) AS dataRealizacao,
+                                            COUNT(rp.idEtapa) AS qtdEtapas,
+                                            fx.nome AS NomeFluxo
+                                            FROM pedidos p
+                                            JOIN realizacaoproducao rp ON p.id = rp.idPedido
+                                            JOIN fluxo fx ON p.fluxo = fx.id
+                                            GROUP BY p.id;
+                                            ";
+                                            $ret = mysqli_query($conn, $sql);
+                                            while ($row = mysqli_fetch_array($ret)) {
+                                                $ID = $row["idPedido"];
+                                                $NumPed = $row["numPedido"];
+                                                $Produto = $row["Produto"];
+                                                $Fluxo = $row["NomeFluxo"];
+                                                $qtdFasesRealizadas = contarEtapasConcluidas($conn, $ID);
+                                                $Fases =  $qtdFasesRealizadas . "/" . $row["qtdEtapas"];
+                                                $DiasPProduzir = $row["DiasProduzir"];
 
-                                            // while ($row = mysqli_fetch_array($ret)) {
+                                                $DiasFaltantes = diasFaltandoParaData($row['dataEntrega']);
+                                                $DiasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
+                                                // $dtEx = '2024-07-05';
+                                                // $diasFaltantes = diasFaltandoParaData($dtEx);
+                                                // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
+                                                if ($DiasFaltantes <= 0) {
+                                                    $DiasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                } else {
+                                                    $DiasFaltantes = $DiasFaltantes . ' dias';
+                                                }
+
+                                                $etapasAtrasadas = contarEtapasAtrasadas($conn, $ID);
+                                                if ($etapasAtrasadas == 0) {
+                                                    $Situação = "<span class='badge badge-success'>Cumprindo Prazo </span>";
+                                                } elseif ($etapasAtrasadas == 1) {
+                                                    $Situação = "<span class='badge badge-warning'>" . $etapasAtrasadas . " etapa atrasada </span>";
+                                                } else {
+                                                    $Situação = "<span class='badge badge-warning'>" . $etapasAtrasadas . " etapas atrasadas </span>";
+                                                }
 
                                             ?>
-
-
+                                                <tr>
+                                                    <td><?php echo $ID; ?></td>
+                                                    <td><?php echo $NumPed; ?></td>
+                                                    <td><?php echo $Produto; ?></td>
+                                                    <td><?php echo $Fluxo; ?></td>
+                                                    <td><?php echo $Fases; ?></td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <?php echo $DiasPProduzir; ?>
+                                                        </div>
+                                                    </td>
+                                                    <td><?php echo $DiasFaltantes; ?></td>
+                                                    <td><?php echo $Situação; ?></td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <a href="visualizarpedido?id=<?php echo $ID; ?>">
+                                                                <button class="btn btn-success m-1"><i class="fas fa-expand"></i></button></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             <?php
-                                            //} 
+                                            }
                                             ?>
 
                                         </tbody>
@@ -94,17 +165,13 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
-
-
     </body>
-
-
 
     <?php include_once 'php/footer_index.php' ?>
 
     <script>
         $(document).ready(function() {
-            $('#tableOPPlan').DataTable({
+            $('#tablePedido').DataTable({
                 "lengthMenu": [
                     [20, 40, 80, -1],
                     [20, 40, 80, "Todos"],
@@ -121,9 +188,7 @@ if (isset($_SESSION["useruid"])) {
                     "lengthMenu": "Mostrar _MENU_ itens",
                     "zeroRecords": "Nenhuma item encontrado"
                 },
-                "order": [
-                    [0, "desc"]
-                ]
+                "order": []
             });
 
         });

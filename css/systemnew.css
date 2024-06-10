@@ -7632,6 +7632,10 @@ button.bg-info:focus {
   background-color: #ffc107 !important;
 }
 
+.bg-orange {
+  background-color: var(--orange) !important;
+}
+
 a.bg-warning:hover,
 a.bg-warning:focus,
 button.bg-warning:hover,
@@ -11391,6 +11395,10 @@ a.text-fab:focus {
 
 .text-primary {
   color: #007A5A !important;
+}
+
+.text-orange {
+  color: var(--orange) !important;
 }
 
 a.text-primary:hover,
