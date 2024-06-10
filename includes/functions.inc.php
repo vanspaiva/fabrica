@@ -1899,3 +1899,21 @@ function reduzirString($string, $quantidadeCaracteres)
     // Retornar a string original se não precisar ser truncada
     return $string;
 }
+
+function updateFluxoPedido($conn, $id, $fluxo)
+{
+
+    $sql = "UPDATE pedidos SET fluxo= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $fluxo, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+}

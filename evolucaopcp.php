@@ -24,6 +24,21 @@ if (isset($_SESSION["useruid"])) {
             $fluxo = $row['fluxo'];
             $lote = $row["lote"];
             $diasparaproduzir = $row["diasparaproduzir"];
+            $cdgprod = $row["cdgprod"];
+            $qtds = $row["qtds"];
+            $descricao = $row["descricao"];
+
+            // id
+            // projetista
+            // dr
+            // pac
+            // rep
+            // pedido
+            // dt
+            // produto
+            // dataEntrega
+            // fluxo
+            // lote
 
             if ($diasparaproduzir < 20) {
                 $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
@@ -54,6 +69,12 @@ if (isset($_SESSION["useruid"])) {
             //         $statusPrevio = "<span class='alert alert-success'><b class='text-success'> DENTRO DO PRAZO </b></span>";
             //     }
             // }
+
+            $listaCdgs = explode("*", $cdgprod);
+            $listaQtds = explode("*", $qtds);
+            $listaDescricao = explode("*", $descricao);
+
+
 
         ?>
 
@@ -87,7 +108,7 @@ if (isset($_SESSION["useruid"])) {
                             <br>
                             <div class="div">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6 class="text-muted">Dados do Pedido</h6>
@@ -98,6 +119,40 @@ if (isset($_SESSION["useruid"])) {
                                                         <div class="row">
                                                             <div class="col-md">
                                                                 <div class="content-panel">
+                                                                    <!-- <div class="row">
+                                                                        <div class="col">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td>Nº Ped</td>
+                                                                                        <td>Dr(a)</td>
+                                                                                        <td>Pac</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td><?php //echo $row['pedido']; 
+                                                                                            ?></td>
+                                                                                        <td><?php //echo $row['dr']; 
+                                                                                            ?></td>
+                                                                                        <td><?php //echo $row['pac']; 
+                                                                                            ?></td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Representante</td>
+                                                                                        <td>Projetista</td>
+                                                                                        <td>Produto</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td><?php //echo $row['rep']; 
+                                                                                            ?></td>
+                                                                                        <td><?php //echo $row['projetista']; 
+                                                                                            ?></td>
+                                                                                        <td><?php //echo $row['produto']; 
+                                                                                            ?></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div> -->
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Nº Ped</b></label>
@@ -114,16 +169,16 @@ if (isset($_SESSION["useruid"])) {
                                                                     </div>
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
-                                                                            <label for=""><b>Representante</b></label>
-                                                                            <small><?php echo $row['rep']; ?></small>
+                                                                            <label for=""><b>Lote</b></label>
+                                                                            <small><?php echo $row['lote']; ?></small>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
-                                                                            <label for=""><b>Projetista</b></label>
-                                                                            <small><?php echo $row['projetista']; ?></small>
-                                                                        </div>
-                                                                        <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Produto</b></label>
                                                                             <small><?php echo $row['produto']; ?></small>
+                                                                        </div>
+                                                                        <div class="col d-flex" style="flex-direction: column;">
+                                                                            <label for=""><b>Dias p/ Produzir</b></label>
+                                                                            <small><?php echo $row['diasparaproduzir']; ?> dias </small>
                                                                         </div>
                                                                     </div>
 
@@ -184,7 +239,7 @@ if (isset($_SESSION["useruid"])) {
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <div class="content-panel">
-                                                                    <form class="form-horizontal style-form" id="formprop" name="formprop" action="includes/updateos.inc.php" method="POST">
+                                                                    <form class="form-horizontal style-form" id="formprop" name="formprop" action="includes/pcp.inc.php" method="POST">
                                                                         <div class="form-row" hidden>
                                                                             <div class="form-group col-md">
                                                                                 <label class="form-label text-black" for="pedidoId">ID</label>
@@ -212,10 +267,11 @@ if (isset($_SESSION["useruid"])) {
                                                                                 </select>
                                                                             </div>
 
-                                                                            <div class="col form-group m-2">
+                                                                            <!-- <div class="col form-group m-2">
                                                                                 <label class="form-label text-black" for="entrega">Entrega Estimada</label>
-                                                                                <input type="date" class="form-control" value="<?php echo $row['dataEntrega']; ?>">
-                                                                            </div>
+                                                                                <input type="date" class="form-control" value="<?php // echo $row['dataEntrega']; 
+                                                                                                                                ?>">
+                                                                            </div> -->
 
                                                                         </div>
 
@@ -230,6 +286,36 @@ if (isset($_SESSION["useruid"])) {
                                                     </section>
                                                 </section>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row p-4">
+                                    <div class="col p-2">
+                                        <h5 class="alert alert-light text-center shadow">Produtos detalhados</h5>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><b>CDG</b></th>
+                                                    <th><b>DESCRIÇÃO</b></th>
+                                                    <th><b>QTD</b></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                foreach ($listaCdgs as $key => $cdg) {
+
+                                                ?>
+                                                    <tr>
+                                                        <td><?php echo $listaCdgs[$key]; ?></td>
+                                                        <td><?php echo $listaDescricao[$key]; ?></td>
+                                                        <td><?php echo $listaQtds[$key]; ?></td>
+                                                    </tr>
+                                                <?php
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
                                         </div>
                                     </div>
                                 </div>
