@@ -751,20 +751,20 @@ ALTER TABLE `etapa_fluxo`
 
 -- Estrutura da tabela `produtos`
 
-CREATE TABLE PRODUTO (
+CREATE TABLE PRODUTOS (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao TEXT NOT NULL,
     codigoCllisto VARCHAR(100) NOT NULL,
     idFluxo INT NOT NULL
 );
 
----- Estrutura da tabela `correlacao_produtos`q
+---- Estrutura da tabela `correlacao_produtos
 
 
 CREATE TABLE CORRELACAO_PRODUTO (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     idMaster INT NOT NULL,
     IdSecundario INT NOT NULL,
-    FOREIGN KEY (idMaster) REFERENCES PRODUTO(id),
-    FOREIGN KEY (IdSecundario) REFERENCES PRODUTO(id)
-);
+    FOREIGN KEY (idMaster) REFERENCES PRODUTOS(id),
+    FOREIGN KEY (IdSecundario) REFERENCES PRODUTOS(id)
+);  

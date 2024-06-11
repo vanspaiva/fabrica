@@ -3,8 +3,8 @@ session_start();
 
 /*if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {*/
 include("php/head_index.php");
-?>
 
+?>
 <body class="bg-light-gray2">
     <?php
     include_once 'php/navbar.php';
@@ -14,19 +14,19 @@ include("php/head_index.php");
     if (isset($_POST['search']) && isset($_POST['search_type'])) {
         $search = $_POST['search'];
         $search_type = $_POST['search_type'];
-        if ($search_type === 'produto') {
-            $query = "SELECT * FROM produtoteste WHERE prodId = '$search'";
+        if ($search_type === 'produtos') {
+            $query = "SELECT * FROM produtos WHERE prodId = '$search'";
         } elseif ($search_type === 'correlacao_produto') {
             $query = "SELECT * FROM correlacao_produto WHERE correlacao_produtoId = '$search'";
         } elseif ($search_type === 'relacionados') {
-            // Lógica para visualização de produtos relacionados
+            
         }
     } else {
-        // Se nenhum tipo de pesquisa foi especificado, selecione todos os registros de produtoteste
-        $query = "SELECT * FROM produtoteste";
+     
+        $query = "SELECT * FROM produtos";
     }
+
     
-    // Executar a consulta apenas se a variável $query estiver definida
     if (isset($query)) {
         $ret = mysqli_query($conn, $query);
     }
@@ -57,7 +57,7 @@ include("php/head_index.php");
                     <div class="justify-content-between">
                         <h2>Produtos</h2>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-plus"></i> Novo Produto</button>
-                        <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal2"><i class="fas fa-plus"></i> Nova Correção</button>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal2"><i class="fas fa-plus"></i> Nova Correlação</button>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal3"><i class="fas fa-plus"></i> Atualizar Produto</button>
                         <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal4"><i class="fas fa-plus"></i> Atualizar Correlação Produto</button>
                     </div>
@@ -76,53 +76,106 @@ include("php/head_index.php");
                         </div>
                         <button type="submit" class="btn btn-primary">Pesquisar</button>
                     </form>
+                    <div class="container-fluid">
+                        <div class="row row-3">
+                            <div class="col-md-6">
+                                <h2>Produtos</h2>
+                                <div class="m-2 card">
+                                    <div class="m-2 card">
 
-                    <div class="m-2 card">
+                                        <div class="card-body d-flex">
+                                            <div class="content-panel">
+                                                <table id="myTable" class="display table table-striped table-advance table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Descrição</th>
+                                                            <th>Código</th>
+                                                            <th>Ações</th> <!-- Adicionei uma nova coluna para os botões de ação -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        while ($row = mysqli_fetch_array($ret)) {
+                                                        ?>
+                                                            <tr>
+                                                                <td><?php echo $row['codigoCllisto']; ?></td>
+                                                                <td><?php echo $row['descricao']; ?></td>
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <a href="#" id="editButton" data-toggle="modal" data-target="#exampleModal3">
+                                                                            <button class="btn btn-info m-1"><i class="far fa-edit"></i></button>
+                                                                        </a>
+                                                                        <a href="manageProd?id=<?php echo $row['id']; ?>">
+                                                                            <button class="btn btn-danger m-1" onClick="return confirm('Você realmente deseja apagar esse produto?');"><i class="far fa-trash-alt"></i></button>
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php
+                                                        }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
 
-                        <div class="card-body">
-                            <div class="content-panel">
-                                <table id="myTable" class="display table table-striped table-advance table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Descrição</th>
-                                            <th>Código</th>
-                                            <th>Ações</th> <!-- Adicionei uma nova coluna para os botões de ação -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        while ($row = mysqli_fetch_array($ret)) {
-                                        ?>
-                                            <tr>
-                                                <td><?php echo $row['prodCodCallisto']; ?></td>
-                                                <td><?php echo $row['prodDescricao']; ?></td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        <a href="#" id="editButton" data-toggle="modal" data-target="#exampleModal3">
-                                                            <button class="btn btn-info m-1"><i class="far fa-edit"></i></button>
-                                                        </a>
-                                                        <a href="manageProd?id=<?php echo $row['prodId']; ?>">
-                                                            <button class="btn btn-danger m-1" onClick="return confirm('Você realmente deseja apagar esse produto?');"><i class="far fa-trash-alt"></i></button>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h2>Correlação</h2>
+                                <div class="m-2 card">
+                                    <div class="m-2 card">
 
+                                        <div class="card-body d-flex">
+                                            <div class="content-panel">
+                                                <table id="myTable" class="display table table-striped table-advance table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Descrição</th>
+                                                            <th>Código</th>
+                                                            <th>Ações</th> <!-- Adicionei uma nova coluna para os botões de ação -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        while ($row = mysqli_fetch_array($ret)) {
+                                                        ?>
+                                                            <tr>
+                                                                <td><?php echo $row['idMaster']; ?></td>
+                                                                <td><?php echo $row['IdSecundario']; ?></td>
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <a href="#" id="editButton" data-toggle="modal" data-target="#exampleModal3">
+                                                                            <button class="btn btn-info m-1"><i class="far fa-edit"></i></button>
+                                                                        </a>
+                                                                        <a href="manageProd?id=<?php echo $row['id']; ?>">
+                                                                            <button class="btn btn-danger m-1" onClick="return confirm('Você realmente deseja apagar esse produto?');"><i class="far fa-trash-alt"></i></button>
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php
+                                                        }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <div class="col-sm-1"></div>
+
 
             </div>
-
         </div>
+
+    </div>
     </div>
 
     <!-- Modal -->
@@ -147,18 +200,11 @@ include("php/head_index.php");
                                 <input type="text" class="form-control" id="descricao" name="descricao" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="cdg">Callisto</label>
-                                <input type="text" class="form-control" id="cdg" name="cdg" required>
+                                <label for="codigoCllisto">Callisto</label>
+                                <input type="text" class="form-control" id="codigoCllisto" name="codigoCllisto" required>
                                 <small class="text-muted">Código cadastrado no Callisto</small>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md">
-                                <label for="fluxo">Fluxo</label>
-                                <input type="text" class="form-control" id="fluxo" name="fluxo" required>
-                            </div>
-                        </div>
-
                         <div class="d-flex justify-content-end">
                             <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
                         </div>
@@ -175,7 +221,7 @@ include("php/head_index.php");
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Inserir Nova Correção de Produtos</h5>
+                    <h5 class="modal-title">Inserir Nova Correlação de Produtos</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -184,16 +230,16 @@ include("php/head_index.php");
                     <form class="prodForm" action="includes/produtos.inc.php" method="post">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="produto">Produto</label>
-                                <input type="text" class="form-control" id="produto" name="produto" required>
+                                <label for="idMaster">Produto</label>
+                                <input type="text" class="form-control" id="idMaster" name="idMaster" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="subproduto">Subproduto</label>
-                                <input type="text" class="form-control" id="subproduto" name="subproduto" required>
+                                <label for="IdSecundario">Subproduto</label>
+                                <input type="text" class="form-control" id="IdSecundario" name="IdSecundario" required>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="submit" name="submit" class="btn btn-fab">Cadastrar</button>
+                            <button type="submit" name="submit_correlacao" class="btn btn-fab">Cadastrar</button>
                         </div>
                     </form>
 
@@ -217,7 +263,7 @@ include("php/head_index.php");
                     <form class="prodForm" action="includes/produtos.inc.php" method="post">
                         <div class="form-group">
                             <div class="form-group">
-                                <label for="parametro1">produto/label>
+                                <label for="parametro1">Produto</label>
                                 <input type="text" class="form-control" id="parametro1" name="parametro1" required>
                             </div>
                         </div>

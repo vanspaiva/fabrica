@@ -301,10 +301,10 @@ function getAprov($uidExists)
     }
 }
 
-function createProduto($conn, $descricao, $cdg, $anvisa)
+function createProduto($conn, $descricao, $codigoCllisto)
 {
 
-    $sql = "INSERT INTO produtos (prodCategoria, prodCodCallisto, prodDescricao, prodAnvisa) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO produtos (descricao, codigoCllisto) VALUES (?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -313,7 +313,7 @@ function createProduto($conn, $descricao, $cdg, $anvisa)
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssss", $descricao, $cdg, $fluxo);
+    mysqli_stmt_bind_param($stmt, "ss", $descricao, $codigoCllisto);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -321,9 +321,30 @@ function createProduto($conn, $descricao, $cdg, $anvisa)
     exit();
 }
 
+function  criarCorrelacaoProduto($conn, $idMaster, $IdSecundario)
+{
+
+    $sql = "INSERT INTO correlacao_produto (idMaster, IdSecundario) VALUES (?, ?)";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../produtos?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $idMaster, $IdSecundario); 
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../produtos?error=none");
+    exit();
+}
+
+
 function editProduto($conn, $prodid, $parametro1)
 {
-    $sql = "UPDATE produtos SET prodParametro='$parametro1' WHERE prodId='$prodid'";
+    $sql = "UPDATE produtos SET parametro='$parametro1' WHERE prodId='$prodid'";
 
     if (mysqli_query($conn, $sql)) {
         header("location: ../produtos?error=edit");
