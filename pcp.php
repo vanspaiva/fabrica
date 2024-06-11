@@ -101,7 +101,7 @@ if (isset($_SESSION["useruid"])) {
                                                 $diasparaproduzir = $row["diasparaproduzir"];
 
                                                 if ($diasparaproduzir < 20) {
-                                                    $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+                                                    $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
                                                 } else {
                                                     $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
                                                 }

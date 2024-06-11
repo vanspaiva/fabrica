@@ -2243,3 +2243,247 @@ function contarEtapasAtrasadas($conn, $idPedido)
 
     return $count;
 }
+
+function arrayEtapasAtrasadas($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasAtrasadas($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function arrayEtapasHoje($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasHoje($conn){
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function arrayEtapasAmanha($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasAmanha($conn){
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}

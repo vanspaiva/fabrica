@@ -55,22 +55,152 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h6>Fazendo</h6>
+                                                        <?php
+                                                        $qtdAtrasados = countEtapasAtrasadas($conn);
+                                                        ?>
+                                                        <h6>Atrasados (<?php echo $qtdAtrasados; ?>)</h6>
                                                     </div>
                                                     <div class="card-body">
+                                                        <?php $arrayEtapasAtrasadas = arrayEtapasAtrasadas($conn); ?>
+                                                        <table class="table table-bordered">
+                                                            <thead class="bg-secondary text-white">
+                                                                <tr>
+                                                                    <th><b>Num Pedido</b></th>
+                                                                    <th><b>Fluxo</b></th>
+                                                                    <th><b>Etapa</b></th>
+                                                                    <th><b>Status</b></th>
+                                                                    <th><b>Dt</b></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
 
+                                                                <?php
+                                                                foreach ($arrayEtapasAtrasadas as $key => $value) {
+
+                                                                    $value = intval($value);
+
+                                                                    $sql = "SELECT 
+                                                                    r.id AS idRealizacaoProducao,
+                                                                    r.numOrdem AS ordem,
+                                                                    r.dataRealizacao AS dt,
+                                                                    r.idEtapa AS idEtapa,
+                                                                    e.nome AS nomeEtapa,
+                                                                    s.nome AS nomeStatus,
+                                                                    s.id AS idStatus,
+                                                                    s.cor AS corStatus,
+                                                                    pd.pedido AS numPed,
+                                                                    f.nome AS nomeFluxo
+                                                                    FROM pedidos AS pd 
+                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    WHERE r.id = $value;";
+
+                                                                    // echo $sql;
+                                                                    // exit();
+
+                                                                    $ret = mysqli_query($conn, $sql);
+                                                                    if ($ret) {
+                                                                        while ($row = mysqli_fetch_assoc($ret)) {
+                                                                            $numPed = $row["numPed"];
+                                                                            $nomeFluxo = $row["nomeFluxo"];
+                                                                            $nomeEtapa = $row["nomeEtapa"];
+                                                                            $nomeStatus = $row["nomeStatus"];
+                                                                            $data = dateFormatByHifen($row["dt"]);
+                                                                ?>
+                                                                            <tr>
+                                                                                <td><?php echo $numPed; ?></td>
+                                                                                <td><?php echo $nomeFluxo; ?></td>
+                                                                                <td><?php echo $nomeEtapa; ?></td>
+                                                                                <td><?php echo $nomeStatus; ?></td>
+                                                                                <td><?php echo $data; ?></td>
+                                                                            </tr>
+                                                                <?php
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ?>
+
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row mb-3">
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h6>Próximos</h6>
+                                                        <?php
+                                                        $qtdHoje = countEtapasHoje($conn);
+                                                        ?>
+                                                        <h6>Hoje (<?php echo $qtdHoje; ?>)</h6>
                                                     </div>
                                                     <div class="card-body">
+                                                        <?php $arrayEtapasHoje = arrayEtapasHoje($conn); ?>
+                                                        <table class="table table-bordered">
+                                                            <thead class="bg-secondary text-white">
+                                                                <tr>
+                                                                    <th><b>Num Pedido</b></th>
+                                                                    <th><b>Fluxo</b></th>
+                                                                    <th><b>Etapa</b></th>
+                                                                    <th><b>Status</b></th>
+                                                                    <th><b>Dt</b></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
 
+                                                                <?php
+                                                                foreach ($arrayEtapasHoje as $key => $value) {
+
+                                                                    $value = intval($value);
+
+                                                                    $sql = "SELECT 
+                                                                    r.id AS idRealizacaoProducao,
+                                                                    r.numOrdem AS ordem,
+                                                                    r.dataRealizacao AS dt,
+                                                                    r.idEtapa AS idEtapa,
+                                                                    e.nome AS nomeEtapa,
+                                                                    s.nome AS nomeStatus,
+                                                                    s.id AS idStatus,
+                                                                    s.cor AS corStatus,
+                                                                    pd.pedido AS numPed,
+                                                                    f.nome AS nomeFluxo
+                                                                    FROM pedidos AS pd 
+                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    WHERE r.id = $value;";
+
+                                                                    // echo $sql;
+                                                                    // exit();
+
+                                                                    $ret = mysqli_query($conn, $sql);
+                                                                    if ($ret) {
+                                                                        while ($row = mysqli_fetch_assoc($ret)) {
+                                                                            $numPed = $row["numPed"];
+                                                                            $nomeFluxo = $row["nomeFluxo"];
+                                                                            $nomeEtapa = $row["nomeEtapa"];
+                                                                            $nomeStatus = $row["nomeStatus"];
+                                                                            $data = dateFormatByHifen($row["dt"]);
+                                                                ?>
+                                                                            <tr>
+                                                                                <td><?php echo $numPed; ?></td>
+                                                                                <td><?php echo $nomeFluxo; ?></td>
+                                                                                <td><?php echo $nomeEtapa; ?></td>
+                                                                                <td><?php echo $nomeStatus; ?></td>
+                                                                                <td><?php echo $data; ?></td>
+                                                                            </tr>
+                                                                <?php
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ?>
+
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,14 +213,80 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="col">
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h6>Chegando</h6>
+                                                        <?php
+                                                        $qtdAmanha = countEtapasAmanha($conn);
+                                                        ?>
+                                                        <h6>Próximos (<?php echo $qtdAmanha; ?>)</h6>
                                                     </div>
                                                     <div class="card-body">
+                                                        <?php $arrayEtapasAmanha = arrayEtapasAmanha($conn); ?>
+                                                        <table class="table table-bordered">
+                                                            <thead class="bg-secondary text-white">
+                                                                <tr>
+                                                                    <th><b>Num Pedido</b></th>
+                                                                    <th><b>Fluxo</b></th>
+                                                                    <th><b>Etapa</b></th>
+                                                                    <th><b>Status</b></th>
+                                                                    <th><b>Dt</b></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
 
+                                                                <?php
+                                                                foreach ($arrayEtapasAmanha as $key => $value) {
+
+                                                                    $value = intval($value);
+
+                                                                    $sql = "SELECT 
+                                                                    r.id AS idRealizacaoProducao,
+                                                                    r.numOrdem AS ordem,
+                                                                    r.dataRealizacao AS dt,
+                                                                    r.idEtapa AS idEtapa,
+                                                                    e.nome AS nomeEtapa,
+                                                                    s.nome AS nomeStatus,
+                                                                    s.id AS idStatus,
+                                                                    s.cor AS corStatus,
+                                                                    pd.pedido AS numPed,
+                                                                    f.nome AS nomeFluxo
+                                                                    FROM pedidos AS pd 
+                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    WHERE r.id = $value;";
+
+                                                                    // echo $sql;
+                                                                    // exit();
+
+                                                                    $ret = mysqli_query($conn, $sql);
+                                                                    if ($ret) {
+                                                                        while ($row = mysqli_fetch_assoc($ret)) {
+                                                                            $numPed = $row["numPed"];
+                                                                            $nomeFluxo = $row["nomeFluxo"];
+                                                                            $nomeEtapa = $row["nomeEtapa"];
+                                                                            $nomeStatus = $row["nomeStatus"];
+                                                                            $data = dateFormatByHifen($row["dt"]);
+                                                                ?>
+                                                                            <tr>
+                                                                                <td><?php echo $numPed; ?></td>
+                                                                                <td><?php echo $nomeFluxo; ?></td>
+                                                                                <td><?php echo $nomeEtapa; ?></td>
+                                                                                <td><?php echo $nomeStatus; ?></td>
+                                                                                <td><?php echo $data; ?></td>
+                                                                            </tr>
+                                                                <?php
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ?>
+
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

@@ -88,7 +88,7 @@ if (isset($_SESSION["useruid"])) {
                                     <div class="d-flex justify-content-between px-2">
                                         <a href="pcp" class="btn btn-outline-info mx-1"><i class="fas fa-users-cog"></i> PCP </a>
                                         <a href="opplanejamento" class="btn btn-outline-info mx-1"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
-                                        <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
+                                        <a href="opetapas" class="btn btn-outline-info mx-1"> <i class="fas fa-th-large"></i> Etapas</a>
                                     </div>
                                 </div>
                             </div>
