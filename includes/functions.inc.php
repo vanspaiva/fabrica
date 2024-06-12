@@ -2061,8 +2061,13 @@ function iniciarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status
 
     $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
 
+    $userPerm = getUserPermission($conn, $user);
     if (mysqli_query($conn, $sql)) {
-        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        if($userPerm != "3COL"){
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else{
+            header("location: dash");
+        }
     }
 
     inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
@@ -2075,8 +2080,13 @@ function pausarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status,
 
     $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
 
+    $userPerm = getUserPermission($conn, $user);
     if (mysqli_query($conn, $sql)) {
-        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        if($userPerm != "3COL"){
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else{
+            header("location: dash");
+        }
     }
 
     inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
@@ -2086,11 +2096,15 @@ function pausarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status,
 
 function concluirAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
 {
-
     $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
 
+    $userPerm = getUserPermission($conn, $user);
     if (mysqli_query($conn, $sql)) {
-        header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        if($userPerm != "3COL"){
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else{
+            header("location: dash");
+        }
     }
 
     inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
@@ -2326,6 +2340,48 @@ function countEtapasAtrasadas($conn)
     return $count;
 }
 
+function countEtapasAtrasadasToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
 function arrayEtapasHoje($conn)
 {
     $count = 0;
@@ -2367,7 +2423,8 @@ function arrayEtapasHoje($conn)
     return $arrayRes;
 }
 
-function countEtapasHoje($conn){
+function countEtapasHoje($conn)
+{
     $count = 0;
     $hoje = hoje();
 
@@ -2384,6 +2441,48 @@ function countEtapasHoje($conn){
     RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
     RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
     RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function countEtapasHojeToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
     ORDER BY r.numOrdem ASC;";
 
     $arrayRes = [];
@@ -2448,7 +2547,8 @@ function arrayEtapasAmanha($conn)
     return $arrayRes;
 }
 
-function countEtapasAmanha($conn){
+function countEtapasAmanha($conn)
+{
     $count = 0;
     $hoje = hoje();
 
@@ -2486,4 +2586,134 @@ function countEtapasAmanha($conn){
     }
 
     return $count;
+}
+
+function countEtapasAmanhaToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function getFirstAndLastName($fullName)
+{
+    // Divide o nome completo em partes usando espaço como delimitador
+    $nameParts = explode(' ', trim($fullName));
+
+    // Se houver apenas uma parte, retorna o próprio nome
+    if (count($nameParts) == 1) {
+        return $nameParts[0];
+    }
+
+    // Obtém a primeira e a última parte do nome
+    $firstName = $nameParts[0];
+    $lastName = $nameParts[count($nameParts) - 1];
+
+    // Retorna o primeiro e o último nome concatenados com um espaço entre eles
+    return $firstName . ' ' . $lastName;
+}
+
+function diasUteisAteHoje($data)
+{
+    // Convertendo a data de entrada e a data atual para objetos DateTime
+    $dataInicial = new DateTime($data);
+    $dataFinal = new DateTime();
+
+    // Se a data inicial for maior que a data final, retorna 0
+    if ($dataInicial > $dataFinal) {
+        return 0;
+    }
+
+    // Calcula a diferença em dias entre as duas datas
+    $intervalo = $dataInicial->diff($dataFinal);
+    $diasTotais = $intervalo->days;
+
+    $diasUteis = 0;
+
+    // Itera pelos dias entre a data inicial e a data final
+    for ($i = 0; $i <= $diasTotais; $i++) {
+        // Verifica se o dia é útil (não é sábado nem domingo)
+        $dataAtual = clone $dataInicial;
+        $dataAtual->modify("+$i day");
+
+        if ($dataAtual->format('N') < 6) {
+            $diasUteis++;
+        }
+    }
+
+    return $diasUteis;
+}
+
+function transformarArrayParaString($array)
+{
+    // Extrair apenas os valores da chave 'id'
+    $ids = array_column($array, 'id');
+
+    // Concatenar os valores em uma string separada por vírgula
+    $stringIds = implode(',', $ids);
+
+    return $stringIds;
+}
+
+
+function getUserPermission($conn, $user)
+{
+    $sql = "SELECT usersPerm FROM users WHERE usersId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $user);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['usersPerm'];
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
 }

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 07-Jun-2024 às 22:05
--- Versão do servidor: 10.4.32-MariaDB
--- versão do PHP: 8.2.12
+-- Host: 127.0.0.1:3306
+-- Tempo de geração: 12-Jun-2024 às 10:42
+-- Versão do servidor: 8.0.21
+-- versão do PHP: 7.4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,14 +24,44 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `colaborador_etapas`
+--
+
+DROP TABLE IF EXISTS `colaborador_etapas`;
+CREATE TABLE IF NOT EXISTS `colaborador_etapas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idUser` int DEFAULT NULL,
+  `idEtapa` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idUser` (`idUser`),
+  KEY `idEtapa` (`idEtapa`)
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `colaborador_etapas`
+--
+
+INSERT INTO `colaborador_etapas` (`id`, `idUser`, `idEtapa`) VALUES
+(23, 12, 74),
+(22, 12, 72),
+(21, 12, 1),
+(24, 12, 79);
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `correlacao_produto`
 --
 
-CREATE TABLE `correlacao_produto` (
-  `id` int(11) NOT NULL,
-  `idProdutoPrincipal` int(11) DEFAULT NULL,
-  `idProdutoSecundario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+DROP TABLE IF EXISTS `correlacao_produto`;
+CREATE TABLE IF NOT EXISTS `correlacao_produto` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idProdutoPrincipal` int DEFAULT NULL,
+  `idProdutoSecundario` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idProdutoPrincipal` (`idProdutoPrincipal`),
+  KEY `idProdutoSecundario` (`idProdutoSecundario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -39,12 +69,14 @@ CREATE TABLE `correlacao_produto` (
 -- Estrutura da tabela `estados`
 --
 
-CREATE TABLE `estados` (
-  `ufId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `estados`;
+CREATE TABLE IF NOT EXISTS `estados` (
+  `ufId` int NOT NULL AUTO_INCREMENT,
   `ufNomeExtenso` varchar(100) NOT NULL,
   `ufAbreviacao` varchar(2) NOT NULL,
-  `ufRegiao` varchar(100) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `ufRegiao` varchar(100) NOT NULL,
+  PRIMARY KEY (`ufId`)
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `estados`
@@ -85,13 +117,15 @@ INSERT INTO `estados` (`ufId`, `ufNomeExtenso`, `ufAbreviacao`, `ufRegiao`) VALU
 -- Estrutura da tabela `etapa`
 --
 
-CREATE TABLE `etapa` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `etapa`;
+CREATE TABLE IF NOT EXISTS `etapa` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(200) NOT NULL,
-  `parametro1` text DEFAULT NULL,
-  `parametro2` text DEFAULT NULL,
-  `iterev` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `parametro1` text,
+  `parametro2` text,
+  `iterev` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `etapa`
@@ -198,10 +232,12 @@ INSERT INTO `etapa` (`id`, `nome`, `parametro1`, `parametro2`, `iterev`) VALUES
 -- Estrutura da tabela `etapasos`
 --
 
-CREATE TABLE `etapasos` (
-  `etapaId` int(11) NOT NULL,
-  `etapaNome` varchar(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+DROP TABLE IF EXISTS `etapasos`;
+CREATE TABLE IF NOT EXISTS `etapasos` (
+  `etapaId` int NOT NULL AUTO_INCREMENT,
+  `etapaNome` varchar(30) NOT NULL,
+  PRIMARY KEY (`etapaId`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `etapasos`
@@ -222,13 +258,17 @@ INSERT INTO `etapasos` (`etapaId`, `etapaNome`) VALUES
 -- Estrutura da tabela `etapa_fluxo`
 --
 
-CREATE TABLE `etapa_fluxo` (
-  `id` int(11) NOT NULL,
-  `idfluxo` int(11) NOT NULL,
-  `idetapa` int(11) NOT NULL,
-  `ordem` int(11) NOT NULL,
-  `duracao` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+DROP TABLE IF EXISTS `etapa_fluxo`;
+CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idfluxo` int NOT NULL,
+  `idetapa` int NOT NULL,
+  `ordem` int NOT NULL,
+  `duracao` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idfluxo` (`idfluxo`),
+  KEY `idetapa` (`idetapa`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `etapa_fluxo`
@@ -268,12 +308,14 @@ INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUE
 -- Estrutura da tabela `filedownload`
 --
 
-CREATE TABLE `filedownload` (
-  `fileId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `filedownload`;
+CREATE TABLE IF NOT EXISTS `filedownload` (
+  `fileId` int NOT NULL AUTO_INCREMENT,
   `fileRealName` text NOT NULL,
-  `fileOsRef` int(11) NOT NULL,
-  `filePath` varchar(500) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `fileOsRef` int NOT NULL,
+  `filePath` varchar(500) NOT NULL,
+  PRIMARY KEY (`fileId`)
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `filedownload`
@@ -308,10 +350,12 @@ INSERT INTO `filedownload` (`fileId`, `fileRealName`, `fileOsRef`, `filePath`) V
 -- Estrutura da tabela `fluxo`
 --
 
-CREATE TABLE `fluxo` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+DROP TABLE IF EXISTS `fluxo`;
+CREATE TABLE IF NOT EXISTS `fluxo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `fluxo`
@@ -387,13 +431,15 @@ INSERT INTO `fluxo` (`id`, `nome`) VALUES
 -- Estrutura da tabela `logatividades`
 --
 
-CREATE TABLE `logatividades` (
-  `logId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `logatividades`;
+CREATE TABLE IF NOT EXISTS `logatividades` (
+  `logId` int NOT NULL AUTO_INCREMENT,
   `logOsRef` varchar(100) NOT NULL,
-  `logHorario` timestamp NOT NULL DEFAULT current_timestamp(),
+  `logHorario` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `logStatus` varchar(50) NOT NULL,
-  `logUser` varchar(200) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `logUser` varchar(200) NOT NULL,
+  PRIMARY KEY (`logId`)
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `logatividades`
@@ -447,15 +493,49 @@ INSERT INTO `logatividades` (`logId`, `logOsRef`, `logHorario`, `logStatus`, `lo
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `log_atividades_producao`
+--
+
+DROP TABLE IF EXISTS `log_atividades_producao`;
+CREATE TABLE IF NOT EXISTS `log_atividades_producao` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idRealizacaoProducao` int DEFAULT NULL,
+  `idEtapa` int NOT NULL,
+  `idUsuario` int DEFAULT NULL,
+  `idStatus` int DEFAULT NULL,
+  `data` date DEFAULT NULL,
+  `hora` time DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `log_atividades_producao`
+--
+
+INSERT INTO `log_atividades_producao` (`id`, `idRealizacaoProducao`, `idEtapa`, `idUsuario`, `idStatus`, `data`, `hora`) VALUES
+(6, 94, 72, 1, 2, '2024-06-11', '15:51:37'),
+(7, 94, 72, 1, 3, '2024-06-11', '15:51:44'),
+(8, 94, 72, 12, 2, '2024-06-11', '18:01:37'),
+(9, 94, 72, 12, 4, '2024-06-11', '18:01:58'),
+(10, 95, 74, 12, 2, '2024-06-11', '18:14:59'),
+(11, 65, 74, 12, 2, '2024-06-11', '18:15:07'),
+(12, 95, 74, 12, 4, '2024-06-12', '07:39:24'),
+(13, 65, 74, 12, 4, '2024-06-12', '07:39:31');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `mesesano`
 --
 
-CREATE TABLE `mesesano` (
-  `mesId` int(11) NOT NULL,
-  `mesNum` int(11) NOT NULL,
+DROP TABLE IF EXISTS `mesesano`;
+CREATE TABLE IF NOT EXISTS `mesesano` (
+  `mesId` int NOT NULL AUTO_INCREMENT,
+  `mesNum` int NOT NULL,
   `mesNome` varchar(20) NOT NULL,
-  `mesAbrv` varchar(3) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `mesAbrv` varchar(3) NOT NULL,
+  PRIMARY KEY (`mesId`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `mesesano`
@@ -481,26 +561,28 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
 -- Estrutura da tabela `ordenservico`
 --
 
-CREATE TABLE `ordenservico` (
-  `osId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `ordenservico`;
+CREATE TABLE IF NOT EXISTS `ordenservico` (
+  `osId` int NOT NULL AUTO_INCREMENT,
   `osUserCriador` varchar(200) NOT NULL,
   `osNomeCriador` varchar(200) NOT NULL,
   `osEmailCriador` varchar(200) NOT NULL,
-  `osDtCriacao` timestamp NOT NULL DEFAULT current_timestamp(),
-  `osDtUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `osDtCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `osDtUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `osUserIp` varchar(20) NOT NULL,
   `osSetor` varchar(200) NOT NULL,
   `osDescricao` varchar(200) NOT NULL,
   `osLote` varchar(50) DEFAULT NULL,
   `osNPed` varchar(50) DEFAULT NULL,
-  `osNomeArquivo` text DEFAULT NULL,
+  `osNomeArquivo` text,
   `osGrauUrgencia` varchar(10) NOT NULL,
   `osDtEntregasDesejada` varchar(100) NOT NULL,
   `osDtEntregaReal` varchar(200) DEFAULT NULL,
   `dtExecucao` varchar(100) DEFAULT NULL,
-  `osObs` text DEFAULT NULL,
-  `osStatus` varchar(20) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `osObs` text,
+  `osStatus` varchar(20) NOT NULL,
+  PRIMARY KEY (`osId`)
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `ordenservico`
@@ -515,8 +597,9 @@ INSERT INTO `ordenservico` (`osId`, `osUserCriador`, `osNomeCriador`, `osEmailCr
 -- Estrutura da tabela `pedidos`
 --
 
-CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `pedidos`;
+CREATE TABLE IF NOT EXISTS `pedidos` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `projetista` varchar(255) DEFAULT NULL,
   `dr` varchar(255) DEFAULT NULL,
   `pac` varchar(255) DEFAULT NULL,
@@ -525,13 +608,14 @@ CREATE TABLE `pedidos` (
   `dt` date DEFAULT NULL,
   `produto` varchar(255) DEFAULT NULL,
   `dataEntrega` date DEFAULT NULL,
-  `fluxo` int(11) DEFAULT NULL,
+  `fluxo` int DEFAULT NULL,
   `lote` varchar(100) NOT NULL,
   `cdgprod` text NOT NULL,
   `qtds` text NOT NULL,
   `descricao` text NOT NULL,
-  `diasparaproduzir` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `diasparaproduzir` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `pedidos`
@@ -541,9 +625,9 @@ INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `
 (27, 'joao.avelar', 'Kleber Correa Leite', 'EPS', 'tatianecpmh', '11900', '2024-06-07', 'CUSTOMLIFE', '2024-06-27', 17, '0369/0424', 'PC-353-2', '1', 'RECONSTRUÇÃO PARA MAXILA ATRÓFICA TOTAL', 14),
 (28, 'joao.avelar', 'Hugo Santos Cunha', 'FAVP', 'neandrobarbosa', '11834', '2024-06-07', 'SMARTMOLD - 7 mm - 7', '2024-06-13', NULL, '0142/0424', 'E200.011-I', '0', '0', 20),
 (29, 'daniel.lima', 'Vanessa Rodrigues Pacífico', 'JAZ', 'neandrobarbosa', '11907', '2024-06-07', 'SMARTMOLD - 5 mm - 5', '2024-06-13', NULL, '', 'E200.011-H*ET41.001', '1*1', 'SMARTMOLD MENTO  PMMA*BROCA Ø1,6 x 21 x 100mm', 20),
-(30, 'daniel.lima', 'Saul Peñaloza', 'CHK', 'saulzapatta', '11887', '2024-06-07', 'RECONSTRUÇÃO ÓSSEA', '2024-06-30', NULL, '0311/0424', 'PC-303-T2', '1', 'RECONSTRUÇÃO MANDIBULA TITÂNIO TRABECULADO - 2', 15),
+(30, 'daniel.lima', 'Saul Peñaloza', 'CHK', 'saulzapatta', '11887', '2024-06-07', 'RECONSTRUÇÃO ÓSSEA', '2024-06-30', 17, '0311/0424', 'PC-303-T2', '1', 'RECONSTRUÇÃO MANDIBULA TITÂNIO TRABECULADO - 2', 15),
 (31, 'pedro.franco', 'Danielle Sales Marques Da Cruz Pantoja', 'WMP', 'neandrobarbosa', '11870', '2024-06-07', 'SMARTMOLD - 10 mm - ', '2024-06-30', NULL, '0258/0424', 'E200.011-H*E200.011-J', '1*1', 'SMARTMOLD MENTO  PMMA*SMARTMOLD ANG DE MANDIBULA  PMMA - Dir + Esq', 15),
-(32, 'joao.avelar', 'Carlos Contreras', 'NFS', 'saulzapatta', '11796', '2024-06-07', 'ORTOGNÁTICA', '2024-06-28', 37, '0061/0424', 'KITPC-505D*KITPC-6002', '1*1', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º - D - 1*ORTOGNATICA SOB MEDIDA MAXILA, MANDIBULA E MENTO', 15),
+(32, 'joao.avelar', 'Carlos Contreras', 'NFS', 'saulzapatta', '11796', '2024-06-07', 'ORTOGNÁTICA', '2024-06-28', 38, '0061/0424', 'KITPC-505D*KITPC-6002', '1*1', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º - D - 1*ORTOGNATICA SOB MEDIDA MAXILA, MANDIBULA E MENTO', 15),
 (33, 'joao.avelar', 'Marcos Vidal Rivas', 'DNJ', 'neandrobarbosa', '11893', '2024-06-07', 'CUSTOMLIFE', '2024-06-27', 17, '0329/0424', 'PC-353-2', '1', 'RECONSTRUÇÃO PARA MAXILA ATRÓFICA TOTAL', 14);
 
 -- --------------------------------------------------------
@@ -552,12 +636,115 @@ INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `
 -- Estrutura da tabela `produto`
 --
 
-CREATE TABLE `produto` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `produto`;
+CREATE TABLE IF NOT EXISTS `produto` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(200) NOT NULL,
   `codigo` varchar(50) DEFAULT NULL,
-  `idfluxo` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `idfluxo` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idfluxo` (`idfluxo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `realizacaoproducao`
+--
+
+DROP TABLE IF EXISTS `realizacaoproducao`;
+CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idPedido` int DEFAULT NULL,
+  `idFluxo` int DEFAULT NULL,
+  `numOrdem` int DEFAULT NULL,
+  `idEtapa` int DEFAULT NULL,
+  `idStatus` int NOT NULL,
+  `dataRealizacao` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `realizacaoproducao`
+--
+
+INSERT INTO `realizacaoproducao` (`id`, `idPedido`, `idFluxo`, `numOrdem`, `idEtapa`, `idStatus`, `dataRealizacao`) VALUES
+(93, 27, 17, 15, 13, 1, '2024-06-28'),
+(92, 27, 17, 14, 18, 1, '2024-06-27'),
+(91, 27, 17, 13, 35, 1, '2024-06-26'),
+(90, 27, 17, 12, 52, 1, '2024-06-25'),
+(89, 27, 17, 11, 23, 1, '2024-06-24'),
+(88, 27, 17, 10, 33, 1, '2024-06-21'),
+(87, 27, 17, 9, 65, 1, '2024-06-20'),
+(86, 27, 17, 8, 4, 1, '2024-06-19'),
+(85, 27, 17, 7, 31, 1, '2024-06-18'),
+(84, 27, 17, 6, 1, 1, '2024-06-17'),
+(83, 27, 17, 5, 88, 1, '2024-06-14'),
+(82, 27, 17, 4, 87, 1, '2024-06-13'),
+(81, 27, 17, 3, 28, 1, '2024-06-12'),
+(80, 27, 17, 2, 74, 1, '2024-06-11'),
+(79, 27, 17, 1, 72, 1, '2024-06-10'),
+(78, 33, 17, 15, 13, 1, '2024-06-28'),
+(77, 33, 17, 14, 18, 1, '2024-06-27'),
+(76, 33, 17, 13, 35, 1, '2024-06-26'),
+(75, 33, 17, 12, 52, 1, '2024-06-25'),
+(74, 33, 17, 11, 23, 1, '2024-06-24'),
+(73, 33, 17, 10, 33, 1, '2024-06-21'),
+(72, 33, 17, 9, 65, 1, '2024-06-20'),
+(71, 33, 17, 8, 4, 1, '2024-06-19'),
+(70, 33, 17, 7, 31, 1, '2024-06-18'),
+(69, 33, 17, 6, 1, 1, '2024-06-17'),
+(68, 33, 17, 5, 88, 1, '2024-06-14'),
+(67, 33, 17, 4, 87, 1, '2024-06-13'),
+(66, 33, 17, 3, 28, 1, '2024-06-12'),
+(65, 33, 17, 2, 74, 4, '2024-06-11'),
+(64, 33, 17, 1, 72, 1, '2024-06-10'),
+(94, 30, 17, 1, 72, 4, '2024-06-10'),
+(95, 30, 17, 2, 74, 4, '2024-06-11'),
+(96, 30, 17, 3, 28, 1, '2024-06-12'),
+(97, 30, 17, 4, 87, 1, '2024-06-13'),
+(98, 30, 17, 5, 88, 1, '2024-06-14'),
+(99, 30, 17, 6, 1, 1, '2024-06-17'),
+(100, 30, 17, 7, 31, 1, '2024-06-18'),
+(101, 30, 17, 8, 4, 1, '2024-06-19'),
+(102, 30, 17, 9, 65, 1, '2024-06-20'),
+(103, 30, 17, 10, 33, 1, '2024-06-21'),
+(104, 30, 17, 11, 23, 1, '2024-06-24'),
+(105, 30, 17, 12, 52, 1, '2024-06-25'),
+(106, 30, 17, 13, 35, 1, '2024-06-26'),
+(107, 30, 17, 14, 18, 1, '2024-06-27'),
+(108, 30, 17, 15, 13, 1, '2024-06-28');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `statusetapa`
+--
+
+DROP TABLE IF EXISTS `statusetapa`;
+CREATE TABLE IF NOT EXISTS `statusetapa` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(255) DEFAULT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `cor` varchar(7) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `statusetapa`
+--
+
+INSERT INTO `statusetapa` (`id`, `nome`, `tipo`, `cor`) VALUES
+(1, 'Aguardando', 'Todos', '#4F4F51'),
+(2, 'Fazendo', 'Todos', '#007bff'),
+(3, 'Pausado', 'Todos', '#ee7624'),
+(4, 'Concluído', 'Produção', '#28a745'),
+(5, 'Aprovado', 'Qualidade', '#28a745'),
+(6, 'Reprovado', 'Qualidade', '#dc3545'),
+(7, 'Aguardando R.', 'Produção', '#4F4F51'),
+(8, 'Fazendo R.', 'Produção', '#007bff'),
+(9, 'Pausado R.', 'Produção', '#ee7624'),
+(10, 'Concluído R.', 'Produção', '#28a745');
 
 -- --------------------------------------------------------
 
@@ -565,11 +752,13 @@ CREATE TABLE `produto` (
 -- Estrutura da tabela `statusos`
 --
 
-CREATE TABLE `statusos` (
-  `stId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `statusos`;
+CREATE TABLE IF NOT EXISTS `statusos` (
+  `stId` int NOT NULL AUTO_INCREMENT,
   `stNome` varchar(30) NOT NULL,
-  `stPosicao` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `stPosicao` int NOT NULL,
+  PRIMARY KEY (`stId`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `statusos`
@@ -584,14 +773,31 @@ INSERT INTO `statusos` (`stId`, `stNome`, `stPosicao`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `tempo_corrido`
+--
+
+DROP TABLE IF EXISTS `tempo_corrido`;
+CREATE TABLE IF NOT EXISTS `tempo_corrido` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idPedido` int DEFAULT NULL,
+  `idEtapa` int DEFAULT NULL,
+  `tempoCorrido` time DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `tipocadastroexterno`
 --
 
-CREATE TABLE `tipocadastroexterno` (
-  `tpcadexId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tipocadastroexterno`;
+CREATE TABLE IF NOT EXISTS `tipocadastroexterno` (
+  `tpcadexId` int NOT NULL AUTO_INCREMENT,
   `tpcadexCodCadastro` varchar(10) NOT NULL,
-  `tpcadexNome` varchar(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `tpcadexNome` varchar(30) NOT NULL,
+  PRIMARY KEY (`tpcadexId`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -599,11 +805,13 @@ CREATE TABLE `tipocadastroexterno` (
 -- Estrutura da tabela `tipocadastrointerno`
 --
 
-CREATE TABLE `tipocadastrointerno` (
-  `tpcadinId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tipocadastrointerno`;
+CREATE TABLE IF NOT EXISTS `tipocadastrointerno` (
+  `tpcadinId` int NOT NULL AUTO_INCREMENT,
   `tpcadinCodCadastro` varchar(10) NOT NULL,
-  `tpcadinNome` varchar(20) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `tpcadinNome` varchar(20) NOT NULL,
+  PRIMARY KEY (`tpcadinId`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `tipocadastrointerno`
@@ -620,8 +828,9 @@ INSERT INTO `tipocadastrointerno` (`tpcadinId`, `tpcadinCodCadastro`, `tpcadinNo
 -- Estrutura da tabela `users`
 --
 
-CREATE TABLE `users` (
-  `usersId` int(11) NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `usersId` int NOT NULL AUTO_INCREMENT,
   `usersName` varchar(128) NOT NULL,
   `usersEmail` varchar(128) NOT NULL,
   `usersUid` varchar(128) NOT NULL,
@@ -630,8 +839,9 @@ CREATE TABLE `users` (
   `usersAprov` varchar(20) NOT NULL,
   `usersUf` varchar(11) DEFAULT NULL,
   `usersIdentificador` varchar(128) DEFAULT NULL,
-  `usersCel` varchar(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `usersCel` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`usersId`)
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `users`
@@ -642,212 +852,7 @@ INSERT INTO `users` (`usersId`, `usersName`, `usersEmail`, `usersUid`, `usersPer
 (8, 'Sullivan Maciel Morbeck', 'sullivan.morbeck@fixhealth.com.br', 'smorbeckcpmh', '3COL', '$2y$10$TZYl13zhPPR0Hfg3fHFkw.BmNbeONomYJoX2gEDN3OVP93wa/4SZ2', 'APROV', 'DF', 'smorbeckcpmh', '(61) 98479-7922'),
 (7, 'Evellyn Pamplona', 'evellyn.pamplona@fixhealth.com.br', 'evellyn', '2GES', '$2y$10$BR2tVeooGe0BVZxZlT8b1umG1z6qX3Ndp8Dk7WEN1FD4VGjLSCo9K', 'APROV', 'DF', '1111', '6130288856'),
 (6, 'Antonia Felix', 'antonia.santos@fixhealth.com.br', 'antonia', '2GES', '$2y$10$RuNicEZcmcRwu./ySZjMkuzQoLJirGqCKkv8jwekeFxl3G6xyRJeu', 'APROV', 'DF', '123', '(61) 30288-868'),
-(12, 'Joice Censi', 'joice.censi@fixhealth.com.br', 'joicecensi', '3COL', '$2y$10$sd32MJL3tacnjOzLnO.0AeAPDZMFSsAjo/Ip.XDmUqylTdTjGUH0C', 'APROV', 'DF', NULL, '8871');
-
---
--- Índices para tabelas despejadas
---
-
---
--- Índices para tabela `correlacao_produto`
---
-ALTER TABLE `correlacao_produto`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idProdutoPrincipal` (`idProdutoPrincipal`),
-  ADD KEY `idProdutoSecundario` (`idProdutoSecundario`);
-
---
--- Índices para tabela `estados`
---
-ALTER TABLE `estados`
-  ADD PRIMARY KEY (`ufId`);
-
---
--- Índices para tabela `etapa`
---
-ALTER TABLE `etapa`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `etapasos`
---
-ALTER TABLE `etapasos`
-  ADD PRIMARY KEY (`etapaId`);
-
---
--- Índices para tabela `etapa_fluxo`
---
-ALTER TABLE `etapa_fluxo`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idfluxo` (`idfluxo`),
-  ADD KEY `idetapa` (`idetapa`);
-
---
--- Índices para tabela `filedownload`
---
-ALTER TABLE `filedownload`
-  ADD PRIMARY KEY (`fileId`);
-
---
--- Índices para tabela `fluxo`
---
-ALTER TABLE `fluxo`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `logatividades`
---
-ALTER TABLE `logatividades`
-  ADD PRIMARY KEY (`logId`);
-
---
--- Índices para tabela `mesesano`
---
-ALTER TABLE `mesesano`
-  ADD PRIMARY KEY (`mesId`);
-
---
--- Índices para tabela `ordenservico`
---
-ALTER TABLE `ordenservico`
-  ADD PRIMARY KEY (`osId`);
-
---
--- Índices para tabela `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `produto`
---
-ALTER TABLE `produto`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idfluxo` (`idfluxo`);
-
---
--- Índices para tabela `statusos`
---
-ALTER TABLE `statusos`
-  ADD PRIMARY KEY (`stId`);
-
---
--- Índices para tabela `tipocadastroexterno`
---
-ALTER TABLE `tipocadastroexterno`
-  ADD PRIMARY KEY (`tpcadexId`);
-
---
--- Índices para tabela `tipocadastrointerno`
---
-ALTER TABLE `tipocadastrointerno`
-  ADD PRIMARY KEY (`tpcadinId`);
-
---
--- Índices para tabela `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`usersId`);
-
---
--- AUTO_INCREMENT de tabelas despejadas
---
-
---
--- AUTO_INCREMENT de tabela `correlacao_produto`
---
-ALTER TABLE `correlacao_produto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `estados`
---
-ALTER TABLE `estados`
-  MODIFY `ufId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-
---
--- AUTO_INCREMENT de tabela `etapa`
---
-ALTER TABLE `etapa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
-
---
--- AUTO_INCREMENT de tabela `etapasos`
---
-ALTER TABLE `etapasos`
-  MODIFY `etapaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de tabela `etapa_fluxo`
---
-ALTER TABLE `etapa_fluxo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
-
---
--- AUTO_INCREMENT de tabela `filedownload`
---
-ALTER TABLE `filedownload`
-  MODIFY `fileId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT de tabela `fluxo`
---
-ALTER TABLE `fluxo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
-
---
--- AUTO_INCREMENT de tabela `logatividades`
---
-ALTER TABLE `logatividades`
-  MODIFY `logId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
-
---
--- AUTO_INCREMENT de tabela `mesesano`
---
-ALTER TABLE `mesesano`
-  MODIFY `mesId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT de tabela `ordenservico`
---
-ALTER TABLE `ordenservico`
-  MODIFY `osId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de tabela `pedidos`
---
-ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
-
---
--- AUTO_INCREMENT de tabela `produto`
---
-ALTER TABLE `produto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `statusos`
---
-ALTER TABLE `statusos`
-  MODIFY `stId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT de tabela `tipocadastroexterno`
---
-ALTER TABLE `tipocadastroexterno`
-  MODIFY `tpcadexId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de tabela `tipocadastrointerno`
---
-ALTER TABLE `tipocadastrointerno`
-  MODIFY `tpcadinId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
--- AUTO_INCREMENT de tabela `users`
---
-ALTER TABLE `users`
-  MODIFY `usersId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+(12, 'Joice Censi', 'joice.censi@fixhealth.com.br', 'joicecensi', '3COL', '$2y$10$VEZ2rmjLA8Bi7FcMWpWt6.uw1I56NSr15MbETMuD3109o8.lLF0Iu', 'APROV', 'DF', NULL, '8871');
 
 --
 -- Restrições para despejos de tabelas

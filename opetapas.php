@@ -49,7 +49,7 @@ if (isset($_SESSION["useruid"])) {
                         <hr>
                         <div class="content-panel">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-6">
                                     <div class="container-fluid">
                                         <div class="row mb-3">
                                             <div class="col">
@@ -207,7 +207,7 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-6">
                                     <div class="container-fluid">
                                         <div class="row">
                                             <div class="col">

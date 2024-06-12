@@ -1,9 +1,11 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
+
+    $userId = $_GET['id'];
 
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
@@ -164,6 +166,61 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                 </div>
                                 <div class="card-footer"></div>
                             </div>
+
+                            <?php if ($tipoUsuario == "Colaborador(a)") {
+
+
+                                // Obtendo todas as etapas
+                                $sql = "SELECT id, nome FROM etapa";
+                                $result = mysqli_query($conn, $sql);
+                                $etapas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                                // Obtendo todas as etapas associadas ao usuário
+                                $sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
+                                $stmt = mysqli_prepare($conn, $sql);
+                                mysqli_stmt_bind_param($stmt, "i", $userId);
+                                mysqli_stmt_execute($stmt);
+                                $result = mysqli_stmt_get_result($stmt);
+                                $etapasAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                            ?>
+
+                                <div class="card mt-2">
+                                    <div class="card-header">
+                                        <h4 class="text-muted">Escolha etapas</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row p-3">
+                                            <div class="col border py-2">
+                                                <?php foreach ($etapasAssociadas as $etapa) : ?>
+                                                    <span class="badge badge-primary"><?php echo $etapa['nome']; ?></span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="row py-4">
+                                            <div class="col">
+
+                                                <form class="" action="processar_etapas.php" method="post">
+                                                    <input type="hidden" name="userId" value="<?php echo $userId; ?>">
+
+                                                    <div class="form-group">
+                                                        <label for="">Selecione as Etapas:</label>
+                                                        <select class="form-control" name="etapas[]" multiple size="5">
+                                                            <?php foreach ($etapas as $etapa) : ?>
+                                                                <option value="<?php echo $etapa['id']; ?>"><?php echo $etapa['nome']; ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group d-flex justify-content-end">
+                                                        <button class="btn btn-fab" type="submit">Salvar</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php
+                            } ?>
                         </div>
 
                     </div>

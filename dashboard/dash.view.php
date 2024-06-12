@@ -43,87 +43,105 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                     </div>
                 </div>
-                
-                <div class="row mb-4">
-                    <!-- Módulo Ordem Serviço -->
-                    <div class="col-sm my-2">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <h6 class=""><b>Módulo Ordem Serviço</b></h6>
-                                </div>
-                                <hr>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="novaos?t=os" class="btn btn-fab mx-1"><i class="fas fa-plus"></i> Nova OS </a>
-                                        <a href="lista-os" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-list"></i> Lista de OS</a>
-                                        <a href="atividades" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+
+                <?php
+                if (($_SESSION["userperm"] == 'Gestor(a)') || ($_SESSION["userperm"] == 'Administrador')) {
+                ?>
+                    <div class="row mb-4">
+                        <!-- Módulo Ordem Serviço -->
+                        <div class="col-sm my-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <h6 class=""><b>Módulo Ordem Serviço</b></h6>
+                                    </div>
+                                    <hr>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="novaos?t=os" class="btn btn-fab mx-1"><i class="fas fa-plus"></i> Nova OS </a>
+                                            <a href="lista-os" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-list"></i> Lista de OS</a>
+                                            <a href="atividades" class="btn btn-outline-fab mx-1" style="border-top: 6px #007A5A solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="acompanhamentoos" class="btn btn-outline-fab mx-1"><i class="fas fa-users-cog"></i> Acompanhamento OS </a>
+
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="acompanhamentoos" class="btn btn-outline-fab mx-1"><i class="fas fa-users-cog"></i> Acompanhamento OS </a>
+                            </div>
+                        </div>
+                        <!-- Módulo Ordem Produção -->
+                        <div class="col-sm my-2">
+                            <div class="card border-left-primary shadow h-100 py-2" disabled>
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <h6 class="deactivated"><b>Módulo Ordem Produção</b></h6>
+                                    </div>
+                                    <hr>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="#" class="btn btn-info mx-1 disabled"><i class="fas fa-plus"></i> Nova OP </a>
+                                            <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de OP</a>
+                                            <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="pcp" class="btn btn-outline-info mx-1"><i class="fas fa-users-cog"></i> PCP </a>
+                                            <a href="opplanejamento" class="btn btn-outline-info mx-1"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
+                                            <a href="opetapas" class="btn btn-outline-info mx-1"> <i class="fas fa-th-large"></i> Etapas</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <a href="acompanhamenetoetapas" class="btn btn-outline-info mx-1"> <i class="fas fa-stream"></i> Acompanhamento</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Módulo Ordem Manutenção -->
+                        <div class="col-sm my-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <h6 class=""><b>Módulo Ordem Manutenção</b></h6>
+                                    </div>
+                                    <hr>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="novaos?t=om" class="btn btn-success mx-1 disabled"><i class="fas fa-plus"></i> Nova OM </a>
+                                            <a href="lista-om" class="btn btn-outline-success mx-1 disabled" style="border-top: 6px #28a745 solid;"> <i class="fas fa-list"></i> Lista de OM</a>
+                                            <a href="atividades-om" class="btn btn-outline-success mx-1 disabled" style="border-top: 6px #28a745 solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="acompanhamentoom" class="btn btn-success mx-1 disabled"><i class="fas fa-users-cog"></i> Acompanhamento OS </a>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Módulo Ordem Produção -->
-                    <div class="col-sm my-2">
-                        <div class="card border-left-primary shadow h-100 py-2" disabled>
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <h6 class="deactivated"><b>Módulo Ordem Produção</b></h6>
-                                </div>
-                                <hr>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="#" class="btn btn-info mx-1 disabled"><i class="fas fa-plus"></i> Nova OP </a>
-                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de OP</a>
-                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
-                                    </div>
-                                </div>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="pcp" class="btn btn-outline-info mx-1"><i class="fas fa-users-cog"></i> PCP </a>
-                                        <a href="opplanejamento" class="btn btn-outline-info mx-1"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
-                                        <a href="opetapas" class="btn btn-outline-info mx-1"> <i class="fas fa-th-large"></i> Etapas</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Módulo Ordem Manutenção -->
-                    <div class="col-sm my-2">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <h6 class=""><b>Módulo Ordem Manutenção</b></h6>
-                                </div>
-                                <hr>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="novaos?t=om" class="btn btn-success mx-1 disabled"><i class="fas fa-plus"></i> Nova OM </a>
-                                        <a href="lista-om" class="btn btn-outline-success mx-1 disabled" style="border-top: 6px #28a745 solid;"> <i class="fas fa-list"></i> Lista de OM</a>
-                                        <a href="atividades-om" class="btn btn-outline-success mx-1 disabled" style="border-top: 6px #28a745 solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
-                                    </div>
-                                </div>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="acompanhamentoom" class="btn btn-success mx-1 disabled"><i class="fas fa-users-cog"></i> Acompanhamento OS </a>
+                <?php
+                }
+                ?>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                if ($_SESSION["userperm"] == 'Colaborador(a)') {
+                ?>
 
-                <div class="row mb-4">
-                    
-                </div>
+                    <?php include_once "etapas_colaborador.php"; ?>
+
+                <?php
+                }
+                ?>
+
+
 
                 <div class="row d-flex justify-content-around align-items-start">
                     <?php
