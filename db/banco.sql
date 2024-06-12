@@ -767,3 +767,18 @@ CREATE TABLE CORRELACAO_PRODUTO (
     FOREIGN KEY (idMaster) REFERENCES PRODUTO(id),
     FOREIGN KEY (IdSecundario) REFERENCES PRODUTO(id)
 );
+
+
+CREATE TABLE form_inf_003(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `areas_administrativas` VARCHAR(256) NOT NULL, /* Menu suspenso */
+    `data` DATE NOT NULL,
+    `periodo` VARCHAR(10),
+    `responsavel` VARCHAR(10) NOT NULL,
+    `conferido` ENUM('Conferido','Não Conferido') NOT NULL DEFAULT 'Não Conferido',
+    `tipo_limpeza` VARCHAR(20) NOT NULL,
+    `data_publicacao` DATE DEFAULT '2023-10-18',
+    `data_validade` DATE DEFAULT '2025-10-18',
+    PRIMARY KEY(`id`)
+) DEFAULT CHARACTER SET utf8;
+
