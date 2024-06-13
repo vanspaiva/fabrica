@@ -768,3 +768,34 @@ CREATE TABLE CORRELACAO_PRODUTO (
     FOREIGN KEY (idMaster) REFERENCES PRODUTOS(id),
     FOREIGN KEY (IdSecundario) REFERENCES PRODUTOS(id)
 );  
+
+---- Estrutura da tabela `FORMULARIO FRM.INF.004'
+
+CREATE TABLE FRM_INF_004 (
+id int primary key not null auto_increment,
+data_publicação date, 
+validade date,
+modelo varchar(20) default 'springer',
+identificacao_ambiente varchar(30),
+tipo_atividade varchar(20)
+);
+
+---- Estrutura da tabela `ATIVIDADES_EXERCIDAS'
+CREATE TABLE ATIVIDADES_EXERCIDAS (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    data DATE,
+    frm_inf_004_id INT, -- Mudança aqui
+    descricao_atividade_id INT,
+    executado BOOLEAN,
+    user_id INT,
+    FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
+    FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
+   --FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
+);
+
+---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
+
+CREATE TABLE DESCRICAO_ATIVIDADES (
+id INT PRIMARY KEY AUTO_INCREMENT,
+descricao TEXT
+);
