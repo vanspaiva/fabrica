@@ -5,6 +5,7 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 
+    print_r($_SESSION);
 
     if(isset($_GET["t"]) && ($_GET["t"] == "om")){
         $tipo = "om";
@@ -17,6 +18,11 @@ if (isset($_SESSION["useruid"])) {
 
 
     <body class="bg-light-gray2">
+        <style>
+            #areas-adm, #banheiro,#copa-cozinha,#producao{
+                /* display: none; */
+            }
+        </style>
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
@@ -47,7 +53,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="row">
                                 <div class="col-sm py-2">
                                     <h3 class="font-weight-semibold" style="text-align: center;">Procedimento do Sistema de Gestão da Qualidade</h3>
-                                    <h5 class="font-weight-regular" style="text-align: center;">ORDEM DE MANUTENÇÃO</h5>
+                                    <h5 class="font-weight-regular" style="text-align: center;">REGISTRO DE LIMPEZA</h5>
                                     <h6 class="font-weight-regular" style="text-align: center;">FRM.INF.003</h6>
                                 </div>
                             </div>
@@ -57,7 +63,7 @@ if (isset($_SESSION["useruid"])) {
                 </div>
 
                 <div class="col-sm-12 mx-2 py-4 justify-content-start">
-                    <div class="card">
+                    <div class="card" style="">
                         <div class="card-body">
 
                             <?php
@@ -159,58 +165,52 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
 
+                                        <div class="justify-content-around align-items-center">
+                                            <div class="form-group mx-2 ">
+                                                <label class='d-block control-label' style='color:black;'>Escolha o Setor <b style='color: red;'>*</b></label>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="1" name="grauurgencia" id="areas-adm-radio"/>
+                                                    <label class="form-check-label">1. Áreas Administrativas</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="2" name="grauurgencia" id="banheiro-radio" />
+                                                    <label class="form-check-label">2. Banheiro</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="3" name="grauurgencia" id="copa-cozinha-radio"/>
+                                                    <label class="form-check-label">3. Copa / Cozinha</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="4" name="grauurgencia" id="producao-radio"/>
+                                                    <label class="form-check-label"> 4.Produção</label>
+                                                </div>
+                                            </div>
 
 
                                     <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
-                                        <label class='control-label'>Selecione a área administrativa<b style='color: red;'>*</b></label>
+                                            <label class='control-label'>Selecione a área ser administrada<b style='color: red;'>*</b></label>
                                             <select class='form-control' name='setor' id='setor' required>
-                                                <option value='0' selected style='color: #F6F7FA;'>Escolha um setor</option>    
-                                                <?php
-                                                $retEtapa = mysqli_query($conn, "SELECT * FROM etapasos ORDER BY etapaNome ASC;");
-                                                while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
-                                                    <option value=" <?php echo $rowEtapa['etapaNome']; ?>"><?php echo $rowEtapa['etapaNome']; ?></option>
-                                                <?php
-                                                }
-                                                ?>
+                                                <option value='0' selected style='color: #F6F7FA;'>Escolha um setor</option>
+                                                <option value='banheiro-superior-masculino'>Banheiro superior masculino</option>
+                                                <option value='banheiro-superior-feminino'>Banheiro superior feminino</option>
+                                                <option value='banheiro-terreo-masculino'>Banheiro térreo masculino</option>
+                                                <option value='banheiro-terreo-feminino'>Banheiro térreo feminino</option>
+                                                <option value='lounge'>Lounge</option>
+                                                <option value='sala-reuniao'>Sala reunião</option>
+                                                <option value='sala-dr-rander'>Sala Dr. Rander</option>
+                                                <option value='sala-comercial'>Sala comercial</option>
+                                                <option value='sala-administrativo'>Sala administrativo</option>
+                                                <option value='sala-descanso'>Sala de descanso</option>
+                                                <option value='fabrica'>Fábrica</option>
+                                                <option value='planejamento'>Planejamento</option>
+                                                <option value='refeitorio'>Refeitório</option>
+                                                <option value='estoque'>Estoque</option>
+                                                <option value='osteofix'>Osteofix</option>
+                                                <option value='pcp'>PCP</option>
+                                                <option value='liberacao'>Liberação</option>
+                                                <option value='sala-limpa'>Sala Limpa</option>
                                             </select>
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>
@@ -227,7 +227,6 @@ if (isset($_SESSION["useruid"])) {
                                                 month = '0' + month.toString();
                                             if (day < 10)
                                                 day = '0' + day.toString();
-
                                             var minData = year + '-' + month + '-' + day;
                                             $('#dtentrega').attr('min', minData);
                                         </script>
@@ -252,177 +251,489 @@ if (isset($_SESSION["useruid"])) {
                                             </select>
                                         </div>
                                     </div>
-  <!--                                   <div class='d-flex d-block justify-content-around'>
-                                        <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Descrição da Tarefa, detalhar de <b>forma clara</b> as informações mais importantes <b style='color: red;'>*</b></label>
-                                            <br>
-                                            <small class="text-muted">As informações devem ser <b>claras e completas</b> para o operador compreender corretamente a tarefa</small>
-                                            <textarea class="form-control color-bg-dark color-txt-wh" name="descricao" id="descricao" rows="3" onkeyup="limite_textarea(this.value)" maxlength="400"></textarea><br><br>
-                                            <div class="row d-flex justify-content-start p-0 m-0">
-                                                <small class="pl-2 text-muted" style="margin-top: -40px !important;"><small class="text-muted" id="cont">400</small> Caracteres restantes</small>
-                                            </div>
-                                        </div>
-                                        <script>
-                                            $(document).ready(function() {
-                                                limite_textarea(document.getElementById("descricao").value);
-                                            });
 
-                                            function limite_textarea(valor) {
-                                                quant = 400;
-                                                total = valor.length;
-                                                if (total <= quant) {
-                                                    resto = quant - total;
-                                                    document.getElementById('cont').innerHTML = resto;
-                                                } else {
-                                                    document.getElementById('texto').value = valor.substr(0, quant);
-                                                }
-                                            }
-                                        </script>
-                                    </div> -->
-                                    <div class="d-flex d-block justify-content-around align-items-center">
-                                        <div class="col form-group d-inline-block flex-fill m-2">
+                                    
+                                    <div id="areas-adm">
+                                        <div class="d-flex d-block mt-4 mx-4 ">
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
-
-                                            
-                                            <!-- Checkboxes de 1 a 12 com labels -->
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia1" value="1" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia1">1</label>
+                                        </div>
+                                        <div class="row mx-2">
+                                            <div class="col-sm-3">
+                                                <ol>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia1" value="1" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia1"> 1. Vidros e Divisórias</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia2" value="2" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia2">2. Piso</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia3" value="3" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia3">3. Prateleiras/Armários</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia4" value="4" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia4">4. Bancadas</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia2" value="2" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia2">2</label>
+                                            <div class="col-sm-3">
+                                                <ol start="5">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia5" value="5" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia5">5. Ar-condicionado</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia6" value="6" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia6">6. Paredes / Tomadas/ Rodapé</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia7" value="7" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia7">7. Lixeiras</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia8" value="8" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia8">8. Portas / Janelas</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia3" value="3" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia3">3</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia4" value="4" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia4">4</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia5" value="5" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia5">5</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia6" value="6" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia6">6</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia7" value="7" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia7">7</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia8" value="8" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia8">8</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia9" value="9" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia9">9</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia10" value="10" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia10">10</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia11" value="11" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia11">11</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="grauurgencia12" value="12" name="grauurgencia" />
-                                                <label class="form-check-label" for="grauurgencia12">12</label>
+                                            <div class="col-sm-3">
+                                                <ol start="9">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia9" value="9" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia9">9. Persianas</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia10" value="10" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia10">10. Computadores</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia11" value="11" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia11"> 11. Escadas/Corrimão</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-adm" type="checkbox" id="grauurgencia12" value="12" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia12">12. Filtros/ Máquinas de Café</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row mx-2 my-4">
-                                        <div class="col-sm-3">
-                                            <ol>
-                                                <li>1. Vidros e Divisórias</li>
-                                                <li>2. Piso</li>
-                                                <li>3. Prateleiras/Armários</li>
-                                                <li>4. Bancadas</li>
-                                            </ol>
+
+
+
+
+
+
+                                    <div id="banheiro">
+                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                            <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <ol start="5">
-                                                <li>5. Ar-condicionado</li>
-                                                <li>6. Paredes / Tomadas/ Rodapé</li>
-                                                <li>7. Lixeiras</li>
-                                                <li>8. Portas / Janelas</li>
-                                            </ol>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <ol start="9">
-                                                <li>9. Persianas</li>
-                                                <li>10. Computadores</li>
-                                                <li>11. Escadas/Corrimão</li>
-                                                <li>12. Filtros/ Máquinas de Café</li>
-                                            </ol>
+                                        <div class="row mx-2">
+                                            <div class="col-sm-3">
+                                                <ol>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia1" value="1" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia1"> 1. Sanitário</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia2" value="2" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia2">2. Pia</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia3" value="3" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia3">3. Piso</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia4" value="4" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia4">4. Espelho</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="5">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia5" value="5" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia5">5. Reposição de papel higiênico</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia6" value="6" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia6">6. Reposição de papel toalha</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia7" value="7" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia7">7. Reposição de sabonete</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia8" value="8" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia8">8. Lixeira</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="9">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia9" value="9" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia9">9. Portas/ Janelas</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="grauurgencia10" value="10" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia10">10. Luminárias</label>
+                                                        </div>
+                                                    </li>
+
+                                                </ol>
+                                            </div>
                                         </div>
                                     </div>
 
-                                        <!-- <div class="col form-group d-inline-block flex-fill m-2">
-                                            <label class='control-label d-block' style='color:black;'>Arquivos necessário para a execução da tarefa devem ser anexados aqui ou possuir link de acesso presente na descrição da atividade</label>
-                                            <div class="d-flex justify-content-center p-2 border rounded bg-light">
-                                                <div>
-                                                    <label class="d-block" for="formFile" style="text-align: center;"><i class="fas fa-upload fa-3x hovericon"></i></label>
-                                                    <small class="d-block" id="file-name" style="text-align: center; color: green;"></small>
-                                                    <span class="filedata"></span>
-                                                    <span class="loading d-none">Carregando arquivo...</span>
+
+
+
+
+
+
+
+
+
+
+
+                                    <div id="copa-cozinha">
+                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                            <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
+                                        </div>
+                                        <div class="row mx-2">
+                                            <div class="col-sm-3">
+                                                <ol>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia1" value="1" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia1"> 1. Piso</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia2" value="2" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia2">2. Pia</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia3" value="3" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia3">3. Mesa</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia4" value="4" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia4">4. Geladeira</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="5">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia5" value="5" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia5">5. Reposição de papel toalha</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia6" value="6" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia6">6. Reposição de Sabonete</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia7" value="7" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia7">7. Paredes/ Tomadas/ Rodapés</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia8" value="8" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia8">8. Filtros/Máquina de café</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="9">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia9" value="9" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia9">9. Fogão</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="grauurgencia10" value="10" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia10">10. Microondas/ Torradeira</label>
+                                                        </div>
+                                                    </li>
+                                                    
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                    <div id="producao">
+                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                            <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
+                                        </div>
+                                        <div class="row mx-2">
+                                            <div class="col-sm-3">
+                                                <ol>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia1" value="1" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia1"> 1. Vidros e Divisórias</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia2" value="2" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia2">2. Piso</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia3" value="3" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia3">3. Prateleiras/Armários</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia4" value="4" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia4">4. Bancadas</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="5">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia5" value="5" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia5">5. Ar-condicionado</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia6" value="6" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia6">6. Paredes / Tomadas/ Rodapé</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia7" value="7" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia7">7. Lixeiras</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia8" value="8" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia8">8. Portas / Janelas</label>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ol start="9">
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia9" value="9" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia9">9. Computadores</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia10" value="10" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia10">10. Reposição de Papel Toalha</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="grauurgencia11" value="11" name="grauurgencia" />
+                                                            <label class="form-check-label" for="grauurgencia11"> 11. Reposição de Sabonete</label>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                        
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input check-producao" type="checkbox" id="grauurgencia12" value="12" name="grauurgencia" />
+                                                    <label class="form-check-label" for="grauurgencia12">12. Reposição de Touca</label>
                                                 </div>
+                                                    </li>
+                                                </ol>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <script>                                     
+                                        var areasAdm = document.getElementById('areas-adm');
+                                        var banheiro = document.getElementById('banheiro');
+                                        var copaCozinha = document.getElementById('copa-cozinha');
+                                        var producao = document.getElementById('producao');
+
+                                        var radioAreasAdm = document.getElementById('areas-adm-radio');
+                                        var radioBanheiro = document.getElementById('banheiro-radio');
+                                        var radioCopaCozinha = document.getElementById('copa-cozinha-radio');
+                                        var radioProducao = document.getElementById('producao-radio');
+                                        
+                                        var checkAdm = document.querySelectorAll('.check-adm');
+                                        var checkBanheiro = document.querySelectorAll('.check-banheiro');
+                                        var checkCopaCozinha = document.querySelectorAll('.check-copa-cozinha');
+                                        var checkProducao = document.querySelectorAll('.check-producao');
+
+
+                                        function cancelarAdm(){
+                                            checkAdm.forEach(function(checkbox) {
+                                                checkbox.checked = false; // Unchecks the checkbox
+                                                checkbox.disabled = true; // Disables the checkbox  
+                                            });
+                                        }
+                                        function aprovarAdm(){
+                                            checkAdm.forEach(function(checkbox) {
+                                                checkbox.disabled = false; // Disables the checkbox  
+                                            });
+                                        }
+
+                                        function cancelarBanheiro(){
+                                            checkBanheiro.forEach(function(checkbox) {
+                                                checkbox.checked = false; // Unchecks the checkbox
+                                                checkbox.disabled = true; // Disables the checkbox  
+                                            });
+                                        }
+                                        function aprovarBanheiro(){
+                                            checkBanheiro.forEach(function(checkbox) {
+                                                checkbox.disabled = false; // Disables the checkbox  
+                                            });                                            
+                                        }
+
+                                        function cancelarCopaCozinha(){
+                                            checkCopaCozinha.forEach(function(checkbox) {
+                                                checkbox.checked = false; // Unchecks the checkbox
+                                                checkbox.disabled = true; // Disables the checkbox  
+                                            });
+                                        }
+                                        function aprovarCopaCozinha(){
+                                            checkCopaCozinha.forEach(function(checkbox) {
+                                                checkbox.disabled = false; // Disables the checkbox  
+                                            });                                                
+                                        }
+                                        function cancelarProducao(){
+                                            checkProducao.forEach(function(checkbox) {
+                                                checkbox.checked = false; // Unchecks the checkbox
+                                                checkbox.disabled = true; // Disables the checkbox  
+                                            });
+                                        }
+                                        function aprovarProducao(){
+                                          checkProducao.forEach(function(checkbox) {
+                                                checkbox.disabled = false   ; // Disables the checkbox  
+                                            });
+                                        }
+
+
+                                        function toggleSections() {
+                                            areasAdm.style.display = radioAreasAdm.checked ? 'block' : 'none';
+                                            banheiro.style.display = radioBanheiro.checked ? 'block' : 'none';
+                                            copaCozinha.style.display = radioCopaCozinha.checked ? 'block' : 'none';
+                                            producao.style.display = radioProducao.checked ? 'block' : 'none';
+
+                                            if (radioAreasAdm.checked) {
+                                                aprovarAdm();
+                                                cancelarBanheiro();
+                                                cancelarCopaCozinha();
+                                                cancelarProducao();
+                                            }
+                                            if(radioBanheiro.checked){
+                                                aprovarBanheiro();
+                                                cancelarAdm();
+                                                cancelarCopaCozinha();
+                                                cancelarProducao();
+                                            }
+                                            if(radioCopaCozinha.checked){
+                                                aprovarCopaCozinha();
+                                                cancelarAdm();
+                                                cancelarProducao();
+                                                cancelarBanheiro();
+                                            }
+                                            if(radioProducao.checked){
+                                                aprovarProducao();
+                                                cancelarAdm();
+                                                cancelarBanheiro();
+                                                cancelarCopaCozinha();
+                                            }
+                                             
                                             
-                                            <input class="form-control" type="file" id="formFile" name="formFile" onchange="getImageData(event)" hidden>
-                                            <small class="text-muted">Imagens, dxf, desenhos...</small>
-                                            <div class="progressBar">
-                                                <div class="progress"></div>
-                                            </div>
-                                            <script>
-                                                updateList = function() {
-                                                    var input = document.getElementById('formFile');
-                                                    var output = document.getElementById('file-name');
+                                        }
 
-                                                    output.innerHTML = '';
-                                                    for (var i = 0; i < input.files.length; ++i) {
-                                                        output.innerHTML += input.files.item(i).name + ', ';
-                                                    }
-                                                }
-                                            </script>
-                                            <style>
-                                                .hovericon {
-                                                    transition: ease all 0.2s;
-                                                }
+                                        radioAreasAdm.addEventListener('change', toggleSections);
+                                        radioBanheiro.addEventListener('change', toggleSections);
+                                        radioCopaCozinha.addEventListener('change', toggleSections);
+                                        radioProducao.addEventListener('change', toggleSections);
 
-                                                .hovericon:hover {
-                                                    transform: scale(0.9);
-                                                    cursor: pointer;
-                                                }
-
-
-                                                .progressBar {
-                                                    width: 100%;
-                                                    background: rgb(196, 193, 193);
-                                                    padding: 15px 20px;
-                                                    position: relative;
-                                                }
-
-                                                .progress {
-                                                    height: 100%;
-                                                    width: 0%;
-                                                    background: linear-gradient(90deg, rgba(213,213,213,1) 0%, rgba(0,122,90,1) 71%);
-                                                    position: absolute;
-                                                    left: 0;
-                                                    top: 0;
-                                                    bottom: 0;
-                                                    display: flex;
-                                                    justify-content: center;
-                                                    align-items: center;
-                                                    color: white;
-                                                }
-                                            </style>
-                                        </div> -->  
+                                        
+                                        toggleSections(); 
+                                                                         
+                                    </script>
                                     </div>
                                     <div class='d-none'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
@@ -430,13 +741,6 @@ if (isset($_SESSION["useruid"])) {
                                             <input class='form-control urlThrowback' name='urlThrowback' id='urlThrowback' type='text'>
                                         </div>
                                     </div>
-                                    <div class='d-flex d-block justify-content-around mx-4'>
-                                        <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Observações</label>
-                                            <input class='form-control' name='obs' id='obs' type='text'>
-                                        </div>
-                                    </div>
-
 
                                     <div class="py-4 col d-flex justify-content-center">
                                         <button class="btn btn-fab" type="submit" name="submit" id="submit" >Enviar</button>
@@ -469,14 +773,14 @@ if (isset($_SESSION["useruid"])) {
     </body>
 
     </html>
-<?php
-                            }
-                        } else {
-                            header("location: login");
-                            exit();
-                        }
+    <?php
+            }
+        } else {
+            header("location: login");
+            exit();
+        }
 
-?>
+    ?>
 
 
 

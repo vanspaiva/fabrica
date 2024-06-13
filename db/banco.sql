@@ -769,14 +769,15 @@ CREATE TABLE CORRELACAO_PRODUTO (
 );
 
 
-CREATE TABLE form_inf_003(
+CREATE TABLE IF NOT EXISTS form_inf_003(
     `id` INT NOT NULL AUTO_INCREMENT,
-    `areas_administrativas` VARCHAR(256) NOT NULL, /* Menu suspenso */
+    `setor` VARCHAR(25) NOT NULL,
+    `areas_administrativas` VARCHAR(50),
     `data` DATE NOT NULL,
     `periodo` VARCHAR(10),
     `responsavel` VARCHAR(10) NOT NULL,
-    `conferido` ENUM('Conferido','Não Conferido') NOT NULL DEFAULT 'Não Conferido',
-    `tipo_limpeza` VARCHAR(20) NOT NULL,
+    `tipo_limpeza` VARCHAR(256) NOT NULL,
+    `conferido` ENUM('APROV','PEND') NOT NULL DEFAULT 'PEND',
     `data_publicacao` DATE DEFAULT '2023-10-18',
     `data_validade` DATE DEFAULT '2025-10-18',
     PRIMARY KEY(`id`)
