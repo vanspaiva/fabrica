@@ -780,8 +780,8 @@ identificacao_ambiente varchar(30),
 tipo_atividade varchar(20)
 );
 
----- Estrutura da tabela `ATIVIDADES_EXERCIDAS'
-CREATE TABLE ATIVIDADES_EXERCIDAS (
+---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
+CREATE TABLE ATIVIDADES_EXECUTADAS (
     id INT PRIMARY KEY AUTO_INCREMENT,
     data DATE,
     frm_inf_004_id INT, -- Mudança aqui
