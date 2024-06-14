@@ -769,10 +769,9 @@ CREATE TABLE CORRELACAO_PRODUTO (
 );
 
 
-CREATE TABLE IF NOT EXISTS form_inf_003(
+CREATE TABLE IF NOT EXISTS form_inf_003 (
     `id` INT NOT NULL AUTO_INCREMENT,
     `setor` VARCHAR(25) NOT NULL,
-    `areas_administrativas` VARCHAR(50),
     `data` DATE NOT NULL,
     `periodo` VARCHAR(10),
     `responsavel` VARCHAR(10) NOT NULL,
@@ -780,6 +779,16 @@ CREATE TABLE IF NOT EXISTS form_inf_003(
     `conferido` ENUM('APROV','PEND') NOT NULL DEFAULT 'PEND',
     `data_publicacao` DATE DEFAULT '2023-10-18',
     `data_validade` DATE DEFAULT '2025-10-18',
-    PRIMARY KEY(`id`)
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`setor`) REFERENCES `setor_e_area` (`setor`)
 ) DEFAULT CHARACTER SET utf8;
 
+
+CREATE TABLE IF NOT EXISTS setor_e_area (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `setor` VARCHAR(25) NOT NULL,
+    `areas_administrativas` VARCHAR(50),
+    `responsavel` VARCHAR(10) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `setor_unique` (`setor`)
+) DEFAULT CHARACTER SET utf8;
