@@ -773,8 +773,8 @@ CREATE TABLE CORRELACAO_PRODUTO (
 
 CREATE TABLE FRM_INF_004 (
 id int primary key not null auto_increment,
-data_publicação date, 
-validade date,
+data_publicacao date, 
+data_validade date,
 modelo varchar(20) default 'springer',
 identificacao_ambiente varchar(30),
 tipo_atividade varchar(20)
@@ -783,7 +783,7 @@ tipo_atividade varchar(20)
 ---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
 CREATE TABLE ATIVIDADES_EXECUTADAS (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    data DATE,
+    data_manutencao DATE,
     frm_inf_004_id INT, -- Mudança aqui
     descricao_atividade_id INT,
     executado BOOLEAN,
