@@ -5,6 +5,43 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+        $dataPublicacao = $_POST['dataPublicacao'];
+        $dataValidade = $_POST['dataValidade'];
+        $identificadorAmbiente = $_POST['identificadorAmbiente'];
+        $tipoAtividade = $_POST['tipoAtividade'];
+        $dataAtividade = $_POST['dataAtividade'];
+
+        $marcaModelo = "Springer";
+        // Calcular a data de validade (dois anos após a data de publicação)
+        $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
+
+        // Inserir dados do formulário na tabela FRM_INF_004
+        $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade) VALUES (?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "sssss", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade);
+        mysqli_stmt_execute($stmt);
+        $frmInfId = mysqli_insert_id($conn);
+
+        // Calcular a data de validade (dois anos após a data de publicação)
+        $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
+
+        // Inserir dados das atividades executadas na tabela ATIVIDADES_EXECUTADAS
+        foreach ($_POST['executado'] as $descricaoAtividadeId => $value) {
+            if (!empty($value)) {
+                $executadoValue = 1;
+    
+                $sql = "INSERT INTO ATIVIDADES_EXECUTADAS (data_manutencao, frm_inf_004_id, descricao_atividade_id, executado, user_id) VALUES (?, ?, ?, ?, ?)";
+                $stmt = mysqli_prepare($conn, $sql);
+                mysqli_stmt_bind_param($stmt, "siisi", $dataAtividade, $frmInfId, $descricaoAtividadeId, $executadoValue, $userId);
+                mysqli_stmt_execute($stmt);
+            }
+        }
+
+
+        // Exibir mensagem de sucesso
+        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Dados inseridos com sucesso!</p></div>";
+    }
 ?>
 
 
@@ -116,11 +153,15 @@ if (isset($_SESSION["useruid"])) {
 
                                             // Calcular a data de validade (dois anos após a data de publicação)
                                             var doisAnosDepois = new Date(dataPublicacao);
-                                            doisAnosDepois.setFullYear(doisAnosDepois.getFullYear() + 2);
+                                            doisAnosDepois.setFullYear(dataPublicacao.getFullYear() + 2);
+                                            doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
 
-                                            // Verificar se a data de validade caiu no dia 17 e ajustar para o dia 18
-                                            if (doisAnosDepois.getDate() === 17) {
-                                                doisAnosDepois.setDate(18);
+                                            // Verificar se o ano é bissexto e ajustar a data de validade, se necessário
+                                            if (doisAnosDepois.getMonth() === 1 && doisAnosDepois.getDate() === 29) {
+                                                // Se a data de validade é 29 de fevereiro, ajuste para 28 de fevereiro se o próximo ano não for bissexto
+                                                if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
+                                                    doisAnosDepois.setDate(28);
+                                                }
                                             }
 
                                             // Formatar a data de validade para o formato "YYYY-MM-DD"
@@ -130,9 +171,14 @@ if (isset($_SESSION["useruid"])) {
                                             var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
 
                                             // Exibir a data de validade no campo de "Validade"
-                                            document.getElementById('validade').value = dataValidadeFormatada;
+                                            document.getElementById('dataValidade').value = dataValidadeFormatada;
                                         });
+
+                                        function isBissexto(ano) {
+                                            return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
+                                        }
                                     </script>
+
                                     <div class='d-flex justify-content-between'>
                                         <div class='form-group col-md-4 m-2'>
                                             <label class='control-label'>Identificação do Ambiente <b style='color: red;'>*</b></label>
@@ -142,7 +188,7 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='control-label'>Tipo de Atividade <b style='color: red;'>*</b></label>
                                             <input class='form-control' name='tipoAtividade' id='tipoAtividade' required>
                                         </div>
-                                        <div class='form-group col-md-3 m-2'> 
+                                        <div class='form-group col-md-3 m-2'>
                                             <label class='control-label'>Marca/Modelo</label>
                                             <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
                                         </div>
@@ -168,72 +214,80 @@ if (isset($_SESSION["useruid"])) {
                                                 <tbody>
                                                     <tr>
                                                         <td>Verificação e drenagem da água</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"  value="Verificação e drenagem da água"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[1]" value="1"></td>
+                                                        <td><input type="text" name="responsavel[1]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"  value=""></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[2]" value="2"></td>
+                                                        <td><input type="text" name="responsavel[2]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[3]" value="3"></td>
+                                                        <td><input type="text" name="responsavel[3]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[4]" value="4"></td>
+                                                        <td><input type="text" name="responsavel[4]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Trocar filtros</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Trocar filtros"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[5]" value="5"></td>
+                                                        <td><input type="text" name="responsavel[5]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Verificação da fixação</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Verificação da fixação"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[6]" value="6"></td>
+                                                        <td><input type="text" name="responsavel[6]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Verificação de vazamentos nas ligações flexíveis</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Verificação de vazamentos nas ligações flexíveis"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[7]" value="7"></td>
+                                                        <td><input type="text" name="responsavel[7]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Estado de conservação do isolamento termo-acústico</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Estado de conservação do isolamento termo-acústico"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[8]" value="8"></td>
+                                                        <td><input type="text" name="responsavel[8]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Vedação dos painéis de fechamento do gabinete</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Vedação dos painéis de fechamento do gabinete"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[9]" value="9"></td>
+                                                        <td><input type="text" name="responsavel[9]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Manutenção mecânica</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Manutenção mecânica"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[10]" value="10"></td>
+                                                        <td><input type="text" name="responsavel[10]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Manutenção elétrica</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="Manutenção elétrica"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[11]" value="11"></td>
+                                                        <td><input type="text" name="responsavel[11]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>outros</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[]"value="outros"></td>
-                                                        <td><input type="text" name="responsavel[]" style="border-radius: 10px; border: groove;"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[12]" value="12"></td>
+                                                        <td><input type="text" name="responsavel[12]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
+                                    <script>
+                                        $('input[type="checkbox"]').change(function() {
+                                            if (this.checked) {
+                                                var descricaoAtividadeId = $(this).data('id');
+                                                console.log('ID da Descrição da Atividade:', descricaoAtividadeId);
+                                                // Faça o que precisar com o ID da descrição da atividade aqui...
+                                            }
+                                        });
+                                    </script>
                                     <div class="py-4 col d-flex justify-content-center">
                                         <button class="btn btn-fab" type="submit" name="submit" id="submit">Enviar</button>
                                     </div>
-
                                 </form>
                         </div>
                     </div>
@@ -242,7 +296,6 @@ if (isset($_SESSION["useruid"])) {
 
 
         </div>
-
 
 
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
