@@ -52,7 +52,7 @@ if (isset($_SESSION["useruid"])) {
             // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
             if ($diasFaltantes <= 0) {
-                $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
             } else {
                 $diasFaltantes = $diasFaltantes . ' dias';
             }
@@ -211,7 +211,7 @@ if (isset($_SESSION["useruid"])) {
                                                                             <small><?php echo $diasFaltantes; ?></small>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
-                                                                            <label for=""><b>Duração do Fluxo</b></label>
+                                                                            <label for=""><b>Duração do Modalidade</b></label>
                                                                             <small><?php echo $diasFuturos; ?></small>
                                                                         </div>
                                                                     </div>
@@ -254,9 +254,9 @@ if (isset($_SESSION["useruid"])) {
 
                                                                         <div class="form-row">
                                                                             <div class="col form-group m-2">
-                                                                                <label class="form-label text-black" for="fluxo">Fluxo (Pré definido)</label>
+                                                                                <label class="form-label text-black" for="fluxo">Modalidade</label>
                                                                                 <select class='form-control' name='fluxo' id='fluxo' required>
-                                                                                    <option value="0">Escolha um fluxo</option>
+                                                                                    <option value="">Escolha uma Modalidade</option>
                                                                                     <?php
                                                                                     $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
                                                                                     while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
@@ -267,13 +267,38 @@ if (isset($_SESSION["useruid"])) {
                                                                                 </select>
                                                                             </div>
 
-                                                                            <!-- <div class="col form-group m-2">
-                                                                                <label class="form-label text-black" for="entrega">Entrega Estimada</label>
-                                                                                <input type="date" class="form-control" value="<?php // echo $row['dataEntrega']; 
-                                                                                                                                ?>">
-                                                                            </div> -->
+                                                                            <div class="col form-group m-2">
+                                                                                <label class="form-label text-black" for="lote">Lote</label>
+                                                                                <input type="text" class="form-control" id="lote" name="lote" value="<?php echo $row['lote']; ?>" required>
+                                                                            </div>
 
                                                                         </div>
+                                                                        <hr>
+                                                                        <div class="form-row">
+                                                                            <div class="col form-group m-2">
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="radio" name="nacinter" id="nacinter1" value="nacional" required>
+                                                                                    <label class="form-check-label" for="nacinter1">
+                                                                                        Nacional
+                                                                                    </label>
+                                                                                </div>
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="radio" name="nacinter" id="nacinter2" value="internacional" required>
+                                                                                    <label class="form-check-label" for="nacinter2">
+                                                                                        Internacional
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col form-group m-2">
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="1" id="taxa_extra" name="taxa_extra">
+                                                                                    <label class="form-check-label" for="taxa_extra">
+                                                                                        Taxa extra
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
 
 
                                                                         <div class="d-flex justify-content-end pt-4">

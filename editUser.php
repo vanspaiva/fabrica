@@ -170,46 +170,57 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                             <?php if ($tipoUsuario == "Colaborador(a)") {
 
 
-                                // Obtendo todas as etapas
-                                $sql = "SELECT id, nome FROM etapa";
+                                // Obtendo todas as setor
+                                $sql = "SELECT id, nome FROM setor";
                                 $result = mysqli_query($conn, $sql);
-                                $etapas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                                $setorArray = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-                                // Obtendo todas as etapas associadas ao usuário
-                                $sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
+                                // Obtendo todas as setor associadas ao usuário
+                                $sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
                                 $stmt = mysqli_prepare($conn, $sql);
                                 mysqli_stmt_bind_param($stmt, "i", $userId);
                                 mysqli_stmt_execute($stmt);
                                 $result = mysqli_stmt_get_result($stmt);
-                                $etapasAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                                $setorAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
                             ?>
 
                                 <div class="card mt-2">
                                     <div class="card-header">
-                                        <h4 class="text-muted">Escolha etapas</h4>
+                                        <h4 class="text-muted">Escolha Setores</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="row p-3">
                                             <div class="col border py-2">
-                                                <?php foreach ($etapasAssociadas as $etapa) : ?>
-                                                    <span class="badge badge-primary"><?php echo $etapa['nome']; ?></span>
+                                                <?php foreach ($setorAssociadas as $setor) : ?>
+                                                    <span class="badge badge-primary"><?php echo $setor['nome']; ?></span>
                                                 <?php endforeach; ?>
                                             </div>
                                         </div>
                                         <div class="row py-4">
                                             <div class="col">
-
-                                                <form class="" action="processar_etapas.php" method="post">
+                                                <form action="processar_etapas.php" method="post">
                                                     <input type="hidden" name="userId" value="<?php echo $userId; ?>">
 
-                                                    <div class="form-group">
-                                                        <label for="">Selecione as Etapas:</label>
-                                                        <select class="form-control" name="etapas[]" multiple size="5">
-                                                            <?php foreach ($etapas as $etapa) : ?>
-                                                                <option value="<?php echo $etapa['id']; ?>"><?php echo $etapa['nome']; ?></option>
+                                                    <label class="text-muted">Selecione os Setores:</label>
+                                                    <div class="form-group d-flex">
+                                                        <div class="row p-3">
+                                                            <?php
+                                                            // Create an array of IDs from $setorAssociadas for easy comparison
+                                                            $setorAssociadasIds = array_column($setorAssociadas, 'id');
+                                                            foreach ($setorArray as $value) :
+                                                            ?>
+
+
+
+                                                                <div class="form-check col-4">
+                                                                    <input class="form-check-input" type="checkbox" name="setor[]" value="<?php echo $value['id']; ?>" id="setor_<?php echo $value['id']; ?>" <?php echo in_array($value['id'], $setorAssociadasIds) ? 'checked' : ''; ?>>
+                                                                    <label class="form-check-label" for="setor_<?php echo $value['id']; ?>">
+                                                                        <?php echo $value['nome']; ?>
+                                                                    </label>
+                                                                </div>
                                                             <?php endforeach; ?>
-                                                        </select>
+                                                        </div>
                                                     </div>
                                                     <div class="form-group d-flex justify-content-end">
                                                         <button class="btn btn-fab" type="submit">Salvar</button>
@@ -219,6 +230,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                         </div>
                                     </div>
                                 </div>
+
                             <?php
                             } ?>
                         </div>

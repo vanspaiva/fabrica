@@ -1,6 +1,9 @@
 <?php
 require 'db/dbh.php';
 
+// print_r($_POST);
+// exit();
+
 // Função para inserir etapas selecionadas
 function inserirEtapasColaborador($conn, $userId, $etapas)
 {
@@ -15,7 +18,7 @@ function inserirEtapasColaborador($conn, $userId, $etapas)
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = $_POST['userId'];
-    $etapas = $_POST['etapas'];
+    $etapas = $_POST['setor'];
 
     if (!empty($etapas)) {
         // Verifica se há registros existentes para o colaborador e exclui-os

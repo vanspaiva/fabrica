@@ -1,14 +1,25 @@
 <?php
 if (isset($_POST["update"])) {
 
+    // print_r($_POST);
+    // exit();
+
     $id = addslashes($_POST["pedidoId"]);
     $fluxo = addslashes($_POST["fluxo"]);
+    $lote = addslashes($_POST["lote"]);
+    $nacinter = addslashes($_POST["nacinter"]);
+
+    if (!empty($_POST["taxa_extra"])) {
+        $taxa_extra = addslashes($_POST["taxa_extra"]);
+    } else {
+        $taxa_extra = 0;
+    }
     //receber user depois 
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
-    updateFluxoPedido($conn, $id, $fluxo);
+    updateFluxoPedido($conn, $id, $fluxo, $lote, $nacinter, $taxa_extra);
     // header("location: ../evolucaopcp?id=" . $id);
 
     //pegar todas as etapas 
@@ -75,6 +86,43 @@ if (isset($_POST["update"])) {
 
     //redirecionar para pagina de acompanhamento desse pedido
     header("location: ../visualizarpedido?id=" . $id);
+} else if (isset($_POST["opsimple"])) {
+
+    $tp_contacriador = addslashes($_POST["tp_contacriador"]);
+    $nomecriador = addslashes($_POST["nomecriador"]);
+    $emailcriacao = addslashes($_POST["emailcriacao"]);
+    $dtcriacao = addslashes($_POST["dtcriacao"]);
+    $userip = addslashes($_POST["userip"]);
+    $nped = addslashes($_POST["nped"]);
+    $fluxo = addslashes($_POST["fluxo"]);
+    $lote = addslashes($_POST["lote"]);
+    $dr = addslashes($_POST["dr"]);
+    $pac = addslashes($_POST["pac"]);
+    $nacinter = addslashes($_POST["nacinter"]);
+    $obs = addslashes($_POST["obs"]);
+
+    if (!empty($_POST["taxa_extra"])) {
+        $taxa_extra = addslashes($_POST["taxa_extra"]);
+    } else {
+        $taxa_extra = 0;
+    }
+    //receber user depois 
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    //contar hj + 20 dias uteis para ter data de entrega
+    $hoje = hoje();
+    $diasparaproduzir = 20;
+    $dataEntrega = somarDiasUteis($hoje, $diasparaproduzir);
+
+    //criar pedido
+    inserirPedidoSimples($conn, $dr, $pac, $nped, $hoje, $fluxo, $lote, $dataEntrega, $diasparaproduzir,$obs);
+
+    
+
+    //redirecionar para pagina de acompanhamento desse pedido
+    header("location: ../pcp");
 } else {
     header("location: ../evolucaopcp");
     exit();

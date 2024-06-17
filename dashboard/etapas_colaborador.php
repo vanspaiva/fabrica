@@ -1,18 +1,38 @@
 <?php
 $userId = $_SESSION["userid"];
 
+
+
 // Obtendo todas as etapas associadas ao usuário
-$sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
+// $sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
+$sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$etapasAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
-$etapasAssociadasToSQL = transformarArrayParaString($etapasAssociadas);
+$setores = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$setoresIdArray = transformarArrayParaString($setores); //10,3,2,1
+
+$setoresIdArray = explode(",", $setoresIdArray); //Array ( [0] => 10 [1] => 3 [2] => 2 [3] => 1 )
+
+$etapas = [];
+
+foreach ($setoresIdArray as $key => $setor) {
+    $etapaId = getEtapasBySetor($conn, $setor);
+    $etapaId = implode(",", $etapaId);
+    //iteração 1: $etapaId = 88,89,90,93,91,92
+    //iteração 2: $etapaId = 87,86
+    //iteração 3: $etapaId = 26,27,28
+
+
+    array_push($etapas, $etapaId);
+}
+$etapasAssociadasToSQL = implode(",", $etapas);
+
 ?>
 <div class="row p-3">
     <div class="col border py-2">
-        <?php foreach ($etapasAssociadas as $etapa) : ?>
+        <?php foreach ($setores as $etapa) : ?>
             <span class="badge badge-primary"><?php echo $etapa['nome']; ?></span>
         <?php endforeach; ?>
     </div>
@@ -38,7 +58,7 @@ $etapasAssociadasToSQL = transformarArrayParaString($etapasAssociadas);
                                     <thead class="text-white" style="background-color: #d54e5b;">
                                         <tr>
                                             <th><b>Num Pedido</b></th>
-                                            <th><b>Fluxo</b></th>
+                                            <th><b>Modalidade</b></th>
                                             <th><b>Etapa</b></th>
                                             <th><b>Status</b></th>
                                             <th><b>Dt</b></th>
@@ -176,7 +196,7 @@ $etapasAssociadasToSQL = transformarArrayParaString($etapasAssociadas);
                                     <thead class="bg-fab text-white">
                                         <tr>
                                             <th><b>Num Pedido</b></th>
-                                            <th><b>Fluxo</b></th>
+                                            <th><b>Modalidade</b></th>
                                             <th><b>Etapa</b></th>
                                             <th><b>Status</b></th>
                                             <th><b>Dt</b></th>
@@ -313,7 +333,7 @@ $etapasAssociadasToSQL = transformarArrayParaString($etapasAssociadas);
                                     <thead class="bg-info text-white">
                                         <tr>
                                             <th><b>Num Pedido</b></th>
-                                            <th><b>Fluxo</b></th>
+                                            <th><b>Modalidade</b></th>
                                             <th><b>Etapa</b></th>
                                             <th><b>Status</b></th>
                                             <th><b>Dt</b></th>
@@ -347,8 +367,7 @@ $etapasAssociadasToSQL = transformarArrayParaString($etapasAssociadas);
                                                                     WHERE r.id = $value
                                                                     AND r.idEtapa IN ($etapasAssociadasToSQL);";
 
-                                            // echo $sql;
-                                            // exit();
+
 
                                             $ret = mysqli_query($conn, $sql);
                                             if ($ret) {

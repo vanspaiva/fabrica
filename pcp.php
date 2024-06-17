@@ -59,7 +59,7 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Dt Chegada</th>
                                                 <th>Cód Produto</th>
                                                 <th>Produto</th>
-                                                <th>Fluxo</th>
+                                                <th>Modalidade</th>
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
                                                 <th>Dt Entrega</th>
@@ -115,7 +115,7 @@ if (isset($_SESSION["useruid"])) {
                                                 // // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
                                                 // if ($diasFaltantes <= 0) {
-                                                //     $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                //     $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
                                                 // } else {
                                                 //     $diasFaltantes = $diasFaltantes . ' dias';
                                                 // }

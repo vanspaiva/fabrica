@@ -6,8 +6,8 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
 
-    $idfluxo = deshashItemNatural($_GET["id"]);
-    $nomeFluxo = getNomeFluxo($conn, $idfluxo);
+    $idsetor = deshashItemNatural($_GET["id"]);
+    $nomeSetor = getNomeSetor($conn, $idsetor);
 ?>
 
     <body class="bg-light-gray2">
@@ -26,15 +26,15 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                     <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
                             <div class="col-1 d-flex justify-content-start">
-                                <a href="config_fluxo">
+                                <a href="config_setores">
                                     <span class="btn btn-outline-fab text-muted">
                                         <i class="fas fa-angle-left"></i>
                                     </span>
                                 </a>
                             </div>
                             <div class="col d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted">Modalidade: <b><?php echo $nomeFluxo; ?></b></h5>
-                                <small class="text-muted">Controle de etapas do fluxo selecionado</small>
+                                <h5 class="text-muted">Setor: <b><?php echo $nomeSetor; ?></b></h5>
+                                <small class="text-muted">Controle de etapas do setor selecionado</small>
                             </div>
                             <div class="col">
                                 <div class="d-flex justify-content-end p-1">
@@ -51,67 +51,57 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
 
                                         <thead>
                                             <tr>
-                                                <th>Ordem</th>
+                                                <!-- <th>Ordem</th> -->
                                                 <th>Etapa</th>
-                                                <th>Duração</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
 
-                                            $ret = mysqli_query($conn, "SELECT * FROM etapa_fluxo WHERE idfluxo = '{$idfluxo}' ORDER BY ordem ASC ;");
+                                            $ret = mysqli_query($conn, "SELECT * FROM setor_etapa WHERE idsetor = '{$idsetor}' ORDER BY id ASC ;");
 
                                             $contagemDias = 0;
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
-                                                $idfluxo = $row["idfluxo"];
+                                                $ordem = $row["id"];
+                                                $idsetor = $row["idsetor"];
                                                 $idetapa = $row["idetapa"];
-                                                $ordem = intval($row["ordem"]);
-                                                $duracao = $row["duracao"];
 
                                                 $nomeEtapa = getNomeEtapa($conn, $idetapa);
 
-                                                $contagemDias = $contagemDias + $duracao;
-                                                if (floatval($duracao) == 1) {
-                                                    $s = "dia";
-                                                } else {
-                                                    $s = "dias";
-                                                }
+                                                $total = ultimoNumeroSetor($conn, $idsetor);
 
-                                                $total = ultimoNumeroFluxo($conn, $idfluxo);
-
-                                                $arrayIds = arrayIdEtapas($conn, $idfluxo);
+                                                $arrayIds = arrayIdEtapas($conn, $idsetor);
                                                 $arrayIds = implode(",", $arrayIds);
                                             ?>
 
                                                 <tr>
-                                                    <td class="d-flex">
+                                                    <!-- <td class="d-flex">
                                                         <b class="col text-center"><?php echo $ordem; ?></b>
                                                         <div class="col d-flex justify-content-center">
                                                             <?php
-                                                            if ($ordem != 1) {
+                                                            //if ($ordem != 1) {
                                                             ?>
-                                                                <a class="btn text-fab btn-sm" href="includes/mudarposicao.inc.php?acao=mais&id=<?php echo $row["id"]; ?>&array=<?php echo $arrayIds; ?>&idfluxo=<?php echo $idfluxo; ?>"><i class="fas fa-arrow-up"></i></a>
+                                                                <a class="btn text-fab btn-sm" href="includes/mudarposicao.inc.php?acao=mais&id=<?php echo $row["id"]; ?>&array=<?php echo $arrayIds; ?>&idsetor=<?php echo $idsetor; ?>"><i class="fas fa-arrow-up"></i></a>
                                                             <?php
-                                                            }
+                                                            //}
                                                             ?>
                                                             <?php
-                                                            if ($ordem != $total) {
+                                                            //if ($ordem != $total) {
                                                             ?>
-                                                                <a class="btn text-fab btn-sm" href="includes/mudarposicao.inc.php?acao=menos&id=<?php echo $row["id"]; ?>&array=<?php echo $arrayIds; ?>&idfluxo=<?php echo $idfluxo; ?>"><i class="fas fa-arrow-down"></i></a>
+                                                                <a class="btn text-fab btn-sm" href="includes/mudarposicao.inc.php?acao=menos&id=<?php echo $row["id"]; ?>&array=<?php echo $arrayIds; ?>&idsetor=<?php echo $idsetor; ?>"><i class="fas fa-arrow-down"></i></a>
                                                             <?php
-                                                            }
+                                                            //}
                                                             ?>
                                                         </div>
-                                                    </td>
+                                                    </td> -->
                                                     <td><?php echo $nomeEtapa; ?></td>
-                                                    <td><?php echo $duracao . " " . $s; ?></td>
 
                                                     <td class="d-flex justify-content-center">
-                                                        <button class="btn text-info btn-sm" data-toggle="modal" data-target="#editetapaemfluxo" onclick="populate(<?php echo $id; ?>)"><i class="fas fa-edit"></i></button>
-                                                        <a href="includes/configuracao.inc.php?dltetapaemfluxo=<?php echo $id; ?>&idfluxo=<?php echo $idfluxo; ?>">
-                                                            <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa fluxo?');"><i class="fas fa-trash-alt"></i></button>
+                                                        <button class="btn text-info btn-sm" data-toggle="modal" data-target="#editetapaemsetor" onclick="populate(<?php echo $id; ?>)"><i class="fas fa-edit"></i></button>
+                                                        <a href="includes/configuracao.inc.php?dltetapaemsetor=<?php echo $id; ?>&idsetor=<?php echo $idsetor; ?>">
+                                                            <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa setor?');"><i class="fas fa-trash-alt"></i></button>
                                                         </a>
                                                         <?php
                                                         if ($_SESSION["userperm"] == 'Administrador') {
@@ -125,15 +115,7 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                                             <?php
                                             } ?>
                                         </tbody>
-                                    </table>
-                                    <div class="container-fluid">
-                                        <hr>
-                                        <div class="row d-flex justify-content-center">
-                                            <div class="col d-flex justify-content-end">
-                                                <h6>Tempo para Execução: <b class="px-1 text-fab"><?php echo $contagemDias; ?> dias</b></h6>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </table>                                    
                                 </div>
                             </div>
                         </div>
@@ -157,8 +139,8 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                         <form action="includes/configuracao.inc.php" method="post">
                             <div class="form-row" hidden>
                                 <div class="form-group col-md">
-                                    <label class="text-black" for="idfluxo">idfluxo</label>
-                                    <input type="text" class="form-control" id="idfluxo" name="idfluxo" value="<?php echo $idfluxo; ?>">
+                                    <label class="text-black" for="idsetor">idsetor</label>
+                                    <input type="text" class="form-control" id="idsetor" name="idsetor" value="<?php echo $idsetor; ?>">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -177,15 +159,10 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md">
-                                    <label class="text-black" for="duracao">Duração (dias)</label>
-                                    <input type="number" step="0.5" min='0.5' class="form-control" id="duracao" name="duracao" required>
-                                </div>
-                            </div>
+                        
 
                             <div class="d-flex justify-content-end">
-                                <button type="submit" name="addEtapaToFluxo" id="addEtapaToFluxo" class="btn btn-fab">Adicionar</button>
+                                <button type="submit" name="addEtapaToSetor" id="addEtapaToSetor" class="btn btn-fab">Adicionar</button>
                             </div>
                         </form>
                     </div>
@@ -195,7 +172,7 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
         </div>
 
         <!-- Modal Edit Etapa -->
-        <div class="modal fade" id="editetapaemfluxo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" id="editetapaemsetor" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #007A5A;">
@@ -212,8 +189,8 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                                     <input type="text" class="form-control" id="editid" name="editid">
                                 </div>
                                 <div class="form-group col-md">
-                                    <label class="text-black" for="editidfluxo">id</label>
-                                    <input type="text" class="form-control" id="editidfluxo" name="editidfluxo" value="<?php echo $idfluxo; ?>">
+                                    <label class="text-black" for="editidsetor">id</label>
+                                    <input type="text" class="form-control" id="editidsetor" name="editidsetor" value="<?php echo $idsetor; ?>">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -232,15 +209,10 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md">
-                                    <label class="text-black" for="editduracao">Duração (dias)</label>
-                                    <input type="number" step="0.5" min='0.5' class="form-control" id="editduracao" name="editduracao" required>
-                                </div>
-                            </div>
+                            
 
                             <div class="d-flex justify-content-end">
-                                <button type="submit" name="editEtapaToFluxo" id="editEtapaToFluxo" class="btn btn-fab">Salvar</button>
+                                <button type="submit" name="editEtapaToSetor" id="editEtapaToSetor" class="btn btn-fab">Salvar</button>
                             </div>
                         </form>
                     </div>
@@ -264,17 +236,15 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                     var dados = {
                         id: pesquisa
                     }
-                    $.post('pesq_idetapaemfluxo.php', dados, function(retorna) {
+                    $.post('pesq_idetapaemsetor.php', dados, function(retorna) {
                         var array = retorna.split(',');
                         // $result = $id . ',' . $nome . ',' . $parametro1 . ',' . $parametro2 . ',' . $iterev;
 
                         var id = array[0];
                         var idetapa = array[1];
-                        var duracao = array[2];
 
                         document.getElementById('editid').value = id;
                         document.getElementById('editidetapa').value = idetapa;
-                        document.getElementById('editduracao').value = duracao;
 
                     });
                 }

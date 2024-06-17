@@ -7,6 +7,12 @@ if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
 
+    $qtdAtrasados = countEtapasAtrasadas($conn);
+    $qtdHoje = countEtapasHoje($conn);
+    $qtdAmanha = countEtapasAmanha($conn);
+    $qtdFazendo = countEtapasFazendo($conn);
+    $qtdPausado = countEtapasPausado($conn);
+
 ?>
     <style>
         .hidden {
@@ -54,19 +60,24 @@ if (isset($_SESSION["useruid"])) {
                                 <h5 class="text-muted"><b>OP - Acompanhamento</b></h5>
                                 <small class="text-muted">Acompanhamento das Atividades os Colaboradores</small>
                             </div>
+                            <div class="col-sm d-flex justify-content-around">
+                                <span class="badge badge-light border shadow-sm px-2"><h6 style="color: #d54e5b;"><b>Atrasados</b>: <?php echo $qtdAtrasados; ?></h6></span>
+                                <span class="badge badge-light border shadow-sm px-2"><h6 class="text-fab"> <b>Hoje </b>: <?php echo $qtdHoje; ?></h6></span>
+                                <span class="badge badge-light border shadow-sm px-2"><h6 class="text-info"><b> Próximos </b>:<?php echo $qtdAmanha; ?></h6></span>
+                                <span class="badge badge-light border shadow-sm px-2"><h6 class="text-warning"><b> Fazendo </b>:<?php echo $qtdFazendo; ?></h6></span>
+                                <span class="badge badge-light border shadow-sm px-2"><h6 class="text-orange"><b> Pausado </b>:<?php echo $qtdPausado; ?></h6></span>
+                            </div>
                         </div>
                         <hr>
                         <div class="content-panel">
                             <div class="row">
                                 <!-- Coluna Tarefas -->
                                 <div class="col-12 col-sm">
-                                    <div class="row">
+                                    <div class="row" style="overflow-x: scroll;">
                                         <div class="col">
                                             <div class="">
-                                                <?php
-                                                $qtdAtrasados = countEtapasAtrasadas($conn);
-                                                ?>
                                                 <h6 style="color: #d54e5b;"><b>Atrasados</b> (<?php echo $qtdAtrasados; ?>)</h6>
+                                                <a href="exportlista?l=atrasados"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> baixar lista</button></a>
                                             </div>
                                             <div class="card-body">
                                                 <?php $arrayEtapasAtrasadas = arrayEtapasAtrasadas($conn); ?>
@@ -74,7 +85,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <thead class="text-white" style="background-color: #d54e5b;">
                                                         <tr>
                                                             <th><b>Num Pedido</b></th>
-                                                            <th><b>Fluxo</b></th>
+                                                            <th><b>Modalidade</b></th>
                                                             <th><b>Etapa</b></th>
                                                             <th><b>Status</b></th>
                                                             <th><b>Dt</b></th>
@@ -143,13 +154,12 @@ if (isset($_SESSION["useruid"])) {
 
                                     </div>
                                     <hr>
-                                    <div class="row">
+                                    <div class="row" style="overflow-x: scroll;">
                                         <div class="col">
                                             <div class="">
-                                                <?php
-                                                $qtdHoje = countEtapasHoje($conn);
-                                                ?>
+                                                
                                                 <h6 class="text-fab"> <b>Hoje </b> (<?php echo $qtdHoje; ?>)</h6>
+                                                <a href="exportlista?l=hoje"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> baixar lista</button></a>
                                             </div>
                                             <div class="card-body">
                                                 <?php $arrayEtapasHoje = arrayEtapasHoje($conn); ?>
@@ -157,7 +167,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <thead class="bg-fab text-white">
                                                         <tr>
                                                             <th><b>Num Pedido</b></th>
-                                                            <th><b>Fluxo</b></th>
+                                                            <th><b>Modalidade</b></th>
                                                             <th><b>Etapa</b></th>
                                                             <th><b>Status</b></th>
                                                             <th><b>Dt</b></th>
@@ -223,13 +233,12 @@ if (isset($_SESSION["useruid"])) {
 
                                     </div>
                                     <hr>
-                                    <div class="row">
+                                    <div class="row" style="overflow-x: scroll;">
                                         <div class="col">
                                             <div class="">
-                                                <?php
-                                                $qtdAmanha = countEtapasAmanha($conn);
-                                                ?>
+                                                
                                                 <h6 class="text-info"><b> Próximos </b> (<?php echo $qtdAmanha; ?>)</h6>
+                                                <a href="exportlista?l=amanha"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> baixar lista</button></a>
                                             </div>
                                             <div class="card-body">
                                                 <?php $arrayEtapasAmanha = arrayEtapasAmanha($conn); ?>
@@ -237,7 +246,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <thead class="bg-info text-white">
                                                         <tr>
                                                             <th><b>Num Pedido</b></th>
-                                                            <th><b>Fluxo</b></th>
+                                                            <th><b>Modalidade</b></th>
                                                             <th><b>Etapa</b></th>
                                                             <th><b>Status</b></th>
                                                             <th><b>Dt</b></th>
@@ -307,6 +316,143 @@ if (isset($_SESSION["useruid"])) {
 
                                 <!-- Coluna Graficos -->
                                 <div class="col-12 col-sm-5">
+                                    <div class="row py-3" style="overflow-x: scroll;">
+                                        <div class="">
+                                            <h6 class="text-warning"><b> Fazendo </b> (<?php echo $qtdFazendo; ?>)</h6>
+                                            <!-- <a href="exportlista?l=fazendo"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> baixar lista</button></a> -->
+                                        </div>
+                                        <div class="card-body">
+                                            <?php $arrayEtapasFazendo = arrayEtapasFazendo($conn); ?>
+                                            <table id="tFazendo" class="table table-striped table-hover">
+                                                <thead class="bg-warning text-white">
+                                                    <tr>
+                                                        <th><b>Num Pedido</b></th>
+                                                        <th><b>Etapa</b></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <?php
+                                                    foreach ($arrayEtapasFazendo as $key => $value) {
+
+                                                        $value = intval($value);
+
+                                                        $sql = "SELECT 
+                                                                    r.id AS idRealizacaoProducao,
+                                                                    r.numOrdem AS ordem,
+                                                                    r.dataRealizacao AS dt,
+                                                                    r.idEtapa AS idEtapa,
+                                                                    e.nome AS nomeEtapa,
+                                                                    s.nome AS nomeStatus,
+                                                                    s.id AS idStatus,
+                                                                    s.cor AS corStatus,
+                                                                    pd.pedido AS numPed,
+                                                                    pd.id AS idPed,
+                                                                    f.nome AS nomeFluxo
+                                                                    FROM pedidos AS pd 
+                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    WHERE r.id = $value;";
+
+                                                        // echo $sql;
+                                                        // exit();
+
+                                                        $ret = mysqli_query($conn, $sql);
+                                                        if ($ret) {
+                                                            while ($row = mysqli_fetch_assoc($ret)) {
+                                                                $numPed = $row["numPed"];
+                                                                $pedId = $row["idPed"];
+                                                                $nomeFluxo = $row["nomeFluxo"];
+                                                                $nomeEtapa = $row["nomeEtapa"];
+                                                                $nomeStatus = $row["nomeStatus"];
+                                                                $corStatus = $row["corStatus"];
+                                                                $data = dateFormatByHifen($row["dt"]);
+                                                    ?>
+                                                                <tr>
+                                                                    <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-fab"> <?php echo $numPed; ?> </span></a></td>
+                                                                    <td style="font-size:  0.8rem;"><?php echo $nomeEtapa; ?></td>
+                                                                </tr>
+                                                    <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row py-3" style="overflow-x: scroll;">
+                                        <div class="">
+
+                                            <h6 class="text-orange"><b> Pausado </b> (<?php echo $qtdPausado; ?>)</h6>
+                                            <!-- <a href="exportlista?l=fazendo"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> baixar lista</button></a> -->
+                                        </div>
+                                        <div class="card-body">
+                                            <?php $arrayEtapasPausado = arrayEtapasPausado($conn); ?>
+                                            <table id="tPausado" class="table table-striped table-hover">
+                                                <thead class="bg-orange text-white">
+                                                    <tr>
+                                                        <th><b>Num Pedido</b></th>
+                                                        <th><b>Etapa</b></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <?php
+                                                    foreach ($arrayEtapasPausado as $key => $value) {
+
+                                                        $value = intval($value);
+
+                                                        $sql = "SELECT 
+                                                                    r.id AS idRealizacaoProducao,
+                                                                    r.numOrdem AS ordem,
+                                                                    r.dataRealizacao AS dt,
+                                                                    r.idEtapa AS idEtapa,
+                                                                    e.nome AS nomeEtapa,
+                                                                    s.nome AS nomeStatus,
+                                                                    s.id AS idStatus,
+                                                                    s.cor AS corStatus,
+                                                                    pd.pedido AS numPed,
+                                                                    pd.id AS idPed,
+                                                                    f.nome AS nomeFluxo
+                                                                    FROM pedidos AS pd 
+                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    WHERE r.id = $value;";
+
+                                                        // echo $sql;
+                                                        // exit();
+
+                                                        $ret = mysqli_query($conn, $sql);
+                                                        if ($ret) {
+                                                            while ($row = mysqli_fetch_assoc($ret)) {
+                                                                $numPed = $row["numPed"];
+                                                                $pedId = $row["idPed"];
+                                                                $nomeFluxo = $row["nomeFluxo"];
+                                                                $nomeEtapa = $row["nomeEtapa"];
+                                                                $nomeStatus = $row["nomeStatus"];
+                                                                $corStatus = $row["corStatus"];
+                                                                $data = dateFormatByHifen($row["dt"]);
+                                                    ?>
+                                                                <tr>
+                                                                    <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-fab"> <?php echo $numPed; ?> </span></a></td>
+                                                                    <td style="font-size:  0.8rem;"><?php echo $nomeEtapa; ?></td>
+                                                                </tr>
+                                                    <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                     <!-- <div class="py-2 mb-2">
                                         <div class="card">
                                             <div class="card-header d-flex justify-content-end align-items-center">
@@ -471,6 +617,52 @@ if (isset($_SESSION["useruid"])) {
 
         $(document).ready(function() {
             $('#tProximo').DataTable({
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma item encontrado"
+                },
+                "order": []
+            });
+
+        });
+
+        $(document).ready(function() {
+            $('#tFazendo').DataTable({
+                "lengthMenu": [
+                    [20, 40, 80, -1],
+                    [20, 40, 80, "Todos"],
+                ],
+                "language": {
+                    "search": "Pesquisar:",
+                    "paginate": {
+                        "first": "Primeiro",
+                        "last": "Último",
+                        "next": "Próximo",
+                        "previous": "Anterior"
+                    },
+                    "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                    "lengthMenu": "Mostrar _MENU_ itens",
+                    "zeroRecords": "Nenhuma item encontrado"
+                },
+                "order": []
+            });
+
+        });
+
+        $(document).ready(function() {
+            $('#tPausado').DataTable({
                 "lengthMenu": [
                     [20, 40, 80, -1],
                     [20, 40, 80, "Todos"],

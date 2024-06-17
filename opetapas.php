@@ -4,8 +4,20 @@ session_start();
 if (isset($_SESSION["useruid"])) {
     include("php/head_tables.php");
     $user = $_SESSION["useruid"];
+    $userId = $_SESSION["userid"];
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
+
+    if ($_SESSION["userperm"] == 'Colaborador(a)') {
+        $setores = getSetoresByUser($conn, $userId);
+    } else {
+        $setores = getAllSetorIDs($conn);
+    }
+
+    // Obtendo todos os setores
+
+
+    $hoje = hoje();
 
 ?>
 
@@ -48,34 +60,50 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                         <hr>
                         <div class="content-panel">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="container-fluid">
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <?php
-                                                        $qtdAtrasados = countEtapasAtrasadas($conn);
-                                                        ?>
-                                                        <h6>Atrasados (<?php echo $qtdAtrasados; ?>)</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <?php $arrayEtapasAtrasadas = arrayEtapasAtrasadas($conn); ?>
-                                                        <table class="table table-bordered">
-                                                            <thead class="bg-secondary text-white">
+                            <?php foreach ($setores as $setor) : ?>
+                                <?php
+                                $nome = getSetorNameByID($conn, $setor);
+                                $etapas = getEtapasBySetor($conn, $setor);
+
+                                $arrayNomesEtapas = [];
+
+                                if (empty($etapas)) {
+                                    $todasEtapas = "0";
+                                } else {
+                                    foreach ($etapas as $key => $value) {
+                                        $nomeEtapa = getNomeEtapa($conn, $value);
+                                        array_push($arrayNomesEtapas, $nomeEtapa);
+                                    }
+
+                                    $todasEtapas = implode(", ", $arrayNomesEtapas);
+                                }
+                                ?>
+                                <div class="row py-2">
+                                    <div class="col">
+                                        <div class="card shadow-sm">
+                                            <div class="card-header bg-info">
+                                                <h5 class="text-white">
+                                                    <b><?php echo $nome; ?></b>
+                                                    <span data-toggle="modal" data-target="#info" onclick="sendInfo('<?php echo $todasEtapas; ?>')">
+                                                        <i class="far fa-question-circle"></i>
+                                                    </span>
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col" style="border-right: 1px solid #dee2e6;">
+                                                        <h6 class="py-2 text-muted"><b>Hoje</b> <?php echo dateFormatByHifen($hoje); ?></h6>
+                                                        <table class="table table-hover table-sm table-striped">
+                                                            <thead>
                                                                 <tr>
-                                                                    <th><b>Num Pedido</b></th>
-                                                                    <th><b>Fluxo</b></th>
-                                                                    <th><b>Etapa</b></th>
-                                                                    <th><b>Status</b></th>
-                                                                    <th><b>Dt</b></th>
+                                                                    <th><b>Ped</b></th>
+                                                                    <th><b>Modalidade</b></th>
+                                                                    <th><b>Prazo</b></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-
                                                                 <?php
-                                                                foreach ($arrayEtapasAtrasadas as $key => $value) {
+                                                                foreach ($etapas as $key => $value) {
 
                                                                     $value = intval($value);
 
@@ -89,13 +117,17 @@ if (isset($_SESSION["useruid"])) {
                                                                     s.id AS idStatus,
                                                                     s.cor AS corStatus,
                                                                     pd.pedido AS numPed,
+                                                                    pd.id AS idPed,
                                                                     f.nome AS nomeFluxo
                                                                     FROM pedidos AS pd 
                                                                     RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
                                                                     RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
                                                                     RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
                                                                     RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
-                                                                    WHERE r.id = $value;";
+                                                                    WHERE r.idEtapa = $value
+                                                                    AND r.dataRealizacao <= CURDATE()
+                                                                    AND NOT r.idStatus in (4,10,5,6)
+                                                                    ORDER BY r.dataRealizacao;";
 
                                                                     // echo $sql;
                                                                     // exit();
@@ -104,55 +136,53 @@ if (isset($_SESSION["useruid"])) {
                                                                     if ($ret) {
                                                                         while ($row = mysqli_fetch_assoc($ret)) {
                                                                             $numPed = $row["numPed"];
+                                                                            $pedId = $row["idPed"];
                                                                             $nomeFluxo = $row["nomeFluxo"];
                                                                             $nomeEtapa = $row["nomeEtapa"];
                                                                             $nomeStatus = $row["nomeStatus"];
+                                                                            $corStatus = $row["corStatus"];
                                                                             $data = dateFormatByHifen($row["dt"]);
+
+                                                                            // Converter strings de data em objetos DateTime
+                                                                            $dataDateTime = new DateTime($row["dt"]);
+                                                                            $hojeDateTime = new DateTime($hoje);
+
+                                                                            // Comparar as datas
+                                                                            if ($dataDateTime < $hojeDateTime) {
+                                                                                $atrasoColor = "text-danger";
+                                                                            } else {
+                                                                                $atrasoColor = "";
+                                                                            }
                                                                 ?>
-                                                                            <tr>
-                                                                                <td><?php echo $numPed; ?></td>
-                                                                                <td><?php echo $nomeFluxo; ?></td>
-                                                                                <td><?php echo $nomeEtapa; ?></td>
-                                                                                <td><?php echo $nomeStatus; ?></td>
-                                                                                <td><?php echo $data; ?></td>
+
+                                                                            <tr class="<?php echo $atrasoColor; ?>">
+                                                                                <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
+                                                                                <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
+                                                                                <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
                                                                             </tr>
-                                                                <?php
+                                                                    <?php
                                                                         }
-                                                                    }
+                                                                    } ?>
+                                                                <?php
                                                                 }
                                                                 ?>
 
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <?php
-                                                        $qtdHoje = countEtapasHoje($conn);
-                                                        ?>
-                                                        <h6>Hoje (<?php echo $qtdHoje; ?>)</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <?php $arrayEtapasHoje = arrayEtapasHoje($conn); ?>
-                                                        <table class="table table-bordered">
-                                                            <thead class="bg-secondary text-white">
+                                                    <div class="col" style="border-right: 1px solid #dee2e6;">
+                                                        <h6 class="py-2 text-muted"><b>Próximos</b> </h6>
+                                                        <table class="table table-hover table-sm table-striped">
+                                                            <thead>
                                                                 <tr>
-                                                                    <th><b>Num Pedido</b></th>
-                                                                    <th><b>Fluxo</b></th>
-                                                                    <th><b>Etapa</b></th>
-                                                                    <th><b>Status</b></th>
-                                                                    <th><b>Dt</b></th>
+                                                                    <th><b>Ped</b></th>
+                                                                    <th><b>Modalidade</b></th>
+                                                                    <th><b>Prazo</b></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-
                                                                 <?php
-                                                                foreach ($arrayEtapasHoje as $key => $value) {
+                                                                foreach ($etapas as $key => $value) {
 
                                                                     $value = intval($value);
 
@@ -166,13 +196,17 @@ if (isset($_SESSION["useruid"])) {
                                                                     s.id AS idStatus,
                                                                     s.cor AS corStatus,
                                                                     pd.pedido AS numPed,
+                                                                    pd.id AS idPed,
                                                                     f.nome AS nomeFluxo
                                                                     FROM pedidos AS pd 
                                                                     RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
                                                                     RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
                                                                     RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
                                                                     RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
-                                                                    WHERE r.id = $value;";
+                                                                    WHERE r.idEtapa = $value
+                                                                    AND r.dataRealizacao > CURDATE()
+                                                                    AND NOT r.idStatus in (4,10,5,6)
+                                                                    ORDER BY r.dataRealizacao;";
 
                                                                     // echo $sql;
                                                                     // exit();
@@ -181,21 +215,34 @@ if (isset($_SESSION["useruid"])) {
                                                                     if ($ret) {
                                                                         while ($row = mysqli_fetch_assoc($ret)) {
                                                                             $numPed = $row["numPed"];
+                                                                            $pedId = $row["idPed"];
                                                                             $nomeFluxo = $row["nomeFluxo"];
                                                                             $nomeEtapa = $row["nomeEtapa"];
                                                                             $nomeStatus = $row["nomeStatus"];
+                                                                            $corStatus = $row["corStatus"];
                                                                             $data = dateFormatByHifen($row["dt"]);
+
+                                                                            // Converter strings de data em objetos DateTime
+                                                                            $dataDateTime = new DateTime($row["dt"]);
+                                                                            $hojeDateTime = new DateTime($hoje);
+
+                                                                            // Comparar as datas
+                                                                            if ($dataDateTime < $hojeDateTime) {
+                                                                                $atrasoColor = "text-danger";
+                                                                            } else {
+                                                                                $atrasoColor = "";
+                                                                            }
                                                                 ?>
-                                                                            <tr>
-                                                                                <td><?php echo $numPed; ?></td>
-                                                                                <td><?php echo $nomeFluxo; ?></td>
-                                                                                <td><?php echo $nomeEtapa; ?></td>
-                                                                                <td><?php echo $nomeStatus; ?></td>
-                                                                                <td><?php echo $data; ?></td>
+
+                                                                            <tr class="<?php echo $atrasoColor; ?>">
+                                                                                <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
+                                                                                <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
+                                                                                <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
                                                                             </tr>
-                                                                <?php
+                                                                    <?php
                                                                         }
-                                                                    }
+                                                                    } ?>
+                                                                <?php
                                                                 }
                                                                 ?>
 
@@ -207,89 +254,7 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="container-fluid">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <?php
-                                                        $qtdAmanha = countEtapasAmanha($conn);
-                                                        ?>
-                                                        <h6>Próximos (<?php echo $qtdAmanha; ?>)</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <?php $arrayEtapasAmanha = arrayEtapasAmanha($conn); ?>
-                                                        <table class="table table-bordered">
-                                                            <thead class="bg-secondary text-white">
-                                                                <tr>
-                                                                    <th><b>Num Pedido</b></th>
-                                                                    <th><b>Fluxo</b></th>
-                                                                    <th><b>Etapa</b></th>
-                                                                    <th><b>Status</b></th>
-                                                                    <th><b>Dt</b></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-
-                                                                <?php
-                                                                foreach ($arrayEtapasAmanha as $key => $value) {
-
-                                                                    $value = intval($value);
-
-                                                                    $sql = "SELECT 
-                                                                    r.id AS idRealizacaoProducao,
-                                                                    r.numOrdem AS ordem,
-                                                                    r.dataRealizacao AS dt,
-                                                                    r.idEtapa AS idEtapa,
-                                                                    e.nome AS nomeEtapa,
-                                                                    s.nome AS nomeStatus,
-                                                                    s.id AS idStatus,
-                                                                    s.cor AS corStatus,
-                                                                    pd.pedido AS numPed,
-                                                                    f.nome AS nomeFluxo
-                                                                    FROM pedidos AS pd 
-                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
-                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
-                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
-                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
-                                                                    WHERE r.id = $value;";
-
-                                                                    // echo $sql;
-                                                                    // exit();
-
-                                                                    $ret = mysqli_query($conn, $sql);
-                                                                    if ($ret) {
-                                                                        while ($row = mysqli_fetch_assoc($ret)) {
-                                                                            $numPed = $row["numPed"];
-                                                                            $nomeFluxo = $row["nomeFluxo"];
-                                                                            $nomeEtapa = $row["nomeEtapa"];
-                                                                            $nomeStatus = $row["nomeStatus"];
-                                                                            $data = dateFormatByHifen($row["dt"]);
-                                                                ?>
-                                                                            <tr>
-                                                                                <td><?php echo $numPed; ?></td>
-                                                                                <td><?php echo $nomeFluxo; ?></td>
-                                                                                <td><?php echo $nomeEtapa; ?></td>
-                                                                                <td><?php echo $nomeStatus; ?></td>
-                                                                                <td><?php echo $data; ?></td>
-                                                                            </tr>
-                                                                <?php
-                                                                        }
-                                                                    }
-                                                                }
-                                                                ?>
-
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
 
                         </div>
 
@@ -301,7 +266,21 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
+        <!-- Modal Infos -->
+        <div class="modal fade" id="info" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-body py-4">
+                        <h6>Etapas nesse setor:</h6>
+                        <span id="placeholderEtapas" class="d-flex justify-content-center"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
+
+
 
     <?php include_once 'php/footer_index.php' ?>
 
@@ -328,6 +307,43 @@ if (isset($_SESSION["useruid"])) {
             });
 
         });
+
+        function sendInfo(info) {
+            var placeholder = document.getElementById('placeholderEtapas');
+
+            console.log(info);
+            if (info == 0) {
+                // Definir o conteúdo HTML do placeholder
+                placeholder.innerHTML = `<span class="alert alert-secondary">Nenhuma etapa cadastrada nesse setor </span>`;
+            } else {
+
+
+                // Chamar a função criarListaNumerada e obter o HTML
+                var listaHTML = criarListaNumerada(info);
+
+                // Definir o conteúdo HTML do placeholder
+                placeholder.innerHTML = listaHTML;
+            }
+
+        }
+
+
+        function criarListaNumerada(str) {
+            // Dividir a string em um array de itens
+            var itens = str.split(', ');
+
+            // Criar um elemento <ol> para a lista numerada
+            var ol = document.createElement('ol');
+
+            // Iterar sobre os itens e criar elementos <li> para cada um
+            itens.forEach(function(item) {
+                var li = document.createElement('li');
+                li.textContent = item;
+                ol.appendChild(li);
+            });
+
+            return ol.outerHTML;
+        }
     </script>
 
 <?php
