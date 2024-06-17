@@ -19,15 +19,15 @@ if (isset($_SESSION["useruid"])) {
                 <?php
                 if (isset($_GET["error"])) {
                     if ($_GET["error"] == "none") {
-                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Serviço editada com sucesso!</p></div>";
+                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Manutenção editada com sucesso!</p></div>";
                     } else if ($_GET["error"] == "deleted") {
-                        echo "<div class='my-2 pb-0 alert alert-warning pt-3 text-center'><p>Ordem de Serviço foi deletada!</p></div>";
+                        echo "<div class='my-2 pb-0 alert alert-warning pt-3 text-center'><p>Ordem de Manutenção foi deletada!</p></div>";
                     } else if ($_GET["error"] == "edit") {
-                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Serviço editada com sucesso!</p></div>";
+                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Manutenção editada com sucesso!</p></div>";
                     } else if ($_GET["error"] == "sent") {
-                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Serviço foi criada com sucesso!</p></div>";
+                        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Ordem de Manutenção foi criada com sucesso!</p></div>";
                     } else if ($_GET["error"] == "senteerror") {
-                        echo "<div class='my-2 pb-0 alert alert-danger pt-3 text-center'><p>ERRO ao enviar Ordem de Serviço!</p></div>";
+                        echo "<div class='my-2 pb-0 alert alert-danger pt-3 text-center'><p>ERRO ao enviar Ordem de Manutenção!</p></div>";
                     }
                 }
                 ?>
