@@ -59,7 +59,7 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Dt Chegada</th>
                                                 <th>Cód Produto</th>
                                                 <th>Produto</th>
-                                                <th>Fluxo</th>
+                                                <th>Modalidade</th>
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
                                                 <th>Dt Entrega</th>
@@ -101,7 +101,7 @@ if (isset($_SESSION["useruid"])) {
                                                 $diasparaproduzir = $row["diasparaproduzir"];
 
                                                 if ($diasparaproduzir < 20) {
-                                                    $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+                                                    $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
                                                 } else {
                                                     $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
                                                 }
@@ -115,7 +115,7 @@ if (isset($_SESSION["useruid"])) {
                                                 // // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
                                                 // if ($diasFaltantes <= 0) {
-                                                //     $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                //     $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
                                                 // } else {
                                                 //     $diasFaltantes = $diasFaltantes . ' dias';
                                                 // }

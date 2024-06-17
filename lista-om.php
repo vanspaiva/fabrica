@@ -37,19 +37,19 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col-sm-10">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>OS - Ordens de Serviço</b></h5>
+                                <h5 class="text-muted"><b>OM - Ordens de Manutenção</b></h5>
                                 <small class="text-muted">Gerenciamento de pedidos</small>
                             </div>
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="novaos?t=os"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir OS</button></a>
+                                        <a href="novaos?t=om"><button class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Abrir OM</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="atividades"><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
+                                        <a href="atividades-om"><button class="btn btn-outline-success btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="export?t=os"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                                        <a href="export?t=om"><button class="btn btn-outline-success btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
                                             <?php
                                             require_once 'db/dbh.php';
-                                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico");
+                                            $ret = mysqli_query($conn, "SELECT * FROM ordenmanutencao");
 
                                             while ($row = mysqli_fetch_array($ret)) {
 
@@ -83,22 +83,22 @@ if (isset($_SESSION["useruid"])) {
                                             ?>
 
                                                 <tr>
-                                                    <td><?php echo $row['osId']; ?></td>
-                                                    <td><?php echo $row['osDtCriacao']; ?></td>
-                                                    <td><?php echo $row['osNomeCriador']; ?></td>
-                                                    <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
-                                                    <td><?php echo $row['osDtEntregasDesejada']; ?></td>
-                                                    <td><?php echo substr($row['osDescricao'], 0, 50) . '...'; ?></td>
+                                                    <td><?php echo $row['omId']; ?></td>
+                                                    <td><?php echo $row['omDtCriacao']; ?></td>
+                                                    <td><?php echo $row['omNomeCriador']; ?></td>
+                                                    <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
+                                                    <td><?php echo $row['omDtEntregasDesejada']; ?></td>
+                                                    <td><?php echo substr($row['omDescricao'], 0, 50) . '...'; ?></td>
 
 
                                                     <td>
-                                                        <a href="editaros?id=<?php echo $row['osId']; ?>">
+                                                        <a href="editarom?id=<?php echo $row['omId']; ?>">
                                                             <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
-                                                        <a href="os?id=<?php echo $row['osId']; ?>">
+                                                        <a href="om?id=<?php echo $row['omId']; ?>">
                                                             <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
                                                         <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
-                                                            <a href="manageOs?id=<?php echo $row['osId']; ?>">
+                                                            <a href="manageom?id=<?php echo $row['omId']; ?>">
                                                                 <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
                                                         <?php
                                                         }

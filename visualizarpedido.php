@@ -55,7 +55,7 @@ if (isset($_SESSION["useruid"])) {
             $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
 
             if ($diasFaltantes <= 0) {
-                $diasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
             } else {
                 $diasFaltantes = $diasFaltantes . ' dias';
             }
@@ -88,7 +88,7 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                                 <div class="col-sm-8 pt-2 row-padding-2">
                                     <div class="row px-3" style="color: #fff">
-                                        <h2>Fluxo: <?php echo $NomeFluxo ?> - Ped: <?php echo $numPed; ?></h2>
+                                        <h2>Modalidade: <?php echo $NomeFluxo ?> - Ped: <?php echo $numPed; ?></h2>
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ if (isset($_SESSION["useruid"])) {
                                                                                 <small><?php echo $diasFaltantes; ?></small>
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column;">
-                                                                                <label for=""><b>Duração do Fluxo</b></label>
+                                                                                <label for=""><b>Duração do Modalidade</b></label>
                                                                                 <small><?php echo $diasFuturos; ?></small>
                                                                             </div>
                                                                         </div>

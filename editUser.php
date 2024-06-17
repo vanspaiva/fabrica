@@ -1,9 +1,11 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
+
+    $userId = $_GET['id'];
 
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
@@ -164,6 +166,73 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                 </div>
                                 <div class="card-footer"></div>
                             </div>
+
+                            <?php if ($tipoUsuario == "Colaborador(a)") {
+
+
+                                // Obtendo todas as setor
+                                $sql = "SELECT id, nome FROM setor";
+                                $result = mysqli_query($conn, $sql);
+                                $setorArray = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                                // Obtendo todas as setor associadas ao usuário
+                                $sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
+                                $stmt = mysqli_prepare($conn, $sql);
+                                mysqli_stmt_bind_param($stmt, "i", $userId);
+                                mysqli_stmt_execute($stmt);
+                                $result = mysqli_stmt_get_result($stmt);
+                                $setorAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                            ?>
+
+                                <div class="card mt-2">
+                                    <div class="card-header">
+                                        <h4 class="text-muted">Escolha Setores</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row p-3">
+                                            <div class="col border py-2">
+                                                <?php foreach ($setorAssociadas as $setor) : ?>
+                                                    <span class="badge badge-primary"><?php echo $setor['nome']; ?></span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="row py-4">
+                                            <div class="col">
+                                                <form action="processar_etapas.php" method="post">
+                                                    <input type="hidden" name="userId" value="<?php echo $userId; ?>">
+
+                                                    <label class="text-muted">Selecione os Setores:</label>
+                                                    <div class="form-group d-flex">
+                                                        <div class="row p-3">
+                                                            <?php
+                                                            // Create an array of IDs from $setorAssociadas for easy comparison
+                                                            $setorAssociadasIds = array_column($setorAssociadas, 'id');
+                                                            foreach ($setorArray as $value) :
+                                                            ?>
+
+
+
+                                                                <div class="form-check col-4">
+                                                                    <input class="form-check-input" type="checkbox" name="setor[]" value="<?php echo $value['id']; ?>" id="setor_<?php echo $value['id']; ?>" <?php echo in_array($value['id'], $setorAssociadasIds) ? 'checked' : ''; ?>>
+                                                                    <label class="form-check-label" for="setor_<?php echo $value['id']; ?>">
+                                                                        <?php echo $value['nome']; ?>
+                                                                    </label>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group d-flex justify-content-end">
+                                                        <button class="btn btn-fab" type="submit">Salvar</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+                            } ?>
                         </div>
 
                     </div>

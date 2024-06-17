@@ -30,12 +30,12 @@ if (isset($_SESSION["useruid"])) {
                                 </a>
                             </div>
                             <div class="col d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>Fluxos</b></h5>
-                                <small class="text-muted">Gerenciamento de fluxos</small>
+                                <h5 class="text-muted"><b>Setores</b></h5>
+                                <small class="text-muted">Gerenciamento de setores</small>
                             </div>
                             <div class="col">
                                 <div class="d-flex justify-content-end p-1">
-                                    <span class="btn btn-fab mx-2 p-2 px-3" data-toggle="modal" data-target="#novofluxo"><i class="fas fa-plus"></i> Nova Modalidade</span>
+                                    <span class="btn btn-fab mx-2 p-2 px-3" data-toggle="modal" data-target="#novosetor"><i class="fas fa-plus"></i> Novo Setor</span>
                                 </div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
                                             <?php
 
-                                            $ret = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
+                                            $ret = mysqli_query($conn, "SELECT * FROM setor ORDER BY id ASC;");
 
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
@@ -68,12 +68,12 @@ if (isset($_SESSION["useruid"])) {
                                                     <td><?php echo $nome; ?></td>
 
                                                     <td class="d-flex justify-content-center">
-                                                        <button class="btn text-info btn-sm" data-toggle="modal" data-target="#editfluxo" onclick="populate(<?php echo $id; ?>)"><i class="fas fa-edit"></i></button>
-                                                        <a href="descricaofluxo?id=<?php echo $encryptedId; ?>">
+                                                        <button class="btn text-info btn-sm" data-toggle="modal" data-target="#editsetor" onclick="populate(<?php echo $id; ?>)"><i class="fas fa-edit"></i></button>
+                                                        <a href="descricaosetor?id=<?php echo $encryptedId; ?>">
                                                             <button class="btn text-fab btn-sm"><i class="fas fa-ellipsis-v"></i></button>
                                                         </a>
-                                                        <a href="includes/configuracao.inc.php?dltfluxo=<?php echo $id; ?>">
-                                                            <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa fluxo?');"><i class="fas fa-trash-alt"></i></button>
+                                                        <a href="includes/configuracao.inc.php?dltsetor=<?php echo $id; ?>">
+                                                            <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa setor?');"><i class="fas fa-trash-alt"></i></button>
                                                         </a>
                                                         <?php
                                                         if ($_SESSION["userperm"] == 'Administrador') {
@@ -97,12 +97,12 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
-        <!-- Modal Add Modalidade -->
-        <div class="modal fade" id="novofluxo" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- Modal Add Setor -->
+        <div class="modal fade" id="novosetor" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #007A5A;">
-                        <h5 class="modal-title text-white">Nova Modalidade</h5>
+                        <h5 class="modal-title text-white">Novo Setor</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -118,7 +118,7 @@ if (isset($_SESSION["useruid"])) {
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <button type="submit" name="nvfluxo" id="nvfluxo" class="btn btn-fab">Criar</button>
+                                <button type="submit" name="nvsetor" id="nvsetor" class="btn btn-fab">Criar</button>
                             </div>
                         </form>
                     </div>
@@ -127,12 +127,12 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
-        <!-- Modal Edit Modalidade -->
-        <div class="modal fade" id="editfluxo" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- Modal Edit Setor -->
+        <div class="modal fade" id="editsetor" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #007A5A;">
-                        <h5 class="modal-title text-white">Editar Modalidade</h5>
+                        <h5 class="modal-title text-white">Editar Setor</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -152,7 +152,7 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <button type="submit" name="edfluxo" id="edfluxo" class="btn btn-fab">Salvar</button>
+                                <button type="submit" name="edsetor" id="edsetor" class="btn btn-fab">Salvar</button>
                             </div>
                         </form>
                     </div>
@@ -176,7 +176,7 @@ if (isset($_SESSION["useruid"])) {
                     var dados = {
                         id: pesquisa
                     }
-                    $.post('pesq_idfluxo.php', dados, function(retorna) {
+                    $.post('pesq_idsetor.php', dados, function(retorna) {
                         var array = retorna.split(',');
                         // $result = $id . ',' . $nome . ',' . $parametro1 . ',' . $parametro2 . ',' . $iterev;
 
@@ -208,9 +208,7 @@ if (isset($_SESSION["useruid"])) {
                         "lengthMenu": "Mostrar _MENU_ itens",
                         "zeroRecords": "Nenhuma proposta encontrada"
                     },
-                    "order": [
-                        [0, "asc"]
-                    ]
+                    "order": []
                 });
 
             });

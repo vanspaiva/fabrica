@@ -43,7 +43,7 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>OS - Acompanhamento Data Entrega</b></h5>
+                                <h5 class="text-muted"><b>OM - Acompanhamento Data Entrega</b></h5>
                                 <small class="text-muted">Chegada de pedidos e realização de trabalho</small>
                             </div>
                         </div>
@@ -114,10 +114,10 @@ if (isset($_SESSION["useruid"])) {
                                                     <tbody>
                                                         <?php
                                                         require_once 'db/dbh.php';
-                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('CRIADO', 'EM ANDAMENTO', 'PAUSADO');");
+                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenmanutencao WHERE omStatus IN ('CRIADO', 'EM ANDAMENTO', 'PAUSADO');");
                                                         while ($row = mysqli_fetch_array($ret)) {
                                                             //Data Entrada
-                                                            $dataEHora = explode(" ", $row['osDtCriacao']);
+                                                            $dataEHora = explode(" ", $row['omDtCriacao']);
 
                                                             $dataBD = $dataEHora[0];
                                                             $horaBD = $dataEHora[1];
@@ -129,12 +129,12 @@ if (isset($_SESSION["useruid"])) {
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
                                                             //Data Entrega
-                                                            if ($row['osDtEntregaReal'] == null) {
+                                                            if ($row['omDtEntregaReal'] == null) {
                                                                 $dataVazia = true;
                                                                 $temporestante = null;
                                                             } else {
                                                                 $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['osDtEntregaReal']);
+                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
 
                                                                 $dataBDEntrega = $dataEHoraEntrega[0];
                                                                 $dataBDEntrega = explode("-", $dataBDEntrega);
@@ -142,7 +142,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                                 //Tempo restante
                                                                 $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['osDtEntregaReal']);
+                                                                $your_date = strtotime($row['omDtEntregaReal']);
                                                                 $datediff = $now - $your_date;
 
                                                                 $temporestante = round($datediff / (60 * 60 * 24));
@@ -153,24 +153,24 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                             //Id
-                                                            $idOs = $row['osId'];
+                                                            $idOs = $row['omId'];
 
                                                             //Status
-                                                            $status = $row['osStatus'];
+                                                            $status = $row['omStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=om&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
                                                         ?>
                                                             <tr>
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
-                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
+                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['osDescricao'], 0, 20) . '...'; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 0, 20) . '...'; ?></td>
                                                                 <td class="d-flex justify-content-center" <?php
                                                                                                             if ($temporestante == null) {
                                                                                                                 echo '';
@@ -180,7 +180,7 @@ if (isset($_SESSION["useruid"])) {
                                                                                                                 } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
-                                                                        echo '<a href="editaros?id=' . $idOs . '" style="color: #000;">editar data</a>';
+                                                                        echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
                                                                     } ?></td>
@@ -220,10 +220,10 @@ if (isset($_SESSION["useruid"])) {
                                                     <tbody>
                                                         <?php
                                                         require_once 'db/dbh.php';
-                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('EM ANDAMENTO');");
+                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenmanutencao WHERE omStatus IN ('EM ANDAMENTO');");
                                                         while ($row = mysqli_fetch_array($ret)) {
                                                             //Data Entrada
-                                                            $dataEHora = explode(" ", $row['osDtCriacao']);
+                                                            $dataEHora = explode(" ", $row['omDtCriacao']);
 
                                                             $dataBD = $dataEHora[0];
                                                             $horaBD = $dataEHora[1];
@@ -235,12 +235,12 @@ if (isset($_SESSION["useruid"])) {
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
                                                             //Data Entrega
-                                                            if ($row['osDtEntregaReal'] == null) {
+                                                            if ($row['omDtEntregaReal'] == null) {
                                                                 $dataVazia = true;
                                                                 $temporestante = null;
                                                             } else {
                                                                 $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['osDtEntregaReal']);
+                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
 
                                                                 $dataBDEntrega = $dataEHoraEntrega[0];
                                                                 $dataBDEntrega = explode("-", $dataBDEntrega);
@@ -248,7 +248,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                                 //Tempo restante
                                                                 $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['osDtEntregaReal']);
+                                                                $your_date = strtotime($row['omDtEntregaReal']);
                                                                 $datediff = $now - $your_date;
 
                                                                 $temporestante = round($datediff / (60 * 60 * 24));
@@ -259,24 +259,24 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                             //Id
-                                                            $idOs = $row['osId'];
+                                                            $idOs = $row['omId'];
 
                                                             //Status
-                                                            $status = $row['osStatus'];
+                                                            $status = $row['omStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=om&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
                                                         ?>
                                                             <tr>
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
-                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
+                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['osDescricao'], 1, 20) . '...'; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
                                                                 <td class="d-flex justify-content-center" <?php
                                                                                                             if ($temporestante == null) {
                                                                                                                 echo '';
@@ -286,7 +286,7 @@ if (isset($_SESSION["useruid"])) {
                                                                                                                 } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
-                                                                        echo '<a href="editaros?id=' . $idOs . '" style="color: #000;">editar data</a>';
+                                                                        echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
                                                                     } ?></td>
@@ -326,10 +326,10 @@ if (isset($_SESSION["useruid"])) {
                                                     <tbody>
                                                         <?php
                                                         require_once 'db/dbh.php';
-                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('PAUSADO');");
+                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenmanutencao WHERE omStatus IN ('PAUSADO');");
                                                         while ($row = mysqli_fetch_array($ret)) {
                                                             //Data Entrada
-                                                            $dataEHora = explode(" ", $row['osDtCriacao']);
+                                                            $dataEHora = explode(" ", $row['omDtCriacao']);
 
                                                             $dataBD = $dataEHora[0];
                                                             $horaBD = $dataEHora[1];
@@ -341,12 +341,12 @@ if (isset($_SESSION["useruid"])) {
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
                                                             //Data Entrega
-                                                            if ($row['osDtEntregaReal'] == null) {
+                                                            if ($row['omDtEntregaReal'] == null) {
                                                                 $dataVazia = true;
                                                                 $temporestante = null;
                                                             } else {
                                                                 $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['osDtEntregaReal']);
+                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
 
                                                                 $dataBDEntrega = $dataEHoraEntrega[0];
                                                                 $dataBDEntrega = explode("-", $dataBDEntrega);
@@ -354,7 +354,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                                 //Tempo restante
                                                                 $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['osDtEntregaReal']);
+                                                                $your_date = strtotime($row['omDtEntregaReal']);
                                                                 $datediff = $now - $your_date;
 
                                                                 $temporestante = round($datediff / (60 * 60 * 24));
@@ -365,24 +365,24 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                             //Id
-                                                            $idOs = $row['osId'];
+                                                            $idOs = $row['omId'];
 
                                                             //Status
-                                                            $status = $row['osStatus'];
+                                                            $status = $row['omStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=om&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
                                                         ?>
                                                             <tr>
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
-                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
+                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['osDescricao'], 1, 20) . '...'; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
                                                                 <td class="d-flex justify-content-center" <?php
                                                                                                             if ($temporestante == null) {
                                                                                                                 echo '';
@@ -392,7 +392,7 @@ if (isset($_SESSION["useruid"])) {
                                                                                                                 } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
-                                                                        echo '<a href="editaros?id=' . $idOs . '" style="color: #000;">editar data</a>';
+                                                                        echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
                                                                     } ?></td>
@@ -432,10 +432,10 @@ if (isset($_SESSION["useruid"])) {
                                                     <tbody>
                                                         <?php
                                                         require_once 'db/dbh.php';
-                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE osStatus IN ('CONCLUÍDO');");
+                                                        $ret = mysqli_query($conn, "SELECT * FROM ordenmanutencao WHERE omStatus IN ('CONCLUÍDO');");
                                                         while ($row = mysqli_fetch_array($ret)) {
                                                             //Data Entrada
-                                                            $dataEHora = explode(" ", $row['osDtCriacao']);
+                                                            $dataEHora = explode(" ", $row['omDtCriacao']);
 
                                                             $dataBD = $dataEHora[0];
                                                             $horaBD = $dataEHora[1];
@@ -447,12 +447,12 @@ if (isset($_SESSION["useruid"])) {
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
                                                             //Data Entrega
-                                                            if ($row['osDtEntregaReal'] == null) {
+                                                            if ($row['omDtEntregaReal'] == null) {
                                                                 $dataVazia = true;
                                                                 $temporestante = null;
                                                             } else {
                                                                 $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['osDtEntregaReal']);
+                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
 
                                                                 $dataBDEntrega = $dataEHoraEntrega[0];
                                                                 $dataBDEntrega = explode("-", $dataBDEntrega);
@@ -460,7 +460,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                                 //Tempo restante
                                                                 $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['osDtEntregaReal']);
+                                                                $your_date = strtotime($row['omDtEntregaReal']);
                                                                 $datediff = $now - $your_date;
 
                                                                 $temporestante = round($datediff / (60 * 60 * 24));
@@ -471,24 +471,24 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                             //Id
-                                                            $idOs = $row['osId'];
+                                                            $idOs = $row['omId'];
 
                                                             //Status
-                                                            $status = $row['osStatus'];
+                                                            $status = $row['omStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=om&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=om&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
                                                         ?>
                                                             <tr>
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
-                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td>
+                                                                <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['osDescricao'], 1, 20) . '...'; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
                                                                 <td class="d-flex justify-content-center" <?php
                                                                                                             if ($temporestante == null) {
                                                                                                                 echo '';
@@ -498,7 +498,7 @@ if (isset($_SESSION["useruid"])) {
                                                                                                                 } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
-                                                                        echo '<a href="editaros?id=' . $idOs . '" style="color: #000;">editar data</a>';
+                                                                        echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
                                                                     } ?></td>

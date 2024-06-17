@@ -48,22 +48,29 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                         <hr>
                         <br>
-                        <div class="">
+                        <div class="" style="overflow-x: scroll;">
                             <div class="card-body">
                                 <div class="content-panel">
                                     <table id="tablePedido" class="table table-striped table-advance table-hover">
 
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Num Ped</th>
-                                                <th>Produto</th>
-                                                <th>Fluxo</th>
-                                                <th>Fases</th>
-                                                <th class="text-center">Dias P/ Produzir</th>
-                                                <th>Dias Faltantes</th>
-                                                <th>Situação</th>
                                                 <th></th>
+                                                <th>Situação</th>
+                                                <!-- <th>ID</th> -->
+                                                <th>Num Ped</th>
+                                                <th>Dt Aceite</th>
+                                                <th>Dt Entrega (Estoque)</th>
+                                                <th>Dt Entrega (Cliente)</th>
+                                                <th>Produto</th>
+                                                <!-- <th>Fluxo</th> -->
+                                                <th class="text-center">Dias P/ Produzir</th>
+                                                <th>Fases</th>
+                                                <th>Etapa Atual</th>
+                                                <th>Resp</th>
+                                                <th>Próx Etapa</th>
+                                                <th>Dias Faltantes</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,7 +84,7 @@ if (isset($_SESSION["useruid"])) {
                                             p.pedido AS numPedido, 
                                             p.dt, 
                                             p.produto AS Produto, 
-                                            p.dataEntrega, 
+                                            p.dataEntrega AS dataEntrega, 
                                             p.fluxo AS Fluxo, 
                                             p.lote, 
                                             p.cdgprod, 
@@ -104,7 +111,11 @@ if (isset($_SESSION["useruid"])) {
                                                 $Fluxo = $row["NomeFluxo"];
                                                 $qtdFasesRealizadas = contarEtapasConcluidas($conn, $ID);
                                                 $Fases =  $qtdFasesRealizadas . "/" . $row["qtdEtapas"];
-                                                $DiasPProduzir = $row["DiasProduzir"];
+                                                $DiasPProduzir = $row["DiasProduzir"] . ' dias';
+                                                $dataEntrega = $row["dataEntrega"];
+                                                $dtAceite = subtrairDiasUteis($dataEntrega, 20);
+                                                $dataEntregaEstoque = subtrairDiasUteis($dataEntrega, 2);
+                                                $dataEntregaCliente = dateFormatByHifen($dataEntrega);
 
                                                 $DiasFaltantes = diasFaltandoParaData($row['dataEntrega']);
                                                 $DiasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
@@ -113,7 +124,7 @@ if (isset($_SESSION["useruid"])) {
                                                 // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
 
                                                 if ($DiasFaltantes <= 0) {
-                                                    $DiasFaltantes = '<b class="text-danger"> Atrasado! </b>';
+                                                    $DiasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
                                                 } else {
                                                     $DiasFaltantes = $DiasFaltantes . ' dias';
                                                 }
@@ -127,26 +138,54 @@ if (isset($_SESSION["useruid"])) {
                                                     $Situação = "<span class='badge badge-warning'>" . $etapasAtrasadas . " etapas atrasadas </span>";
                                                 }
 
+                                                $etapaAtual = getEtapaAtual($conn, $ID);
+                                                $nomeEtapaAtual = getNomeEtapa($conn, $etapaAtual);
+                                                $respEtapaAtual = getRespEtapaAtual($conn, $ID, $etapaAtual);
+                                                if ($respEtapaAtual == "N/A") {
+                                                    $nomeproximaEtapa = $nomeEtapaAtual;
+                                                } else {
+                                                    $proximaEtapa = getProximaEtapa($conn, $ID, $etapaAtual);
+                                                    $nomeproximaEtapa = getNomeEtapa($conn, $proximaEtapa);
+                                                }
+
+                                                if (($DiasFaltantesNumber <= 5) && ($DiasFaltantesNumber > 0)) {
+                                                    $bgAtraso = '#ebd38b';
+                                                } elseif ($DiasFaltantesNumber <= 0) {
+                                                    $bgAtraso = "#edb0b6";
+                                                } else {
+                                                    $bgAtraso = "";
+                                                }
+
                                             ?>
-                                                <tr>
-                                                    <td><?php echo $ID; ?></td>
-                                                    <td><?php echo $NumPed; ?></td>
-                                                    <td><?php echo $Produto; ?></td>
-                                                    <td><?php echo $Fluxo; ?></td>
-                                                    <td><?php echo $Fases; ?></td>
-                                                    <td>
-                                                        <div class="d-flex justify-content-center">
-                                                            <?php echo $DiasPProduzir; ?>
-                                                        </div>
-                                                    </td>
-                                                    <td><?php echo $DiasFaltantes; ?></td>
-                                                    <td><?php echo $Situação; ?></td>
+                                                <tr style="background-color: <?php echo $bgAtraso; ?>;">
                                                     <td>
                                                         <div class="d-flex">
                                                             <a href="visualizarpedido?id=<?php echo $ID; ?>">
                                                                 <button class="btn btn-success m-1"><i class="fas fa-expand"></i></button></a>
                                                         </div>
                                                     </td>
+                                                    <!-- <td><?php // echo $ID; ?></td> -->
+                                                    <td><?php echo $Situação; ?></td>
+                                                    <td><b><?php echo $NumPed; ?></b></td>
+                                                    <td><?php echo $dtAceite; ?></td>
+                                                    <td><?php echo $dataEntregaEstoque; ?></td>
+                                                    <td><?php echo $dataEntregaCliente; ?></td>
+                                                    <td><?php echo $Produto; ?></td>
+                                                    <!-- <td><?php //echo $Fluxo; 
+                                                                ?></td> -->
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <?php echo $DiasPProduzir; ?>
+                                                        </div>
+                                                    </td>
+                                                    <td><?php echo $Fases; ?></td>
+                                                    <td><?php echo $nomeEtapaAtual; ?></td>
+                                                    <td><?php echo $respEtapaAtual; ?></td>
+                                                    <td><?php echo $nomeproximaEtapa; ?></td>
+
+                                                    <td><?php echo $DiasFaltantes; ?></td>
+                                                    
+
                                                 </tr>
                                             <?php
                                             }

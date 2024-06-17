@@ -85,7 +85,7 @@ if (isset($_SESSION["useruid"])) {
                                                 $Id = $row["Id"];
                                                 $DataLog = $row["DataLog"];
                                                 $HoraLog = $row["HoraLog"];
-                                                $Responsavel = $row["Responsavel"];
+                                                $Responsavel = getFirstAndLastName($row["Responsavel"]);
                                                 $numPedido = $row["numPedido"];
                                                 $Etapa = $row["Etapa"];
                                                 $Status = $row["Status"];

@@ -52,12 +52,22 @@ if (isset($_SESSION["useruid"])) {
                                                 </div>
                                             </div>
 
-                                            <!-- Fluxo -->
+                                            <!-- Modalidade -->
                                             <div class="row w-100 p-3 rounded my-1 d-flex justify-content-center">
                                                 <div class="col-6">
                                                     <div class="btn btn-light d-flex justify-content-between p-2 align-items-center shadow border">
-                                                        <h5 class="text-fab"><b>Fluxo OP</b></h5>
+                                                        <h5 class="text-fab"><b>Modalidade OP</b></h5>
                                                         <a href="config_fluxo" class="btn btn-fab"> > </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Setores -->
+                                            <div class="row w-100 p-3 rounded my-1 d-flex justify-content-center">
+                                                <div class="col-6">
+                                                    <div class="btn btn-light d-flex justify-content-between p-2 align-items-center shadow border">
+                                                        <h5 class="text-fab"><b>Setores OP</b></h5>
+                                                        <a href="config_setores" class="btn btn-fab"> > </a>
                                                     </div>
                                                 </div>
                                             </div>

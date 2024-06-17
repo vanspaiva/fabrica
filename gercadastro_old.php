@@ -296,7 +296,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                         <form class="prodForm" action="includes/configcadastro.inc.php" method="post">
                                                             <div class="form-row">
                                                                 <div class="form-group col-md">
-                                                                    <label class="text-black" for="posicao">Posição Fluxo</label>
+                                                                    <label class="text-black" for="posicao">Posição Modalidade</label>
                                                                     <input type="text" class="form-control" id="posicao" name="posicao" required>
                                                                 </div>
                                                                 <div class="form-group col-md">
