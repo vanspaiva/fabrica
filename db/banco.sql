@@ -772,15 +772,17 @@ CREATE TABLE CORRELACAO_PRODUTO (
 CREATE TABLE IF NOT EXISTS form_inf_003 (
     `id` INT NOT NULL AUTO_INCREMENT,
     `setor` VARCHAR(25) NOT NULL,
+    `area_adm` VARCHAR(100),
     `data` DATE NOT NULL,
     `periodo` VARCHAR(10),
-    `responsavel` VARCHAR(10) NOT NULL,
+    `responsavel` VARCHAR(10),
+    `id_user_criador` INT,
     `tipo_limpeza` VARCHAR(256) NOT NULL,
     `conferido` ENUM('APROV','PEND') NOT NULL DEFAULT 'PEND',
     `data_publicacao` DATE DEFAULT '2023-10-18',
     `data_validade` DATE DEFAULT '2025-10-18',
     PRIMARY KEY(`id`),
-    FOREIGN KEY (`setor`) REFERENCES `setor_e_area` (`setor`)
+    FOREIGN KEY (`id_user_criador`) REFERENCES `users`(`usersId`)
 ) DEFAULT CHARACTER SET utf8;
 
 

@@ -19,8 +19,8 @@ if (isset($_SESSION["useruid"])) {
 
     <body class="bg-light-gray2">
         <?php
-        include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';
+            include_once 'php/navbar.php';
+            include_once 'php/lateral-nav.php';
         ?>
 
 
@@ -64,9 +64,9 @@ if (isset($_SESSION["useruid"])) {
                             <?php
                             $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_SESSION["useruid"] . "';");
                             while ($row = mysqli_fetch_array($ret)) {
-
                                 $tpconta_criacao = $_SESSION["userperm"];
                                 $user_criacao = $_SESSION["useruid"];
+                                $user_id = $_SESSION["userid"];
                                 $email_criador = $row['usersEmail'];
 
                                 date_default_timezone_set('UTC');
@@ -87,7 +87,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                             <div class="form-group d-inline-block flex-fill m-2">
                                                 <label class="control-label" style="color:black;">Usuário</label>
-                                                <input class="form-control" name="nomecriador" id="nomecriador" type="text" value="<?php echo $user_criacao; ?>" readonly>
+                                                <input class="form-control" name="idCriador" id="idCriador" type="text" value="<?php echo $user_id; ?>" readonly>
                                             </div>
                                             <div class="form-group d-inline-block flex-fill m-2">
                                                 <label class="control-label" style="color:black;">E-mail</label>
@@ -106,7 +106,7 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                     <h4 class="text-fab">Dados da OM</h4>
                             
-                                         <div class="d-flex align-items-center justify-content-end">
+                                        <!--  <div class="d-flex align-items-center justify-content-end">
                                             <button type="button"class="btn btn-fab" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">+ Nova Área Administrativa</button>
                                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -158,7 +158,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                             </div>
                                         </div>
-
+ -->
                                         <div class="justify-content-around align-items-center">
                                             <div class="form-group mx-2">
                                                 <label class='d-block control-label' style='color:black;'>Escolha o Setor <b style='color: red;'>*</b></label>
@@ -185,7 +185,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label for="validationDefault04">Selecione a area a ser administrada</label>
-                                            <select class="custom-select" id="validationDefault04" required>
+                                            <select class="custom-select" id="validationDefault04" name="area-adm" required>
                                                 <option selected disabled value="">Escolha um setor</option>
                                                 <option value='banheiro-superior-masculino'>Banheiro superior masculino</option>
                                                 <option value='banheiro-superior-feminino'>Banheiro superior feminino</option>

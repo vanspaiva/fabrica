@@ -91,6 +91,41 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                         </div>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="col-sm my-2">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <h6 class="deactivated"><b>Módulo Registro de Limpeza</b></h6>
+                                </div>
+                                <hr>
+                                <div class="row d-flex justify-content-center my-1 py-1">
+                                    <div class="d-flex justify-content-between px-2">
+                                        <a href="novaom.php" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
+                                        <a href="testeEnvio.php" class="btn btn-outline-info mx-1 " style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i>Quadro de Atividades</a>
+                                    </div>
+                                </div>
+                                <div class="row d-flex justify-content-center my-1 py-1">
+                                    <div class="d-flex justify-content-between px-2">
+                                        <a href="pcp" class="btn btn-outline-info mx-1 disabled"><i class="fas fa-users-cog"></i> PCP </a>
+                                        <a href="opplanejamento" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
+                                        <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row d-flex justify-content-around align-items-start">
