@@ -5,41 +5,78 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 
+    // Função para obter o ID do usuário pelo nome de usuário
+    function getUserId($conn, $name) {
+        $stmt = $conn->prepare("SELECT usersId FROM users WHERE usersName = ?");
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['usersId'];
+        } else {
+            return null; // Se não encontrou nenhum usuário, retorne null ou lidere com isso conforme necessário
+        }
+    }
+
+    // Processar dados do formulário quando o formulário é enviado
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+        // Obter o ID do usuário
+        $name = $_SESSION["useruid"];
+        $userId = getUserId($conn, $name);
+        
+        if ($userId === null) {
+            // Lidar com o caso em que o usuário não foi encontrado
+            echo "Erro: Usuário não encontrado.";
+            exit; // Ou redirecione para uma página de erro
+        }
+
+        // Validar e capturar os dados do formulário
         $dataPublicacao = $_POST['dataPublicacao'];
-        $dataValidade = $_POST['dataValidade'];
         $identificadorAmbiente = $_POST['identificadorAmbiente'];
         $tipoAtividade = $_POST['tipoAtividade'];
-        $dataAtividade = $_POST['dataAtividade'];
+        $dataManutencao = $_POST['dataManutencao'];
 
-        $marcaModelo = "Springer";
         // Calcular a data de validade (dois anos após a data de publicação)
         $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
 
-        // Inserir dados do formulário na tabela FRM_INF_004
+        // Inserir dados na tabela FRM_INF_004
+        $marcaModelo = "Springer";
         $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade) VALUES (?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "sssss", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade);
         mysqli_stmt_execute($stmt);
         $frmInfId = mysqli_insert_id($conn);
 
-        // Calcular a data de validade (dois anos após a data de publicação)
-        $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
-
         // Inserir dados das atividades executadas na tabela ATIVIDADES_EXECUTADAS
-        foreach ($_POST['executado'] as $descricaoAtividadeId => $value) {
-            if (!empty($value)) {
+        foreach ($_POST['executado'] as $descricaoAtividadeId => $executado) {
+            if (!empty($executado)) {
+                // Definir valor para executado como 1 (assumindo que é uma atividade marcada como executada)
                 $executadoValue = 1;
-    
+
+                // Verificar se já existe uma entrada com esse user_id e descricao_atividade_id
+        $sqlCheck = "SELECT * FROM ATIVIDADES_EXECUTADAS WHERE user_id = ? AND descricao_atividade_id = ?";
+        $stmtCheck = mysqli_prepare($conn, $sqlCheck);
+        mysqli_stmt_bind_param($stmtCheck, "ii", $userId, $descricaoAtividadeId);
+        mysqli_stmt_execute($stmtCheck);
+        $resultCheck = mysqli_stmt_get_result($stmtCheck);
+
+        if ($resultCheck->num_rows > 0) {
+            // Lidar com a duplicação, por exemplo, atualizando ou ignorando
+            echo "Atividade já registrada para este usuário.";
+            continue; // Pule para a próxima iteração do loop
+        }
+
+                
+                // Inserir na tabela ATIVIDADES_EXECUTADAS
                 $sql = "INSERT INTO ATIVIDADES_EXECUTADAS (data_manutencao, frm_inf_004_id, descricao_atividade_id, executado, user_id) VALUES (?, ?, ?, ?, ?)";
                 $stmt = mysqli_prepare($conn, $sql);
-                mysqli_stmt_bind_param($stmt, "siisi", $dataAtividade, $frmInfId, $descricaoAtividadeId, $executadoValue, $userId);
+                mysqli_stmt_bind_param($stmt, "siisi", $dataManutencao, $frmInfId, $descricaoAtividadeId, $executadoValue, $userId);
                 mysqli_stmt_execute($stmt);
             }
         }
 
-
-        // Exibir mensagem de sucesso
         echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Dados inseridos com sucesso!</p></div>";
     }
 ?>
@@ -195,10 +232,27 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
 
                                     <!-- Descrição das atividades -->
+                                    <script>
+                                        function validarFormulario(event) {
+                                            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                                            var selecionado = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+                                            if (!selecionado) {
+                                                alert("Por favor, selecione ao menos uma atividade executada na manuntenção.");
+                                                event.preventDefault(); // Impede o envio do formulário
+                                            }
+                                        }
+
+                                        document.addEventListener('DOMContentLoaded', (event) => {
+                                            var formulario = document.querySelector('form');
+                                            formulario.addEventListener('submit', validarFormulario);
+                                        });
+                                    </script>
+
                                     <div class='d-flex justify-content-center' style="margin-top: 50px;">
                                         <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Data da Atividade<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dataAtividade' id='dataAtividade' type='date' required>
+                                            <label class='control-label' style='color:black;'>Data da Manutenção<b style='color: red;'>*</b></label>
+                                            <input class='form-control' name='dataManutencao' id='dataManutencao' type='date' required>
                                         </div>
                                     </div>
                                     <div class='d-flex d-block justify-content-around'>
@@ -215,7 +269,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <tr>
                                                         <td>Verificação e drenagem da água</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[1]" value="1"></td>
-                                                        <td><input type="text" name="responsavel[1]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px"></td>
+                                                        <td><input type="text" name="responsavel[1]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px" value="<?php echo $_SESSION["userfirstname"];?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
@@ -281,7 +335,6 @@ if (isset($_SESSION["useruid"])) {
                                             if (this.checked) {
                                                 var descricaoAtividadeId = $(this).data('id');
                                                 console.log('ID da Descrição da Atividade:', descricaoAtividadeId);
-                                                // Faça o que precisar com o ID da descrição da atividade aqui...
                                             }
                                         });
                                     </script>
