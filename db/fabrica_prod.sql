@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Tempo de geração: 17-Jun-2024 às 14:08
--- Versão do servidor: 8.0.21
--- versão do PHP: 7.4.9
+-- Tempo de geração: 17/06/2024 às 14:07
+-- Versão do servidor: 10.11.7-MariaDB-cll-lve
+-- Versão do PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,58 +18,48 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `fabrica`
+-- Banco de dados: `u777557116_bdcpmhfabrica`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `colaborador_etapas`
+-- Estrutura para tabela `colaborador_etapas`
 --
 
-DROP TABLE IF EXISTS `colaborador_etapas`;
-CREATE TABLE IF NOT EXISTS `colaborador_etapas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idUser` int DEFAULT NULL,
-  `idEtapa` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idUser` (`idUser`),
-  KEY `idEtapa` (`idEtapa`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+CREATE TABLE `colaborador_etapas` (
+  `id` int(11) NOT NULL,
+  `idUser` int(11) DEFAULT NULL,
+  `idEtapa` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `correlacao_produto`
+-- Estrutura para tabela `correlacao_produto`
 --
 
-DROP TABLE IF EXISTS `correlacao_produto`;
-CREATE TABLE IF NOT EXISTS `correlacao_produto` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idProdutoPrincipal` int DEFAULT NULL,
-  `idProdutoSecundario` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idProdutoPrincipal` (`idProdutoPrincipal`),
-  KEY `idProdutoSecundario` (`idProdutoSecundario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `correlacao_produto` (
+  `id` int(11) NOT NULL,
+  `idProdutoPrincipal` int(11) DEFAULT NULL,
+  `idProdutoSecundario` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `estados`
+-- Estrutura para tabela `estados`
 --
 
-DROP TABLE IF EXISTS `estados`;
-CREATE TABLE IF NOT EXISTS `estados` (
-  `ufId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `estados` (
+  `ufId` int(11) NOT NULL,
   `ufNomeExtenso` varchar(100) NOT NULL,
   `ufAbreviacao` varchar(2) NOT NULL,
-  `ufRegiao` varchar(100) NOT NULL,
-  PRIMARY KEY (`ufId`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+  `ufRegiao` varchar(100) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `estados`
+-- Despejando dados para a tabela `estados`
 --
 
 INSERT INTO `estados` (`ufId`, `ufNomeExtenso`, `ufAbreviacao`, `ufRegiao`) VALUES
@@ -99,26 +89,24 @@ INSERT INTO `estados` (`ufId`, `ufNomeExtenso`, `ufAbreviacao`, `ufRegiao`) VALU
 (24, 'Santa Catarina', 'SC', 'Sul'),
 (25, 'São Paulo', 'SP', 'Sudeste'),
 (26, 'Sergipe', 'SE', 'Nordeste'),
-(28, 'Tocantins', 'TO', '');
+(27, 'Tocantins', 'TO', 'Norte');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `etapa`
+-- Estrutura para tabela `etapa`
 --
 
-DROP TABLE IF EXISTS `etapa`;
-CREATE TABLE IF NOT EXISTS `etapa` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `etapa` (
+  `id` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
-  `parametro1` text,
-  `parametro2` text,
-  `iterev` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
+  `parametro1` text DEFAULT NULL,
+  `parametro2` text DEFAULT NULL,
+  `iterev` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `etapa`
+-- Despejando dados para a tabela `etapa`
 --
 
 INSERT INTO `etapa` (`id`, `nome`, `parametro1`, `parametro2`, `iterev`) VALUES
@@ -219,18 +207,16 @@ INSERT INTO `etapa` (`id`, `nome`, `parametro1`, `parametro2`, `iterev`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `etapasos`
+-- Estrutura para tabela `etapasos`
 --
 
-DROP TABLE IF EXISTS `etapasos`;
-CREATE TABLE IF NOT EXISTS `etapasos` (
-  `etapaId` int NOT NULL AUTO_INCREMENT,
-  `etapaNome` varchar(30) NOT NULL,
-  PRIMARY KEY (`etapaId`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+CREATE TABLE `etapasos` (
+  `etapaId` int(11) NOT NULL,
+  `etapaNome` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `etapasos`
+-- Despejando dados para a tabela `etapasos`
 --
 
 INSERT INTO `etapasos` (`etapaId`, `etapaNome`) VALUES
@@ -240,28 +226,27 @@ INSERT INTO `etapasos` (`etapaId`, `etapaNome`) VALUES
 (6, 'Limpeza 2'),
 (7, 'Inspeção'),
 (8, 'Embalagem'),
-(10, 'Gravação');
+(10, 'Gravação'),
+(11, 'Impressão Titânio'),
+(12, 'Impressão Filamento/Resina'),
+(13, 'Usinagem');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `etapa_fluxo`
+-- Estrutura para tabela `etapa_fluxo`
 --
 
-DROP TABLE IF EXISTS `etapa_fluxo`;
-CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idfluxo` int NOT NULL,
-  `idetapa` int NOT NULL,
-  `ordem` int NOT NULL,
-  `duracao` float NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idfluxo` (`idfluxo`),
-  KEY `idetapa` (`idetapa`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+CREATE TABLE `etapa_fluxo` (
+  `id` int(11) NOT NULL,
+  `idfluxo` int(11) NOT NULL,
+  `idetapa` int(11) NOT NULL,
+  `ordem` int(11) NOT NULL,
+  `duracao` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `etapa_fluxo`
+-- Despejando dados para a tabela `etapa_fluxo`
 --
 
 INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
@@ -273,39 +258,38 @@ INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUE
 (7, 1, 23, 7, 1),
 (9, 1, 35, 10, 1),
 (12, 1, 88, 1, 1),
-(13, 1, 13, 11, 2),
+(13, 1, 13, 12, 2),
 (14, 1, 3, 9, 1),
 (17, 1, 52, 8, 1),
 (18, 17, 72, 1, 1),
 (19, 17, 74, 2, 1),
-(20, 17, 28, 3, 1),
-(21, 17, 87, 4, 1),
-(22, 17, 88, 5, 1),
-(23, 17, 1, 6, 1),
-(24, 17, 31, 7, 1),
-(25, 17, 4, 8, 1),
-(26, 17, 65, 9, 1),
-(27, 17, 33, 10, 1),
-(28, 17, 23, 11, 1),
-(29, 17, 52, 12, 1),
-(30, 17, 35, 13, 1),
-(31, 17, 18, 14, 1),
-(32, 17, 13, 15, 1);
+(20, 1, 1, 11, 2),
+(21, 17, 28, 3, 1),
+(22, 17, 87, 4, 1),
+(23, 17, 88, 5, 1),
+(24, 17, 1, 6, 1),
+(25, 17, 31, 7, 1),
+(26, 17, 4, 8, 1),
+(27, 17, 65, 9, 1),
+(28, 17, 33, 10, 1),
+(29, 17, 23, 11, 1),
+(30, 17, 52, 12, 1),
+(31, 17, 35, 13, 1),
+(32, 17, 18, 14, 1),
+(33, 17, 13, 15, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `filedownload`
+-- Estrutura para tabela `filedownload`
 --
 
-DROP TABLE IF EXISTS `filedownload`;
-CREATE TABLE IF NOT EXISTS `filedownload` (
-  `fileId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `filedownload` (
+  `fileId` int(11) NOT NULL,
   `fileRealName` text NOT NULL,
-  `fileOsRef` int NOT NULL,
-  `filePath` varchar(500) NOT NULL,
-  PRIMARY KEY (`fileId`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+  `fileOsRef` int(11) NOT NULL,
+  `filePath` varchar(500) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Despejando dados para a tabela `filedownload`
@@ -347,22 +331,19 @@ INSERT INTO `filedownload` (`fileId`, `fileRealName`, `fileOsRef`, `filePath`) V
 (33, '', 28, '../arquivos/28'),
 (34, 'https://firebasestorage.googleapis.com/v0/b/sistemas-fabrica.appspot.com/o/arquivosOS%2Fxxx%2F3188A920.X74-DX.%20-%20Placa%202%2C0%20Ancoragem%20Trava%20Fio%20YY%2030%C2%BA%20-%20Direita%20%5BLASER%20CUT%20-%20LONGA%5D.DXF?alt=media&token=e4b8015b-fd47-43b9-9c49-915356e1fe05', 29, '../arquivos/29');
 
-
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `fluxo`
+-- Estrutura para tabela `fluxo`
 --
 
-DROP TABLE IF EXISTS `fluxo`;
-CREATE TABLE IF NOT EXISTS `fluxo` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+CREATE TABLE `fluxo` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `fluxo`
+-- Despejando dados para a tabela `fluxo`
 --
 
 INSERT INTO `fluxo` (`id`, `nome`) VALUES
@@ -432,20 +413,16 @@ INSERT INTO `fluxo` (`id`, `nome`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `logatividades`
+-- Estrutura para tabela `logatividades`
 --
 
-DROP TABLE IF EXISTS `logatividades`;
-CREATE TABLE IF NOT EXISTS `logatividades` (
-  `logId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `logatividades` (
+  `logId` int(11) NOT NULL,
   `logOsRef` varchar(100) NOT NULL,
-  `logHorario` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `logHorario` timestamp NOT NULL DEFAULT current_timestamp(),
   `logStatus` varchar(50) NOT NULL,
-  `logUser` varchar(200) NOT NULL,
-  `logTipo` varchar(2) DEFAULT NULL,
-  PRIMARY KEY (`logId`)
-) ENGINE=MyISAM AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
-
+  `logUser` varchar(200) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Despejando dados para a tabela `logatividades`
@@ -524,39 +501,41 @@ INSERT INTO `logatividades` (`logId`, `logOsRef`, `logHorario`, `logStatus`, `lo
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `log_atividades_producao`
+-- Estrutura para tabela `log_atividades_producao`
 --
 
-DROP TABLE IF EXISTS `log_atividades_producao`;
-CREATE TABLE IF NOT EXISTS `log_atividades_producao` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idRealizacaoProducao` int DEFAULT NULL,
-  `idEtapa` int NOT NULL,
-  `idUsuario` int DEFAULT NULL,
-  `idStatus` int DEFAULT NULL,
+CREATE TABLE `log_atividades_producao` (
+  `id` int(11) NOT NULL,
+  `idRealizacaoProducao` int(11) DEFAULT NULL,
+  `idEtapa` int(11) NOT NULL,
+  `idUsuario` int(11) DEFAULT NULL,
+  `idStatus` int(11) DEFAULT NULL,
   `data` date DEFAULT NULL,
-  `hora` time DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+  `hora` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
+--
+-- Despejando dados para a tabela `log_atividades_producao`
+--
+
+INSERT INTO `log_atividades_producao` (`id`, `idRealizacaoProducao`, `idEtapa`, `idUsuario`, `idStatus`, `data`, `hora`) VALUES
+(1, 0, 72, 1, 2, '2024-06-17', '10:57:15');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `mesesano`
+-- Estrutura para tabela `mesesano`
 --
 
-DROP TABLE IF EXISTS `mesesano`;
-CREATE TABLE IF NOT EXISTS `mesesano` (
-  `mesId` int NOT NULL AUTO_INCREMENT,
-  `mesNum` int NOT NULL,
+CREATE TABLE `mesesano` (
+  `mesId` int(11) NOT NULL,
+  `mesNum` int(11) NOT NULL,
   `mesNome` varchar(20) NOT NULL,
-  `mesAbrv` varchar(3) NOT NULL,
-  PRIMARY KEY (`mesId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  `mesAbrv` varchar(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Extraindo dados da tabela `mesesano`
+-- Despejando dados para a tabela `mesesano`
 --
 
 INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
@@ -576,61 +555,63 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ordenmanutencao`
+-- Estrutura para tabela `ordenmanutencao`
 --
 
-DROP TABLE IF EXISTS `ordenmanutencao`;
-CREATE TABLE IF NOT EXISTS `ordenmanutencao` (
-  `omId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ordenmanutencao` (
+  `omId` int(11) NOT NULL,
   `omUserCriador` varchar(200) NOT NULL,
   `omNomeCriador` varchar(200) NOT NULL,
   `omEmailCriador` varchar(200) NOT NULL,
-  `omDtCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `omDtUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `omDtCriacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `omDtUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `omUserIp` varchar(20) NOT NULL,
   `omSetor` varchar(200) NOT NULL,
   `omDescricao` varchar(200) NOT NULL,
   `omNumMaquina` varchar(50) DEFAULT NULL,
   `omNomeMaquina` varchar(200) DEFAULT NULL,
-  `omNomeArquivo` text,
+  `omNomeArquivo` text DEFAULT NULL,
   `omGrauUrgencia` varchar(10) NOT NULL,
   `omDtEntregasDesejada` varchar(100) NOT NULL,
   `omDtEntregaReal` varchar(200) DEFAULT NULL,
   `dtExecucao` varchar(100) DEFAULT NULL,
-  `omObs` text,
-  `omStatus` varchar(20) NOT NULL,
-  PRIMARY KEY (`omId`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `omObs` text DEFAULT NULL,
+  `omStatus` varchar(20) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
+--
+-- Despejando dados para a tabela `ordenmanutencao`
+--
+
+INSERT INTO `ordenmanutencao` (`omId`, `omUserCriador`, `omNomeCriador`, `omEmailCriador`, `omDtCriacao`, `omDtUpdate`, `omUserIp`, `omSetor`, `omDescricao`, `omNumMaquina`, `omNomeMaquina`, `omNomeArquivo`, `omGrauUrgencia`, `omDtEntregasDesejada`, `omDtEntregaReal`, `dtExecucao`, `omObs`, `omStatus`) VALUES
+(1, 'Administrador', 'vanessapaiva', 'vanessa.paiva@fixgrupo.com.br', '2024-06-17 13:47:49', '2024-06-17 13:47:49', '127.0.0.1', ' Anodização', 'aGFDDH DGDFGD ', '1234', 'TESTE 123', NULL, '3', '2024-06-21', NULL, NULL, NULL, 'CRIADO');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ordenservico`
+-- Estrutura para tabela `ordenservico`
 --
 
-DROP TABLE IF EXISTS `ordenservico`;
-CREATE TABLE IF NOT EXISTS `ordenservico` (
-  `osId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ordenservico` (
+  `osId` int(11) NOT NULL,
   `osUserCriador` varchar(200) NOT NULL,
   `osNomeCriador` varchar(200) NOT NULL,
   `osEmailCriador` varchar(200) NOT NULL,
-  `osDtCriacao` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `osDtUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `osDtCriacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `osDtUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `osUserIp` varchar(20) NOT NULL,
   `osSetor` varchar(200) NOT NULL,
   `osDescricao` varchar(200) NOT NULL,
   `osLote` varchar(50) DEFAULT NULL,
   `osNPed` varchar(50) DEFAULT NULL,
-  `osNomeArquivo` text,
+  `osNomeArquivo` text DEFAULT NULL,
   `osGrauUrgencia` varchar(10) NOT NULL,
   `osDtEntregasDesejada` varchar(100) NOT NULL,
   `osDtEntregaReal` varchar(200) DEFAULT NULL,
   `dtExecucao` varchar(100) DEFAULT NULL,
-  `osObs` text,
-  `osStatus` varchar(20) NOT NULL,
-  PRIMARY KEY (`osId`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+  `osObs` text DEFAULT NULL,
+  `osStatus` varchar(20) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Despejando dados para a tabela `ordenservico`
@@ -653,12 +634,11 @@ INSERT INTO `ordenservico` (`osId`, `osUserCriador`, `osNomeCriador`, `osEmailCr
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `pedidos`
+-- Estrutura para tabela `pedidos`
 --
 
-DROP TABLE IF EXISTS `pedidos`;
-CREATE TABLE IF NOT EXISTS `pedidos` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL,
   `projetista` varchar(255) DEFAULT NULL,
   `dr` varchar(255) DEFAULT NULL,
   `pac` varchar(255) DEFAULT NULL,
@@ -667,159 +647,248 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   `dt` date DEFAULT NULL,
   `produto` varchar(255) DEFAULT NULL,
   `dataEntrega` date DEFAULT NULL,
-  `fluxo` int DEFAULT NULL,
-  `lote` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `cdgprod` text CHARACTER SET utf8 COLLATE utf8_general_ci,
-  `qtds` text CHARACTER SET utf8 COLLATE utf8_general_ci,
-  `descricao` text CHARACTER SET utf8 COLLATE utf8_general_ci,
-  `diasparaproduzir` int NOT NULL,
-  `taxa_extra` int DEFAULT NULL,
+  `fluxo` int(11) DEFAULT NULL,
+  `lote` varchar(100) DEFAULT NULL,
+  `cdgprod` text DEFAULT NULL,
+  `qtds` text DEFAULT NULL,
+  `descricao` text DEFAULT NULL,
+  `diasparaproduzir` int(11) DEFAULT NULL,
+  `taxa_extra` int(11) DEFAULT NULL,
   `nacional_internacional` varchar(20) DEFAULT NULL,
-  `obs` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+  `obs` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Despejando dados para a tabela `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `produto`, `dataEntrega`, `fluxo`, `lote`, `cdgprod`, `qtds`, `descricao`, `diasparaproduzir`, `taxa_extra`, `nacional_internacional`, `obs`) VALUES
+(1, 'Lucas', 'Doutor Teste', 'ABC', 'julianaaguiar', '125456', '2024-06-07', 'ORTOGNÁTICA', '2024-07-05', 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'Wilton', 'Farid Miguel Damen', 'GFCB', 'tatianecpmh', '12047', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'joao.avelar', 'Sandro Lucas', 'MFRAC', 'neandrobarbosa', '12004', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, NULL, 'Teste', 'ABC', NULL, '1234', '2024-06-17', NULL, '2024-07-15', 17, '1234', NULL, NULL, NULL, 20, 0, 'nacional', ''),
+(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `produto`
+-- Estrutura para tabela `produto`
 --
 
-DROP TABLE IF EXISTS `produto`;
-CREATE TABLE IF NOT EXISTS `produto` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `produto` (
+  `id` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
   `codigo` varchar(50) DEFAULT NULL,
-  `idfluxo` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idfluxo` (`idfluxo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `idfluxo` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `realizacaoproducao`
+-- Estrutura para tabela `produtos`
 --
 
-DROP TABLE IF EXISTS `realizacaoproducao`;
-CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idPedido` int DEFAULT NULL,
-  `idFluxo` int DEFAULT NULL,
-  `numOrdem` int DEFAULT NULL,
-  `idEtapa` int DEFAULT NULL,
-  `idStatus` int NOT NULL,
-  `dataRealizacao` date DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=214 DEFAULT CHARSET=utf8;
+CREATE TABLE `produtos` (
+  `prodId` int(11) NOT NULL,
+  `prodCodCallisto` varchar(48) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `prodDescricao` varchar(128) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `prodAnvisa` varchar(128) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `prodCategoria` varchar(48) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Despejando dados para a tabela `produtos`
+--
+
+INSERT INTO `produtos` (`prodId`, `prodCodCallisto`, `prodDescricao`, `prodAnvisa`, `prodCategoria`) VALUES
+(7, 'E200.013-1 D', 'SMARTMOLD ZIGOMA PMMA - UNILATERAL Dir', '80859840124', 'CMF'),
+(8, 'E200.013-1 E', 'SMARTMOLD ZIGOMA PMMA - UNILATERAL Esq', '80859840124', 'CMF'),
+(9, 'E200.011-F', 'SMARTMOLD ZIGOMA PMMA - BILATERAL ', '80859840124', 'CMF'),
+(11, 'E200.011-G', 'SMARTMOLD PARANASAL PMMA - Dir + Esq', '80859840124', 'CMF'),
+(12, 'E200.011-H', 'SMARTMOLD MENTO  PMMA', '80859840124', 'CMF'),
+(13, 'E200.011-I', 'SMARTMOLD MENTO BIPARTIDO PMMA', '80859840124', 'CMF'),
+(14, 'E200.011-KD', 'SMARTMOLD ANG DE MANDIBULA  PMMA - DIR', '80859840124', 'CMF'),
+(15, 'E200.011-KE', 'SMARTMOLD ANG DE MANDIBULA  PMMA - ESQ', '80859840124', 'CMF'),
+(16, 'E200.011-J', 'SMARTMOLD ANG DE MANDIBULA  PMMA - Dir + Esq', '80859840124', 'CMF'),
+(17, 'E200.011-L', 'SMARTMOLD PRÉ-MAXILA  ', '80859840124', 'CMF'),
+(18, 'PC-703-MAN*', 'MESH MAND TITÂNIO SOB MEDIDA M', 'Licença Especial ', 'CRÂNIO'),
+(19, 'PC-703-MAX*', 'MESH MAXILA TITÂNIO SOB MEDIDA M', 'Licença Especial ', 'CRÂNIO'),
+(20, 'PC-704MAN*', 'MESH MAND TITÂNIO SOB MEDIDA G', 'Licença Especial ', 'CRÂNIO'),
+(21, 'PC-704MAX*', 'MESH MAXILA TITÂNIO SOB MEDIDA G', 'Licença Especial', 'CRÂNIO'),
+(22, 'E200.016-1*', 'FAST CMF CRANIO EM PMMA (s/ template <50cm3)', 'E- 80859840195', 'CRÂNIO'),
+(23, 'E200.016-2*', 'FAST CMF CRANIO EM PMMA (s/ template >51cm3)', 'E- 80859840195', 'CRÂNIO'),
+(24, 'E200.013-1', 'FASTMOLD CRANIO PMMA P < 30cm3', 'E - 80859849002', 'CRÂNIO'),
+(25, 'E200.013-5*', ' FASTMOLD CRANIO PMMA M 31 a 60cm3', 'E - 80859849002', 'CRÂNIO'),
+(26, 'E200.013-6*', 'FASTMOLD CRANIO PMMA  G > 61cm3', 'E - 80859849002', 'CRÂNIO'),
+(27, 'PC-201-P1*', 'CRÂNIO SOB MEDIDA PEEK  P < 30cm³', 'Licença Especial', 'CRÂNIO'),
+(28, 'PC-201-P2*', 'CRÂNIO SOB MEDIDA PEEK  M - 31 a 60cm3', 'Licença Especial ', 'CRÂNIO'),
+(29, 'PC-201-P3*', 'CRÂNIO SOB MEDIDA  PEEK G > 61cm3', 'Licença Especial ', 'CRÂNIO'),
+(30, 'PC-201-T1*', 'CRÂNIO TITÂNIO C/ TRABECULADO - P <30cm³', 'Licença Especial ', 'CRÂNIO'),
+(31, 'PC-201-T2*', 'CRÂNIO TITÂNIO C/ TRABECULADO  - M - 31 a 60cm3', 'Licença Especial ', 'CRÂNIO'),
+(32, 'PC-201-T3*', 'CRÂNIO TITÂNIO C/ TRABECULADO G > 61cm3', 'Licença Especial ', 'CRÂNIO'),
+(33, 'PC-301-P1*', 'RECONSTRUÇÃO ORBITA EM PEEK - 1', 'Licença Especial', 'CMF'),
+(34, 'PC-301-P2*', 'RECONSTRUÇÃO ORBITA EM PEEK - 2', 'Licença Especial ', 'CMF'),
+(35, 'PC-302-P1*', 'RECONSTRUÇÃO MAXILAR EM PEEK - 1 ', 'Licença Especial ', 'CMF'),
+(36, 'PC-302-P2*', 'RECONSTRUÇÃO MAXILAR EM PEEK - 2 ', 'Licença Especial ', 'CMF'),
+(37, 'PC-303-P1*', 'RECONSTRUÇÃO MANDIBULAR EM PEEK - 1 ', 'Licença Especial ', 'CMF'),
+(38, 'PC-303-P2*', 'RECONSTRUÇÃO MANDIBULAR EM PEEK - 2', 'Licença Especial ', 'CMF'),
+(39, 'PC-304-P1*', 'RECONSTRUÇÃO  ZIGOMA PEEK - 1', 'Licença Especial ', 'CMF'),
+(40, 'PC-304-P2*', 'RECONSTRUÇÃO  ZIGOMA PEEK  - 2', 'Licença Especial ', 'CMF'),
+(41, 'PC-305-P1*', 'RECONSTRUÇÃO INFRAORBITÁRIO  EM PEEK - 1', 'Licença Especial ', 'CMF'),
+(42, 'PC-305-P2*', 'RECONSTRUÇÃO INFRAORBITÁRIO  PEEK - 2', 'Licença Especial ', 'CMF'),
+(43, 'PC-306-P1*', 'RECONSTRUÇÃO GLABELA PEEK-1', 'Licença Especial', 'CMF'),
+(44, 'PC-306-P2*', 'RECONSTRUÇÃO GLABELA PEEK-2', 'Licença Especial', 'CMF'),
+(45, 'PC-501-P1*', 'RECONSTRUÇÃO FRONTAL EM PEEK-1', 'Licença Especial', 'CMF'),
+(46, 'PC-501-P2*', 'RECONSTRUÇÃO FRONTAL EM PEEK-2', 'Licença Especial', 'CMF'),
+(47, 'PC-507-P1', 'RECONSTRUÇÃO ANG DE MAND. Dir.+Esq PEEK', 'Licença Especial', 'CMF'),
+(48, 'PC-507-P2', 'RECONSTRUÇÃO ANG DE MAND. Esq PEEK', 'Licença Especial', 'CMF'),
+(49, 'PC-507-P3', 'RECONSTRUÇÃO ANG DE MAND. Dir. PEEK', 'Licença Especial', 'CMF'),
+(50, 'PC-402-P1 MEN*', 'RECONSTRUÇÃO MENTO PEEK 1', 'Licença Especial', 'CMF'),
+(51, 'PC-402-P2 MEN*', 'RECONSTRUÇÃO MENTO PEEK 2', 'Licença Especial', 'Selecione categoria'),
+(52, 'PC-301-T1*', 'RECONSTRUÇÃO ORBITA TIÂNIO TRABECULADO - 1', 'Licença Especial', 'CMF'),
+(53, 'PC-301-T2*', 'RECONSTRUÇÃO ORBITA TIÂNIO TRABECULADO - 2', 'Licença Especial', 'CMF'),
+(54, 'PC-302-T1*', 'RECONSTRUÇÃO MAXILA TITÂNIO TRABECULADO- 1 ', 'Licença Especial', 'CMF'),
+(55, 'PC-302-T2*', 'RECONSTRUÇÃO MAXILA TITÂNIO TRABECULADO- 2 ', 'Licença Especial ', 'CMF'),
+(56, 'PC-303-T1*', 'RECONSTRUÇÃO MANDIBULA TITÂNIO TRABECULADO - 1', 'Licença Especial', 'CMF'),
+(57, 'PC-303-T2*', 'RECONSTRUÇÃO MANDIBULA TITÂNIO TRABECULADO - 2', 'Licença Especial', 'CMF'),
+(58, 'PC-304-T1*', 'RECONSTRUÇÃO ZIGOMA TITÂNIO TRABECULADO- 1', 'Licença Especial', 'CMF'),
+(59, 'PC-304-T2*', 'RECONSTRUÇÃO  ZIGOMA TITÂNIO TRABECULADO- 2', 'Licença Especial', 'CMF'),
+(60, 'PC-305-T1*', 'RECONSTRUÇÃO INFRAORBITÁRIO TITÂNIO TRABECULADO - 1', 'Licença Especial', 'CMF'),
+(61, 'PC-305-T2*', 'RECONSTRUÇÃO INFRAORBITÁRIO TITÂNIO TRABECULADO - 2', 'Licença Especial', 'CMF'),
+(62, 'PC-306-T1*', 'RECONSTRUÇÃO GLABELA  TITÂNIO TRABECULADO- 1', 'Licença Especial', 'CMF'),
+(63, 'PC-306-T2*', 'RECONSTRUÇÃO GLABELA  TITÂNIO TRABECULADO- 2', 'Licença Especial', 'CMF'),
+(64, 'PC-402MEN ', 'RECONSTRUÇÃO MENTO TITÂNIO TRABECULADO- 1', 'Licença Especial', 'CMF'),
+(65, 'PC-403MEN ', 'RECONSTRUÇÃO MENTO TITÂNIO TRABECULADO- 2', 'Licença Especial', 'CMF'),
+(66, 'PC-507-T1 ', 'RECONSTRUÇÃO ANG DE MAND. Esq TITÂNIO TRABECULADO- 1', 'Licença Especial', 'CMF'),
+(67, 'PC-507-T2 ', 'RECONSTRUÇÃO ANG DE MAND. Dir. TITÂNIO TRABECULADO- 2', 'Licença Especial', 'CMF'),
+(68, 'PC-501-T1*', 'RECONSTRUÇÃO FRONTAL TITÂNIO TRABECULADO - 1', 'Licença Especial', 'CMF'),
+(69, 'PC-501-T2*', 'RECONSTRUÇÃO FRONTAL TITÂNIO TRABECULADO - 2', 'Licença Especial', 'CMF'),
+(70, 'KITPC-505D*', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º - D - 1', 'Licença Especial', 'CMF'),
+(71, 'PC-700 MAX MAN', 'CUSTOMLIFE - RECONSTRUÇÃO MAXILA + MANDIBULA', 'Licença Especial', 'CMF'),
+(72, 'KITPC-505E*', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º - E - 1', 'Licença Especial', 'CMF'),
+(73, 'KITPC-506D*', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º - D - 2', 'Licença Especial', 'CMF'),
+(74, 'KITPC-506E*', 'SISTEMA ATM TITÂNIO TRABECULADO COM SLA / PAR. BLOQUEADO E FOSSA SINTERIZADA DE 30º- E - 2', 'Licença Especial', 'CMF'),
+(75, 'KITPC-6000', 'ORTOGNATICA SOB MEDIDA MAXILA', 'Licença Especial', 'CMF'),
+(76, 'KITPC-6001', 'ORTOGNATICA SOB MEDIDA MANDIBULA', 'Licença Especial', 'CMF'),
+(77, 'KITPC-6002', 'ORTOGNATICA SOB MEDIDA MAXILA, MANDIBULA E MENTO', 'Licença Especial', 'CMF'),
+(78, 'PC-701-MAXP*', 'CUSTOMLIFE - RECONSTRUÇÃO MAXILA ATROFICA  PARCIAL', 'Licença Especial', 'CMF'),
+(79, 'PC-701-MANP*', 'CUSTOMLIFE - RECONSTRUÇÃO MANDIBULA ATROFICA PARCIAL', 'Licença Especial', 'CMF'),
+(80, 'ATA.B', 'ATA BUCO-MAXILO-FACIAL', 'N/A', 'ATA'),
+(81, 'ATA.B 2976  - HOF', 'ATA HOF (Harmonização) ', 'N/A', 'ATA'),
+(82, 'ATA.Cl', 'ATA COLUNA LOMBAR', 'N/A', 'ATA'),
+(83, 'ATA.O', 'ATA OTORRINOLARINGISTA', 'N/A', 'ATA'),
+(84, 'ATA.Cl', 'ATA COLUNA CERVICAL ', 'N/A', 'ATA'),
+(85, 'ATA HOF', 'ATA pre smartmold (abatimento depois na compra so smartmold)', 'N/A', 'ATA'),
+(86, 'ATA PP', 'ATA pre-projeto (abatimento depois no customlife) ', 'N/A', 'ATA'),
+(87, 'ATA.OM', 'ATA OMBRO ', 'N/A', 'ATA'),
+(88, 'E200.012-1', 'Guia de Osteotomia A / corticotomia', '80859840201', 'CMF'),
+(89, 'E200.012-10', 'Guia de Osteotomia J / MAX ', '80859840201', 'CMF'),
+(90, 'E200.012-11', 'Guia de Osteotomia K / MAND', '80859840201', 'CMF'),
+(91, 'E200.012-12', 'Guia de Osteotomia L / mento ', '80859840201', 'CMF'),
+(92, 'E200.012-13', 'Guia de Osteotomia M / cranio ', '80859840201', 'CMF'),
+(93, 'E200.012-14', 'Guia de Osteotomia N', '80859840201', 'CMF'),
+(94, 'E200.012-15', 'Guia de Osteotomia O', '80859840201', 'CMF'),
+(95, 'E200.012-16', 'Guia de Osteotomia P / coluna ', '80859840201', 'CMF'),
+(96, 'E200.007', 'Surgicalguide Intermediário', '80859840069', 'CMF'),
+(97, 'E200.008', 'Surgicalguide Final', '80859840069', 'CMF'),
+(98, 'P-5.00.01-D', 'Fossa articular P – Direita', '80859840212', 'CMF'),
+(99, 'P-5.DF.01-D', 'Dispositivo fossa de corte e perfuração para articulação pequena - Direita', '80859840169', 'CMF'),
+(100, 'P-5.10.01-D', 'Placa mandibular curta com cabeça condilar P - Direita', '80859840212', 'CMF'),
+(102, 'P-5.20.01-D', 'Placa mandibular média com cabeça condilar P – Direita  ', '80859840212', 'CMF'),
+(103, 'P-5.20.DM-D', 'Dispositivo mandibular MEDIA M para corte e perfuração - Direita', '80859840169', 'CMF'),
+(104, 'P-5.30.01-D', 'Placa mandibular longa com cabeça condilar P – Direita', '80859840212', 'CMF'),
+(105, 'P-5.30.DM-D', 'Dispositivo mandibular G para corte e perfuração – Direita', '80859840169', 'CMF'),
+(106, 'P-5.00.01-E', ' Fossa Articular P', '80859840212', 'CMF'),
+(107, 'P-5.DF.01-E', 'Dispositivo fossa de corte e perfuração para articulação pequena – esquerda', '80859840169', 'CMF'),
+(108, 'P-5.10.01-E', 'Placa mandibular curta com cabeça condilar P - Esquerda', '80859840212', 'CMF'),
+(109, 'P-5.10.DM-E', 'Dispositivo mandibular CURTA P para corte e perfuração – esquerda ', '80859840169', 'CMF'),
+(110, 'P-5.20.01-E', 'Placa mandibular média com cabeça condilar P – Esquerda', '80859840212', 'CMF'),
+(111, 'P-5.20.DM-E', 'Dispositivo mandibular MEDIA M para corte e perfuração – esquerda', '80859840169', 'CMF'),
+(112, 'P-5.30.01-E', 'Placa mandibular longa com cabeça condilar P – Esquerda', '80859840212', 'CMF'),
+(113, 'P-5.30.DM-E', 'Dispositivo mandibular LONGA G para corte e perfuração – esquerda ', '80859840169', 'CMF'),
+(114, 'P-5.00.02-D', 'Fossa articular M – Direita', '80859840212', 'CMF'),
+(115, 'P-5.DF.02-D', 'Dispositivo fossa de corte e perfuração para articulação média - Direita', '80859840169', 'CMF'),
+(116, 'P-5.10.02-D', 'Placa mandibular curta com cabeça condilar M – Direita', '80859840212', 'CMF'),
+(117, 'P-5.20.02-D', 'Placa mandibular média com cabeça condilar M – Direita ', '80859840212', 'CMF'),
+(118, 'P-5.30.02-D', 'Placa mandibular longa com cabeça condilar M – Direita', '80859840212', 'CMF'),
+(122, 'P-5.00.01-E', 'Fossa Articular M', '80859840212', 'CMF'),
+(123, 'P-5.DF.02-E', 'Dispositivo fossa de corte e perfuração para articulação média – esquerda', '80859840169', 'CMF'),
+(124, 'P-5.10.02-E', 'Placa mandibular curta com cabeça condilar M – Esquerda', '80859840212', 'CMF'),
+(125, 'P-5.20.02-E', 'Placa mandibular média com cabeça condilar M – Esquerda', '80859840212', 'CMF'),
+(126, 'P-5.30.02-E', 'Placa mandibular longa com cabeça condilar M – Esquerda', '80859840212', 'CMF'),
+(127, 'P-5.10.DM-E', 'Dispositivo mandibular CURTA P para corte e perfuração – esquerda', '80859840169', 'CMF'),
+(128, 'P-5.20.DM-E', 'Dispositivo mandibular MEDIA M para corte e perfuração – esquerda', '80859840169', 'CMF'),
+(129, 'P-5.30.DM-E', 'Dispositivo mandibular LONGA G para corte e perfuração – esquerda', '80859840169', 'CMF'),
+(130, 'PC-920.210', 'Parafuso 2,0 x 10 Bloqueado', '80859840212', 'EXTRA'),
+(131, 'PC-920.205', 'Parafuso 2,0 x 05 Bloqueado', '80859840212', 'EXTRA'),
+(132, 'PC-924.210', 'Parafuso 2,4 x 10 Bloqueado', '80859840212', 'EXTRA'),
+(134, 'P-5.10.DM-D', 'Dispositivo mandibular P para corte e perfuração – Direita', '80859840169', 'CMF'),
+(135, 'T30.200', 'Caixa ATM Super Instrumental', ' ', 'EXTRA'),
+(136, 'T30.101', 'Caixa ATM Básica Parafusos', ' ', 'EXTRA'),
+(137, 'PC-702-MAXT*', 'CUSTOMLIFE - RECONSTRUÇÃO MAXILA ATROFICA TOTAL', 'Licença Especial', 'CMF'),
+(138, 'PC-702-MANT*', 'CUSTOMLIFE - RECONSTRUÇÃO MANDIBULA ATROFICA TOTAL', 'Licença Especial', 'CMF');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `setor`
+-- Estrutura para tabela `realizacaoproducao`
 --
 
-DROP TABLE IF EXISTS `setor`;
-CREATE TABLE IF NOT EXISTS `setor` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+CREATE TABLE `realizacaoproducao` (
+  `id` int(11) NOT NULL,
+  `idPedido` int(11) DEFAULT NULL,
+  `idFluxo` int(11) DEFAULT NULL,
+  `numOrdem` int(11) DEFAULT NULL,
+  `idEtapa` int(11) DEFAULT NULL,
+  `idStatus` int(11) NOT NULL,
+  `dataRealizacao` date DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `setor`
+-- Despejando dados para a tabela `realizacaoproducao`
 --
 
-INSERT INTO `setor` (`id`, `nome`) VALUES
-(1, 'IMPRESSÃO'),
-(2, 'TRATAMENTO TÉRMICO'),
-(3, 'USINAGEM'),
-(4, 'ACABAMENTO'),
-(5, 'INSPEÇÃO 1'),
-(6, 'SLA E ANODIZAÇÃO'),
-(7, 'MOLDAGEM E ANODIZAÇÃO'),
-(8, 'INSPEÇÃO 2'),
-(9, 'GRAVAÇÃO'),
-(10, 'LIMPEZA'),
-(11, 'INSPEÇÃO 3'),
-(12, 'EMBALAGEM ESTÉRIL'),
-(13, 'ESTERILIZAÇÃO'),
-(14, 'EMB ROTULAGEM FINAL'),
-(15, 'LIBERAÇÃO FINAL');
+INSERT INTO `realizacaoproducao` (`id`, `idPedido`, `idFluxo`, `numOrdem`, `idEtapa`, `idStatus`, `dataRealizacao`) VALUES
+(0, 4, 17, 1, 72, 4, '2024-06-18');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `setor_etapa`
+-- Estrutura para tabela `setor`
 --
 
-DROP TABLE IF EXISTS `setor_etapa`;
-CREATE TABLE IF NOT EXISTS `setor_etapa` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idsetor` int NOT NULL,
-  `idetapa` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idsetor` (`idsetor`),
-  KEY `idetapa` (`idetapa`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
-
---
--- Extraindo dados da tabela `setor_etapa`
---
-
-INSERT INTO `setor_etapa` (`id`, `idsetor`, `idetapa`) VALUES
-(2, 4, 1),
-(3, 1, 26),
-(4, 1, 27),
-(5, 1, 28),
-(6, 2, 87),
-(7, 2, 86),
-(8, 3, 88),
-(9, 3, 89),
-(10, 3, 90),
-(11, 3, 93),
-(12, 3, 91),
-(13, 3, 92),
-(14, 5, 31),
-(15, 5, 32),
-(16, 6, 2),
-(17, 6, 3),
-(18, 6, 4),
-(19, 7, 2),
-(20, 7, 3),
-(21, 7, 55),
-(22, 7, 56),
-(23, 7, 57),
-(24, 8, 33),
-(25, 8, 34),
-(26, 9, 23),
-(27, 9, 24),
-(28, 10, 52),
-(29, 10, 53),
-(30, 10, 54),
-(31, 11, 35),
-(32, 11, 36),
-(33, 12, 18),
-(34, 14, 13),
-(35, 15, 51);
+CREATE TABLE `setor` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `statusetapa`
+-- Estrutura para tabela `setor_etapa`
 --
 
-DROP TABLE IF EXISTS `statusetapa`;
-CREATE TABLE IF NOT EXISTS `statusetapa` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `setor_etapa` (
+  `id` int(11) NOT NULL,
+  `idsetor` int(11) NOT NULL,
+  `idetapa` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `statusetapa`
+--
+
+CREATE TABLE `statusetapa` (
+  `id` int(11) NOT NULL,
   `nome` varchar(255) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
-  `cor` varchar(7) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `cor` varchar(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `statusetapa`
+-- Despejando dados para a tabela `statusetapa`
 --
 
 INSERT INTO `statusetapa` (`id`, `nome`, `tipo`, `cor`) VALUES
@@ -837,19 +906,17 @@ INSERT INTO `statusetapa` (`id`, `nome`, `tipo`, `cor`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `statusos`
+-- Estrutura para tabela `statusos`
 --
 
-DROP TABLE IF EXISTS `statusos`;
-CREATE TABLE IF NOT EXISTS `statusos` (
-  `stId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `statusos` (
+  `stId` int(11) NOT NULL,
   `stNome` varchar(30) NOT NULL,
-  `stPosicao` int NOT NULL,
-  PRIMARY KEY (`stId`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+  `stPosicao` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `statusos`
+-- Despejando dados para a tabela `statusos`
 --
 
 INSERT INTO `statusos` (`stId`, `stNome`, `stPosicao`) VALUES
@@ -861,48 +928,42 @@ INSERT INTO `statusos` (`stId`, `stNome`, `stPosicao`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `tempo_corrido`
+-- Estrutura para tabela `tempo_corrido`
 --
 
-DROP TABLE IF EXISTS `tempo_corrido`;
-CREATE TABLE IF NOT EXISTS `tempo_corrido` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idPedido` int DEFAULT NULL,
-  `idEtapa` int DEFAULT NULL,
-  `tempoCorrido` time DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `tempo_corrido` (
+  `id` int(11) NOT NULL,
+  `idPedido` int(11) DEFAULT NULL,
+  `idEtapa` int(11) DEFAULT NULL,
+  `tempoCorrido` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `tipocadastroexterno`
+-- Estrutura para tabela `tipocadastroexterno`
 --
 
-DROP TABLE IF EXISTS `tipocadastroexterno`;
-CREATE TABLE IF NOT EXISTS `tipocadastroexterno` (
-  `tpcadexId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tipocadastroexterno` (
+  `tpcadexId` int(11) NOT NULL,
   `tpcadexCodCadastro` varchar(10) NOT NULL,
-  `tpcadexNome` varchar(30) NOT NULL,
-  PRIMARY KEY (`tpcadexId`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `tpcadexNome` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `tipocadastrointerno`
+-- Estrutura para tabela `tipocadastrointerno`
 --
 
-DROP TABLE IF EXISTS `tipocadastrointerno`;
-CREATE TABLE IF NOT EXISTS `tipocadastrointerno` (
-  `tpcadinId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tipocadastrointerno` (
+  `tpcadinId` int(11) NOT NULL,
   `tpcadinCodCadastro` varchar(10) NOT NULL,
-  `tpcadinNome` varchar(20) NOT NULL,
-  PRIMARY KEY (`tpcadinId`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  `tpcadinNome` varchar(20) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `tipocadastrointerno`
+-- Despejando dados para a tabela `tipocadastrointerno`
 --
 
 INSERT INTO `tipocadastrointerno` (`tpcadinId`, `tpcadinCodCadastro`, `tpcadinNome`) VALUES
@@ -913,12 +974,11 @@ INSERT INTO `tipocadastrointerno` (`tpcadinId`, `tpcadinCodCadastro`, `tpcadinNo
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `users`
+-- Estrutura para tabela `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `usersId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `usersId` int(11) NOT NULL,
   `usersName` varchar(128) NOT NULL,
   `usersEmail` varchar(128) NOT NULL,
   `usersUid` varchar(128) NOT NULL,
@@ -927,9 +987,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `usersAprov` varchar(20) NOT NULL,
   `usersUf` varchar(11) DEFAULT NULL,
   `usersIdentificador` varchar(128) DEFAULT NULL,
-  `usersCel` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`usersId`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  `usersCel` varchar(20) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Despejando dados para a tabela `users`
@@ -953,39 +1012,342 @@ INSERT INTO `users` (`usersId`, `usersName`, `usersEmail`, `usersUid`, `usersPer
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `user_setor`
+-- Estrutura para tabela `user_setor`
 --
 
-DROP TABLE IF EXISTS `user_setor`;
-CREATE TABLE IF NOT EXISTS `user_setor` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idsetor` int NOT NULL,
-  `iduser` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idsetor` (`idsetor`),
-  KEY `iduser` (`iduser`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `user_setor` (
+  `id` int(11) NOT NULL,
+  `idsetor` int(11) NOT NULL,
+  `iduser` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Restrições para despejos de tabelas
+-- Índices para tabelas despejadas
 --
 
 --
--- Limitadores para a tabela `correlacao_produto`
+-- Índices de tabela `colaborador_etapas`
+--
+ALTER TABLE `colaborador_etapas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idUser` (`idUser`),
+  ADD KEY `idEtapa` (`idEtapa`);
+
+--
+-- Índices de tabela `correlacao_produto`
+--
+ALTER TABLE `correlacao_produto`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idProdutoPrincipal` (`idProdutoPrincipal`),
+  ADD KEY `idProdutoSecundario` (`idProdutoSecundario`);
+
+--
+-- Índices de tabela `estados`
+--
+ALTER TABLE `estados`
+  ADD PRIMARY KEY (`ufId`);
+
+--
+-- Índices de tabela `etapa`
+--
+ALTER TABLE `etapa`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `etapasos`
+--
+ALTER TABLE `etapasos`
+  ADD PRIMARY KEY (`etapaId`);
+
+--
+-- Índices de tabela `etapa_fluxo`
+--
+ALTER TABLE `etapa_fluxo`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idfluxo` (`idfluxo`),
+  ADD KEY `idetapa` (`idetapa`);
+
+--
+-- Índices de tabela `filedownload`
+--
+ALTER TABLE `filedownload`
+  ADD PRIMARY KEY (`fileId`);
+
+--
+-- Índices de tabela `fluxo`
+--
+ALTER TABLE `fluxo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `logatividades`
+--
+ALTER TABLE `logatividades`
+  ADD PRIMARY KEY (`logId`);
+
+--
+-- Índices de tabela `log_atividades_producao`
+--
+ALTER TABLE `log_atividades_producao`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `mesesano`
+--
+ALTER TABLE `mesesano`
+  ADD PRIMARY KEY (`mesId`);
+
+--
+-- Índices de tabela `ordenmanutencao`
+--
+ALTER TABLE `ordenmanutencao`
+  ADD PRIMARY KEY (`omId`);
+
+--
+-- Índices de tabela `ordenservico`
+--
+ALTER TABLE `ordenservico`
+  ADD PRIMARY KEY (`osId`);
+
+--
+-- Índices de tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `produto`
+--
+ALTER TABLE `produto`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idfluxo` (`idfluxo`);
+
+--
+-- Índices de tabela `produtos`
+--
+ALTER TABLE `produtos`
+  ADD PRIMARY KEY (`prodId`);
+
+--
+-- Índices de tabela `realizacaoproducao`
+--
+ALTER TABLE `realizacaoproducao`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `setor`
+--
+ALTER TABLE `setor`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `setor_etapa`
+--
+ALTER TABLE `setor_etapa`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idsetor` (`idsetor`),
+  ADD KEY `idetapa` (`idetapa`);
+
+--
+-- Índices de tabela `statusetapa`
+--
+ALTER TABLE `statusetapa`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `statusos`
+--
+ALTER TABLE `statusos`
+  ADD PRIMARY KEY (`stId`);
+
+--
+-- Índices de tabela `tempo_corrido`
+--
+ALTER TABLE `tempo_corrido`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `tipocadastroexterno`
+--
+ALTER TABLE `tipocadastroexterno`
+  ADD PRIMARY KEY (`tpcadexId`);
+
+--
+-- Índices de tabela `tipocadastrointerno`
+--
+ALTER TABLE `tipocadastrointerno`
+  ADD PRIMARY KEY (`tpcadinId`);
+
+--
+-- Índices de tabela `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`usersId`);
+
+--
+-- Índices de tabela `user_setor`
+--
+ALTER TABLE `user_setor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idsetor` (`idsetor`),
+  ADD KEY `iduser` (`iduser`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `colaborador_etapas`
+--
+ALTER TABLE `colaborador_etapas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `correlacao_produto`
+--
+ALTER TABLE `correlacao_produto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `estados`
+--
+ALTER TABLE `estados`
+  MODIFY `ufId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de tabela `etapa`
+--
+ALTER TABLE `etapa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+
+--
+-- AUTO_INCREMENT de tabela `etapasos`
+--
+ALTER TABLE `etapasos`
+  MODIFY `etapaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT de tabela `etapa_fluxo`
+--
+ALTER TABLE `etapa_fluxo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT de tabela `filedownload`
+--
+ALTER TABLE `filedownload`
+  MODIFY `fileId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT de tabela `fluxo`
+--
+ALTER TABLE `fluxo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
+-- AUTO_INCREMENT de tabela `logatividades`
+--
+ALTER TABLE `logatividades`
+  MODIFY `logId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+
+--
+-- AUTO_INCREMENT de tabela `mesesano`
+--
+ALTER TABLE `mesesano`
+  MODIFY `mesId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de tabela `ordenmanutencao`
+--
+ALTER TABLE `ordenmanutencao`
+  MODIFY `omId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `ordenservico`
+--
+ALTER TABLE `ordenservico`
+  MODIFY `osId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT de tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `produto`
+--
+ALTER TABLE `produto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `produtos`
+--
+ALTER TABLE `produtos`
+  MODIFY `prodId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
+
+--
+-- AUTO_INCREMENT de tabela `setor`
+--
+ALTER TABLE `setor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `setor_etapa`
+--
+ALTER TABLE `setor_etapa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `statusos`
+--
+ALTER TABLE `statusos`
+  MODIFY `stId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de tabela `tipocadastroexterno`
+--
+ALTER TABLE `tipocadastroexterno`
+  MODIFY `tpcadexId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `tipocadastrointerno`
+--
+ALTER TABLE `tipocadastrointerno`
+  MODIFY `tpcadinId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de tabela `users`
+--
+ALTER TABLE `users`
+  MODIFY `usersId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT de tabela `user_setor`
+--
+ALTER TABLE `user_setor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `correlacao_produto`
 --
 ALTER TABLE `correlacao_produto`
   ADD CONSTRAINT `correlacao_produto_ibfk_1` FOREIGN KEY (`idProdutoPrincipal`) REFERENCES `produto` (`id`),
   ADD CONSTRAINT `correlacao_produto_ibfk_2` FOREIGN KEY (`idProdutoSecundario`) REFERENCES `produto` (`id`);
 
 --
--- Limitadores para a tabela `etapa_fluxo`
+-- Restrições para tabelas `etapa_fluxo`
 --
 ALTER TABLE `etapa_fluxo`
   ADD CONSTRAINT `etapa_fluxo_ibfk_1` FOREIGN KEY (`idfluxo`) REFERENCES `fluxo` (`id`),
   ADD CONSTRAINT `etapa_fluxo_ibfk_2` FOREIGN KEY (`idetapa`) REFERENCES `etapa` (`id`);
 
 --
--- Limitadores para a tabela `produto`
+-- Restrições para tabelas `produto`
 --
 ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`idfluxo`) REFERENCES `fluxo` (`id`);
