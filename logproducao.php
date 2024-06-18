@@ -48,7 +48,7 @@ if (isset($_SESSION["useruid"])) {
                         <hr>
                         <div class="">
                             <div class="card-body">
-                                <div class="content-panel">
+                                <div class="content-panel" style="overflow-x: scroll;">
                                     <table id="table" class="table table-striped table-advance table-hover">
 
                                         <thead>

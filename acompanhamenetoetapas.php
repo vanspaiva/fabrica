@@ -315,7 +315,7 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
 
                                 <!-- Coluna Graficos -->
-                                <div class="col-12 col-sm-5">
+                                <div class="col-12 col-sm">
                                     <div class="row py-3" style="overflow-x: scroll;">
                                         <div class="">
                                             <h6 class="text-warning"><b> Fazendo </b> (<?php echo $qtdFazendo; ?>)</h6>
