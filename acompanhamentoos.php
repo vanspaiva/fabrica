@@ -97,7 +97,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableOs" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -203,7 +203,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableandamento" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -309,7 +309,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tablepausado" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -415,7 +415,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableconcluido" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>

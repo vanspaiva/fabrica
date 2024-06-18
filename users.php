@@ -47,7 +47,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                         <hr>
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col" style="overflow-x: scroll;">
                                 <table id="usersTable" class="display table table-striped table-advance table-hover">
                                     <thead>
                                         <tr>
