@@ -94,14 +94,6 @@ if (isset($_SESSION["useruid"])) {
 
 
 
-
-
-
-
-
-
-
-
                     <div class="col-sm my-2">
                         <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
@@ -112,8 +104,8 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
                                         <a href="novaom.php" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
-                                        <a href="testeEnvio.php" class="btn btn-outline-info mx-1 " style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
-                                        <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i>Quadro de Atividades</a>
+                                        <a href="showForm003.php" class="btn btn-outline-info mx-1 " style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i>Quadro de Atividades</a>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">
