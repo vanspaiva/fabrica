@@ -88,7 +88,7 @@
         
 
 
-        //insertRegistro004($conn);
+        insertRegistro004($conn);
         
         
 

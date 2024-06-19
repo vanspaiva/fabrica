@@ -1,9 +1,11 @@
 <?php 
-include("php/head_tables.php");
-?>
+session_start();
 
+if (isset($_SESSION["useruid"])) {
+    include("php/head_tables.php");
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +20,9 @@ include("php/head_tables.php");
             text-overflow: ellipsis;
             max-width: 200px; /* Adjust the max-width as needed */
         }
-        body > h1{
+        body > h1, #center{
             text-align: center;
+            
         }
         .pendentes{
             background-color: red;
@@ -36,64 +39,98 @@ include("php/head_tables.php");
             border-radius: 5px;
         }
     </style>
- <body>
-    <h1>Registro de Limpeza Pendentes</h1>
+    <header>
+    <?php
+        include_once 'php/navbar.php';
+        include_once 'php/lateral-nav.php';
+    ?>
+    </header>
+    <body class="bg-light-gray2">
+    <div class="col-sm-10 container" >
+            <div style="padding: 50px 0;" class="row d-flex  justify-content-center">
+                <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
+                    <h5 class="text-muted"><b>Registro de Limpezas Pendentes</b></h5>
+                    <small class="text-muted">Gerenciamento de Registros</small>
+                </div>
+                <div class="col-sm d-none d-sm-block">
+                    <div class="d-flex  justify-content-between">
+                        <div class="d-flex justify-content-center p-1">
+                            <a href="novaom"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
+                        </div>
+                        <div class="d-flex justify-content-center p-1">
+                            <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
+                        </div>
+                        <div class="d-flex justify-content-center p-1">
+                            <a href=""><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
    <!-- Your grid container -->
-        <div style="width:1300px;margin: auto;"> 
-            <table border="1" id="myTable" class="table table-striped table-advance table-hover">
-                <thead>
-                    <tr>
-                        <th>Setor</th>
-                        <th>Área Administrativa</th>
-                        <th>Data</th>
-                        <th>Período</th>
-                        <th>Responsável</th>
-                        <th>Tipo de Limpeza</th>
-                        <th>Status</th>
-                        <th>Data de Publicação</th>
-                        <th>Data de Validade</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                            require_once 'db/dbh.php';
-                            $sql = "SELECT * FROM form_inf_003 WHERE conferido = 'PEND'";
-                            $ret = mysqli_query($conn, $sql);
-                            while ($row = mysqli_fetch_array($ret)) {
+        <div style="overflow-x: auto; margin: auto; display: grid; place-items: center;"> 
+            <div style="width: 1300px;">
+                <table border="1" id="myTable" style="width: 1300px;" class="table table-striped table-advance table-hover">
+                    <thead>
+                        <tr>
+                            <th>Setor</th>
+                            <th>Área Administrativa</th>
+                            <th>Data</th>
+                            <th>Período</th>
+                            <th>Responsável</th>
+                            <th>Tipo de Limpeza</th>
+                            <th>Status</th>
+                            <th>Data de Publicação</th>
+                            <th>Data de Validade</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                                require_once 'db/dbh.php';
+                                $sql = "SELECT * FROM form_inf_003 WHERE conferido = 'PEND'";
+                                $ret = mysqli_query($conn, $sql);
+                                while ($row = mysqli_fetch_array($ret)) {
+                                    ?>
+                                        <tr>
+                                            <td style="vertical-align: middle;"><?php echo $row["setor"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["area_adm"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["data"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["responsavel"]; ?></td>
+                                            <td class=" truncate"><?php echo nl2br($row["tipo_limpeza"]); ?></td>
+                                            <td style="vertical-align: middle;"><?php
+                                            if($row["conferido"] == "PEND"){
+                                                    echo   "<span class='pendentes'>
+                                                                Pendente
+                                                            </span>";
+                                            }
+                                            else{
+                                                echo "
+                                                <span class='aprovados'>
+                                                    Aprovado
+                                                </span>";
+                                            }
+                                            ?>
+                                            </td>
+                                            <td style="text-align: center; vertical-align: middle;"><?php echo $row["form_data_publicacao"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["form_data_validade"]; ?></td>
+
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                <a href="aprovForm003.php?id=<?php echo $row["id"]; ?>">
+                                                <button  type="button" class="btn btn-success"  onClick="return confirm('Você realmente deseja aprovar esse Registro?');"><i class="bi bi-hand-thumbs-up-fill" style="color: #ffff;"></i>Aprovar</button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
                                 ?>
-                                    <tr>
-                                        <td style="vertical-align: middle;"><?php echo $row["setor"]; ?></td>
-                                        <td style="vertical-align: middle;"><?php echo $row["area_adm"]; ?></td>
-                                        <td style="vertical-align: middle; width: 170px;"><?php echo $row["data"]; ?></td>
-                                        <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
-                                        <td style="vertical-align: middle;"><?php echo $row["responsavel"]; ?></td>
-                                        <td class=" truncate"><?php echo nl2br($row["tipo_limpeza"]); ?></td>
-                                        <td style="vertical-align: middle;"><?php
-                                        if($row["conferido"] == "PEND"){
-                                                echo   "<span class='pendentes'>
-                                                            Pendente
-                                                        </span>";
-                                        }
-                                        else{
-                                            echo "
-                                            <span class='aprovados'>
-                                                Aprovado
-                                            </span>";
-                                        }
-                                        ?>
-                                        </td>
-                                        <td style="text-align: center; vertical-align: middle;"><?php echo $row["form_data_publicacao"]; ?></td>
-                                        <td style="vertical-align: middle;"><?php echo $row["form_data_validade"]; ?></td>
-                                        <td style="text-align: center; vertical-align: middle;"><button  type="button" class="btn btn-success"><i class="bi bi-hand-thumbs-up-fill" style="color: #ffff;"></i>Aprovar</button></td>
-                                    </tr>
-                                <?php
-                                }
-                            ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
  </body>
+ <?php include_once 'php/footer_index.php' ?>
 <!-- jQuery (necessary for DataTables) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- DataTables JS -->
@@ -123,7 +160,7 @@ include("php/head_tables.php");
                     "columnDefs": [
                         { "width": "30px", "targets": 0 },
                         { "width": "30px", "targets": 1 },
-                        { "width": "50px", "targets": 2 },
+                        { "width": "100px", "targets": 2 },
                         { "width": "50px", "targets": 3 },
                         { "width": "50px", "targets": 4 },
                         { "width": "50px", "targets": 5 },
@@ -137,4 +174,10 @@ include("php/head_tables.php");
 
  </script>
 </html>
+<?php
+    } else {
+        header("location: index");
+        exit();
+    }
+?>
 
