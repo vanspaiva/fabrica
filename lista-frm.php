@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"])) {
@@ -10,8 +10,6 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         ?>
-
-
 
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
@@ -38,7 +36,7 @@ if (isset($_SESSION["useruid"])) {
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
                                 <h5 class="text-muted"><b>Formulário - FRM.INF.004</b></h5>
-                                <small class="text-muted">Gerenciamento de pedidos</small>
+                                <small class="text-muted">Gerenciamento da Manutenção</small>
                             </div>
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
@@ -56,55 +54,87 @@ if (isset($_SESSION["useruid"])) {
                         <div class="">
                             <div class="card-body">
                                 <div class="content-panel">
+                                <div class="table-responsive">
                                     <table id="tableProp" class="table table-striped table-advance table-hover">
 
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Data Publicação</th>
-                                                <th>Data Validade</th>
                                                 <th>Identificação Ambiente</th>
                                                 <th>Tipo Atividade</th>
+                                                <th>Data Manutenção</th>
+                                                <th>Responsável</th>
+                                                <th>Conferido</th>
+                                                <th>Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
                                             require_once 'db/dbh.php';
-                                            $ret = mysqli_query($conn, "SELECT * FROM frm_inf_004");
+                                            $query = "
+                                                SELECT 
+                                                    frm_inf_004.id AS frm_id,
+                                                    frm_inf_004.data_publicacao,
+                                                    frm_inf_004.identificacao_ambiente,
+                                                    frm_inf_004.tipo_atividade,
+                                                    atividades_executadas.id AS atividade_id,
+                                                    atividades_executadas.data_manutencao,
+                                                    atividades_executadas.user_id,
+                                                    users.usersName AS responsavel
+                                                FROM 
+                                                    frm_inf_004
+                                                LEFT JOIN 
+                                                    atividades_executadas ON frm_inf_004.id = atividades_executadas.frm_inf_004_id
+                                                LEFT JOIN
+                                                    users ON atividades_executadas.user_id = users.usersId
+                                            ";
+                                            $ret = mysqli_query($conn, $query);
 
-                                            while ($row = mysqli_fetch_array($ret)) {
-
-
+                                            if ($ret === false) {
+                                                echo "Erro na consulta: " . mysqli_error($conn);
+                                            } else {
+                                                while ($row = mysqli_fetch_array($ret)) {
                                             ?>
 
-                                                <tr>
-                                                    <td><?php echo $row['id']; ?></td>
-                                                    <td><?php echo $row['data_publicacao']; ?></td>
-                                                    <td><?php echo $row['data_validade']; ?></td>
-                                                    <td><?php echo $row['identificacao_ambiente']; ?></td>
-                                                    <td><?php echo $row['tipo_atividade']; ?></td>
-                                                    <!-- <td><span class="badge bg-secondary text-white"><?php echo $row['osStatus']; ?></span></td> -->
+                                                    <tr>
+                                                        <td style="text-align: center;"><?php echo $row['frm_id']; ?></td>
+                                                        <td style="text-align: center;"><?php echo $row['data_publicacao']; ?></td>
+                                                        <td style="text-align: center;"><?php echo $row['identificacao_ambiente']; ?></td>
+                                                        <td style="text-align: center;"><?php echo $row['tipo_atividade']; ?></td>
+                                                        <td style="text-align: center;"><?php echo $row['data_manutencao']; ?></td>
+                                                        <td style="text-align: center;"><?php echo $row['responsavel']; ?></td>
+                                                        <td style="text-align: center;">  
+                                                        <?php if ($row['user_id']) : ?>
+                                                                <i class="fas fa-check text-success"></i> 
+                                                            <?php else : ?>
+                                                                <i class="fas fa-times text-danger"></i>
+                                                            <?php endif; ?>
+                                                        </td> 
 
 
-                                                    <td>
-                                                        <a href="editaros?id=<?php echo $row['id']; ?>">
-                                                            <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
-                                                        <a href="os?id=<?php echo $row['id']; ?>">
-                                                            <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
-                                                        <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
-                                                            <a href="manageOs?id=<?php echo $row['id']; ?>">
-                                                                <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
-                                                        <?php
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                </tr>
+                                                        <td style="display: flex;     padding: 1.1em;">     
+                                                            <a href="editaros?id=<?php echo $row['atividade_id']; ?>">
+                                                                <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
+                                                            <a style="padding: 0 0.3em;" href="os?id=<?php echo $row['atividade_id']; ?>">
+                                                                <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
+
+                                                            <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
+                                                                <a href="manageOs?id=<?php echo $row['atividade_id']; ?>">
+                                                                    <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        </td>
+                                                    </tr>
                                             <?php
-                                            } ?>
-
+                                                } 
+                                            } 
+                                            ?>
                                         </tbody>
                                     </table>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +143,7 @@ if (isset($_SESSION["useruid"])) {
 
             </div>
         </div>
-        <?php include_once 'php/footer_index.php' ?>
+        <?php include_once 'php/footer_index.php'; ?>
         <script>
             $(document).ready(function() {
                 $('#tableProp').DataTable({
@@ -137,7 +167,7 @@ if (isset($_SESSION["useruid"])) {
                         [0, "desc"]
                     ]
                 });
-                $('#tableEnviada').DataTable({
+               /*  $('#tableEnviada').DataTable({
                     "lengthMenu": [
                         [20, 40, 80, -1],
                         [20, 40, 80, "Todos"],
@@ -199,11 +229,9 @@ if (isset($_SESSION["useruid"])) {
                     "order": [
                         [0, "desc"]
                     ]
-                });
+                }); */
             });
         </script>
-        
-
     <?php
 
 } else {

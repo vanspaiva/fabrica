@@ -259,69 +259,69 @@ if (isset($_SESSION["useruid"])) {
                                                     <tr>
                                                         <th style="text-align: center; font-size: 1.2rem;">Descrição das Atividades</th>
                                                         <th style="text-align: center; font-size: 1.2rem;">Executado</th>
-                                                        <th style="display: none; text-align: center; font-size: 1.2rem;">Responsável</th>
+                                                        <th style="text-align: center; font-size: 1.2rem;">Responsável</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td>Verificação e drenagem da água</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[1]" value="1"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[1]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[2]" value="2"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[2]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[3]" value="3"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>" readonly></td>
+                                                        <td><input type="text" name="responsavel[3]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>" readonly></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[4]" value="4"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[4]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Trocar filtros</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[5]" value="5"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[5]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Verificação da fixação</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[6]" value="6"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[6]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Verificação de vazamentos nas ligações flexíveis</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[7]" value="7"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[7]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Estado de conservação do isolamento termo-acústico</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[8]" value="8"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[8]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Vedação dos painéis de fechamento do gabinete</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[9]" value="9"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[9]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Manutenção mecânica</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[10]" value="10"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[10]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Manutenção elétrica</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[11]" value="11"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[11]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                     <tr>
                                                         <td>outros</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[12]" value="12"></td>
-                                                        <td><input type="text" name="responsavel" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
+                                                        <td><input type="text" name="responsavel[12]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;" value="<?php echo $_SESSION["useruid"]; ?>"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
