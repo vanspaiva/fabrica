@@ -41,7 +41,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="FRM_INF_004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir Form</button></a>
+                                        <a href="FRM_INF_004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir FRM.004</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
                                         <a href="export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
@@ -115,13 +115,13 @@ if (isset($_SESSION["useruid"])) {
 
 
                                                         <td style="display: flex;     padding: 1.1em;">     
-                                                            <a href="editaros?id=<?php echo $row['atividade_id']; ?>">
+                                                            <a href="editfrm?id=<?php echo $row['frm_id']; ?>">
                                                                 <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
-                                                            <a style="padding: 0 0.3em;" href="os?id=<?php echo $row['atividade_id']; ?>">
+                                                            <a style="padding: 0 0.3em;" href="delfrm?id=<?php echo $row['frm_id']; ?>">
                                                                 <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
                                                             <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
-                                                                <a href="manageOs?id=<?php echo $row['atividade_id']; ?>">
+                                                                <a href="manageOs?id=<?php echo $row['frm_id']; ?>">
                                                                     <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
                                                             <?php
                                                             }
