@@ -44,6 +44,11 @@ if (isset($_SESSION["useruid"])) {
                                 <h5 class="text-muted"><b>Log de Atividades</b></h5>
                                 <small class="text-muted">Histórico de Atividades das OS</small>
                             </div>
+                            <div class="col-sm-2">
+                                <div class="d-flex justify-content-end p-1">
+                                    <span class="btn btn-fab mx-2 p-2 px-3" data-toggle="modal" data-target="#exportrelatorio"><i class="fas fa-plus"></i> Relatório</span>
+                                </div>
+                            </div>
                         </div>
                         <hr>
                         <div class="">
@@ -119,6 +124,34 @@ if (isset($_SESSION["useruid"])) {
 
         </div>
         </div>
+
+        <!-- Modal Exportar Relatório da Produção -->
+        <div class="modal fade" id="exportrelatorio" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #007A5A;">
+                        <h5 class="modal-title text-white">Exportar Relatório da Produção</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="w-100" action="exportrelatorio" method="POST">
+                            <div class="col d-flex justify-content-end">
+                                <input type="search" name="searchInput" class="form-control rounded p-2" placeholder="Pesquise aqui um pedido..." aria-label="Pesquise aqui um pedido..." aria-describedby="search-addon" />
+                                <div class="px-2 d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-fab input-group-text border-0 p-2" id="search-addon" type="search" value="search" name="search">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <?php include_once 'php/footer_index.php' ?>
         <script>
             $(document).ready(function() {
