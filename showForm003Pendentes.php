@@ -1,5 +1,8 @@
 <?php 
 session_start();
+if(($_SESSION['userperm']) == "Colaborador(a)" ) {
+    header("Location: dash");
+}
 
 if (isset($_SESSION["useruid"])) {
     include("php/head_tables.php");
@@ -58,6 +61,10 @@ if (isset($_SESSION["useruid"])) {
                             <a href="novaom"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
+                            <a href="showForm003"><button class="btn btn-fab btn-sm">Lista de Registos</button>
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center p-1">
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
@@ -109,7 +116,9 @@ if (isset($_SESSION["useruid"])) {
                                                 echo "
                                                 <span class='aprovados'>
                                                     Aprovado
-                                                </span>";
+                                                </span>
+
+                                                ";
                                             }
                                             ?>
                                             </td>
@@ -139,8 +148,8 @@ if (isset($_SESSION["useruid"])) {
     $(document).ready(function() {
         $('#myTable').DataTable({
                     "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
+                        [10, 40, 80, -1],
+                        [10, 40, 80, "Todos"],
                     ],
                     "language": {
                         "search": "Pesquisar:",

@@ -3,7 +3,6 @@
 if (isset($_SESSION["useruid"])) {
 
     require_once("includes/functions.inc.php");
-
 ?>
 
     <style>
@@ -13,13 +12,25 @@ if (isset($_SESSION["useruid"])) {
             height: 1px;
             margin: 0 8px;
         }
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.5;        
+        }
     </style>
 
     <body class="bg-light text-dark">
 
         <?php
-        include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';
+            include_once 'php/navbar.php';
+            include_once 'php/lateral-nav.php';
+
+            if(($_SESSION['userperm']) == "Colaborador(a)" ) {
+                $classe_css = "disabled-button";
+            }
+            else {
+                $classe_css = null;
+            }
+
         ?>
 
 
@@ -104,8 +115,8 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
                                         <a href="novaom.php" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
-                                        <a href="showForm003.php" class="btn btn-outline-info mx-1 " style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
-                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
+                                        <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">

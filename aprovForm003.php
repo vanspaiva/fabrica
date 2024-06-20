@@ -8,21 +8,21 @@ if (isset($_GET["id"])) {
 
     $id = intval($_GET["id"]);
 
-    // Preparar e executar a query de exclusão
+    // Preparar e executar a query de atualização
     $sql = "UPDATE form_inf_003 SET conferido = 'APROV' WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
 
-    if ($stmt->execute()) {
+    if (mysqli_stmt_execute($stmt)) {
         echo "Registro Aprovado com sucesso.";
-       header("location: showForm003Pendentes.php");
+        header("location: showForm003Pendentes.php");
     } else {
-        echo "Erro ao deletar registro: " . $stmt->error;
+        echo "Erro ao aprovar registro: " . mysqli_stmt_error($stmt);
     }
 
-    $stmt->close();
+    mysqli_stmt_close($stmt);
 } else {
     echo "ID do registro não fornecido.";
 }
 
-$conn->close();
+mysqli_close($conn);

@@ -42,6 +42,7 @@
                 // Execute the query
                 if (mysqli_stmt_execute($stmt)) {
                     echo "Record inserted successfully";
+                    header("location: showForm003Pendentes");
                 } else {
                     echo "Error: " . mysqli_stmt_error($stmt);
                 }
@@ -53,44 +54,7 @@
             }
         
             // Debug output
-            echo $id_usuario . "\n" . $setor . "\n" . $area_adm . "\n" . $data_exec . "\n" . $periodo . "\n" . $responsavel . "\n" . $tipo_limpeza;
+            //echo $id_usuario . "\n" . $setor . "\n" . $area_adm . "\n" . $data_exec . "\n" . $periodo . "\n" . $responsavel . "\n" . $tipo_limpeza;
         }
         
-        function showRegistrosLimpeza2($mysqli_conection) {
-            // SQL query to select all records from form_inf_003
-            $sql = "SELECT * FROM form_inf_003 LIMIT 1";
-        
-            // Array para armazenar os dados
-            $records = array();
-        
-            // Execute a consulta
-            if ($result = mysqli_query($mysqli_conection, $sql)) {
-                // Verifica se há registros
-                if (mysqli_num_rows($result) > 0) {
-                    // Itera sobre os resultados e adiciona ao array
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $records[] = $row;
-                    }
-        
-                    // Libera o resultado
-                    mysqli_free_result($result);
-        
-                    // Retorna os registros como JSON
-                    header('Content-Type: application/json');
-                    echo json_encode($records, JSON_PRETTY_PRINT);
-                } else {
-                    echo json_encode(array('message' => 'No records found.'));
-                }
-            } else {
-                echo json_encode(array('error' => mysqli_error($mysqli_conection)));
-            }
-        }
-        
-
-
         insertRegistro004($conn);
-        
-        
-
-
-    ?>

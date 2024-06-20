@@ -5,8 +5,6 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 
-    print_r($_SESSION);
-
     if(isset($_GET["t"]) && ($_GET["t"] == "om")){
         $tipo = "om";
     } else if(isset($_GET["t"]) && ($_GET["t"] == "os")){

@@ -26,12 +26,23 @@ if (isset($_SESSION["useruid"])) {
             font-weight: bolder;
             padding: 5px;
             border-radius: 5px;
-        }   
+        } 
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.5;        
+        }
     </style>
 <header>
     <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
+
+        if(($_SESSION['userperm']) == "Colaborador(a)" ) {
+            $classe_css = "disabled-button";
+        }
+        else {
+            $classe_css = null;
+        }
     ?>
 </header>
 <body class="bg-light-gray2">
@@ -44,7 +55,11 @@ if (isset($_SESSION["useruid"])) {
                 <div class="col-sm d-none d-sm-block">
                     <div class="d-flex  justify-content-between">
                         <div class="d-flex justify-content-center p-1">
-                            <a href=""><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
+                            <a href="novaom"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
+                        </div>
+                        <div class="d-flex justify-content-center p-1">
+                            <a href="showForm003Pendentes" class="<?= $classe_css?>"><button class="btn  btn-sm btn-danger"> Registros Pendentes</button>
+                            </a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
@@ -105,13 +120,14 @@ if (isset($_SESSION["useruid"])) {
                                         <td style="text-align: center; vertical-align: middle;"><?php echo $row["form_data_publicacao"]; ?></td>
                                         <td style="vertical-align: middle;text-align: center;"><?php echo $row["form_data_validade"]; ?></td>
                                         <td style="vertical-align: middle;">
-                                            <a href="">
-                                                <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button></a>
+                                            <a href="editRL.php?id=<?php echo $row["id"]; ?>">
+                                                <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button>
+                                            </a>
                                             <a href="">
                                                 <button class="btn btn-warning btn-sm"><i class="bi bi-file-pdf"></i></i></button>
                                             </a>
                                             <?php /* if ($_SESSION["userperm"] == 'Administrador') { */ ?>
-                                                <a href="deleteForm003.php?id=<?php echo $row["id"]; ?>">
+                                                <a href="deleteForm003.php?id=<?php echo $row["id"]; ?> " class="<?= $classe_css?>">
                                                     <button class="btn btn-danger btn-sm delete-btn" onClick="return confirm('Você realmente deseja deletar esse Registro?');"><i class="bi bi-trash"></i></button>
                                                 </a>
                                             <?php
@@ -148,8 +164,8 @@ function showValue() {
     $(document).ready(function() {
         $('#myTable').DataTable({
                     "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
+                        [5, 10, 20, -1],
+                        [5, 10, 20, "Todos"],
                     ],
                     "language": {
                         "search": "Pesquisar:",
