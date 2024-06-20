@@ -41,6 +41,132 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="container-fluid">
                                     <div class="row d-flex justify-content-center">
                                         <div class="col-md container-fluid">
+                                            <div class="row w-100 p-3 rounded my-1">
+                                                <!-- Departamentos -->
+                                                <div class="col mt-1">
+                                                    <h5 class="d-flex justify-content-between">
+                                                        <b>Departamentos</b>
+                                                        <button class="btn text-fab btn-sm" data-toggle="modal" data-target="#adddep"><i class="far fa-plus-square"></i> novo</button>
+                                                    </h5>
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Nome</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            $ret = mysqli_query($conn, "SELECT * FROM departamento ORDER BY nome  ASC");
+                                                            while ($row = mysqli_fetch_array($ret)) {
+                                                            ?>
+                                                                <tr>
+                                                                    <td><?php echo $row['id']; ?></td>
+                                                                    <td><?php echo $row['nome']; ?></td>
+                                                                    <td><a href="manageConfigCadastro?deletedep=<?php echo $row['id']; ?>" class="px-1" style="color: red;"><i class="fas fa-times"></i> </a></td>
+                                                                </tr>
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Cargos -->
+                                                <div class="col mt-1">
+                                                    <h5 class="d-flex justify-content-between">
+                                                        <b>Cargos</b>
+                                                        <button class="btn text-fab btn-sm" data-toggle="modal" data-target="#addcadinterno"><i class="far fa-plus-square"></i> novo</button>
+                                                    </h5>
+                                                    <table class="table table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Nome</th>
+                                                                <th>Código</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php
+                                                            $retCadInterno = mysqli_query($conn, "SELECT * FROM tipocadastrointerno ORDER BY tpcadinNome  ASC");
+                                                            while ($rowCadInterno = mysqli_fetch_array($retCadInterno)) {
+                                                            ?>
+                                                                <tr>
+                                                                    <td><?php echo $rowCadInterno['tpcadinId']; ?></td>
+                                                                    <td><?php echo $rowCadInterno['tpcadinNome']; ?></td>
+                                                                    <td><?php echo $rowCadInterno['tpcadinCodCadastro']; ?></td>
+                                                                    <td><a href="manageConfigCadastro?deletecadin=<?php echo $rowCadInterno['tpcadinId']; ?>" class="px-1" style="color: red;"><i class="fas fa-times"></i> </a></td>
+                                                                </tr>
+                                                                <!-- <span class="badge bg-secondary text-white m-1 p-1" style="font-size: 1rem;"> <?php echo '(' . $rowCadInterno['tpcadinCodCadastro'] . ') ' . $rowCadInterno['tpcadinNome']; ?> <a href="manageConfigCadastro?deletecadin=<?php echo $rowCadInterno['tpcadinId']; ?>" class="px-1" style="color: #fff;"><i class="fas fa-times"></i> </a></span> -->
+                                                            <?php
+                                                            }
+                                                            ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!-- Modal Departamentos -->
+                                            <div class="modal fade" id="adddep" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-black">Novo Departamento</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="prodForm" action="includes/configcadastro.inc.php" method="post">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md">
+                                                                        <label class="text-black" for="nome">Nome</label>
+                                                                        <input type="text" class="form-control" id="nome" name="nome" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-content-end">
+                                                                    <button type="submit" name="novodep" class="btn btn-primary">Adicionar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal Cargos -->
+                                            <div class="modal fade" id="addcadinterno" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-black">Novo Cargo</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="prodForm" action="includes/configcadastro.inc.php" method="post">
+                                                                <div class="form-row">
+                                                                    <div class="form-group col-md">
+                                                                        <label class="text-black" for="codigo">Código</label>
+                                                                        <input type="text" class="form-control" id="codigo" name="codigo" required>
+                                                                    </div>
+                                                                    <div class="form-group col-md">
+                                                                        <label class="text-black" for="nome">Nome</label>
+                                                                        <input type="text" class="form-control" id="nome" name="nome" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-content-end">
+                                                                    <button type="submit" name="novocadin" class="btn btn-primary">Adicionar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- Estados -->
                                             <div class="row w-100 p-3 rounded my-1">
                                                 <div class="col">
@@ -95,7 +221,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </div>
                                             </div>
 
-                                            <!-- Tipo Usuário Interno -->
+                                            <!-- Tipo Usuário Interno 
                                             <div class="row w-100 p-3 rounded my-1">
                                                 <div class="col">
                                                     <div class="row d-flex justify-content-between p-1 align-items-center">
@@ -117,7 +243,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </div>
                                             </div>
 
-                                            <!-- Modal Add Tipo Usuário Interno-->
+                                            Modal Add Tipo Usuário Interno
                                             <div class="modal fade" id="addcadinterno" tabindex="-1" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
@@ -149,7 +275,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </div>
                                             </div>
 
-                                            <!-- Tipo Usuário Externo -->
+                                            Tipo Usuário Externo 
                                             <div class="row w-100 p-3 rounded my-1">
                                                 <div class="col">
                                                     <div class="row d-flex justify-content-between p-1 align-items-center">
@@ -171,7 +297,7 @@ if (isset($_SESSION["useruid"])) {
                                                 </div>
                                             </div>
 
-                                            <!-- Modal Add Tipo Usuário Externo-->
+                                            Modal Add Tipo Usuário Externo
                                             <div class="modal fade" id="addcadexterno" tabindex="-1" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
@@ -201,7 +327,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <!-- Etapas -->
                                             <div class="row w-100 p-3 rounded my-1">

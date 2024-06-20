@@ -8,14 +8,19 @@ if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
 
-    if ($_SESSION["userperm"] == 'Colaborador(a)') {
+    if (($_SESSION["userperm"] == 'Colaborador(a)') && ($_SESSION["usernomedep"] == 'Produção')) {
         $setores = getSetoresByUser($conn, $userId);
+        $link = 'visualizarpedido';
+    } else if (($_SESSION["userperm"] == 'Colaborador(a)') && ($_SESSION["usernomedep"] == 'Qualidade')) {
+        $setores = [5,8,11,15];
+        $link = 'inspecaopedido';
     } else {
         $setores = getAllSetorIDs($conn);
+        $link = 'visualizarpedido';
     }
 
     // Obtendo todos os setores
-
+    // print_r($setores);
 
     $hoje = hoje();
 
@@ -156,7 +161,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 ?>
 
                                                                             <tr class="<?php echo $atrasoColor; ?>">
-                                                                                <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
+                                                                                <td style="font-size:  0.8rem;"><a href="<?php echo $link; ?>?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
                                                                                 <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
                                                                                 <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
                                                                             </tr>
@@ -235,7 +240,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 ?>
 
                                                                             <tr class="<?php echo $atrasoColor; ?>">
-                                                                                <td style="font-size:  0.8rem;"><a href="visualizarpedido?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
+                                                                                <td style="font-size:  0.8rem;"><a href="<?php echo $link; ?>?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
                                                                                 <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
                                                                                 <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
                                                                             </tr>

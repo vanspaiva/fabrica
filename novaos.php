@@ -181,9 +181,11 @@ if (isset($_SESSION["useruid"])) {
                                                 <input class='form-control' name='nomemaquina' id='nomemaquina' type='text'>
                                             </div>
                                         </div>
+
+
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class='control-label' style='color:black;'>Descrição da Tarefa, detalhar de <b>forma clara</b> as informações mais importantes <b style='color: red;'>*</b></label>
+                                                <label class='control-label' style='color:black;'>Descreva a manutenção que precisa ser feita <b style='color: red;'>*</b></label>
                                                 <br>
                                                 <small class="text-muted">As informações devem ser <b>claras e completas</b> para o operador compreender corretamente a tarefa</small>
                                                 <textarea class="form-control color-bg-dark color-txt-wh" name="descricao" id="descricao" rows="3" onkeyup="limite_textarea(this.value)" maxlength="400"></textarea><br><br>
@@ -208,6 +210,8 @@ if (isset($_SESSION["useruid"])) {
                                                 }
                                             </script>
                                         </div>
+
+
                                         <div class="d-flex d-block justify-content-around align-items-center">
                                             <div class="col form-group d-inline-block flex-fill m-2">
                                                 <label class='d-block control-label' style='color:black;'>Grau de urgência da tarefa <b style='color: red;'>*</b></label>
@@ -617,7 +621,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                             <hr>
                                         </div>
-                                        <h4 class="text-fab">Dados da OM</h4>
+                                        <h4 class="text-fab">Dados da OP</h4>
 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>

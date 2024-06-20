@@ -4,6 +4,7 @@ session_start();
 
 if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
+    require_once 'includes/functions.inc.php';
 
     $id = $_GET['id'];
 
@@ -68,6 +69,21 @@ if (isset($_SESSION["useruid"])) {
         $pedido = $row["omNomeMaquina"];
         //OBS
         $obs = $row["omObs"];
+
+        $omTipoManutencao = $row["omTipoManutencao"];
+        $omOperacional = $row["omOperacional"];
+        $omAcaoQualidade = $row["omAcaoQualidade"];
+        if ($omAcaoQualidade == 'op1') {
+            $omAcaoQualidade = 'verificar a plaquinha de não operacional';
+        } else if ($omAcaoQualidade == 'op2') {
+            $omAcaoQualidade = 'verificar se realmente deve estar operacional';
+        }
+
+        $omRequalificar = $row["omRequalificar"];
+        $omIdRespRequalificar = $row["omIdRespRequalificar"];
+        $omIdRespRequalificar = getUserName($conn, $omIdRespRequalificar);
+        $omIdRespManutencao = $row["omIdRespManutencao"];
+        $omIdRespManutencao = getUserName($conn, $omIdRespManutencao);
 
 
         $title = $codgos . " - FRM.PRO.006 Rev.00";
@@ -155,53 +171,24 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nome Máquina: </td>
                                     <td colspan="3" style="width: 200px;"><?php echo $pedido; ?></td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                <tr>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Tipo Manutenção: </td>
+                                    <td style="width: 200px;"><?php echo strtoupper($omTipoManutencao); ?></td>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> A maquina está operacional: </td>
+                                    <td style="width: 200px;"><?php echo strtoupper($omOperacional); ?></td>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Ação da Qualidade: </td>
+                                    <td style="width: 200px;"><?php echo $omAcaoQualidade; ?></td>
+                                </tr>
 
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-bordered table-sm">
-                            <tbody>
                                 <tr>
-                                    <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> RELAÇÃO PRODUTO ACABADO/MATÉRIA-PRIMA </td>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Necessita Requalificação: </td>
+                                    <td style="width: 200px;"><?php echo strtoupper($omRequalificar); ?></td>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Respons. Requalificação: </td>
+                                    <td style="width: 200px;"><?php echo $omIdRespRequalificar; ?></td>
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Respons. Manutenção: </td>
+                                    <td style="width: 200px;"><?php echo $omIdRespManutencao; ?></td>
                                 </tr>
-                                <tr>
-                                    <td class="font-weight-bold" style="width: 100px; background-color: silver; text-align: center;"> REFERÊNCIA </td>
-                                    <td class="font-weight-bold" style="background-color: silver; text-align: center;"> MATERIAL BASE/DIMENSÃO </td>
-                                    <td class="font-weight-bold" style="width: 50px; background-color: silver; text-align: center;"> QTDE </td>
-                                    <td class="font-weight-bold" style="width: 150px; background-color: silver; text-align: center;"> LOTE e/ou NF </td>
-                                    <td class="font-weight-bold" style="width: 150px; background-color: silver; text-align: center;"> OBSERVAÇÃO </td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>

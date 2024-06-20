@@ -1,20 +1,10 @@
 <?php
 require 'db/dbh.php';
-
+require 'includes/functions.inc.php';
 // print_r($_POST);
 // exit();
 
 // Função para inserir etapas selecionadas
-function inserirEtapasColaborador($conn, $userId, $etapas)
-{
-    foreach ($etapas as $idEtapa) {
-        $sql = "INSERT INTO colaborador_etapas (idUser, idEtapa) VALUES (?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ii", $userId, $idEtapa);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-    }
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = $_POST['userId'];
