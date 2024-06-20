@@ -5,7 +5,7 @@ require_once 'functions.inc.php';
 
 if (isset($_POST["update"])) {
 
-    $osid = addslashes($_POST["osid"]);
+    $omid = addslashes($_POST["omid"]);
     $status = addslashes($_POST["status"]);
     $grau = addslashes($_POST["grau"]);
     $setor = addslashes($_POST["setor"]);
@@ -38,8 +38,21 @@ if (isset($_POST["update"])) {
         $obs = addslashes($_POST["obs"]);
     }
 
-   
-    editOM($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user);
+    $tipomanutencao = addslashes(($_POST["tipomanutencao"]));
+    $operacional = addslashes(($_POST["operacional"]));
+    $acaoquali = addslashes(($_POST["acaoquali"]));
+    $requalificar = addslashes(($_POST["requalificar"]));
+    $resprequali = addslashes(($_POST["resprequali"]));
+    $respmanutencao = addslashes(($_POST["manutencao"]));
+
+    // echo "<pre>";
+    // print_r($_POST);
+    // echo "</pre>";
+    // exit();
+
+    editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao);
+    header("location: ../editarom?id=" . $omid);
+    exit();
 } 
 // else {
 //     header("location: ../comercial");

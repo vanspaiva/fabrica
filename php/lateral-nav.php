@@ -76,6 +76,7 @@
             </summary>
             <div>
                 <a href='users'> <i class='fas fa-user fa-1x'></i> Usuários</a>
+                <a href='mudarsenha'> <i class="fas fa-unlock-alt fa-1x"></i> Mudar Senha</a>
                 <a href='gercadastro'><i class="fas fa-user-cog fa-1x"></i> Ajustes de Cadastro</a>
                 <a href='configuracoes'><i class='fas fa-cog fa-1x'></i> Configurações</a>
 

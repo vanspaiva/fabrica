@@ -1,8 +1,8 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"])) {
-    
+
     include("php/head_updateprop.php");
     require_once 'db/dbh.php';
     $user = $_SESSION["useruid"];
@@ -49,13 +49,14 @@ if (isset($_SESSION["useruid"])) {
                                 <?php
                                 if ($fileNameOs != null) {
                                 ?>
-                                        <div class="col-sm pt-2">
-                                            <div class="d-flex justify-content-center p-1">
-                                                <!-- <a href="<?php //echo $fileNameOs ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
-                                                <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
+                                    <div class="col-sm pt-2">
+                                        <div class="d-flex justify-content-center p-1">
+                                            <!-- <a href="<?php //echo $fileNameOs 
+                                                            ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
+                                            <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a>
 
-                                            </div>
                                         </div>
+                                    </div>
                                 <?php
                                 }
                                 ?>
@@ -185,9 +186,60 @@ if (isset($_SESSION["useruid"])) {
                                                                     <input class='form-control' name='nomemaquina' id='nomemaquina' type='text' value="<?php echo $row['omNomeMaquina']; ?>">
                                                                 </div>
                                                             </div>
+
                                                             <div class='d-flex d-block justify-content-around'>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
-                                                                    <label class='control-label' style='color:black;'>Descrição da Tarefa<b style='color: red;'>*</b></label>
+                                                                    <label for="">Tipo de Manutenção</label>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="tipomanutencao" id="tipomanutencao1" value="preventiva" <?php if ($row['omTipoManutencao'] == 'preventiva') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="tipomanutencao1">
+                                                                            Manutenção preventiva
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="tipomanutencao" id="tipomanutencao2" value="corretiva" <?php if ($row['omTipoManutencao'] == 'corretiva') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="tipomanutencao2">
+                                                                            Manutenção corretiva
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group d-inline-block flex-fill m-2">
+                                                                    <label for="">A maquina está operacional</label>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional1" value="sim" <?php if ($row['omOperacional'] == 'sim') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="operacional1">
+                                                                            Sim
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional2" value="não" <?php if ($row['omOperacional'] == 'não') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="operacional2">
+                                                                            Não
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group d-inline-block flex-fill m-2">
+                                                                    <label for="">Ação da qualidade</label>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="acaoquali" id="acaoquali1" value="op1" <?php if ($row['omAcaoQualidade'] == 'op1') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="acaoquali1">
+                                                                            verificar a plaquinha de não operacional
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="acaoquali" id="acaoquali2" value="op2" <?php if ($row['omAcaoQualidade'] == 'op2') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="acaoquali2">
+                                                                            verificar se realmente deve estar operacional
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div class='d-flex d-block justify-content-around'>
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label class='control-label' style='color:black;'>Descreva a manutenção que precisa ser feita <b style='color: red;'>*</b></label>
                                                                     <br>
                                                                     <small class="text-muted">As informações devem ser <b>claras e completas</b> para o operador compreender corretamente a tarefa</small>
                                                                     <textarea class="form-control color-bg-dark color-txt-wh" name="descricao" id="descricao" rows="3" onkeyup="limite_textarea(this.value)" maxlength="400"><?php echo $row['omDescricao']; ?></textarea><br><br>
@@ -215,6 +267,53 @@ if (isset($_SESSION["useruid"])) {
 
                                                             <div class='d-flex d-block justify-content-around'>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label for="">Necessidade de requalificação</label>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="requalificar" id="requalificar1" value="não" <?php if ($row['omRequalificar'] == 'não') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="requalificar1">
+                                                                            Não requalificar
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="requalificar" id="mrequalificar" value="sim" <?php if ($row['omRequalificar'] == 'sim') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="requalificar2">
+                                                                            Requalificar
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="responsavel-container" class='form-group <?php if (($row['omRequalificar'] == 'não') || ($row['omRequalificar'] == null)) echo ' d-none '; ?> flex-fill m-2'>
+                                                                    <label class='control-label'>Responsável pela requalificação <b style='color: red;'>*</b></label>
+                                                                    <select class='form-control' name='resprequali' id='resprequali'>
+                                                                        <option value='0' selected style='color: #F6F7FA;'>Escolha um usuário</option>
+                                                                        <?php
+                                                                        $retEtapa = mysqli_query($conn, "SELECT * FROM users WHERE NOT usersPerm= '1ADM' ORDER BY usersName ASC;");
+                                                                        while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
+                                                                            <option value=" <?php echo $rowEtapa['usersId']; ?>" <?php if ($row['omIdRespRequalificar'] == $rowEtapa['usersId']) echo ' selected="selected"'; ?>><?php echo $rowEtapa['usersName']; ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label class='control-label'>Responsável pela manutenção <b style='color: red;'>*</b></label>
+                                                                    <select class='form-control' name='manutencao' id='manutencao' required>
+                                                                        <option value='0' selected style='color: #F6F7FA;'>Escolha um usuário</option>
+                                                                        <?php
+                                                                        $retEtapa = mysqli_query($conn, "SELECT * FROM users WHERE NOT usersPerm= '1ADM' ORDER BY usersName ASC;");
+                                                                        while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
+                                                                            <option value=" <?php echo $rowEtapa['usersId']; ?>" <?php if ($row['omIdRespManutencao'] == $rowEtapa['usersId']) echo ' selected="selected"'; ?>><?php echo $rowEtapa['usersName']; ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class='d-flex d-block justify-content-around'>
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
                                                                     <label class='control-label' style='color:black;'>Observações</label>
                                                                     <input class='form-control' name='obs' id='obs' type='text' value="<?php echo $row['omObs']; ?>">
                                                                 </div>
@@ -236,8 +335,28 @@ if (isset($_SESSION["useruid"])) {
                     </div>
                 </div>
             </div>
-    <?php
+            <?php
             include_once 'php/footer_updateprop.php';
+            ?>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+
+                    // Adicionar event listener para os radio buttons
+                    document.getElementsByName('requalificar').forEach(function(elem) {
+                        elem.addEventListener('change', function(event) {
+                            if (event.target.value === 'sim') {
+                                // console.log("Sim");
+                                document.getElementById('responsavel-container').classList.remove("d-none");
+                            } else {
+                                // console.log("Não");
+                                document.getElementById('responsavel-container').classList.add("d-none");
+                            }
+                        });
+                    });
+                });
+            </script>
+    <?php
         }
     } else {
 

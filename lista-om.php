@@ -91,15 +91,15 @@ if (isset($_SESSION["useruid"])) {
                                                     <td><?php echo substr($row['omDescricao'], 0, 50) . '...'; ?></td>
 
 
-                                                    <td>
+                                                    <td class="d-flex">
                                                         <a href="editarom?id=<?php echo $row['omId']; ?>">
-                                                            <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
+                                                            <button class="btn text-info btn-sm"><i class="far fa-edit"></i></button></a>
                                                         <a href="om?id=<?php echo $row['omId']; ?>">
-                                                            <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
+                                                            <button class="btn text-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
                                                         <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                             <a href="manageom?id=<?php echo $row['omId']; ?>">
-                                                                <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
+                                                                <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
                                                         <?php
                                                         }
                                                         ?>

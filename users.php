@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
@@ -11,8 +11,8 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
         include_once 'php/lateral-nav.php';
 
         require_once 'db/dbh.php';
+        require_once 'includes/functions.inc.php';
         $ret = mysqli_query($conn, "SELECT * FROM users");
-        $cnt = 1;
         ?>
 
 
@@ -41,27 +41,26 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                 <small class="text-muted">Gerenciamento de Usuários</small>
                             </div>
                             <div class="col-sm d-flex justify-content-end">
-                                <a class="btn btn-success btn-sm" href="novousuario"><i class="fas fa-plus"></i> Novo Usuário</a>
+                                <a class="btn text-success text-sm" href="novousuario"><i class="fas fa-plus"></i> Novo Usuário</a>
                             </div>
                         </div>
                         <hr>
-
-                        <div class="row">
-                            <div class="col" style="overflow-x: scroll;">
+                        <div class="row d-flex">
+                            <div class="col " style="overflow-x: scroll;">
                                 <table id="usersTable" class="display table table-striped table-advance table-hover">
                                     <thead>
                                         <tr>
                                             <th>Nome</th>
-                                            <th>Identificador</th>
+                                            <!-- <th>Identificador</th> -->
                                             <th>Usuário</th>
-                                            <th>Permissão</th>
+                                            <th>Departamento</th>
+                                            <th>Cargo</th>
                                             <th>Aprovação</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-
 
                                         while ($row = mysqli_fetch_array($ret)) {
 
@@ -85,15 +84,15 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                             if ($row['usersAprov'] == 'AGRDD') {
                                                 $aprovacao = 'Aguardando';
                                                 $aprovar = true;
-                                                $alert = 'btn-warning';
+                                                $alert = 'text-warning';
                                             } else if ($row['usersAprov'] == 'APROV') {
                                                 $aprovacao = 'Aprovado';
                                                 $aprovar = false;
-                                                $alert = 'btn-success';
+                                                $alert = 'text-success';
                                             } else if ($row['usersAprov'] == 'BLOQD') {
                                                 $aprovacao = 'Bloqueado';
                                                 $aprovar = true;
-                                                $alert = 'btn-danger';
+                                                $alert = 'text-danger';
                                             }
 
                                             $nomeCompleto = $row['usersName'];
@@ -112,34 +111,41 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                             $celularURL = implode('', explode(')', $celularURL));
                                             $celNotification = '55' . $celularURL;
 
+                                            if($row['usersDepartamento'] != null){
+                                                $idDep = $row['usersDepartamento'];
+                                                $departamento = getDepartamentoNome($conn, $idDep);
+                                            } else{
+                                                $departamento = "-";
+                                            }
+                                            
                                         ?>
 
 
                                             <tr>
                                                 <td><?php echo $row['usersName']; ?></td>
-                                                <td><?php echo $row['usersIdentificador'];; ?></td>
+                                                <!-- <td><?php //echo $row['usersIdentificador'];; ?></td> -->
                                                 <td><?php echo $row['usersUid']; ?></td>
+                                                <td><?php echo $departamento; ?></td>
                                                 <td><?php echo $userPerm; ?></td>
                                                 <!--<td><?php echo $aprovacao; ?></td>-->
-                                                <td class="d-flex justify-content-center">
+                                                <td class="text-center">
                                                     <?php
                                                     if ($aprovar) {
-                                                        echo '<a href="aprov-profile?id=' . $row['usersId'] . '&nome=' . $nomeURL . '&uid=' . $usuarioURL . '&email=' . $emailURL . '&celular=' . $celNotification . '"> <button class="btn ' . $alert . ' btn-sm"><i class="fas fa-clock"></i></button></a>';
+                                                        echo '<a href="aprov-profile?id=' . $row['usersId'] . '&nome=' . $nomeURL . '&uid=' . $usuarioURL . '&email=' . $emailURL . '&celular=' . $celNotification . '"> <button class="btn ' . $alert . ' text-sm"><i class="fas fa-clock"></i></button></a>';
                                                     } else {
-                                                        echo '<button class="btn ' . $alert . ' btn-sm"><i class="fas fa-check"></i></button>';
+                                                        echo '<button class="btn ' . $alert . ' text-sm"><i class="fas fa-check"></i></button>';
                                                     }
                                                     ?>
                                                 </td>;
                                                 <td>
 
                                                     <a href="editUser?id=<?php echo $row['usersId']; ?>">
-                                                        <button class="btn btn-primary btn-sm"><i class="far fa-edit"></i></button></a>
+                                                        <button class="btn text-primary text-sm"><i class="far fa-edit"></i></button></a>
                                                     <a href="manageUsers?id=<?php echo $row['usersId']; ?>">
-                                                        <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja apagar esse usuário?');"><i class="far fa-trash-alt"></i></button></a>
+                                                        <button class="btn text-danger text-sm" onClick="return confirm('Você realmente deseja apagar esse usuário?');"><i class="far fa-trash-alt"></i></button></a>
                                                 </td>
                                             </tr>
                                         <?php
-                                            $cnt = $cnt + 1;
                                         }
                                         ?>
 
@@ -151,7 +157,7 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                 </div>
             </div>
         </div>
-        
+
 
         <?php include_once 'php/footer_index.php'; ?>
         <script>

@@ -34,6 +34,20 @@ if (isset($_SESSION["useruid"])) {
     if ($type == 'check') {
         concluirAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido);
     }
+
+    if ($type == 'aprov') {
+        aprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido);
+    }
+
+    if ($type == 'reprov') {
+        reprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido);
+    }
+
+
+    if (($_SESSION["usernomedep"] == 'Qualidade')) {
+        header("location: inspecaopedido?id=" . $idPedido);
+        exit();
+    }
 } else {
     header("location: dash");
     exit();

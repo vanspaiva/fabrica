@@ -79,9 +79,9 @@ function uidExists($conn, $username, $email)
     mysqli_stmt_close($stmt);
 }
 
-function createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao)
+function createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao, $dep)
 {
-    $sql = "INSERT INTO users (usersName, usersUid, usersEmail, usersCel, usersIdentificador, usersUf, usersPwd, usersPerm, usersAprov) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (usersName, usersUid, usersEmail, usersCel, usersIdentificador, usersUf, usersPwd, usersPerm, usersAprov, usersDepartamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -92,7 +92,7 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
 
     $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-    mysqli_stmt_bind_param($stmt, "sssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao);
+    mysqli_stmt_bind_param($stmt, "ssssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao, $dep);
     mysqli_stmt_execute($stmt);
 
 
@@ -102,10 +102,10 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
     exit();
 }
 
-function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $pwd)
+function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $pwd, $dep)
 {
 
-    $sql = "INSERT INTO users (usersName, usersUf, usersEmail, usersUid, usersCel, usersIdentificador, usersAprov, usersPerm, usersPwd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (usersName, usersUf, usersEmail, usersUid, usersCel, usersIdentificador, usersAprov, usersPerm, usersPwd, usersDepartamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -116,17 +116,25 @@ function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identifica
 
     $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-    mysqli_stmt_bind_param($stmt, "sssssssss", $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $hashedPwd);
+    mysqli_stmt_bind_param($stmt, "ssssssssss", $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $hashedPwd, $dep);
     mysqli_stmt_execute($stmt);
+
+    $userId = getLastUserId($conn);
+    if ($dep ==  2) {
+        $etapas = [5, 8, 11, 15];
+
+        inserirEtapasColaborador($conn, $userId, $etapas);
+    }
+
     mysqli_stmt_close($stmt);
 
     header("location: ../users?error=created");
     exit();
 }
 
-function editUser($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $usersid)
+function editUser($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $dep, $usersid)
 {
-    $sql = "UPDATE users SET usersName='$nome', usersUf='$uf', usersEmail='$email', usersUid='$uid', usersCel='$celular', usersIdentificador='$identificador', usersAprov='$aprov', usersPerm='$perm' WHERE usersId='$usersid'";
+    $sql = "UPDATE users SET usersName='$nome', usersUf='$uf', usersEmail='$email', usersUid='$uid', usersCel='$celular', usersIdentificador='$identificador', usersAprov='$aprov', usersPerm='$perm', usersDepartamento='$dep' WHERE usersId='$usersid'";
 
 
     if (mysqli_query($conn, $sql)) {
@@ -222,6 +230,21 @@ function editPwd($conn, $user, $pwd, $confirmpwd)
     mysqli_close($conn);
 }
 
+function editPwdAdm($conn, $user, $pwd)
+{
+    $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
+
+    $sql = "UPDATE users SET usersPwd='$hashedPwd' WHERE usersUid='$user'";
+
+    if (mysqli_query($conn, $sql)) {
+
+        header("location: ../mudarsenha?error=none");
+    } else {
+        header("location: ../mudarsenha?error=stmfailed");
+    }
+    mysqli_close($conn);
+}
+
 function emptyInputLogin($username, $pwd)
 {
     $result = true;
@@ -264,6 +287,8 @@ function loginUser($conn, $username, $pwd)
         $_SESSION["useruid"] = $uidExists["usersUid"];
         $_SESSION["userperm"]  = getPermission($uidExists);
         $_SESSION["userfirstname"] = getNameUser($uidExists);
+        $_SESSION["useriddep"] = getUserIdDepartamento($uidExists);
+        $_SESSION["usernomedep"] = getUserNomeDepartamento($conn, $uidExists);
 
         header("location: ../dash");
         exit();
@@ -288,6 +313,20 @@ function getNameUser($uidExists)
     $nomeCompleto = explode(" ", $uidExists["usersName"]);
 
     return $nomeCompleto[0];
+}
+
+function getUserIdDepartamento($uidExists)
+{
+    $idDep = $uidExists["usersDepartamento"];
+    return $idDep;
+}
+
+function getUserNomeDepartamento($conn, $uidExists)
+{
+
+    $idDep = $uidExists["usersDepartamento"];
+    $nomeDep = getDepartamentoNome($conn, $idDep);
+    return $nomeDep;
 }
 
 function getAprov($uidExists)
@@ -585,15 +624,20 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
     mysqli_close($conn);
 }
 
-function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user)
+function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao)
 {
-    $sql = "UPDATE ordenservico SET omSetor='$setor', omDescricao='$descricao', omNumMaquina='$nmaquina', omNomeMaquina='$nomemaquina', omGrauUrgencia='$grau', omDtEntregaReal='$dtrealentrega', dtExecucao='$dtexecucao', omObs='$obs', omStatus='$status'  WHERE omId ='$omid'";
+    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omTipoManutencao = ?, omOperacional = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
+    $stmt = mysqli_stmt_init($conn);
 
-    if (mysqli_query($conn, $sql)) {
-        header("location: ../lista-om?error=edit");
-    } else {
-        header("location: lista-om?error=stmtfailed");
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
     }
+
+    mysqli_stmt_bind_param($stmt, "ssssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
 
     $type = 'om';
     logAtividade($conn, $omid, $status, $user, $type);
@@ -717,8 +761,8 @@ function logAtividade($conn, $id, $status, $user, $type)
 
     mysqli_stmt_bind_param($stmt, "ssss", $id, $status, $user, $type);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    exit();
+    // mysqli_stmt_close($stmt);
+    // exit();
 }
 
 
@@ -1261,6 +1305,34 @@ function addStatusOs($conn, $nome, $posicao)
 function deleteStatus($conn, $id)
 {
     $sql = "DELETE FROM statusos WHERE stId='$id';";
+
+    mysqli_query($conn, $sql);
+    header("location: gercadastro");
+    exit();
+}
+
+function addDepartamento($conn, $nome)
+{
+    $sql = "INSERT INTO departamento (nome) VALUES (?)";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../gercadastro?error=stmfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../gercadastro");
+    exit();
+}
+
+function deleteDepartamento($conn, $id)
+{
+    $sql = "DELETE FROM departamento WHERE id='$id';";
 
     mysqli_query($conn, $sql);
     header("location: gercadastro");
@@ -2539,6 +2611,48 @@ function concluirAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $statu
     mysqli_close($conn);
 }
 
+function aprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido)
+{
+    $statusAprov = 5;
+    $sql = "UPDATE realizacaoproducao SET idStatus='$statusAprov' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function reprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido)
+{
+    $statusAprov = 7;
+    $sql = "UPDATE realizacaoproducao SET idStatus='$statusAprov' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    $statusAprov = 6;
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+    $statusAprov = 7;
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+
 function getProximoStatus($statual, $type)
 {
     $proximoStatus = '';
@@ -3696,6 +3810,79 @@ function getUltimaLinhaPedidos($conn)
     if (mysqli_num_rows($result) > 0) {
         // Retorna a última linha inserida
         return mysqli_fetch_assoc($result);
+    } else {
+        // Retorna null se não houver resultados
+        return null;
+    }
+}
+
+function getDepartamentoNome($conn, $idDep)
+{
+    // Define a consulta SQL
+    $sql = "SELECT nome FROM departamento WHERE id = ?";
+
+    // Prepara a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if ($stmt === false) {
+        // Caso a preparação falhe, retorne null
+        return null;
+    }
+
+    // Faz a ligação dos parâmetros
+    mysqli_stmt_bind_param($stmt, "i", $idDep);
+
+    // Executa a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Verifica se houve resultados
+    if (mysqli_num_rows($result) > 0) {
+        // Retorna o nome do departamento
+        $row = mysqli_fetch_assoc($result);
+        return $row['nome'];
+    } else {
+        // Retorna null se não houver resultados
+        return null;
+    }
+}
+
+function inserirEtapasColaborador($conn, $userId, $etapas)
+{
+    foreach ($etapas as $idEtapa) {
+        $sql = "INSERT INTO colaborador_etapas (idUser, idEtapa) VALUES (?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $userId, $idEtapa);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+}
+
+function getLastUserId($conn)
+{
+    // Define a consulta SQL para obter o último ID da tabela users
+    $sql = "SELECT MAX(usersId) as max_id FROM users";
+
+    // Prepara a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if ($stmt === false) {
+        // Caso a preparação falhe, retorne null
+        return null;
+    }
+
+    // Executa a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Verifica se houve resultados
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Retorna o último ID (max_id) da tabela users
+        return $row['max_id'];
     } else {
         // Retorna null se não houver resultados
         return null;
