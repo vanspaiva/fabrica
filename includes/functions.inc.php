@@ -1762,3 +1762,17 @@ function deshashItemNatural($hash)
     $id = $hash * 7 / $encryption_key;
     return $id;
 }
+
+function editfrm($conn, $id, $data_manutencao, $executado)
+{
+    $sql = "UPDATE atividades_executadas SET data_manutencao='$data_manutencao', executado='$executado' WHERE Id ='$id'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: ../lista-frm?error=edit");
+    } else {
+        header("location: lista-frm?error=stmtfailed");
+    }
+
+
+    mysqli_close($conn);
+}
