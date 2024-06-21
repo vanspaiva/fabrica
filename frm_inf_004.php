@@ -1,72 +1,63 @@
 <?php
 session_start();
 
+// Incluir cabeçalhos e conexão com banco de dados
+include("php/head_index.php");
+require_once 'db/dbh.php';
+
+// Verificar se o usuário está autenticado
 if (isset($_SESSION["useruid"])) {
-    include("php/head_index.php");
-    require_once 'db/dbh.php';
-    $name = $_SESSION["useruid"];
+    $useruid = $_SESSION["useruid"];
 
-
-    function getUserId($conn, $name)
+    // Função para obter o ID do usuário
+    function getUserId($conn, $useruid)
     {
-        $stmt = $conn->prepare("SELECT usersId FROM users WHERE useruid = ?");
-        $stmt->bind_param("s", $name);
+        $stmt = $conn->prepare("SELECT usersId FROM users WHERE usersUid = ?");
+        $stmt->bind_param("s", $useruid);
         $stmt->execute();
         $result = $stmt->get_result();
+        
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $row['usersId'];
         } else {
-            return null; 
+            return null; // Retorna null se nenhum usuário for encontrado
         }
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+    // Obter o ID do usuário
+    $userId = getUserId($conn, $useruid);
 
-        $userId = getUserId($conn, $name);
+    if ($userId !== null) {
+        // Processar o formulário quando enviado
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+            // Obter outros dados do formulário
+            $dataPublicacao = $_POST['dataPublicacao'];
+            $identificadorAmbiente = $_POST['identificadorAmbiente'];
+            $tipoAtividade = $_POST['tipoAtividade'];
 
+            // Calcular a data de validade
+            $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
 
-        $dataPublicacao = $_POST['dataPublicacao'];
-        $identificadorAmbiente = $_POST['identificadorAmbiente'];
-        $tipoAtividade = $_POST['tipoAtividade'];
-        $dataManutencao = $_POST['dataManutencao'];
+            // Inserir no banco de dados
+            $marcaModelo = "Springer";
+            $responsavel = $_SESSION["userfirstname"]; 
 
-        $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
-
-        $marcaModelo = "Springer";
-        $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade) VALUES (?, ?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sssss", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade);
-        mysqli_stmt_execute($stmt);
-        $frmInfId = mysqli_insert_id($conn);
-
-        foreach ($_POST['executado'] as $descricaoAtividadeId => $executado) {
-            if (!empty($executado)) {
-
-                $executadoValue = 1;
-
-                $sqlCheck = "SELECT * FROM ATIVIDADES_EXECUTADAS WHERE user_id = ? AND descricao_atividade_id = ?";
-                $stmtCheck = mysqli_prepare($conn, $sqlCheck);
-                mysqli_stmt_bind_param($stmtCheck, "ii", $userId, $descricaoAtividadeId);
-                mysqli_stmt_execute($stmtCheck);
-                $resultCheck = mysqli_stmt_get_result($stmtCheck);
-
-                if ($resultCheck->num_rows > 0) {
-        
-                    echo "Atividade já registrada para este usuário.";
-                    continue; 
-                }
-
-                // Inserir na tabela ATIVIDADES_EXECUTADAS
-                $sql = "INSERT INTO ATIVIDADES_EXECUTADAS (data_manutencao, frm_inf_004_id, descricao_atividade_id, executado, user_id) VALUES (?, ?, ?, ?, ?)";
-                $stmt = mysqli_prepare($conn, $sql);
-                mysqli_stmt_bind_param($stmt, "siisi", $dataManutencao, $frmInfId, $descricaoAtividadeId, $executadoValue, $userId);
+            $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade,  usersId) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "sssssi", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade,  $userId);
                 mysqli_stmt_execute($stmt);
+                $frmInfId = mysqli_insert_id($conn);
+                echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Dados inseridos com sucesso!</p></div>";
+            } else {
+                $error = mysqli_error($conn);
+                error_log("Erro ao preparar a consulta SQL: $error");
             }
-        }
-
-        echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Dados inseridos com sucesso!</p></div>";
     }
+}
+
 ?>
 
 
@@ -220,7 +211,7 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                     <div class='form-group d-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='responsavel' id='responsavel' value="<?php echo $_SESSION["userfirstname"]; ?>">
+                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
                                     </div>
                                     <button class="btn btn-fab" type="submit" name="submit" id="submit">Enviar</button>
                                 </form>

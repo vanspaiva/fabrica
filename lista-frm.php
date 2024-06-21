@@ -73,22 +73,22 @@ if (isset($_SESSION["useruid"])) {
                                             <?php
                                             require_once 'db/dbh.php';
                                             $query = "
-                                                SELECT 
-                                                    frm_inf_004.id AS frm_id,
-                                                    frm_inf_004.data_publicacao,
-                                                    frm_inf_004.identificacao_ambiente,
-                                                    frm_inf_004.tipo_atividade,
-                                                    atividades_executadas.id AS atividade_id,
-                                                    atividades_executadas.data_manutencao,
-                                                    atividades_executadas.user_id,
-                                                    users.usersName AS responsavel
-                                                FROM 
-                                                    frm_inf_004
-                                                LEFT JOIN 
-                                                    atividades_executadas ON frm_inf_004.id = atividades_executadas.frm_inf_004_id
-                                                LEFT JOIN
-                                                    users ON atividades_executadas.user_id = users.usersId
-                                            ";
+                                                    SELECT 
+                                                        frm_inf_004.id AS frm_id,
+                                                        frm_inf_004.data_publicacao,
+                                                        frm_inf_004.identificacao_ambiente,
+                                                        frm_inf_004.tipo_atividade,
+                                                        atividades_executadas.id AS atividade_id,
+                                                        atividades_executadas.data_manutencao,
+                                                        frm_inf_004.usersId AS user_id,
+                                                        users.usersName AS responsavel
+                                                    FROM 
+                                                        frm_inf_004
+                                                    LEFT JOIN 
+                                                        atividades_executadas ON frm_inf_004.id = atividades_executadas.frm_inf_004_id
+                                                    LEFT JOIN
+                                                        users ON frm_inf_004.usersId = users.usersId
+                                                ";
                                             $ret = mysqli_query($conn, $query);
 
                                             if ($ret === false) {
@@ -99,10 +99,10 @@ if (isset($_SESSION["useruid"])) {
 
                                                     <tr>
                                                         <td style="text-align: center;"><?php echo $row['frm_id']; ?></td>
-                                                        <td style="text-align: center;"><?php echo $row['data_publicacao']; ?></td>
+                                                        <td style="text-align: center;"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
                                                         <td style="text-align: center;"><?php echo $row['identificacao_ambiente']; ?></td>
                                                         <td style="text-align: center;"><?php echo $row['tipo_atividade']; ?></td>
-                                                        <td style="text-align: center;"><?php echo $row['data_manutencao']; ?></td>
+                                                        <td style="text-align: center;"><!-- <?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?> --></td>
                                                         <td style="text-align: center;"><?php echo $row['responsavel']; ?></td>
                                                         <td style="text-align: center;">  
                                                         <?php if ($row['user_id']) : ?>
