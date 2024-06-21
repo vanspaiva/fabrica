@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
@@ -19,10 +18,6 @@ if (isset($_SESSION["useruid"])) {
         <?php
             include_once 'php/navbar.php';
             include_once 'php/lateral-nav.php';
-
-
-
-
 
             
             $id = $_GET['id']; // Captura o ID da URL (certifique-se de validá-lo adequadamente)
@@ -43,14 +38,11 @@ if (isset($_SESSION["useruid"])) {
             
                 // Libera a memória do resultado
                 mysqli_free_result($ret);
-                echo "<pre>";
-                print_r($results);
-                echo "</pre>";
-                
-          
+
+            $limpeza_string = $results[0]['tipo_limpeza'];
+            $tipos_limpeza = explode("\n", $limpeza_string);
         ?>
-
-
+        
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div>
@@ -75,7 +67,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="row">
                                 <div class="col-sm py-2">
                                     <h3 class="font-weight-semibold" style="text-align: center;">Procedimento do Sistema de Gestão da Qualidade</h3>
-                                    <h5 class="font-weight-regular" style="text-align: center;">REGISTRO DE LIMPEZA</h5>
+                                    <h5 class="font-weight-regular" style="text-align: center;">EDITAR REGISTRO DE LIMPEZA</h5>
                                     <h6 class="font-weight-regular" style="text-align: center;">FRM.INF.003</h6>
                                 </div>
                             </div>
@@ -104,7 +96,7 @@ if (isset($_SESSION["useruid"])) {
                                 $localIP = getHostByName(getHostName());
                             ?>
 
-                                <form action="#" method="POST" enctype='multipart/form-data'>
+                                <form action="testeEnvio2.php?id=<?= $_GET['id'] ?>" method="POST" enctype='multipart/form-data'>
                                     <div hidden>
                                         <h4 class="text-fab">Dados do Usuário</h4>
                                         <div class="d-flex d-block justify-content-around">
@@ -161,7 +153,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label for="validationDefault04">Selecione a area a ser administrada</label>
                                             <select class="custom-select" id="validationDefault04" name="area-adm" required>
-                                                <option selected disabled value="<?php echo $results[0]['area_adm']?>"><?php echo $results[0]['area_adm']?></option>
+                                                <option selected value="<?php echo $results[0]['area_adm']?>"><?php echo $results[0]['area_adm']?></option>
                                                 <option value='banheiro-superior-masculino'>Banheiro superior masculino</option>
                                                 <option value='banheiro-superior-feminino'>Banheiro superior feminino</option>
                                                 <option value='banheiro-terreo-masculino'>Banheiro térreo masculino</option>
@@ -204,7 +196,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Periodo da realização<b style='color: red;'>*</b></label>
                                             <select class="custom-select" name="periodo" aria-label="Default select example" required>
-                                                <option selected disabled value="<?php echo $results[0]['periodo']?>"><?php echo $results[0]['periodo']?></option>
+                                                <option selected value="<?php echo $results[0]['periodo']?>"><?php echo $results[0]['periodo']?></option>
                                                 <option value="Manhã">Manhã</option>
                                                 <option value="Tarde">Tarde</option>
                                                 <option value="Noite">Noite</option>
@@ -213,7 +205,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
                                             <select class="custom-select" name="responsavel" aria-label="Default select example" required>
-                                                <option value="<?php echo $results[0]['responsavel']?>" disabled selected><?php echo $results[0]['responsavel']?></option>
+                                                <option value="<?php echo $results[0]['responsavel']?>"selected><?php echo $results[0]['responsavel']?></option>
                                                 <option value="Kellyta">Kellyta</option>
                                                 <option value="Edson">Edson</option>
                                                 <option value="Joilza">Joilza</option>
@@ -221,7 +213,6 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
 
-                                    
                                     <div id="areas-adm">
                                         <div class="d-flex d-block mt-4 mx-4 ">
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
@@ -231,25 +222,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv1-adm" value="1. Vidros e Divisórias" name="srv1" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv1-adm" value="1. Vidros e Divisórias" name="srv1" <?php echo in_array('1. Vidros e Divisórias', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv1-adm"> 1. Vidros e Divisórias</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv2-adm" value="2. Piso" name="srv2" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv2-adm" value="2. Piso" name="srv2" <?php echo in_array('2. Piso', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv2-adm">2. Piso</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv3-adm" value="3. Prateleiras/Armários" name="srv3" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv3-adm" value="3. Prateleiras/Armários" name="srv3" <?php echo in_array('3. Prateleiras/Armários', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv3-adm">3. Prateleiras/Armários</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv4-adm" value="4. Bancadas" name="srv4"/>
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv4-adm" value="4. Bancadas" name="srv4" <?php echo in_array('4. Bancadas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv4-adm">4. Bancadas</label>
                                                         </div>
                                                     </li>
@@ -259,25 +250,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv5-adm" value="5. Ar-condicionado" name="srv5" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv5-adm" value="5. Ar-condicionado" name="srv5" <?php echo in_array('5. Ar-condicionado', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv5-adm">5. Ar-condicionado</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv6-adm" value="6. Paredes / Tomadas/ Rodapé" name="srv6" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv6-adm" value="6. Paredes / Tomadas/ Rodapé" name="srv6" <?php echo in_array('6. Paredes / Tomadas/ Rodapé', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv6-adm">6. Paredes / Tomadas/ Rodapé</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv7-adm" value="7. Lixeiras" name="srv7" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv7-adm" value="7. Lixeiras" name="srv7" <?php echo in_array('7. Lixeiras', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv7-adm">7. Lixeiras</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv8-adm" value="8. Portas / Janelas" name="srv8" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv8-adm" value="8. Portas / Janelas" name="srv8" <?php echo in_array('8. Portas / Janelas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv8-adm">8. Portas / Janelas</label>
                                                         </div>
                                                     </li>
@@ -287,25 +278,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv9-adm" value="9. Persianas" name="srv9" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv9-adm" value="9. Persianas" name="srv9" <?php echo in_array('9. Persianas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv9-adm">9. Persianas</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv10-adm" value="10. Computadores" name="srv10" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv10-adm" value="10. Computadores" name="srv10" <?php echo in_array('10. Computadores', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv10-adm">10. Computadores</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv11-adm" value="11. Escadas/Corrimão" name="srv11" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv11-adm" value="11. Escadas/Corrimão" name="srv11" <?php echo in_array('11. Escadas/Corrimão', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv11-adm"> 11. Escadas/Corrimão</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-adm" type="checkbox" id="srv12-adm" value="12. Filtros/ Máquinas de Café" name="srv12" />
+                                                            <input class="form-check-input check-adm" type="checkbox" id="srv12-adm" value="12. Filtros/ Máquinas de Café" name="srv12" <?php echo in_array('12. Filtros/ Máquinas de Café', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv12-adm">12. Filtros/ Máquinas de Café</label>
                                                         </div>
                                                     </li>
@@ -315,13 +306,8 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
 
 
-
-
-
-
-
                                     <div id="banheiro">
-                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                        <div class="d-flex d-block mt-4 mx-4">
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
@@ -329,25 +315,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv1-ban" value="1. Sanitário" name="srv1" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv1-ban" value="1. Sanitário" name="srv1" <?php echo in_array('1. Sanitário', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv1-ban"> 1. Sanitário</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv2-ban" value="2. Pia" name="srv2" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv2-ban" value="2. Pia" name="srv2" <?php echo in_array('2. Pia', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv2-ban">2. Pia</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv3-ban" value="3. Piso" name="srv3" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv3-ban" value="3. Piso" name="srv3" <?php echo in_array('3. Piso', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv3-ban">3. Piso</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv4-ban" value="4. Espelho" name="srv4" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv4-ban" value="4. Espelho" name="srv4" <?php echo in_array('4. Espelho', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv4-ban">4. Espelho</label>
                                                         </div>
                                                     </li>
@@ -357,25 +343,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv5-ban" value="5. Reposição de papel higiênico" name="srv5" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv5-ban" value="5. Reposição de papel higiênico" name="srv5" <?php echo in_array('5. Reposição de papel higiênico', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv5-ban">5. Reposição de papel higiênico</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv6-ban" value="6. Reposição de papel toalha" name="srv6" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv6-ban" value="6. Reposição de papel toalha" name="srv6" <?php echo in_array('6. Reposição de papel toalha', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv6-ban">6. Reposição de papel toalha</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv7-ban" value="7. Reposição de sabonete" name="srv7" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv7-ban" value="7. Reposição de sabonete" name="srv7" <?php echo in_array('7. Reposição de sabonete', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv7-ban">7. Reposição de sabonete</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv8-ban" value="8. Lixeira" name="srv8" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv8-ban" value="8. Lixeira" name="srv8" <?php echo in_array('8. Lixeira', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv8-ban">8. Lixeira</label>
                                                         </div>
                                                     </li>
@@ -385,27 +371,24 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv9-ban" value="9. Portas/ Janelas" name="srv9" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv9-ban" value="9. Portas/ Janelas" name="srv9" <?php echo in_array('9. Portas/ Janelas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv9-ban">9. Portas/ Janelas</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv10-ban" value="10. Luminárias" name="srv10" />
+                                                            <input class="form-check-input check-banheiro" type="checkbox" id="srv10-ban" value="10. Luminárias" name="srv10" <?php echo in_array('10. Luminárias', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv10-ban">10. Luminárias</label>
                                                         </div>
                                                     </li>
-
                                                 </ol>
                                             </div>
                                         </div>
                                     </div>
 
 
-
-
                                     <div id="copa-cozinha">
-                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                        <div class="d-flex d-block mt-4 mx-4">
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
@@ -413,25 +396,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv1-coz" value="1. Piso" name="srv1" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv1-coz" value="1. Piso" name="srv1" <?php echo in_array('1. Piso', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv1-coz"> 1. Piso</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv2-coz" value="2. Pia" name="srv2" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv2-coz" value="2. Pia" name="srv2" <?php echo in_array('2. Pia', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv2-coz">2. Pia</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv3-coz" value="3. Mesa" name="srv3" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv3-coz" value="3. Mesa" name="srv3" <?php echo in_array('3. Mesa', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv3-coz">3. Mesa</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv4-coz" value="4. Geladeira" name="srv4" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv4-coz" value="4. Geladeira" name="srv4" <?php echo in_array('4. Geladeira', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv4-coz">4. Geladeira</label>
                                                         </div>
                                                     </li>
@@ -441,25 +424,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv5-coz" value="5. Reposição de papel toalha" name="srv5" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv5-coz" value="5. Reposição de papel toalha" name="srv5" <?php echo in_array('5. Reposição de papel toalha', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv5-coz">5. Reposição de papel toalha</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv6-coz" value="6. Reposição de Sabonete" name="srv6" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv6-coz" value="6. Reposição de Sabonete" name="srv6" <?php echo in_array('6. Reposição de Sabonete', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv6-coz">6. Reposição de Sabonete</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv7-coz" value="7. Paredes/ Tomadas/ Rodapés" name="srv7" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv7-coz" value="7. Paredes/ Tomadas/ Rodapés" name="srv7" <?php echo in_array('7. Paredes/ Tomadas/ Rodapés', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv7-coz">7. Paredes/ Tomadas/ Rodapés</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv8-coz" value="8. Filtros/Máquina de café" name="srv8" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv8-coz" value="8. Filtros/Máquina de café" name="srv8" <?php echo in_array('8. Filtros/Máquina de café', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv8-coz">8. Filtros/Máquina de café</label>
                                                         </div>
                                                     </li>
@@ -469,17 +452,16 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv9-coz" value="9. Fogão" name="srv9" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv9-coz" value="9. Fogão" name="srv9" <?php echo in_array('9. Fogão', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv9-coz">9. Fogão</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv10-coz" value="10. Microondas/ Torradeira" name="srv10" />
+                                                            <input class="form-check-input check-copa-cozinha" type="checkbox" id="srv10-coz" value="10. Microondas/ Torradeira" name="srv10" <?php echo in_array('10. Microondas/ Torradeira', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv10-coz">10. Microondas/ Torradeira</label>
                                                         </div>
                                                     </li>
-                                                    
                                                 </ol>
                                             </div>
                                         </div>
@@ -487,7 +469,7 @@ if (isset($_SESSION["useruid"])) {
 
 
                                     <div id="producao">
-                                        <div class="d-flex d-block mt-4 mx-4 ">
+                                        <div class="d-flex d-block mt-4 mx-4">
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
@@ -495,25 +477,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv1-prod" value="1. Vidros e Divisórias" name="srv1" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv1-prod" value="1. Vidros e Divisórias" name="srv1" <?php echo in_array('1. Vidros e Divisórias', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv1-prod"> 1. Vidros e Divisórias</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv2-prod" value="2. Piso" name="srv2" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv2-prod" value="2. Piso" name="srv2" <?php echo in_array('2. Piso', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv2-prod">2. Piso</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv3-prod" value="3. Prateleiras/Armários" name="srv3" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv3-prod" value="3. Prateleiras/Armários" name="srv3" <?php echo in_array('3. Prateleiras/Armários', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv3-prod">3. Prateleiras/Armários</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv4-prod" value="4. Bancadas" name="srv4" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv4-prod" value="4. Bancadas" name="srv4" <?php echo in_array('4. Bancadas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv4-prod">4. Bancadas</label>
                                                         </div>
                                                     </li>
@@ -523,25 +505,25 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv5-prod" value="5. Ar-condicionado" name="srv5" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv5-prod" value="5. Ar-condicionado" name="srv5" <?php echo in_array('5. Ar-condicionado', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv5-prod">5. Ar-condicionado</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv6-prod" value="6. Paredes / Tomadas/ Rodapé" name="srv6" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv6-prod" value="6. Paredes / Tomadas/ Rodapé" name="srv6" <?php echo in_array('6. Paredes / Tomadas/ Rodapé', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv6-prod">6. Paredes / Tomadas/ Rodapé</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv7-prod" value="7. Lixeiras" name="srv7" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv7-prod" value="7. Lixeiras" name="srv7" <?php echo in_array('7. Lixeiras', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv7-prod">7. Lixeiras</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv8-prod" value="8. Portas / Janelas" name="srv8"/>
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv8-prod" value="8. Portas / Janelas" name="srv8" <?php echo in_array('8. Portas / Janelas', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv8-prod">8. Portas / Janelas</label>
                                                         </div>
                                                     </li>
@@ -551,33 +533,33 @@ if (isset($_SESSION["useruid"])) {
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv9-prod" value="9. Computadores" name="srv9" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv9-prod" value="9. Computadores" name="srv9" <?php echo in_array('9. Computadores', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv9-prod">9. Computadores</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv10-prod" value="10. Reposição de Papel Toalha" name="srv10" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv10-prod" value="10. Reposição de Papel Toalha" name="srv10" <?php echo in_array('10. Reposição de Papel Toalha', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv10-prod">10. Reposição de Papel Toalha</label>
                                                         </div>
                                                     </li>
                                                     <li>
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input check-producao" type="checkbox" id="srv11-prod" value="11. Reposição de Sabonete" name="srv11" />
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv11-prod" value="11. Reposição de Sabonete" name="srv11" <?php echo in_array('11. Reposição de Sabonete', $tipos_limpeza) ? 'checked' : ''; ?> />
                                                             <label class="form-check-label" for="srv11-prod"> 11. Reposição de Sabonete</label>
                                                         </div>
                                                     </li>
                                                     <li>
-                                        
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input check-producao" type="checkbox" id="srv12-prod" value="12. Reposição de Touca" name="srv12" />
-                                                    <label class="form-check-label" for="srv12-prod">12. Reposição de Touca</label>
-                                                </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input check-producao" type="checkbox" id="srv12-prod" value="12. Reposição de Touca" name="srv12" <?php echo in_array('12. Reposição de Touca', $tipos_limpeza) ? 'checked' : ''; ?> />
+                                                            <label class="form-check-label" for="srv12-prod">12. Reposição de Touca</label>
+                                                        </div>
                                                     </li>
                                                 </ol>
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <script>                                     
                                         var areasAdm = document.getElementById('areas-adm');
@@ -682,7 +664,6 @@ if (isset($_SESSION["useruid"])) {
                                         radioCopaCozinha.addEventListener('change', toggleSections);
                                         radioProducao.addEventListener('change', toggleSections);
 
-                                        
                                         toggleSections(); 
 
                                     </script>
@@ -695,7 +676,7 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
 
                                     <div class="py-4 col d-flex justify-content-center">
-                                        <button class="btn btn-fab" type="submit" name="submit" id="submit" >Enviar</button>
+                                        <button style="height: 40px;" class="btn btn-fab" type="submit" name="submit" id="submit" >Enviar</button>
                                     </div>
 
                                 </form>
@@ -717,7 +698,6 @@ if (isset($_SESSION["useruid"])) {
             <?php require_once "config/firebaseConfig.php"; ?>
             const firebaseConfig = <?php echo json_encode($firebaseConfig); ?>;
         </script>
-
         <script src="js/uploadToFirebase.js"></script>
 
     </body>

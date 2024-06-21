@@ -123,7 +123,7 @@ if (isset($_SESSION["useruid"])) {
                                             <a href="editRL.php?id=<?php echo $row["id"]; ?>">
                                                 <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button>
                                             </a>
-                                            <a href="">
+                                            <a href="limpezaPDF.php?id=<?php echo $row["id"]; ?>">
                                                 <button class="btn btn-warning btn-sm"><i class="bi bi-file-pdf"></i></i></button>
                                             </a>
                                             <?php /* if ($_SESSION["userperm"] == 'Administrador') { */ ?>
