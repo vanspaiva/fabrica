@@ -214,11 +214,18 @@ if (isset($_SESSION["useruid"])) {
                                                     <thead>
                                                         <tr>
                                                             <th><b>ID</b></th>
-                                                            <th><b>Data/Hora</b></th>
+                                                            <th><b>Etapa</b></th>
+                                                            <!-- <th><b>Status</b></th> -->
+                                                            <th><b>Tempo Corrido</b></th>
+                                                            <!-- <th><b>Tempo termino</b></th> -->
+                                                            <!-- <th><b>Prox Status</b></th> -->
                                                             <th><b>Responsável</b></th>
                                                             <!-- <th>Pedido</th> -->
-                                                            <th><b>Etapa</b></th>
-                                                            <th><b>Status</b></th>
+                                                            <th><b>Param. 1</b></th>
+                                                            <th><b>Param. 2</b></th>
+                                                            <th><b>IT/REV</b></th>
+
+
                                                             <th><b>Ass</b></th>
                                                         </tr>
                                                     </thead>
@@ -231,6 +238,9 @@ if (isset($_SESSION["useruid"])) {
                                                             u.usersName AS Responsavel,
                                                             p.pedido AS numPedido,
                                                             e.nome AS Etapa,
+                                                            e.parametro1 AS parametro1,
+                                                            e.parametro2 AS parametro2,
+                                                            e.iterev AS iterev,
                                                             s.nome AS Status
                                                             FROM log_atividades_producao AS l 
                                                             JOIN realizacaoproducao AS r ON l.idRealizacaoProducao = r.id
@@ -239,11 +249,10 @@ if (isset($_SESSION["useruid"])) {
                                                             JOIN users AS u ON l.idUsuario = u.usersId
                                                             JOIN statusetapa AS s ON l.idStatus = s.id
                                                             WHERE p.pedido = $numped
-                                                            ORDER BY id DESC;";
+                                                            ORDER BY id ASC;";
                                                         $ret = mysqli_query($conn, $sql);
 
-                                                        $cnt = 1;
-
+                                                        $arrayStatus = [];
                                                         while ($row = mysqli_fetch_array($ret)) {
 
                                                             $Id = $row["Id"];
@@ -253,26 +262,125 @@ if (isset($_SESSION["useruid"])) {
                                                             $numPedido = $row["numPedido"];
                                                             $Etapa = $row["Etapa"];
                                                             $Status = $row["Status"];
+                                                            $parametro1 = $row["parametro1"];
+                                                            $parametro2 = $row["parametro2"];
+                                                            $iterev = $row["iterev"];
 
                                                             $data = dateFormatByHifen($DataLog);
                                                             $hora = hourFormat($HoraLog);
                                                             $horario = $data . " " . $hora;
 
+                                                            $nomeEtapa = $Etapa;
+                                                            $dataFluxo = $data;
+                                                            $horaFluxo = $HoraLog;
+                                                            $userFluxo = $Responsavel;
+                                                            $item = [
+                                                                "Etapa" => $nomeEtapa,
+                                                                "Data" => $dataFluxo,
+                                                                "Hora" => $horaFluxo,
+                                                                "User" => $userFluxo,
+                                                                "parametro1" => $parametro1,
+                                                                "parametro2" => $parametro2,
+                                                                "iterev" => $iterev,
+                                                                "Status" => $Status,
+                                                            ];
+
+                                                            array_push($arrayStatus, $item);
+                                                        }
+
+                                                        $thistermino = null;
+                                                        $arrayRelatorio = [];
+                                                        foreach ($arrayStatus as $chave => $valor) {
+                                                            $chaveParametro = $chave + 1;
+                                                            if (array_key_exists($chaveParametro, $arrayStatus)) {
+                                                                $thistermino = $arrayStatus[$chaveParametro]["Hora"];
+                                                            } else {
+                                                                $thistermino = "__/__/__";
+                                                            }
+
+                                                            $chaveParametro = $chave + 1;
+                                                            if ((array_key_exists($chaveParametro, $arrayStatus)) && ($arrayStatus[$chaveParametro]["Status"] != 'Concluído')) {
+                                                                $thisproxstatus = $arrayStatus[$chaveParametro]["Status"];
+                                                            } else {
+                                                                $thisproxstatus = "-";
+                                                            }
+
+
+
+
+                                                            // $arr[3] será atualizado com cada valor de $arr...
+                                                            foreach ($valor as $chave2 => $valor2) {
+                                                                $thisetapa = $valor['Etapa'];
+                                                                $thisdata = $valor['Data'];
+                                                                $thishora = $valor['Hora'];
+                                                                $thisuser = $valor['User'];
+                                                                $thisparametro1 = $valor['parametro1'];
+                                                                $thisparametro2 = $valor['parametro2'];
+                                                                $thisiterev = $valor['iterev'];
+                                                                $thisstatus = $valor['Status'];
+                                                            }
+
+
+
+                                                            if ($thisstatus == 'Fazendo') {
+
+                                                                $tempoCorrido = calcularTempoPassado($thishora, $thistermino);
+                                                                $item = [
+                                                                    "Etapa" => $thisetapa,
+                                                                    "Tempo" => $tempoCorrido,
+                                                                    "Responsavel" => $userFluxo,
+                                                                    "parametro1" => $parametro1,
+                                                                    "parametro2" => $parametro2,
+                                                                    "iterev" => $iterev
+                                                                ];
+                                                                array_push($arrayRelatorio, $item);
+                                                            } else {
+                                                                $tempoCorrido = '';
+                                                            }
+
+                                                            if ($thisstatus == 'Concluído') {
+                                                                $thisstatus = "-";
+                                                            }
+                                                        }
+
+                                                        $arrayRelatorioNew = agruparEtapas($arrayRelatorio);
+
+                                                        $cnt = 1;
+                                                        foreach ($arrayRelatorioNew as $chave => $valor) {
+                                                            foreach ($valor as $chave2 => $valor2) {
+                                                                $thisetapa = $valor['Etapa'];
+                                                                $thistempo = $valor['Tempo'];
+                                                                $thisresp = $valor['Responsavel'];
+                                                                $thisparametro1 = $valor['parametro1'];
+                                                                $thisparametro2 = $valor['parametro2'];
+                                                                $thisiterev = $valor['iterev'];
+                                                            }
                                                         ?>
 
                                                             <tr>
                                                                 <th><?php echo $cnt; ?></th>
-                                                                <th><?php echo $horario; ?></th>
-                                                                <th><?php echo $Responsavel; ?></th>
-                                                                <!-- <th><?php //echo $numPedido; 
-                                                                            ?></th> -->
-                                                                <th><?php echo $Etapa; ?></th>
-                                                                <th><?php echo $Status; ?></th>
+                                                                <th><?php echo $thisetapa; ?></th>
+                                                                <th><?php echo $thistempo; ?></th>
+                                                                <th><?php echo $thisresp; ?></th>
+                                                                <th><?php echo $thisparametro1; ?></th>
+                                                                <th><?php echo $thisparametro2; ?></th>
+                                                                <th><?php echo $thisiterev; ?></th>
+
                                                                 <th><?php echo "___________________"; ?></th>
                                                             </tr>
                                                         <?php
                                                             $cnt++;
-                                                        } ?>
+                                                        }
+                                                        
+                                                        // echo "<pre>";
+                                                        // print_r($arrayRelatorio);
+                                                        // echo "</pre> <br>";
+
+                                                        // echo "<pre>";
+                                                        // print_r($arrayRelatorioNew = agruparEtapas($arrayRelatorio));
+                                                        // echo "</pre> <br>";
+
+                                                        ?>
 
                                                     </tbody>
                                                 </table>
