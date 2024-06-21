@@ -6,9 +6,6 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_updateprop.php");
     require_once 'db/dbh.php';
     $user = $_SESSION["useruid"];
-
-
-
 ?>
 
     <body class="bg-light-gray2">
@@ -55,7 +52,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class="d-flex justify-content-center p-1">
                                             <!-- <a href="<?php //echo $fileNameOs 
                                                             ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
-                                           <!--  <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
+                                            <!--  <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
 
                                         </div>
                                     </div>
@@ -75,7 +72,7 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="content-panel">
-                                                        <form class="form-horizontal style-form" id="formprop" name="formprop" action="<!-- includes/updateos.inc.php -->" method="POST">
+                                                        <form class="form-horizontal style-form" id="formprop" name="formprop" action="<!-- includes/updatefrm_004.inc.php -->" method="POST">
                                                             <div class="form-row" hidden>
                                                                 <div class="form-group col-md">
                                                                     <label class="form-label text-black" for="osid">OS ID</label>
@@ -95,79 +92,76 @@ if (isset($_SESSION["useruid"])) {
                                                                             <label class="form-label text-black" for="status">Status</label>
                                                                             <select class='form-control' name='status' id='status' required>
                                                                                          <?php
-                                                                                                $retStatus = mysqli_query($conn, "SELECT * FROM statusos ORDER BY stPosicao ASC;");
-                                                                                                while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
+                                                                                            $retStatus = mysqli_query($conn, "SELECT * FROM statusos ORDER BY stPosicao ASC;");
+                                                                                            while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
 
                                                                                     <option value="<?php echo $rowStatus['stNome']; ?>" <?php if (trim($row['osStatus']) == trim($rowStatus['stNome'])) echo ' selected="selected"'; ?>><?php echo $rowStatus['stNome']; ?></option>
                                                                                 <?php
-                                                                                                }
+                                                                                            }
                                                                                 ?> 
                                                                             </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div> -->
-                                                             <div class='d-flex justify-content-around'>
-                                        <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' value="<?php echo $row['data_publicacao']; ?>" required>
-                                        </div>
-                                        <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Validade</label>
-                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date' value="<?php echo $row['data_validade']; ?>" readonly>
-                                        </div>
-                                    </div>
-                                    <script>
-                                        document.getElementById('dataPublicacao').addEventListener('change', function() {
-                                            // Obter a data de publicação inserida
-                                            var dataPublicacao = new Date(this.value);
+                                                            <div class='d-flex justify-content-around'>
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
+                                                                    <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' value="<?php echo $row['data_publicacao']; ?>" required>
+                                                                </div>
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label class='control-label' style='color:black;'>Validade</label>
+                                                                    <input class='form-control' name='dataValidade' id='dataValidade' type='date' value="<?php echo $row['data_validade']; ?>" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                document.getElementById('dataPublicacao').addEventListener('change', function() {
 
-                                            // Calcular a data de validade (dois anos após a data de publicação)
-                                            var doisAnosDepois = new Date(dataPublicacao);
-                                            doisAnosDepois.setFullYear(dataPublicacao.getFullYear() + 2);
-                                            doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
+                                                                    var dataPublicacao = new Date(this.value);
 
-                                            // Verificar se o ano é bissexto e ajustar a data de validade, se necessário
-                                            if (doisAnosDepois.getMonth() === 1 && doisAnosDepois.getDate() === 29) {
-                                                // Se a data de validade é 29 de fevereiro, ajuste para 28 de fevereiro se o próximo ano não for bissexto
-                                                if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
-                                                    doisAnosDepois.setDate(28);
-                                                }
-                                            }
+                                                                    var doisAnosDepois = new Date(dataPublicacao);
+                                                                    doisAnosDepois.setFullYear(dataPublicacao.getFullYear() + 2);
+                                                                    doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
 
-                                            // Formatar a data de validade para o formato "YYYY-MM-DD"
-                                            var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
-                                            var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
-                                            var ano = doisAnosDepois.getFullYear();
-                                            var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
+                                                                    if (doisAnosDepois.getMonth() === 1 && doisAnosDepois.getDate() === 29) {
 
-                                            // Exibir a data de validade no campo de "Validade"
-                                            document.getElementById('dataValidade').value = dataValidadeFormatada;
-                                        });
+                                                                        if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
+                                                                            doisAnosDepois.setDate(28);
+                                                                        }
+                                                                    }
 
-                                        function isBissexto(ano) {
-                                            return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
-                                        }
-                                    </script>
 
-                                    <div class='d-flex justify-content-between'>
-                                        <div class='form-group col-md-4 m-2'>
-                                            <label class='control-label'>Identificação do Ambiente <b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='identificadorAmbiente' id='identificadorAmbiente' value="<?php echo $row['identificacao_ambiente']; ?>" required>
-                                        </div>
-                                        <div class='form-group col-md-4 m-2'>
-                                            <label class='control-label'>Tipo de Atividade<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='tipoAtividade' id='tipoAtividade'  value="<?php echo $row['tipo_atividade']; ?>" required>
-                                        </div>
-                                        <div class='form-group col-md-3 m-2'>
-                                            <label class='control-label'>Marca/Modelo</label>
-                                            <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
-                                        </div>
-                                    </div>
-                                    <div class='form-group d-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
-                                        </div>                                           
+                                                                    var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
+                                                                    var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
+                                                                    var ano = doisAnosDepois.getFullYear();
+                                                                    var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
+
+                                                                    document.getElementById('dataValidade').value = dataValidadeFormatada;
+                                                                });
+
+                                                                function isBissexto(ano) {
+                                                                    return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
+                                                                }
+                                                            </script>
+
+                                                            <div class='d-flex justify-content-between'>
+                                                                <div class='form-group col-md-4 m-2'>
+                                                                    <label class='control-label'>Identificação do Ambiente <b style='color: red;'>*</b></label>
+                                                                    <input class='form-control' name='identificadorAmbiente' id='identificadorAmbiente' value="<?php echo $row['identificacao_ambiente']; ?>" required>
+                                                                </div>
+                                                                <div class='form-group col-md-4 m-2'>
+                                                                    <label class='control-label'>Tipo de Atividade<b style='color: red;'>*</b></label>
+                                                                    <input class='form-control' name='tipoAtividade' id='tipoAtividade' value="<?php echo $row['tipo_atividade']; ?>" required>
+                                                                </div>
+                                                                <div class='form-group col-md-3 m-2'>
+                                                                    <label class='control-label'>Marca/Modelo</label>
+                                                                    <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class='form-group d-block flex-fill m-2'>
+                                                                <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
+                                                                <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
+                                                            </div>
 
                                                             <!-- Descrição das atividades -->
                                                             <script>
@@ -177,7 +171,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                                     if (!selecionado) {
                                                                         alert("Por favor, selecione ao menos uma atividade executada na manuntenção.");
-                                                                        event.preventDefault(); // Impede o envio do formulário
+                                                                        event.preventDefault();
                                                                     }
                                                                 }
 
@@ -276,6 +270,9 @@ if (isset($_SESSION["useruid"])) {
                                                                     }
                                                                 });
                                                             </script>
+                                                            <div class="d-flex justify-content-end">
+                                                                <button type="submit" name="update" id="update" class="btn btn-fab">Salvar</button>
+                                                            </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -292,24 +289,21 @@ if (isset($_SESSION["useruid"])) {
 
                             <script src="js/uploadToFirebase.js"></script>
 
-                                </body>
+    </body>
 
 
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" name="update" id="update" class="btn btn-fab">Salvar</button>
-                                </div>
-                                </form>
-                                </div>
-                                </div>
-                                </div>
-                                </section>
-                                </section>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
+    </form>
+    </div>
+    </div>
+    </div>
+    </section>
+    </section>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
 <?php
             include_once 'php/footer_updateprop.php';
         }
