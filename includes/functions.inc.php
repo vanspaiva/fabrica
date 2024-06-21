@@ -3888,3 +3888,78 @@ function getLastUserId($conn)
         return null;
     }
 }
+
+function calcularTempoPassado($inicio, $fim) {
+    // Convertendo as strings de tempo em objetos DateTime
+    $inicioObj = DateTime::createFromFormat('H:i:s', $inicio);
+    $fimObj = DateTime::createFromFormat('H:i:s', $fim);
+
+    // Calculando a diferença entre os dois tempos
+    $diferenca = $inicioObj->diff($fimObj);
+
+    // Formatando a diferença para uma string legível
+    $tempoPassado = $diferenca->format('%H horas, %I minutos e %S segundos');
+
+    return $tempoPassado;
+}
+
+function agruparEtapas($array) {
+    // Array para armazenar os tempos somados por etapa
+    $etapas = [];
+
+    // Itera sobre o array fornecido
+    foreach ($array as $item) {
+        $etapa = $item['Etapa'];
+        $tempo = $item['Tempo'];
+
+        // Verifica se a etapa já existe no array $etapas
+        if (array_key_exists($etapa, $etapas)) {
+            // Se existe, adiciona o tempo ao tempo existente da etapa
+            $etapas[$etapa]['Tempo'] = somarTempos($etapas[$etapa]['Tempo'], $tempo);
+        } else {
+            // Se não existe, cria a entrada para a etapa com os atributos iniciais
+            $etapas[$etapa] = [
+                'Etapa' => $etapa,
+                'Tempo' => $tempo,
+                'Responsavel' => $item['Responsavel'],
+                'parametro1' => $item['parametro1'],
+                'parametro2' => $item['parametro2'],
+                'iterev' => $item['iterev'],
+            ];
+        }
+    }
+
+    // Formata o resultado como um array de arrays associativos
+    $resultado = array_values($etapas); // Remove as chaves e reindexa o array
+
+    return $resultado;
+}
+
+// Função auxiliar para somar tempos no formato "H horas, I minutos e S segundos"
+function somarTempos($tempo1, $tempo2) {
+    // Função para converter o tempo em segundos
+    function converterParaSegundos($tempo) {
+        sscanf($tempo, "%d horas, %d minutos e %d segundos", $horas, $minutos, $segundos);
+        return $horas * 3600 + $minutos * 60 + $segundos;
+    }
+
+    // Função para converter segundos de volta para o formato "H horas, I minutos e S segundos"
+    function converterParaFormato($segundos) {
+        $horas = floor($segundos / 3600);
+        $segundos %= 3600;
+        $minutos = floor($segundos / 60);
+        $segundos %= 60;
+
+        return sprintf("%02d horas, %02d minutos e %02d segundos", $horas, $minutos, $segundos);
+    }
+
+    // Converte os tempos para segundos
+    $segundos1 = converterParaSegundos($tempo1);
+    $segundos2 = converterParaSegundos($tempo2);
+
+    // Soma os tempos em segundos
+    $segundosTotal = $segundos1 + $segundos2;
+
+    // Converte o resultado de volta para o formato esperado
+    return converterParaFormato($segundosTotal);
+}
