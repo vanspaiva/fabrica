@@ -1772,7 +1772,4 @@ function editfrm($conn, $id, $data_manutencao, $executado)
     } else {
         header("location: lista-frm?error=stmtfailed");
     }
-
-
-    mysqli_close($conn);
 }
