@@ -31,6 +31,13 @@ if (isset($_SESSION["useruid"])) {
             pointer-events: none;
             opacity: 0.5;        
         }
+        .pendentes{
+            background-color: red;
+            color: white;
+            font-weight: bolder;
+            padding: 3px;
+            border-radius: 5px;
+        }
     </style>
 <header>
     <?php
@@ -65,7 +72,7 @@ if (isset($_SESSION["useruid"])) {
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
-                            <a href=""><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                            <a href="limpezaPDF"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i>Exportar</button></a>
                         </div>
                     </div>
                 </div>
@@ -92,7 +99,7 @@ if (isset($_SESSION["useruid"])) {
                         <tbody>
                         <?php
                             require_once 'db/dbh.php';
-                            $sql = "SELECT * FROM form_inf_003 WHERE conferido = 'APROV'";
+                            $sql = "SELECT * FROM form_inf_003";
                             $ret = mysqli_query($conn, $sql);
                             while ($row = mysqli_fetch_array($ret)) {
                                 ?>
