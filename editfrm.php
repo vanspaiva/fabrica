@@ -17,7 +17,6 @@ if (isset($_SESSION["useruid"])) {
 
         $ret = mysqli_query($conn, "SELECT * FROM FRM_INF_004 WHERE id='" . $frmId . "';");
         while ($row = mysqli_fetch_array($ret)) {
-            /* $fileNameOs = $row['osNomeArquivo']; */
         ?>
 
             <div id="main">
@@ -46,18 +45,18 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                 </div>
                                 <?php
-                                if ($fileNameOs != null) {
+                               /*  if ($fileNameOs != null) {
                                 ?>
                                     <div class="col-sm pt-2">
                                         <div class="d-flex justify-content-center p-1">
-                                            <!-- <a href="<?php //echo $fileNameOs 
-                                                            ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
-                                            <!--  <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> -->
+                                                <a href="<?php echo $fileNameFrm 
+                                                            ?>" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> 
+                                              <a href="<?php echo htmlspecialchars($fileNameOs); ?>" target="_blank" class="btn btn-outline-fab" download><i class="bi bi-cloud-arrow-down"></i> Download Arquivo</a> 
 
                                         </div>
                                     </div>
                                 <?php
-                                }
+                                } */
                                 ?>
 
 
@@ -72,11 +71,11 @@ if (isset($_SESSION["useruid"])) {
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="content-panel">
-                                                        <form class="form-horizontal style-form" id="formprop" name="formprop" action="<!-- includes/updatefrm_004.inc.php -->" method="POST">
+                                                        <form class="form-horizontal style-form" id="formprop" name="formprop" action="includes/updatefrm_004.php"  method="POST">
                                                             <div class="form-row" hidden>
                                                                 <div class="form-group col-md">
                                                                     <label class="form-label text-black" for="osid">OS ID</label>
-                                                                    <input type="number" class="form-control" id="osid" name="osid" value="<?php echo $row['frmId']; ?>" required readonly>
+                                                                    <input type="number" class="form-control" id="id" name="id" value="<?php echo $row['frmId']; ?>" required readonly>
                                                                     <small class="text-muted">ID não é editável</small>
                                                                 </div>
                                                                 <div class="form-group col-md">
@@ -85,25 +84,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 </div>
                                                             </div>
 
-                                                            <!-- <div class="card border-success">
-                                                                <div class="card-body">
-                                                                    <div class='d-flex d-block justify-content-around'>
-                                                                        <div class="col form-group d-inline-block flex-fill m-2">
-                                                                            <label class="form-label text-black" for="status">Status</label>
-                                                                            <select class='form-control' name='status' id='status' required>
-                                                                                         <?php
-                                                                                            $retStatus = mysqli_query($conn, "SELECT * FROM statusos ORDER BY stPosicao ASC;");
-                                                                                            while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
 
-                                                                                    <option value="<?php echo $rowStatus['stNome']; ?>" <?php if (trim($row['osStatus']) == trim($rowStatus['stNome'])) echo ' selected="selected"'; ?>><?php echo $rowStatus['stNome']; ?></option>
-                                                                                <?php
-                                                                                            }
-                                                                                ?> 
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
                                                             <div class='d-flex justify-content-around'>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
                                                                     <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
@@ -129,7 +110,6 @@ if (isset($_SESSION["useruid"])) {
                                                                             doisAnosDepois.setDate(28);
                                                                         }
                                                                     }
-
 
                                                                     var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
                                                                     var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
@@ -200,62 +180,62 @@ if (isset($_SESSION["useruid"])) {
                                                                         <tbody>
                                                                             <tr>
                                                                                 <td>Verificação e drenagem da água</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[1]" value="1"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][1]" value="1"></td>
                                                                                 <td><input type="text" name="responsavel[1]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[2]" value="2"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][2]" value="2"></td>
                                                                                 <td><input type="text" name="responsavel[2]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[3]" value="3"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][3]" value="3"></td>
                                                                                 <td><input type="text" name="responsavel[3]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[4]" value="4"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][4]" value="4"></td>
                                                                                 <td><input type="text" name="responsavel[4]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Trocar filtros</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[5]" value="5"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][5]" value="5"></td>
                                                                                 <td><input type="text" name="responsavel[5]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Verificação da fixação</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[6]" value="6"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][6]" value="6"></td>
                                                                                 <td><input type="text" name="responsavel[6]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Verificação de vazamentos nas ligações flexíveis</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[7]" value="7"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][7]" value="7"></td>
                                                                                 <td><input type="text" name="responsavel[7]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Estado de conservação do isolamento termo-acústico</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[8]" value="8"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][8]" value="8"></td>
                                                                                 <td><input type="text" name="responsavel[8]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Vedação dos painéis de fechamento do gabinete</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[9]" value="9"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][9]" value="9"></td>
                                                                                 <td><input type="text" name="responsavel[9]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Manutenção mecânica</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[10]" value="10"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][10]" value="10"></td>
                                                                                 <td><input type="text" name="responsavel[10]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>Manutenção elétrica</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[11]" value="11"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][11]" value="11"></td>
                                                                                 <td><input type="text" name="responsavel[11]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>outros</td>
-                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="executado[12]" value="12"></td>
+                                                                                <td style="vertical-align: middle; text-align: center;"><input type="checkbox" class="executado-checkbox" name="$_POST['executado'][12]" value="12"></td>
                                                                                 <td><input type="text" name="responsavel[12]" style="border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
                                                                             </tr>
                                                                         </tbody>

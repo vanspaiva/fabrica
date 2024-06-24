@@ -1763,13 +1763,33 @@ function deshashItemNatural($hash)
     return $id;
 }
 
-function editfrm($conn, $id, $data_manutencao, $executado)
-{
-    $sql = "UPDATE atividades_executadas SET data_manutencao='$data_manutencao', executado='$executado' WHERE Id ='$id'";
 
-    if (mysqli_query($conn, $sql)) {
-        header("location: ../lista-frm?error=edit");
+
+// FRM.004
+
+function editFrm($conn, $id, $dataPublicacao, $dataValidade, $identificadorAmbiente, $tipoAtividade, $dataManutencao, $dtexecucao, $marcaModelo, $executado1, $executado2, $executado3, $executado4, $executado5, $executado6, $executado7, $executado8, $executado9, $executado10, $executado11, $executado12, $user) {
+    $sql = "UPDATE descricao_atividades SET dataManutencao=?, executado1=?, executado2=?, executado3=?, executado4=?, executado5=?, executado6=?, executado7=?, executado8=?, executado9=?, executado10=?, executado11=?, executado12=? WHERE Id=?";
+    
+    $stmt = mysqli_prepare($conn, $sql);
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "sssssssssssssi", $dataManutencao, $executado1, $executado2, $executado3, $executado4, $executado5, $executado6, $executado7, $executado8, $executado9, $executado10, $executado11, $executado12, $id);
+        
+        mysqli_stmt_execute($stmt);
+        
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            header("location: ../lista-frm?error=edit");
+            exit(); // Saída após redirecionamento para evitar execução adicional
+        } else {
+            header("location: ../lista-frm?error=stmtfailed");
+            exit(); // Saída após redirecionamento para evitar execução adicional
+        }
+    
+        mysqli_stmt_close($stmt);
     } else {
-        header("location: lista-frm?error=stmtfailed");
+        header("location: ../lista-frm?error=stmtpreparefailed");
+        exit(); // Saída após redirecionamento para evitar execução adicional
     }
+    
+    mysqli_close($conn);
 }
