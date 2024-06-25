@@ -16,7 +16,7 @@ if (isset($_SESSION["useruid"])) {
         $stmt->bind_param("s", $useruid);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $row['usersId'];
@@ -31,35 +31,49 @@ if (isset($_SESSION["useruid"])) {
     if ($userId !== null) {
         // Processar o formulário quando enviado
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-            // Obter outros dados do formulário
+            // Obter dados do formulário
             $dataPublicacao = $_POST['dataPublicacao'];
             $identificadorAmbiente = $_POST['identificadorAmbiente'];
             $tipoAtividade = $_POST['tipoAtividade'];
 
             // Calcular a data de validade
-            $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
+            $dataValidade = date('d-m-y', strtotime($dataPublicacao . ' + 2 years'));
 
-            // Inserir no banco de dados
+            // Inserir na tabela FRM_INF_004
             $marcaModelo = "Springer";
-            $responsavel = $_SESSION["userfirstname"]; 
 
-            $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade,  usersId) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade, usersId) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
-            
+
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "sssssi", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade,  $userId);
+                mysqli_stmt_bind_param($stmt, "sssssi", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade, $userId);
                 mysqli_stmt_execute($stmt);
-                $frmInfId = mysqli_insert_id($conn);
-                echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Dados inseridos com sucesso!</p></div>";
+                $frmInfId = mysqli_insert_id($conn); // Obter o ID inserido
+
+                // Capturar a data de manutenção do formulário (se estiver disponível no formulário)
+                $dataManutencao = $_POST['dataManutencao'];
+
+                // Verificar se checkboxes foram selecionados
+                if (isset($_POST['executado']) && is_array($_POST['executado']) && !empty($_POST['executado'])) {
+                    $descricaoAtividadeIds = $_POST['executado'];
+                    $descricaoAtividadeIdsJson = json_encode($descricaoAtividadeIds);
+
+
+                    $sql = "INSERT INTO atividades_executadas (data_manutencao, frm_inf_004_id, descricao_atividade) VALUES (?, ?, ?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ssi", $dataManutencao, $frmInfId, $descricaoAtividadeIdsJson);
+                    $stmt->execute();
+                }
             } else {
-                $error = mysqli_error($conn);
-                error_log("Erro ao preparar a consulta SQL: $error");
+                echo "<div class='my-2 pb-0 alert alert-danger pt-3 text-center'><p>Erro ao preparar consulta SQL.</p></div>";
             }
+        }
+    } else {
+        echo "<div class='my-2 pb-0 alert alert-warning pt-3 text-center'><p>Usuário não encontrado.</p></div>";
     }
-}
+
 
 ?>
-
 
     <body class="bg-light-gray2">
 
@@ -197,21 +211,139 @@ if (isset($_SESSION["useruid"])) {
 
                                     <div class='d-flex justify-content-between'>
                                         <div class='form-group col-md-4 m-2'>
-                                            <label class='control-label'>Identificação do Ambiente <b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='identificadorAmbiente' id='identificadorAmbiente' required>
+                                            <label class='control-label'>Setor<b style='color: red;'>*</b></label>
+                                            <select class="form-control" name='descricao_setores' id='descricao_setores'>
+                                                <option value="">Selecione um Setor</option>
+                                                <option value="1">Estoque CPMH</option>
+                                                <option value="2">Estoque Osteofix</option>
+                                                <option value="3">PCP</option>
+                                                <option value="4">Sala Impressoras</option>
+                                                <option value="5">Sala Planejamento</option>
+                                                <option value="6">Sala Inspeção Qualidade</option>
+                                                <option value="7">Sala Reunião Terreo</option>
+                                                <option value="8">ADM / Financeiro</option>
+                                                <option value="9">Marketing / Comercial</option>
+                                                <option value="10">Sala Diretoria Comercial</option>
+                                                <option value="11">Sala Jogos</option>
+                                                <option value="12">Auditório</option>
+                                                <option value="13">Presidência</option>
+                                                <option value="14">Lounge</option>
+                                                <option value="15">Sala Reunião 1º Andar</option>
+                                                <option value="16">Sala Fotografia</option>
+                                            </select>
                                         </div>
+
+                                        
                                         <div class='form-group col-md-4 m-2'>
-                                            <label class='control-label'>Tipo de Atividade<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='tipoAtividade' id='tipoAtividade' required>
+                                            <label class="control-label" style="color: black;">Responsável <b style="color: red;">*</b></label>
+                                            <input class="form-control" name="responsavel" id="responsavel" style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
                                         </div>
-                                        <div class='form-group col-md-3 m-2'>
+
+                                        <div class='form-group col-md-2 m-2'>
                                             <label class='control-label'>Marca/Modelo</label>
                                             <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
                                         </div>
                                     </div>
-                                    <div class='form-group d-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
+
+
+                                    <!-- Descrição das atividades -->
+                                    <script>
+                                        function validarFormulario(event) {
+                                            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                                            var selecionado = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+                                            if (!selecionado) {
+                                                alert("Por favor, selecione ao menos uma atividade executada na manuntenção.");
+                                                event.preventDefault(); // Impede o envio do formulário
+                                            }
+                                        }
+
+                                        document.addEventListener('DOMContentLoaded', (event) => {
+                                            var formulario = document.querySelector('form');
+                                            formulario.addEventListener('submit', validarFormulario);
+                                        });
+                                    </script>
+
+                                    <div class='d-flex justify-content-center' style="margin-top: 50px;">
+                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                            <label class='control-label' style='color:black;'>Data da Manutenção<b style='color: red;'>*</b></label>
+                                            <input class='form-control' name='dataManutencao' id='dataManutencao' type='date' required>
+                                        </div>
+                                    </div>
+                                    <div class='d-flex d-block justify-content-around'>
+                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                            <table class="table" style="font-size: 1rem; margin: 10px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align: center; font-size: 1.2rem;">Descrição das Atividades</th>
+                                                        <th style="text-align: center; font-size: 1.2rem;">Executado</th>
+                                                        <th style="display: none; text-align: center; font-size: 1.2rem;">Responsável</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Verificação e drenagem da água</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[1]" value="1"></td>
+                                                        <td><input type="text" name="responsavel[1]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px" value="<?php echo $_SESSION["userfirstname"]; ?>"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[2]" value="2"></td>
+                                                        <td><input type="text" name="responsavel[2]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[3]" value="3"></td>
+                                                        <td><input type="text" name="responsavel[3]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[4]" value="4"></td>
+                                                        <td><input type="text" name="responsavel[4]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Trocar filtros</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[5]" value="5"></td>
+                                                        <td><input type="text" name="responsavel[5]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Verificação da fixação</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[6]" value="6"></td>
+                                                        <td><input type="text" name="responsavel[6]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Verificação de vazamentos nas ligações flexíveis</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[7]" value="7"></td>
+                                                        <td><input type="text" name="responsavel[7]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Estado de conservação do isolamento termo-acústico</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[8]" value="8"></td>
+                                                        <td><input type="text" name="responsavel[8]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Vedação dos painéis de fechamento do gabinete</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[9]" value="9"></td>
+                                                        <td><input type="text" name="responsavel[9]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Manutenção mecânica</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[10]" value="10"></td>
+                                                        <td><input type="text" name="responsavel[10]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Manutenção elétrica</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[11]" value="11"></td>
+                                                        <td><input type="text" name="responsavel[11]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>outros</td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[12]" value="12"></td>
+                                                        <td><input type="text" name="responsavel[12]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <button class="btn btn-fab" type="submit" name="submit" id="submit">Enviar</button>
                                 </form>
