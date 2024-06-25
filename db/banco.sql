@@ -776,8 +776,7 @@ id int primary key not null auto_increment,
 data_publicacao date, 
 data_validade date,
 modelo varchar(20) default 'springer',
-identificacao_ambiente varchar(30),
-tipo_atividade varchar(20)
+setor_id int(11)
 );
 
 ---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
@@ -799,3 +798,10 @@ CREATE TABLE DESCRICAO_ATIVIDADES (
 id INT PRIMARY KEY AUTO_INCREMENT,
 descricao TEXT
 );
+
+---- Estrutura da tabela `SETOR_ARCONDICIONADO'
+
+CREATE TABLE DESCRICAO_ATIVIDADES (
+id INT PRIMARY KEY AUTO_INCREMENT, 
+descricao_setores text
+)
