@@ -83,7 +83,7 @@ if (isset($_SESSION["useruid"])) {
                 <thead>
                     <tr>
                         <td style="vertical-align: middle;">CPMH</td>
-                        <td>Formuláriob <br> FRM.INF003</td>
+                        <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -204,7 +204,7 @@ if (isset($_SESSION["useruid"])) {
                 <thead>
                     <tr>
                         <td style="vertical-align: middle;">CPMH</td>
-                        <td>Formuláriob <br> FRM.INF003</td>
+                        <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -228,7 +228,6 @@ if (isset($_SESSION["useruid"])) {
                                 echo $dateV->format('d/m/Y');
                             ?> 
                         </td>
-
                     </tr>
                 </thead>
             </table>
@@ -288,10 +287,10 @@ if (isset($_SESSION["useruid"])) {
 
             <table style="width: 800px; text-align:start; border:none; font-weight: bolder;" style="position: relative;">
                 <tr>
-                    <td style="border: none;">1.Sanitário</td>
+                    <td style="border: none;">1. Sanitário</td>
                     <td style="border: none;">4. Espelho</td>
                     <td style="border: none;">7. Reposição de Sabonete</td>
-                    <td style="border: none;">10.Luminárias</td>
+                    <td style="border: none;">10. Luminárias</td>
                 </tr>
                 <tr>
                     <td style="border: none;">2. Pia</td>
@@ -322,7 +321,7 @@ if (isset($_SESSION["useruid"])) {
                 <thead>
                     <tr>
                         <td style="vertical-align: middle;">CPMH</td>
-                        <td>Formuláriob <br> FRM.INF003</td>
+                        <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -442,7 +441,7 @@ if (isset($_SESSION["useruid"])) {
                 <thead>
                     <tr>
                         <td style="vertical-align: middle;">CPMH</td>
-                        <td>Formuláriob <br> FRM.INF003</td>
+                        <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
                         <td colspan="2">

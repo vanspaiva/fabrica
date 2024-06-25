@@ -74,7 +74,6 @@ if (isset($_SESSION["useruid"])) {
                                 
                                 $localIP = getHostByName(getHostName());
                             ?>
-
                                 <form action="testeEnvio.php" method="POST" enctype='multipart/form-data'>
                                     <div hidden>
                                         <h4 class="text-fab">Dados do Usuário</h4>
@@ -103,109 +102,73 @@ if (isset($_SESSION["useruid"])) {
                                         <hr>
                                     </div>
                                     <h4 class="text-fab">Dados da OM</h4>
-                            
-                                        <!--  <div class="d-flex align-items-center justify-content-end">
-                                            <button type="button"class="btn btn-fab" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">+ Nova Área Administrativa</button>
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Adionar Nova Área Administrativa</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Informe o setor</label>
-                                                        <input type="text" class="form-control" id="recipient-name">
-                                                    </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Enviar</button>
-                                                </div>
-                                                </div>
-                                            </div>
-                                            </div>
-                                            <button type="button"class="btn btn-fab m-2" data-toggle="modal" data-target="#exampleModal2" data-whatever="@getbootstrap">+ Novo Responsável</button>
-                                            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Adionar Novo Responsável</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Nome do responsável</label>
-                                                        <input type="text" class="form-control" id="recipient-name">
-                                                    </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                                                    <button type="button" class="btn btn-primary">Enviar</button>
-                                                </div>
-                                                </div>
-                                            </div>
-                                            </div>
-                                        </div>
- -->
                                         <div class="justify-content-around align-items-center">
                                             <div class="form-group mx-2">
                                                 <label class='d-block control-label' style='color:black;'>Escolha o Setor <b style='color: red;'>*</b></label>
 
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="1. Áreas Administrativas" name="setor" id="areas-adm-radio" required />
+                                                    <input class="form-check-input" type="radio" value="adm" name="setor" id="areas-adm-radio" required />
                                                     <label class="form-check-label" for="areas-adm-radio">1. Áreas Administrativas</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="2. Banheiro" name="setor" id="banheiro-radio" />
+                                                    <input class="form-check-input" type="radio" value="ban" name="setor" id="banheiro-radio" />
                                                     <label class="form-check-label" for="banheiro-radio">2. Banheiro</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="3. Copa / Cozinha" name="setor" id="copa-cozinha-radio" />
+                                                    <input class="form-check-input" type="radio" value="copa" name="setor" id="copa-cozinha-radio" />
                                                     <label class="form-check-label" for="copa-cozinha-radio">3. Copa / Cozinha</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="4. Produção" name="setor" id="producao-radio" />
+                                                    <input class="form-check-input" type="radio" value="prod" name="setor" id="producao-radio" />
                                                     <label class="form-check-label" for="producao-radio">4. Produção</label>
                                                 </div>
                                             </div>
-                                    
 
                                         <div class='d-flex d-block justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label for="validationDefault04">Selecione a area a ser administrada</label>
                                             <select class="custom-select" id="validationDefault04" name="area-adm" required>
-                                                <option selected disabled value="">Escolha um setor</option>
-                                                <option value='banheiro-superior-masculino'>Banheiro superior masculino</option>
-                                                <option value='banheiro-superior-feminino'>Banheiro superior feminino</option>
-                                                <option value='banheiro-terreo-masculino'>Banheiro térreo masculino</option>
-                                                <option value='banheiro-terreo-feminino'>Banheiro térreo feminino</option>
-                                                <option value='lounge'>Lounge</option>
-                                                <option value='sala-reuniao'>Sala reunião</option>
-                                                <option value='sala-dr-rander'>Sala Dr. Rander</option>
-                                                <option value='sala-comercial'>Sala comercial</option>
-                                                <option value='sala-administrativo'>Sala administrativo</option>
-                                                <option value='sala-descanso'>Sala de descanso</option>
-                                                <option value='fabrica'>Fábrica</option>
-                                                <option value='planejamento'>Planejamento</option>
-                                                <option value='refeitorio'>Refeitório</option>
-                                                <option value='estoque'>Estoque</option>
-                                                <option value='osteofix'>Osteofix</option>
-                                                <option value='pcp'>PCP</option>
-                                                <option value='liberacao'>Liberação</option>
-                                                <option value='sala-limpa'>Sala Limpa</option>
+                                                <option selected disabled value="">Escolha um Departamento</option>
                                             </select>
                                         </div>
-                                                                        
+                                        <script>
+                                            document.querySelectorAll('input[name="setor"]').forEach(radio => {
+                                                radio.addEventListener('change', function() {
+                                                    getDepartamentos(this.value);
+                                                });
+                                            });
+
+                                            function getDepartamentos(value) {
+                                                var xhttp = new XMLHttpRequest();
+                                                xhttp.onload = function() {
+                                                    if (this.status === 200) {
+                                                        var receiveRequest = JSON.parse(this.responseText); // Converte a resposta para objeto JavaScript (se necessário)
+                                                        populateSelect(receiveRequest); // Chama a função para popular o select
+                                                    }
+                                                };
+                                                xhttp.open("GET", `get_departamentos.php?value=${value}`, true);
+                                                xhttp.send();
+                                            }
+
+                                            function populateSelect(data) {
+                                                var select = document.getElementById("validationDefault04");
+
+                                                // Limpa as opções existentes
+                                                select.innerHTML = '<option selected disabled value="">Escolha um Departamento</option>';
+
+                                                // Adiciona as novas opções baseadas nos dados recebidos
+                                                data.forEach(function(option) {
+                                                    var opt = document.createElement('option');
+                                                    opt.appendChild(document.createTextNode(option));
+                                                    opt.value = option;
+                                                    select.appendChild(opt);
+                                                });
+                                            }
+
+
+
+                                            
+                                        </script>       
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Data da execução da tarefa<b style='color: red;'>*</b></label>
                                             <input class='form-control' name='dtexec' id='dtexec' type='date' required>

@@ -787,11 +787,47 @@ CREATE TABLE IF NOT EXISTS form_inf_003 (
 ) DEFAULT CHARACTER SET utf8;
 
 
-CREATE TABLE IF NOT EXISTS setor_e_area (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `setor` VARCHAR(25) NOT NULL,
-    `areas_administrativas` VARCHAR(50),
-    `responsavel` VARCHAR(10) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `setor_unique` (`setor`)
-) DEFAULT CHARACTER SET utf8;
+CREATE TABLE  IF NOT EXISTS setores_form_inf_003(
+id_setor INT NOT NULL AUTO_INCREMENT,
+nome_setor VARCHAR(70) NOT NULL,
+PRIMARY KEY (`id_setor`)
+)ENGINE InnoDB DEFAULT CHARACTER SET utf8;
+
+
+CREATE TABLE IF NOT EXISTS departamentos_form_inf_003(
+id INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(90) NOT NULL,
+id_setor INT NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY(`id_setor`) REFERENCES setores_form_inf_003(`id_setor`)
+)ENGINE InnoDB DEFAULT CHARACTER SET utf8;
+
+INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Sala de Descanso', 1),
+('ADM/Financeiro', 1),
+('Marketing/Comercial', 1),
+('CPD', 1),
+('Sala de Jogos', 1),
+('Auditório', 1),
+('Presidência', 1),
+('Lounge', 1),
+('Sala de Reunião 1º andar', 1),
+('Sala de Reunião (Térreo)', 1),
+('Corredor dos Armários', 1),
+('Estoque CPMH', 1),
+('Estoque OSTEOFIX', 1),
+('Laje Técnica', 1);
+
+INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Banheiro Masculino  1º andar', 2),
+('Banheiro Masculino (Térreo)',2),
+('Banheiro Feminino  1º andar', 2),
+('Banheiro Feminino (Térreo)',2);
+
+
+INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Copa', 3),
+('Cozinha',3);
+
+INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Fabrica', 4);
