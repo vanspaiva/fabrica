@@ -33,37 +33,48 @@ if (isset($_SESSION["useruid"])) {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
             // Obter dados do formulário
             $dataPublicacao = $_POST['dataPublicacao'];
-            $identificadorAmbiente = $_POST['identificadorAmbiente'];
-            $tipoAtividade = $_POST['tipoAtividade'];
+
 
             // Calcular a data de validade
-            $dataValidade = date('d-m-y', strtotime($dataPublicacao . ' + 2 years'));
+            $dataValidade = date('d-m-Y', strtotime($dataPublicacao . ' + 2 years'));
 
             // Inserir na tabela FRM_INF_004
             $marcaModelo = "Springer";
 
-            $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, identificacao_ambiente, tipo_atividade, usersId) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO FRM_INF_004 (data_publicacao, data_validade, modelo, usersId) VALUES (?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
 
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "sssssi", $dataPublicacao, $dataValidade, $marcaModelo, $identificadorAmbiente, $tipoAtividade, $userId);
+                mysqli_stmt_bind_param($stmt, "sssi", $dataPublicacao, $dataValidade, $marcaModelo, $userId);
                 mysqli_stmt_execute($stmt);
                 $frmInfId = mysqli_insert_id($conn); // Obter o ID inserido
 
                 // Capturar a data de manutenção do formulário (se estiver disponível no formulário)
                 $dataManutencao = $_POST['dataManutencao'];
 
-                // Verificar se checkboxes foram selecionados
-                if (isset($_POST['executado']) && is_array($_POST['executado']) && !empty($_POST['executado'])) {
-                    $descricaoAtividadeIds = $_POST['executado'];
-                    $descricaoAtividadeIdsJson = json_encode($descricaoAtividadeIds);
-
-
                     $sql = "INSERT INTO atividades_executadas (data_manutencao, frm_inf_004_id, descricao_atividade) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("ssi", $dataManutencao, $frmInfId, $descricaoAtividadeIdsJson);
                     $stmt->execute();
-                }
+                    
+
+                    $stmt = $bdh->prepare("SELECT id, descricao FROM descricao_atividades");
+                    $stmt->execute();
+                    $descricao_atividades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                    foreach ($descricao_atividades as &$descricao) {
+                        // Modifique os dados da variável $descricao
+                        $descricao['descricao_atividades'] = strtoupper($descricao['descricao_atividades']);
+                    }
+        
+                    // Verificar se checkboxes foram selecionados
+                    if (isset($_POST['descricao_atividades'])) {
+                        $descricao_checkbox = implode(',', $_POST['descricao_atividades']);
+                        $stmt_insert = $dbh->prepare('INSERT INTO descricao_selecionados (descricao_checkbox_id) VALUES (:id)');
+                        $stmt_insert->bindParam(':id', $descricao_checkbox_id, PDO::PARAM_STR);
+                        $stmt_insert->execute();
+                    }
+
             } else {
                 echo "<div class='my-2 pb-0 alert alert-danger pt-3 text-center'><p>Erro ao preparar consulta SQL.</p></div>";
             }
@@ -281,12 +292,13 @@ if (isset($_SESSION["useruid"])) {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <?php foreach ($descricao_atividades as $descricao): ?>
                                                     <tr>
-                                                        <td>Verificação e drenagem da água</td>
-                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[1]" value="1"></td>
-                                                        <td><input type="text" name="responsavel[1]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px" value="<?php echo $_SESSION["userfirstname"]; ?>"></td>
+                                                        <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="descricao_atividades[]" value="<?php echo $descricao['id']; ?>">
+                                                        <?php echo $descricao['descricao']; ?></td>
+                                                        <td><input type="text" name="responsavel[1]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px" value=""></td>
                                                     </tr>
-                                                    <tr>
+                                                    <!-- <tr>
                                                         <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[2]" value="2"></td>
                                                         <td><input type="text" name="responsavel[2]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
@@ -340,7 +352,8 @@ if (isset($_SESSION["useruid"])) {
                                                         <td>outros</td>
                                                         <td style="vertical-align: middle; text-align: center;"><input type="checkbox" name="executado[12]" value="12"></td>
                                                         <td><input type="text" name="responsavel[12]" style="display: none; border-radius: 10px; border: 1px solid #ced4da; padding: 5px;"></td>
-                                                    </tr>
+                                                    </tr> -->
+                                                    <?php endforeach; ?>
                                                 </tbody>
                                             </table>
                                         </div>
