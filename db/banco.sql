@@ -776,7 +776,9 @@ id int primary key not null auto_increment,
 data_publicacao date, 
 data_validade date,
 modelo varchar(20) default 'springer',
-setor_id int(11)
+setor_id int(11),
+user_id INT,
+FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
 );
 
 ---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
@@ -786,10 +788,8 @@ CREATE TABLE ATIVIDADES_EXECUTADAS (
     frm_inf_004_id INT, 
     descricao_atividade_id INT,
     executado BOOLEAN,
-    user_id INT,
     FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
     FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
-   FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
 );
 
 ---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
@@ -805,3 +805,8 @@ CREATE TABLE DESCRICAO_ATIVIDADES (
 id INT PRIMARY KEY AUTO_INCREMENT, 
 descricao_setores text
 )
+
+CREATE TABLE checkbox_selecionados (
+  id INT PRIMARY KEY AUTO_INCREMENT, 
+  descricao_checkbox varchar(255)
+);
