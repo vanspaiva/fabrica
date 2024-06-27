@@ -61,8 +61,7 @@ if (isset($_SESSION["useruid"])) {
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Data Publicação</th>
-                                                <th>Identificação Ambiente</th>
-                                                <th>Tipo Atividade</th>
+                                                <th>Setor</th>
                                                 <th>Data Manutenção</th>
                                                 <th>Responsável</th>
                                                 <th>Conferido</th>
@@ -76,8 +75,7 @@ if (isset($_SESSION["useruid"])) {
                                                     SELECT 
                                                         frm_inf_004.id AS frm_id,
                                                         frm_inf_004.data_publicacao,
-                                                        frm_inf_004.identificacao_ambiente,
-                                                        frm_inf_004.tipo_atividade,
+                                                        frm_inf_004.setor_id,
                                                         atividades_executadas.id AS atividade_id,
                                                         atividades_executadas.data_manutencao,
                                                         frm_inf_004.usersId AS user_id,
@@ -98,23 +96,19 @@ if (isset($_SESSION["useruid"])) {
                                             ?>
 
                                                     <tr>
-                                                        <td style="text-align: center;"><?php echo $row['frm_id']; ?></td>
-                                                        <td style="text-align: center;"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
-                                                        <td style="text-align: center;"><?php echo $row['identificacao_ambiente']; ?></td>
-                                                        <td style="text-align: center;"><?php echo $row['tipo_atividade']; ?></td>
-                                                        <td style="text-align: center;"><!-- <?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?> --></td>
-                                                        <td style="text-align: center;"><?php echo $row['responsavel']; ?></td>
-                                                        <td style="text-align: center;">  
+                                                        <td style="text-align: center; padding: 2%;"><?php echo $row['frm_id']; ?></td>
+                                                        <td style="text-align: center; padding: 2% 5% 1% 0%"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
+                                                        <td style="text-align: center; padding: 2% 5% 1% 0%;"><?php echo $row['setor_id']; ?></td>
+                                                        <td style="text-align: center; padding: 2% 5% 1% 0%;"><?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?></td>
+                                                        <td style="text-align: center; padding: 2%;"><?php echo $row['responsavel']; ?></td>
+                                                        <td style="text-align: center; padding: 2%;">  
                                                         <?php if ($row['user_id']) : ?>
                                                                 <i class="fas fa-check text-success"></i> 
                                                             <?php else : ?>
                                                                 <i class="fas fa-times text-danger"></i>
                                                             <?php endif; ?>
                                                         </td> 
-
-
-
-                                                        <td style="display: flex;     padding: 1.1em;">     
+                                                        <td style="display: flex;  padding: 1.1em;">     
                                                             <a href="editfrm?id=<?php echo $row['frm_id']; ?>">
                                                                 <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
                                                             <a style="padding: 0 0.3em;" href="delfrm?id=<?php echo $row['frm_id']; ?>">
