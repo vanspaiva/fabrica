@@ -3,7 +3,8 @@
     require "db/dbh.php"; 
 
     if (!empty($_GET['value'])) {
-        $value = '%' . $_GET['value'] . '%'; 
+        
+        $value = '%' . substr($_GET['value'], -7) . '%';
 
         $sql = "SELECT d.nome_departamento 
                 FROM setores_form_inf_003 AS s 
@@ -22,7 +23,10 @@
             $departamentos[] = $row["nome_departamento"];
         }
         
-
         echo json_encode($departamentos);
     }
+    else{
+        echo "ID não encontrado";
+    }
+
 

@@ -76,9 +76,7 @@ if (isset($_SESSION["useruid"])) {
 
                                             while ($row = mysqli_fetch_array($ret)) {
 
-
                                             ?>
-
                                                 <tr>
                                                     <td><?php echo $row['osId']; ?></td>
                                                     <td><?php echo $row['osDtCriacao']; ?></td>
@@ -205,7 +203,6 @@ if (isset($_SESSION["useruid"])) {
             });
         </script>
         
-
     <?php
 
 } else {

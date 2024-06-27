@@ -770,6 +770,8 @@ CREATE TABLE CORRELACAO_PRODUTO (
 );
 
 
+/* ============================ Tabelas do FORM INF 003  ========================== */
+
 CREATE TABLE IF NOT EXISTS form_inf_003 (
     `id` INT NOT NULL AUTO_INCREMENT,
     `setor` VARCHAR(25) NOT NULL,
@@ -786,13 +788,11 @@ CREATE TABLE IF NOT EXISTS form_inf_003 (
     FOREIGN KEY (`id_user_criador`) REFERENCES `users`(`usersId`)
 ) DEFAULT CHARACTER SET utf8;
 
-
 CREATE TABLE  IF NOT EXISTS setores_form_inf_003(
 id_setor INT NOT NULL AUTO_INCREMENT,
 nome_setor VARCHAR(70) NOT NULL,
 PRIMARY KEY (`id_setor`)
 )ENGINE InnoDB DEFAULT CHARACTER SET utf8;
-
 
 CREATE TABLE IF NOT EXISTS departamentos_form_inf_003(
 id INT NOT NULL AUTO_INCREMENT,
@@ -816,18 +816,11 @@ INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Corredor dos Armários', 1),
 ('Estoque CPMH', 1),
 ('Estoque OSTEOFIX', 1),
-('Laje Técnica', 1);
-
-INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Laje Técnica', 1)
 ('Banheiro Masculino  1º andar', 2),
 ('Banheiro Masculino (Térreo)',2),
 ('Banheiro Feminino  1º andar', 2),
-('Banheiro Feminino (Térreo)',2);
-
-
-INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Banheiro Feminino (Térreo)',2)
 ('Copa', 3),
-('Cozinha',3);
-
-INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Cozinha',3)
 ('Fabrica', 4);

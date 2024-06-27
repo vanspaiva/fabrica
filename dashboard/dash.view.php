@@ -114,7 +114,7 @@ if (isset($_SESSION["useruid"])) {
                                 <hr>
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
-                                        <a href="novaom.php" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
+                                        <a href="novoRegistro003" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
                                         <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
                                         <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
                                     </div>

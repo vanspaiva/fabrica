@@ -43,6 +43,7 @@ if (isset($_SESSION["useruid"])) {
     <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
+        include_once "includes/functions.inc.php";
 
         if(($_SESSION['userperm']) == "Colaborador(a)" ) {
             $classe_css = "disabled-button";
@@ -62,17 +63,17 @@ if (isset($_SESSION["useruid"])) {
                 <div class="col-sm d-none d-sm-block">
                     <div class="d-flex  justify-content-between">
                         <div class="d-flex justify-content-center p-1">
-                            <a href="novaom"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
+                            <a href="novoRegistro003"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
                             <a href="showForm003Pendentes" class="<?= $classe_css?>"><button class="btn  btn-sm btn-danger"> Registros Pendentes</button>
                             </a>
                         </div>
-                        <div class="d-flex justify-content-center p-1">
+<!--                         <div class="d-flex justify-content-center p-1">
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
-                        </div>
+                        </div> -->
                         <div class="d-flex justify-content-center p-1">
-                            <a href="limpezaPDF"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i>Exportar</button></a>
+                            <a href="registroLimpezaPdf003"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i>Exportar</button></a>
                         </div>
                     </div>
                 </div>
@@ -106,7 +107,7 @@ if (isset($_SESSION["useruid"])) {
                                     <tr>
                                         <td style="vertical-align: middle;"><?php echo $row["setor"]; ?></td>
                                         <td style="vertical-align: middle;"><?php echo $row["area_adm"]; ?></td>
-                                        <td style="vertical-align: middle; text-align: center;"><?php echo $row["data"]; ?></td>
+                                        <td style="vertical-align: middle; text-align: center;"><?php formatData($row["data"]); ?></td>
                                         <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                         <td style="vertical-align: middle; width: 50px;"><?php echo $row["responsavel"]; ?></td>
                                         <td style="vertical-align: middle;" class=" truncate"><?php echo nl2br($row["tipo_limpeza"]); ?></td>
@@ -124,17 +125,14 @@ if (isset($_SESSION["useruid"])) {
                                                     </span>";
                                                 }
                                             ?>
-                                        <td style="text-align: center; vertical-align: middle;"><?php echo $row["form_data_publicacao"]; ?></td>
-                                        <td style="vertical-align: middle;text-align: center;"><?php echo $row["form_data_validade"]; ?></td>
+                                        <td style="text-align: center; vertical-align: middle;"><?php formatData($row["form_data_publicacao"]) ?></td>
+                                        <td style="vertical-align: middle;text-align: center;"><?php formatData( $row["form_data_validade"]) ?></td>
                                         <td style="vertical-align: middle;">
-                                            <a href="editRL.php?id=<?php echo $row["id"]; ?>">
+                                            <a href="editRegistroLimpeza003.php?id=<?php echo $row["id"]; ?>">
                                                 <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button>
                                             </a>
-                                            <a href="limpezaPDF.php?id=<?php echo $row["id"]; ?>">
-                                                <button class="btn btn-warning btn-sm"><i class="bi bi-file-pdf"></i></i></button>
-                                            </a>
                                             <?php /* if ($_SESSION["userperm"] == 'Administrador') { */ ?>
-                                                <a href="deleteForm003.php?id=<?php echo $row["id"]; ?> " class="<?= $classe_css?>">
+                                                <a href="includes/deleterl003.inc.php?id=<?php echo $row["id"]; ?> " class="<?= $classe_css?>">
                                                     <button class="btn btn-danger btn-sm delete-btn" onClick="return confirm('Você realmente deseja deletar esse Registro?');"><i class="bi bi-trash"></i></button>
                                                 </a>
                                             <?php

@@ -8,7 +8,6 @@ if (isset($_GET["id"])) {
 
     $id = intval($_GET["id"]);
 
-    // Preparar e executar a query de atualização
     $sql = "UPDATE form_inf_003 SET conferido = 'APROV' WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);

@@ -46,6 +46,7 @@ if (isset($_SESSION["useruid"])) {
     <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
+        include_once "includes/functions.inc.php";
     ?>
     </header>
     <body class="bg-light-gray2">
@@ -58,17 +59,17 @@ if (isset($_SESSION["useruid"])) {
                 <div class="col-sm d-none d-sm-block">
                     <div class="d-flex  justify-content-between">
                         <div class="d-flex justify-content-center p-1">
-                            <a href="novaom"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
+                            <a href="novoRegistro003"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Novo Registro</button></a>
                         </div>
                         <div class="d-flex justify-content-center p-1">
                             <a href="showForm003"><button class="btn btn-fab btn-sm">Lista de Registos</button>
                             </a>
                         </div>
-                        <div class="d-flex justify-content-center p-1">
+<!--                         <div class="d-flex justify-content-center p-1">
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
-                        </div>
+                        </div> -->
                         <div class="d-flex justify-content-center p-1">
-                            <a href="limpezaPDF"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                            <a href="registroLimpezaPdf003"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
                         </div>
                     </div>
                 </div>
@@ -100,9 +101,9 @@ if (isset($_SESSION["useruid"])) {
                                 while ($row = mysqli_fetch_array($ret)) {
                                     ?>
                                         <tr>
-                                            <td style="vertical-align: middle;"><?php echo $row["setor"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php echo $row["setor"] ?></td>
                                             <td style="vertical-align: middle;"><?php echo $row["area_adm"]; ?></td>
-                                            <td style="vertical-align: middle;"><?php echo $row["data"]; ?></td>
+                                            <td style="vertical-align: middle;"><?php  formatData($row['data']); ?></td>
                                             <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                             <td style="vertical-align: middle;"><?php echo $row["responsavel"]; ?></td>
                                             <td class=" truncate"><?php echo nl2br($row["tipo_limpeza"]); ?></td>
@@ -122,11 +123,11 @@ if (isset($_SESSION["useruid"])) {
                                             }
                                             ?>
                                             </td>
-                                            <td style="text-align: center; vertical-align: middle;"><?php echo $row["form_data_publicacao"]; ?></td>
-                                            <td style="vertical-align: middle;"><?php echo $row["form_data_validade"]; ?></td>
+                                            <td style="text-align: center; vertical-align: middle;"><?php  formatData($row["form_data_publicacao"]);?></td>
+                                            <td style="vertical-align: middle;"><?php formatData($row["form_data_publicacao"]); ?></td>
 
                                             <td style="text-align: center; vertical-align: middle;">
-                                                <a href="aprovForm003.php?id=<?php echo $row["id"]; ?>">
+                                                <a href="aprovRegistroLimpeza003.php?id=<?php echo $row["id"]; ?>">
                                                 <button  type="button" class="btn btn-success"  onClick="return confirm('Você realmente deseja aprovar esse Registro?');"><i class="bi bi-hand-thumbs-up-fill" style="color: #ffff;"></i>Aprovar</button>
                                                 </a>
                                             </td>

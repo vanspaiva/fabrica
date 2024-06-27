@@ -36,9 +36,6 @@ if (isset($_SESSION["useruid"])) {
                 font-weight: bolder;
             }
 
-            table {
-                page-break-inside: avoid; /* Evita quebra de página dentro da tabela */
-            }
             .separator{
                 display: none;
             }
@@ -49,7 +46,6 @@ if (isset($_SESSION["useruid"])) {
                 display: none;
             }
         }   
-
 
         .print-button {
             margin-left: calc(800px - 160px);
@@ -69,9 +65,10 @@ if (isset($_SESSION["useruid"])) {
         ?>
         <?php
             require_once 'db/dbh.php';
+            require_once 'includes/functions.inc.php';
             $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%Áreas Administrativas%' ORDER BY id DESC;";
             $ret = mysqli_query($conn, $sql);
-            $row = mysqli_fetch_assoc($ret);
+            $row = mysqli_fetch_array($ret);
         ?>
         <header>
             <!-- place navbar here -->
@@ -93,18 +90,23 @@ if (isset($_SESSION["useruid"])) {
                     <tr>
                         <td>Data Publicação: 
                             <?php 
-                            
-                                $data_publicacao = $row['form_data_publicacao'];
-                                $date = new DateTime($data_publicacao);                                
-                                echo $date->format('d/m/Y'); 
+                                if(isset($row['form_data_publicacao'])){
+                                    formatData($row['form_data_publicacao']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
                             ?> 
                         </td>
                         <td>
                             Validade: 
                             <?php 
-                                $data_validade = $row['form_data_validade'];
-                                $dateV = new DateTime($data_validade);
-                                echo $dateV->format('d/m/Y');
+                                if(isset($row['form_data_validade'])){
+                                    formatData($row['form_data_validade']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
                             ?> 
                         </td>
 
@@ -115,7 +117,16 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;">
                 <thead>
                     <tr>
-                        <td colspan="6"> <?php echo preg_replace('/[0-9.]/', '', $row['setor'])?></td>
+                        <td colspan="6">
+                             <?php
+                                if(isset($row['setor'])){
+                                    echo preg_replace('/[0-9.]/', '', $row['setor']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
+                              ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Data</td>
@@ -129,16 +140,21 @@ if (isset($_SESSION["useruid"])) {
                 <tbody>
                     <tr>
                         <?php
+                            $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%Áreas Administrativas%' ORDER BY id DESC;";
+                            $ret = mysqli_query($conn, $sql);
                             while ($row = mysqli_fetch_assoc($ret)) {
                         ?>
                             <tr>
-                                <td style="vertical-align: middle; text-align: center;"><?php echo $row["data"];  ?></td>
+                                <td style="vertical-align: middle; text-align: center;">
+                                    <?php
+                                        formatData($row["data"])
+                                    ?>
+                                </td>
                                 <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                 <td style="vertical-align: middle; width: 50px;"><?php echo $row["responsavel"]; ?></td>
                                 <td style="vertical-align: middle; text-align: center;">
                                     <?php
                                         if($row["conferido"] == "PEND"){
-
                                                 echo "Pendente";
                                         }
                                         else{
@@ -146,7 +162,7 @@ if (isset($_SESSION["useruid"])) {
                                         }
                                     ?>
                                 </td>
-                                <td style="vertical-align: middle;"><?php echo $row["area_adm"]; ?></td>
+                                <td style="vertical-align: middle;"><?php echo $row["area_adm"];?></td>
                                 <td style="vertical-align: middle;" class="truncate">
                                     <?php 
                                         $tipo_limpeza = $row['tipo_limpeza']; 
@@ -214,18 +230,23 @@ if (isset($_SESSION["useruid"])) {
                     <tr>
                         <td>Data Publicação: 
                             <?php 
-                            
-                                $data_publicacao = $row['form_data_publicacao'];
-                                $date = new DateTime($data_publicacao);                                
-                                echo $date->format('d/m/Y'); 
+                                if(isset($row['form_data_publicacao'])){
+                                    formatData($row['form_data_publicacao']);
+                                }
+                                else{
+                                    echo "Nothing to Show";
+                                }
                             ?> 
                         </td>
                         <td>
                             Validade: 
                             <?php 
-                                $data_validade = $row['form_data_validade'];
-                                $dateV = new DateTime($data_validade);
-                                echo $dateV->format('d/m/Y');
+                                if(isset($row['form_data_publicacao'])){
+                                    formatData($row['form_data_publicacao']);
+                                }
+                                else{
+                                    echo "Nothing to Show";
+                                }
                             ?> 
                         </td>
                     </tr>
@@ -235,7 +256,17 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;">
                 <thead>
                     <tr>
-                        <td colspan="6"> <?php echo preg_replace('/[0-9.]/', '', $row['setor'])?></td>
+                        <td colspan="6">
+                             <?php
+                                if(isset($row['setor'])){
+                                    echo preg_replace('/[0-9.]/', '', $row['setor']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
+                                
+                              ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Data</td>
@@ -249,10 +280,16 @@ if (isset($_SESSION["useruid"])) {
                 <tbody>
                     <tr>
                         <?php
+                            $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%Banheiro%' ORDER BY id DESC;";
+                            $ret = mysqli_query($conn, $sql);                    
                             while ($row = mysqli_fetch_assoc($ret)) {
                         ?>
                             <tr>
-                                <td style="vertical-align: middle; text-align: center;"><?php echo $row["data"];  ?></td>
+                                <td style="vertical-align: middle; text-align: center;">
+                                    <?php
+                                        formatData($row["data"]);
+                                    ?>
+                                </td>
                                 <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                 <td style="vertical-align: middle; width: 50px;"><?php echo $row["responsavel"]; ?></td>
                                 <td style="vertical-align: middle; text-align: center;">
@@ -284,7 +321,6 @@ if (isset($_SESSION["useruid"])) {
                 </tbody>
                 
             </table>
-
             <table style="width: 800px; text-align:start; border:none; font-weight: bolder;" style="position: relative;">
                 <tr>
                     <td style="border: none;">1. Sanitário</td>
@@ -307,14 +343,13 @@ if (isset($_SESSION["useruid"])) {
             </table>
 
 <!--=================================================== TABELA COPA/COZINHA ===================================================== -->
-
-              
             <div class="separator"></div>
             <?php
                 require_once 'db/dbh.php';
                 $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%COPA%' ORDER BY id DESC;";
                 $ret = mysqli_query($conn, $sql);
                 $row = mysqli_fetch_assoc($ret);
+                
             ?>
             <h1>Copa/Cozinha</h1>
             <table style="width: 800px;" class="table-separate">
@@ -331,18 +366,24 @@ if (isset($_SESSION["useruid"])) {
                     <tr>
                         <td>Data Publicação: 
                             <?php 
-                            
-                                $data_publicacao = $row['form_data_publicacao'];
-                                $date = new DateTime($data_publicacao);                                
-                                echo $date->format('d/m/Y'); 
+                                if(isset($row['form_data_publicacao'])){
+                                    formatData($row['form_data_publicacao']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
+
                             ?> 
                         </td>
                         <td>
                             Validade: 
                             <?php 
-                                $data_validade = $row['form_data_validade'];
-                                $dateV = new DateTime($data_validade);
-                                echo $dateV->format('d/m/Y');
+                                if(isset($row['form_data_validade'])){
+                                    formatData($row['form_data_validade']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
                             ?> 
                         </td>
 
@@ -353,7 +394,16 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;">
                 <thead>
                     <tr>
-                        <td colspan="6"> <?php echo preg_replace('/[0-9.]/', '', $row['setor'])?></td>
+                        <td colspan="6">
+                            <?php 
+                                if(isset($row['setor'])){
+                                    echo preg_replace('/[0-9.]/', '', $row['setor']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
+                            ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Data</td>
@@ -367,10 +417,16 @@ if (isset($_SESSION["useruid"])) {
                 <tbody>
                     <tr>
                         <?php
+                            $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%COPA%' ORDER BY id DESC;";
+                            $ret = mysqli_query($conn, $sql);
                             while ($row = mysqli_fetch_assoc($ret)) {
                         ?>
                             <tr>
-                                <td style="vertical-align: middle; text-align: center;"><?php echo $row["data"];  ?></td>
+                                <td style="vertical-align: middle; text-align: center;">
+                                    <?php
+                                        formatData($row["data"]);
+                                    ?>
+                                </td>
                                 <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                 <td style="vertical-align: middle; width: 50px;"><?php echo $row["responsavel"]; ?></td>
                                 <td style="vertical-align: middle; text-align: center;">
@@ -424,17 +480,15 @@ if (isset($_SESSION["useruid"])) {
  
             </table>
 
-
-
 <!--=================================================== TABELA Produção ===================================================== -->
 
-    
             <div class="separator"></div>
             <?php
                 require_once 'db/dbh.php';
                 $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%PRODUCAO%' ORDER BY id DESC;";
                 $ret = mysqli_query($conn, $sql);
                 $row = mysqli_fetch_assoc($ret);
+                
             ?>
             <h1>Produção</h1>
             <table style="width: 800px;" class="table-separate">
@@ -451,29 +505,43 @@ if (isset($_SESSION["useruid"])) {
                     <tr>
                         <td>Data Publicação: 
                             <?php 
-                            
-                                $data_publicacao = $row['form_data_publicacao'];
-                                $date = new DateTime($data_publicacao);                                
-                                echo $date->format('d/m/Y'); 
+                                if(isset($row['form_data_publicacao'])){
+                                    formatData($row['form_data_publicacao']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
                             ?> 
                         </td>
                         <td>
                             Validade: 
                             <?php 
-                                $data_validade = $row['form_data_validade'];
-                                $dateV = new DateTime($data_validade);
-                                echo $dateV->format('d/m/Y');
+                                if(isset( $row['form_data_validade'])){
+                                    formatData($row['form_data_validade']);
+                                }
+                                else{
+                                    echo "Nothing to show";
+                                }
                             ?> 
                         </td>
 
                     </tr>
-                </thead>
+                </thead>    
             </table>
 
             <table style="width: 800px;">
                 <thead>
                     <tr>
-                        <td colspan="6"> <?php echo preg_replace('/[0-9.]/', '', $row['setor'])?></td>
+                        <td colspan="6">
+                            <?php
+                                if(isset($row['setor'])){
+                                    echo preg_replace('/[0-9.]/', '', $row['setor']);
+                                }
+                                else{
+                                    echo "Nothing to Show";
+                                }
+                            ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Data</td>
@@ -487,10 +555,17 @@ if (isset($_SESSION["useruid"])) {
                 <tbody>
                     <tr>
                         <?php
+                            $sql = "SELECT * FROM form_inf_003 WHERE setor LIKE '%PRODUCAO%' ORDER BY id DESC;";
+                            $ret = mysqli_query($conn, $sql);
                             while ($row = mysqli_fetch_assoc($ret)) {
                         ?>
                             <tr>
-                                <td style="vertical-align: middle; text-align: center;"><?php echo $row["data"];  ?></td>
+                                <td 
+                                style="vertical-align: middle; text-align: center;">
+                                    <?php
+                                        formatData($row["data"])
+                                    ?>
+                                </td>
                                 <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
                                 <td style="vertical-align: middle; width: 50px;"><?php echo $row["responsavel"]; ?></td>
                                 <td style="vertical-align: middle; text-align: center;">
