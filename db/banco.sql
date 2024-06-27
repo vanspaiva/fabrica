@@ -778,7 +778,9 @@ data_validade date,
 modelo varchar(20) default 'springer',
 setor_id int(11),
 user_id INT,
-FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
+id_checkbox_selecionados INT,
+FOREIGN KEY (user_id) REFERENCES USERS(id),
+FOREIGN KEY (id_checkbox_selecionados) REFERENCES DESCRICAO_ATIVIDADES(id),
 );
 
 ---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
@@ -789,7 +791,7 @@ CREATE TABLE ATIVIDADES_EXECUTADAS (
     descricao_atividade_id INT,
     executado BOOLEAN,
     FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
-    FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
+    FOREIGN KEY (descricao_atividade_id) REFERENCES CHECKBOX_SELECIONADOS(id)
 );
 
 ---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
@@ -801,12 +803,15 @@ descricao TEXT
 
 ---- Estrutura da tabela `SETOR_ARCONDICIONADO'
 
-CREATE TABLE DESCRICAO_ATIVIDADES (
-id INT PRIMARY KEY AUTO_INCREMENT, 
-descricao_setores text
-)
+CREATE TABLE setor_arcondicionado (
+  id INT PRIMARY KEY AUTO_INCREMENT, 
+  descricao_setores  text
+);
 
 CREATE TABLE checkbox_selecionados (
   id INT PRIMARY KEY AUTO_INCREMENT, 
-  descricao_checkbox varchar(255)
+  descricao_checkbox varchar(255),
+  descricao_atividades_id INT,
+  FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
 );
+
