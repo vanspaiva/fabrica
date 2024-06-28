@@ -1,78 +1,51 @@
 <?php
-// Verifica se o formulário foi submetido
+
 if (isset($_POST["submit"])) {
-    require_once '../db/dbh.php'; // Inclui o arquivo que conecta ao banco de dados
-    require_once 'functions.inc.php'; // Inclui funções necessárias, se houver
+    require_once '../db/dbh.php'; 
 
-    // Captura os dados do formulário
-    $dataPublicacao = $_POST["dataPublicacao"];
-    $dataValidade = $_POST["dataValidade"];
-    $marcaModelo = "Springer";
+     // Captura os valores do formulário
+     $dataPublicacao = $_POST["dataPublicacao"];
+     $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
+     $marcaModelo = "Springer";
+     $setorId = $_POST["setor_id"];
+     $checkboxSelecionados = isset($_POST["checkbox_selecionados"]) ? $_POST["checkbox_selecionados"] : [];
+     $userId = 3; 
+     $dataManutencao = $_POST['dataManutencao'];
+     $executado = isset($_POST["executado"]) ? $_POST["executado"] : [];
+
+
+     echo "<pre>";
+     print_r($_POST);
+     echo "</pre>";
+ 
+
+     $sql = "INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, data_manutencao, setor_id, id_checkbox_selecionados) VALUES (?, ?, ?, ?, ?, ?)";
+     $stmt = mysqli_prepare($conn, $sql);
+     mysqli_stmt_bind_param($stmt, "ssssii", $dataPublicacao, $dataValidade, $marcaModelo, $dataManutencao, $setorId, $checkboxSelecionados[0]);
+     mysqli_stmt_execute($stmt);
+ 
+         // Captura o ID da inserção
+         $frmInfId = mysqli_insert_id($conn);
+         if (!$frmInfId) {
+             throw new Exception("Erro ao capturar o ID da inserção na tabela frm_inf_004");
+         }
+ 
     
-    // Calcula a data de validade (adicionando 2 anos à data de publicação)
-    $dataValidade = date('Y-m-d', strtotime($dataPublicacao . ' + 2 years'));
+         echo "frmInfId: " . $frmInfId . "<br>";
 
-    // Insere os dados na tabela frm_inf_004
-    $sql = "INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, usersId) VALUES (?, ?, ?, ?)";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "sssi", $dataPublicacao, $dataValidade, $marcaModelo, $userId); // Supondo que $userId esteja definido em outro lugar
-    mysqli_stmt_execute($stmt);
-    $frmInfId = mysqli_insert_id($conn);
 
-    // Captura a data de manutenção do formulário
-    $dataManutencao = $_POST['dataManutencao'];
-
-    // Insere os dados na tabela atividades_executadas
-    $sql = "INSERT INTO atividades_executadas (data_manutencao, frm_inf_004_id) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $dataManutencao, $frmInfId);
-    $stmt->execute();
-
-    // Insere os dados na tabela setor_arcondicionado
-    $descricaoSetores = addslashes($_POST["descricao_setores"]);
-    $sql = "INSERT INTO setor_arcondicionado (descricao_setores) VALUES (?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $descricaoSetores);
-    $stmt->execute();
-
-    // Insere os dados na tabela checkbox_selecionados
-    $executado = $_POST['executado'];
-    $descriptions = [
-        1 => "Verificação e drenagem da água",
-        2 => "Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)",
-        3 => "Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)",
-        4 => "Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros",
-        5 => "Trocar filtros",
-        6 => "Verificação da fixação",
-        7 => "Verificação de vazamentos nas ligações flexíveis",
-        8 => "Estado de conservação do isolamento termo-acústico",
-        9 => "Vedação dos painéis de fechamento do gabinete",
-        10 => "Manutenção mecânica",
-        11 => "Manutenção elétrica",
-        12 => "Outros"
-    ];
-
-    $sql = "INSERT INTO checkbox_selecionados (ids_descricoes_selecionadas) VALUES (?)";
-    $stmt = $conn->prepare($sql);
-
-    foreach ($executado as $id) {
-        if (isset($descriptions[$id])) {
-            $descricao = $descriptions[$id];
-            $ids_descricoes = implode(",", $executado); // Ajustado para pegar todos os IDs selecionados
-
+         if (!empty($executado)) {
+            $ids_descricoes = implode(",", $executado);
+            $sql = "INSERT INTO checkbox_selecionados (ids_descricoes_selecionadas) VALUES (?)";
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $ids_descricoes);
-            if (!$stmt->execute()) {
-                die('Erro ao executar a consulta SQL: ' . $stmt->error);
-            }
+            $stmt->execute();
         }
-    }
 
-    // Redireciona para outra página após o processamento
-    header("location: ../solicitacao");
-    exit();
-} else {
-    // Se o formulário não foi submetido, redireciona para outra página
-    header("location: ../solicitacao");
-    exit();
-}
+         // Confirma a transação
+         mysqli_commit($conn);
+         echo "Dados inseridos com sucesso!";
+ 
+     } 
+
 ?>
