@@ -116,7 +116,7 @@ if (isset($_SESSION["useruid"])) {
                                     <div class='form-group col-md-4 m-2'>
                                         <label class='control-label'>Setor<b style='color: red;'>*</b></label>
 
-                                        <select class="form-control" name='descricao_setores' id='descricao_setores'>
+                                        <select class="form-control" name='setor_id' id='setor_id'>
 
                                             <option value="">Selecione um Setor</option>
                                             <?php
