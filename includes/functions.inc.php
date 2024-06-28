@@ -301,10 +301,10 @@ function getAprov($uidExists)
     }
 }
 
-function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
+function createProduto($conn, $descricao, $codigoCllisto)
 {
 
-    $sql = "INSERT INTO produtos (prodCategoria, prodCodCallisto, prodDescricao, prodAnvisa) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO produtos (descricao, codigoCllisto) VALUES (?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -313,7 +313,7 @@ function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssss", $categoria, $cdg, $descricao, $anvisa);
+    mysqli_stmt_bind_param($stmt, "ss", $descricao, $codigoCllisto);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -321,9 +321,30 @@ function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
     exit();
 }
 
-function editProduto($conn, $prodid, $categoria, $cdg, $descricao, $anvisa)
+function  criarCorrelacaoProduto($conn, $idMaster, $IdSecundario)
 {
-    $sql = "UPDATE produtos SET prodCategoria='$categoria', prodCodCallisto='$cdg', prodDescricao='$descricao', prodAnvisa='$anvisa' WHERE prodId='$prodid'";
+
+    $sql = "INSERT INTO correlacao_produto (idMaster, IdSecundario) VALUES (?, ?)";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../produtos?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $idMaster, $IdSecundario); 
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../produtos?error=none");
+    exit();
+}
+
+
+function editProduto($conn, $prodid, $parametro1)
+{
+    $sql = "UPDATE produtos SET parametro='$parametro1' WHERE prodId='$prodid'";
 
     if (mysqli_query($conn, $sql)) {
         header("location: ../produtos?error=edit");
@@ -1765,18 +1786,18 @@ function deshashItemNatural($hash)
 
 /* Funções abaixo foram criadas para inserir novos produtos, atualizar e deletar produtos e correlações*/
 
-function inserirProduto($conn, $descricao, $codigoCilisto, $idFluxo) {
+function inserirProduto($conn, $descricao, $cdg, $idFluxo) {
 
     $stmt = mysqli_stmt_init($conn);
 
     try {
-        $sql = "INSERT INTO PRODUTO (descricao, codigoCilisto, idFluxo) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO PRODUTO (descricao, cdg, idFluxo) VALUES (?, ?, ?)";
 
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             throw new Exception("Erro ao preparar a consulta para inserção do produto.");
         }
 
-        mysqli_stmt_bind_param($stmt, "ssi", $descricao, $codigoCilisto, $idFluxo);
+        mysqli_stmt_bind_param($stmt, "ssi", $descricao, $cdg, $idFluxo);
 
         mysqli_stmt_execute($stmt);
 

@@ -751,22 +751,53 @@ ALTER TABLE `etapa_fluxo`
 
 -- Estrutura da tabela `produtos`
 
-CREATE TABLE PRODUTO (
+CREATE TABLE PRODUTOS (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao TEXT NOT NULL,
     codigoCllisto VARCHAR(100) NOT NULL,
     idFluxo INT NOT NULL
 );
 
----- Estrutura da tabela `correlacao_produtos`q
+---- Estrutura da tabela `correlacao_produtos
 
 
 CREATE TABLE CORRELACAO_PRODUTO (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     idMaster INT NOT NULL,
     IdSecundario INT NOT NULL,
-    FOREIGN KEY (idMaster) REFERENCES PRODUTO(id),
-    FOREIGN KEY (IdSecundario) REFERENCES PRODUTO(id)
+    FOREIGN KEY (idMaster) REFERENCES PRODUTOS(id),
+    FOREIGN KEY (IdSecundario) REFERENCES PRODUTOS(id)
+);  
+
+---- Estrutura da tabela `FORMULARIO FRM.INF.004'
+
+CREATE TABLE FRM_INF_004 (
+id int primary key not null auto_increment,
+data_publicacao date, 
+data_validade date,
+modelo varchar(20) default 'springer',
+identificacao_ambiente varchar(30),
+tipo_atividade varchar(20)
+);
+
+---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
+CREATE TABLE ATIVIDADES_EXECUTADAS (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    data_manutencao DATE,
+    frm_inf_004_id INT, -- Mudança aqui
+    descricao_atividade_id INT,
+    executado BOOLEAN,
+    user_id INT,
+    FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
+    FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
+   --FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
+);
+
+---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
+
+CREATE TABLE DESCRICAO_ATIVIDADES (
+id INT PRIMARY KEY AUTO_INCREMENT,
+descricao TEXT
 );
 
 

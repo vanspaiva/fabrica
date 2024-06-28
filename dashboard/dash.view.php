@@ -4,7 +4,6 @@ if (isset($_SESSION["useruid"])) {
 
     require_once("includes/functions.inc.php");
 ?>
-
     <style>
         .flex-dashed-line {
             flex-grow: 1;
@@ -32,7 +31,6 @@ if (isset($_SESSION["useruid"])) {
             }
 
         ?>
-
 
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">

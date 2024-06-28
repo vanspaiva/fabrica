@@ -147,7 +147,7 @@ if (isset($_SESSION["useruid"])) {
                             <tr>
                                 <td style="vertical-align: middle; text-align: center;">
                                     <?php
-                                        formatData($row["data"])
+                                        formatData($row["data"]);
                                     ?>
                                 </td>
                                 <td style="vertical-align: middle;"><?php echo $row["periodo"]; ?></td>
@@ -171,14 +171,13 @@ if (isset($_SESSION["useruid"])) {
                                         $tipo_limpeza = rtrim($tipo_limpeza, '-');
                                         $tipo_limpeza = preg_replace('/-+/', '-', $tipo_limpeza);
                                         $tipo_limpeza = trim($tipo_limpeza, '-');
-                                        echo $tipo_limpeza;  
+                                        echo $tipo_limpeza;
                                     ?>
                                 </td>
                             </tr>
                         <?php }?>
                     </tr>
                 </tbody>
-                
             </table>
 
             <table style="width: 800px; text-align:start; border:none; font-weight: bolder;" style="position: relative;">
@@ -206,7 +205,6 @@ if (isset($_SESSION["useruid"])) {
 
 
             <!-------------------------------------- TABELA BANHEIRO --------------------------------------- -->
-
             
             <div class="separator"></div>
             <?php
