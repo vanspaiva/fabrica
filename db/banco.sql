@@ -772,26 +772,17 @@ CREATE TABLE CORRELACAO_PRODUTO (
 ---- Estrutura da tabela `FORMULARIO FRM.INF.004'
 
 CREATE TABLE FRM_INF_004 (
-id int primary key not null auto_increment,
-data_publicacao date, 
-data_validade date,
-modelo varchar(20) default 'springer',
-setor_id int(11),
-user_id INT,
-id_checkbox_selecionados INT,
-FOREIGN KEY (user_id) REFERENCES USERS(id),
-FOREIGN KEY (id_checkbox_selecionados) REFERENCES DESCRICAO_ATIVIDADES(id),
-);
-
----- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
-CREATE TABLE ATIVIDADES_EXECUTADAS (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    data_manutencao DATE,
-    frm_inf_004_id INT, 
+id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    data_publicacao DATE,
+    data_validade DATE,
+    modelo VARCHAR(20) efault 'springer',
+    usersId INT(11),
+    setor_id INT(11),
     descricao_atividade_id INT,
-    executado BOOLEAN,
-    FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
-    FOREIGN KEY (descricao_atividade_id) REFERENCES CHECKBOX_SELECIONADOS(id)
+    data_manutencao DATE,
+    id_checkbox_selecionados INT,
+FOREIGN KEY (user_id) REFERENCES USERS(id),
+FOREIGN KEY (descricao_atividade_id) REFERENCES CHECKBOX_SELECIONADOS(id)
 );
 
 ---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
@@ -808,6 +799,7 @@ CREATE TABLE setor_arcondicionado (
   descricao_setores  text
 );
 
+---- Estrutura da tabela `checkbox_selecionados`
 CREATE TABLE checkbox_selecionados (
   id INT PRIMARY KEY AUTO_INCREMENT, 
   descricao_checkbox varchar(255),
