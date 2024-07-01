@@ -13,6 +13,14 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
 
+        if (isset($_SESSION['successMessage'])) {
+            echo '<div class="alert alert-success" role="alert">' . $_SESSION['successMessage'] . '</div>';
+            unset($_SESSION['successMessage']); // Limpa a mensagem para evitar exibições repetidas
+        } elseif (isset($_SESSION['errorMessage'])) {
+            echo '<div class="alert alert-danger" role="alert">' . $_SESSION['errorMessage'] . '</div>';
+            unset($_SESSION['errorMessage']); // Limpa a mensagem para evitar exibições repetidas
+        }
+
         function getUserId($conn, $useruid)
         {
             $stmt = $conn->prepare("SELECT usersId FROM users WHERE usersUid = ?");
@@ -116,7 +124,7 @@ if (isset($_SESSION["useruid"])) {
                                     <div class='form-group col-md-4 m-2'>
                                         <label class='control-label'>Setor<b style='color: red;'>*</b></label>
 
-                                        <select class="form-control" name='setor_id' id='setor_id'>
+                                        <select class="form-control" name='descricao_setores' id='descricao_setores'>
 
                                             <option value="">Selecione um Setor</option>
                                             <?php
@@ -205,7 +213,7 @@ if (isset($_SESSION["useruid"])) {
                                                         echo "<tr>";
                                                         echo "<td>$description</td>";
                                                         echo "<td style=\"vertical-align: middle; text-align: center;\">";
-                                                        echo "<input type=\"checkbox\" name=\"executado[]\" value=\"$id\">";
+                                                        echo "<input type=\"checkbox\" name=\"executado[]\" value=\"$id\">";    
                                                         echo "</td>";
                                                         echo "</tr>";
                                                     }
@@ -223,7 +231,8 @@ if (isset($_SESSION["useruid"])) {
             </div>
 
 
-        </div>
+                                            </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
