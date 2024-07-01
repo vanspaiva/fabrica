@@ -19,6 +19,7 @@ if (isset($_SESSION["useruid"])) {
         <?php
             include_once 'php/navbar.php';
             include_once 'php/lateral-nav.php';
+
         ?>
 
 
@@ -60,8 +61,10 @@ if (isset($_SESSION["useruid"])) {
                         <div class="card-body">
 
                             <?php
+                            
                             $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_SESSION["useruid"] . "';");
                             while ($row = mysqli_fetch_array($ret)) {
+
                                 $tpconta_criacao = $_SESSION["userperm"];
                                 $user_criacao = $_SESSION["useruid"];
                                 $user_id = $_SESSION["userid"];
@@ -107,19 +110,21 @@ if (isset($_SESSION["useruid"])) {
                                                 <label class='d-block control-label' style='color:black;'>Escolha o Setor <b style='color: red;'>*</b></label>
 
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="1. Áreas Administrativas" name="setor" id="areas-adm-radio" required />
+                                                    <input class="form-check-input" type="radio" value="1. Áreas Administrativas" name="setor" id="areas-adm-radio" <?php echo isset($_GET['setor']) && $_GET['setor'] == '1. Áreas Administrativas' ? 'checked' : ''; ?> required />
                                                     <label class="form-check-label" for="areas-adm-radio">1. Áreas Administrativas</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="2. Banheiro" name="setor" id="banheiro-radio" />
+                                                    <input class="form-check-input" type="radio" value="2. Banheiro" name="setor" id="banheiro-radio"
+                                                    <?php echo isset($_GET['setor']) && $_GET['setor'] == '2. Banheiro' ? 'checked' : ''; ?> />
                                                     <label class="form-check-label" for="banheiro-radio">2. Banheiro</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="3. Copa / Cozinha" name="setor" id="copa-cozinha-radio" />
+                                                    <input class="form-check-input" type="radio" value="3. Copa / Cozinha" name="setor" id="copa-cozinha-radio"  <?php echo isset($_GET['setor']) && $_GET['setor'] == '3. Copa / Cozinha' ? 'checked' : ''; ?> />
                                                     <label class="form-check-label" for="copa-cozinha-radio">3. Copa / Cozinha</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="4. Produção" name="setor" id="producao-radio" />
+                                                    <input class="form-check-input" type="radio" value="4. Produção" name="setor" id="producao-radio"
+                                                    <?php echo isset($_GET['setor']) && $_GET['setor'] == '4. Produção' ? 'checked' : ''; ?>/>
                                                     <label class="form-check-label" for="producao-radio">4. Produção</label>
                                                 </div>
                                             </div>
@@ -128,10 +133,18 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label for="validationDefault04">Informe o Deprtamento: </label>
                                             <select class="custom-select" id="validationDefault04" name="area-adm" required>
-                                                <option selected disabled value="">Escolha um Departamento</option>
+                                                <?php
+                                                    if (isset($_GET['area-adm'])){
+
+                                                        $resultadoADM = $_GET['area-adm'];
+                                                    }
+                                                
+                                                ?>
+                                                <option selected value="<?php echo isset($resultadoADM) ? $resultadoADM : "" ?>"><?php echo isset($resultadoADM) ? $resultadoADM : "Escolha um Departamento" ?></option>
                                             </select>
                                         </div>
                                         <script>
+
                                             document.querySelectorAll('input[name="setor"]').forEach(radio => {
                                                 radio.addEventListener('change', function() {
                                                     getDepartamentos(this.value);
@@ -165,11 +178,13 @@ if (isset($_SESSION["useruid"])) {
                                                 });
                                             }
 
-                                        </script>       
+                                        </script>
+
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Data da execução da tarefa<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dtexec' id='dtexec' type='date' required>
+                                            <input class='form-control' name='dtexec' id='dtexec' type='date' value="<?php echo date("Y-m-d")?>" required>
                                         </div>
+
                                         <script>
                                             var dtToday = new Date();
                                             var month = dtToday.getMonth() + 1; // getMonth() is zero-based
@@ -188,9 +203,23 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='control-label' style='color:black;'>Periodo da realização<b style='color: red;'>*</b></label>
                                             <select class="custom-select" name="periodo" aria-label="Default select example" required>
                                                 <option selected disabled value="">Informe o periodo</option>
-                                                <option value="Manhã">Manhã</option>
-                                                <option value="Tarde">Tarde</option>
-                                                <option value="Noite">Noite</option>
+                                                    <?php
+
+                                                        date_default_timezone_set('America/Sao_Paulo');
+
+                                                        if(date("H") < 12){
+                                                            echo "<option selected value='Manhã'> Manhã </option>";
+                                                        }
+                                                        elseif(date("H") > 12 && date("H") < 18){
+                                                            echo "<option selected value='Tarde'> Tarde </option>";
+                                                        }
+                                                        else {
+                                                            echo "<option selected value='Manhã'> Manhã </option>";
+                                                            echo "<option selected value='Tarde'> Tarde </option>";
+                                                            echo "<option selected value='Noite'> Noite </option>";
+                                                        }
+                                                    ?>
+                                                
                                             </select>
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>

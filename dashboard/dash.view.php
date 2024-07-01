@@ -29,10 +29,12 @@ if (isset($_SESSION["useruid"])) {
             else {
                 $classe_css = null;
             }
-
+            
         ?>
 
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
         <div id="main">
             <div class="container-fluid">
                 <div class="row">
@@ -101,8 +103,7 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                     </div>
 
-
-
+ 
                     <div class="col-sm my-2">
                         <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
@@ -115,13 +116,6 @@ if (isset($_SESSION["useruid"])) {
                                         <a href="novoRegistro003" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
                                         <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
                                         <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
-                                    </div>
-                                </div>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="pcp" class="btn btn-outline-info mx-1 disabled"><i class="fas fa-users-cog"></i> PCP </a>
-                                        <a href="opplanejamento" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
-                                        <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
                                     </div>
                                 </div>
                             </div>
