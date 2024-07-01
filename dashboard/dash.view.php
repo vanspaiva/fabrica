@@ -3,9 +3,7 @@
 if (isset($_SESSION["useruid"])) {
 
     require_once("includes/functions.inc.php");
-
 ?>
-
     <style>
         .flex-dashed-line {
             flex-grow: 1;
@@ -13,15 +11,26 @@ if (isset($_SESSION["useruid"])) {
             height: 1px;
             margin: 0 8px;
         }
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.5;        
+        }
     </style>
 
     <body class="bg-light text-dark">
 
         <?php
-        include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';
-        ?>
+            include_once 'php/navbar.php';
+            include_once 'php/lateral-nav.php';
 
+            if(($_SESSION['userperm']) == "Colaborador(a)" ) {
+                $classe_css = "disabled-button";
+            }
+            else {
+                $classe_css = null;
+            }
+
+        ?>
 
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
@@ -79,6 +88,33 @@ if (isset($_SESSION["useruid"])) {
                                         <a href="#" class="btn btn-info mx-1 disabled"><i class="fas fa-plus"></i> Nova OP </a>
                                         <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de OP</a>
                                         <a href="#" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
+                                    </div>
+                                </div>
+                                <div class="row d-flex justify-content-center my-1 py-1">
+                                    <div class="d-flex justify-content-between px-2">
+                                        <a href="pcp" class="btn btn-outline-info mx-1 disabled"><i class="fas fa-users-cog"></i> PCP </a>
+                                        <a href="opplanejamento" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-list"></i> Planejamento da Produção</a>
+                                        <a href="opetapas" class="btn btn-outline-info mx-1 disabled"> <i class="fas fa-th-large"></i> Etapas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-sm my-2">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <h6 class="deactivated"><b>Módulo Registros de Limpeza</b></h6>
+                                </div>
+                                <hr>
+                                <div class="row d-flex justify-content-center my-1 py-1">
+                                    <div class="d-flex justify-content-between px-2">
+                                        <a href="novoRegistro003" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
+                                        <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
                                     </div>
                                 </div>
                                 <div class="row d-flex justify-content-center my-1 py-1">

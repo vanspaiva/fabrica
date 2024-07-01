@@ -1963,3 +1963,96 @@ function updateCorrelacao($conn,$idMaster, $idSecundario){
 
 }
 
+// Inserindo novo registro de Limpeza
+function insertRegistroINF003($mysqli_conection,$setor,$area_adm,$data_exec, $periodo, $responsavel, $id_usuario,$tipo_limpeza) {
+
+    $stmt = mysqli_stmt_init($mysqli_conection);
+
+    try{        
+        $sql = "INSERT INTO form_inf_003 (setor, area_adm, data, periodo, responsavel, id_user_criador, tipo_limpeza) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        if ($stmt = mysqli_prepare($mysqli_conection, $sql)) {
+            
+            mysqli_stmt_bind_param($stmt, "sssssis", $setor, $area_adm, $data_exec, $periodo, $responsavel, $id_usuario, $tipo_limpeza);
+    
+            
+            if (mysqli_stmt_execute($stmt)) {
+                echo "Record inserted successfully";
+                header("location: ../showForm003Pendentes");
+            } else {
+                echo "Error: " . mysqli_stmt_error($stmt);
+            }
+
+            mysqli_stmt_close($stmt);
+
+        } else {
+            echo "Error preparing statement: " . mysqli_error($mysqli_conection);
+        }
+    }catch(Exception $e) {
+
+        echo "Erro: ". $e->getMessage();
+    }
+   
+}
+
+function UpdateRegistro004($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
+    
+    try{    
+        $sql = "UPDATE form_inf_003 SET setor = ?, area_adm = ?, data = ?, periodo = ?, responsavel = ?, tipo_limpeza = ? WHERE id = ?"; 
+    
+        if ($stmt = mysqli_prepare($mysqli_conection, $sql)) {
+            mysqli_stmt_bind_param($stmt, "ssssssi", $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario);
+    
+            if (mysqli_stmt_execute($stmt)) {
+                echo "Record updated successfully";
+                header("Location: ../showForm003");
+                exit;
+            } else {
+                echo "Error: " . mysqli_stmt_error($stmt);
+            }
+            
+            mysqli_stmt_close($stmt);
+        } else {
+            echo "Error preparing statement: " . mysqli_error($mysqli_conection);
+        }
+
+    }catch(Exception $e) {
+        echo "Erro". $e->getMessage();
+    }
+}
+
+function deleteForm003($mysqli_conection,$id_deletar) {
+
+    if (isset($id_deletar)) {
+
+        $id = intval($id_deletar);
+    
+        // Preparar e executar a query de exclusão
+        $sql = "DELETE FROM form_inf_003 WHERE id = ?";
+        $stmt = mysqli_prepare($mysqli_conection, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $id);
+    
+        if (mysqli_stmt_execute($stmt)) {
+            echo "Registro deletado com sucesso.";
+            header("location: ../showForm003.php");
+        } else {
+            echo "Erro ao deletar registro: " . mysqli_stmt_error($stmt);
+        }
+    
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "ID do registro não fornecido.";
+    }
+    
+    mysqli_close($mysqli_conection);
+
+}
+
+//Formata a data de YYYY-mm-dd para dd/mm/YYYY
+function formatData($data){
+
+    $data_validade = $data;
+    $dateV = new DateTime($data_validade);
+    echo $dateV->format('d/m/Y');
+}
