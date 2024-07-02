@@ -57,7 +57,7 @@ if (isset($_SESSION["useruid"])) {
                 </div>
 
                 <div class="col-sm-12 mx-2 py-4 justify-content-start">
-                    <div class="card" style="height: 700px;">
+                    <div class="card">
                         <div class="card-body">
 
                             <?php
@@ -742,6 +742,7 @@ if (isset($_SESSION["useruid"])) {
         </script>
 
         <script src="js/uploadToFirebase.js"></script>
+     <?php include_once 'php/footer_index.php' ?>
 
     </body>
 

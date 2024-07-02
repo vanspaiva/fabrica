@@ -82,7 +82,7 @@ if (isset($_SESSION["useruid"])) {
                     <thead>
                         <tr>
                             <th>Setor</th>
-                            <th>Área Administrativa</th>
+                            <th>Departamento</th>
                             <th>Data</th>
                             <th>Período</th>
                             <th>Responsável</th>
@@ -168,7 +168,7 @@ if (isset($_SESSION["useruid"])) {
                         [0, "asc"]
                     ],
                     "columnDefs": [
-                        { "width": "30px", "targets": 0 },
+                        { "width": "150px", "targets": 0 },
                         { "width": "30px", "targets": 1 },
                         { "width": "100px", "targets": 2 },
                         { "width": "50px", "targets": 3 },

@@ -86,10 +86,10 @@ if (isset($_SESSION["useruid"])) {
                     <thead>
                         <tr>
                             <th style="text-align: center;">Setor</th>
-                            <th style="text-align: center;">Área Administrativa</th>
+                            <th style="text-align: center;">Departamento</th>
                             <th style="text-align: center;">Data</th>
                             <th style="text-align: center;" >Período</th>
-                            <th style="text-align: center;" >Responsável</th>
+                            <th style="text-align: center;" >Responsável</th>   
                             <th style="text-align: center;" >Tipo de Limpeza</th>
                             <th style="text-align: center;" >Status</th>
                             <th style="text-align: center;" >Data de Publicação</th>
@@ -147,8 +147,8 @@ if (isset($_SESSION["useruid"])) {
                 </table>
             </div>
         </div>
- </body>
  <?php include_once 'php/footer_index.php' ?>
+ </body>
 <!-- jQuery (necessary for DataTables) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- DataTables JS -->
