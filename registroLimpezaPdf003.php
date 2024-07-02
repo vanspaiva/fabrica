@@ -79,7 +79,9 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;">
                 <thead>
                     <tr>
-                        <td style="vertical-align: middle;">CPMH</td>
+                        <td style="vertical-align: middle;">
+                            <img style="height: 25px;" src="assetsnew/img/cpmh_logo 2.png" alt="CPMH-logo">
+                        </td>
                         <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
@@ -217,7 +219,9 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;" class="table-separate">
                 <thead>
                     <tr>
-                        <td style="vertical-align: middle;">CPMH</td>
+                        <td style="vertical-align: middle;">
+                            <img style="height: 25px;" src="assetsnew/img/cpmh_logo 2.png" alt="CPMH-logo">
+                        </td>
                         <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
@@ -353,7 +357,9 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;" class="table-separate">
                 <thead>
                     <tr>
-                        <td style="vertical-align: middle;">CPMH</td>
+                        <td style="vertical-align: middle;">
+                            <img style="height: 25px;" src="assetsnew/img/cpmh_logo 2.png" alt="CPMH-logo">
+                        </td>
                         <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
@@ -492,7 +498,9 @@ if (isset($_SESSION["useruid"])) {
             <table style="width: 800px;" class="table-separate">
                 <thead>
                     <tr>
-                        <td style="vertical-align: middle;">CPMH</td>
+                        <td style="vertical-align: middle;">
+                            <img style="height: 25px;" src="assetsnew/img/cpmh_logo 2.png" alt="CPMH-logo">
+                        </td>
                         <td>Formulário <br> FRM.INF003</td>
                     </tr>
                     <tr>
