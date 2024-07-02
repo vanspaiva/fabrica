@@ -124,14 +124,12 @@ if (isset($_SESSION["useruid"])) {
                                     <div class='form-group col-md-4 m-2'>
                                         <label class='control-label'>Setor<b style='color: red;'>*</b></label>
 
-                                        <select class="form-control" name='descricao_setores' id='descricao_setores'>
-
+                                        <select class="form-control" name="setor_id" id="setor_id" required>
                                             <option value="">Selecione um Setor</option>
                                             <?php
                                             $sql = "SELECT id, descricao_setores FROM setor_arcondicionado";
                                             $result = $conn->query($sql);
                                             if ($result->num_rows > 0) {
-
                                                 while ($row = $result->fetch_assoc()) {
                                                     echo '<option value="' . $row["id"] . '">' . $row["descricao_setores"] . '</option>';
                                                 }
@@ -213,7 +211,7 @@ if (isset($_SESSION["useruid"])) {
                                                         echo "<tr>";
                                                         echo "<td>$description</td>";
                                                         echo "<td style=\"vertical-align: middle; text-align: center;\">";
-                                                        echo "<input type=\"checkbox\" name=\"executado[]\" value=\"$id\">";    
+                                                        echo "<input type=\"checkbox\" name=\"executado[]\" value=\"$id\">";
                                                         echo "</td>";
                                                         echo "</tr>";
                                                     }
@@ -231,7 +229,7 @@ if (isset($_SESSION["useruid"])) {
             </div>
 
 
-                                            </div>
+        </div>
 
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
