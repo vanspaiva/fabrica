@@ -60,6 +60,7 @@ if (isset($_SESSION["useruid"])) {
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Data Publicação</th>
+                                                <th>Data Validade</th>
                                                 <th>Setor</th>
                                                 <th>Descrição das Atividades</th>
                                                 <th>Data Manutenção</th>
@@ -72,32 +73,31 @@ if (isset($_SESSION["useruid"])) {
                                             <?php
                                             require_once 'db/dbh.php';
                                             $query = "
-                                            SELECT 
-                                                frm_inf_004.id AS frm_id,
-                                                frm_inf_004.data_publicacao,
-                                                frm_inf_004.data_manutencao,
-                                                setor_arcondicionado.descricao_setores AS setor_descricao,
-                                                checkbox_selecionados.descricao_checkbox AS atividade_descricao
-                                            FROM 
-                                                frm_inf_004
-                                            LEFT JOIN 
-                                                setor_arcondicionado ON frm_inf_004.descricao_setores = setor_arcondicionado.descricao_setores
-                                            LEFT JOIN 
-                                                checkbox_selecionados ON frm_inf_004.id_checkbox_selecionados = checkbox_selecionados.id
+                                                SELECT 
+                                                    frm_inf_004.id AS frm_id,
+                                                    frm_inf_004.data_publicacao,
+                                                    frm_inf_004.data_validade,
+                                                    frm_inf_004.data_manutencao,
+                                                    setor_arcondicionado.descricao_setores AS setor_descricao,
+                                                    frm_inf_004.descricao_atividades AS atividade_descricao
+                                                FROM 
+                                                    frm_inf_004
+                                                LEFT JOIN 
+                                                    setor_arcondicionado ON frm_inf_004.descricao_setores = setor_arcondicionado.descricao_setores
                                             ";
-                                            $ret = mysqli_query($conn, $query);
-                                            if ($ret === false) {
+                                            $result = $conn->query($query); 
+                                            if ($result === false) {
                                                 echo "Erro na consulta: " . mysqli_error($conn);
                                             } else {
-                                                while ($row = mysqli_fetch_array($ret)) {
+                                                while ($row = mysqli_fetch_array($result)) {
                                             ?>
-
                                                     <tr>
                                                         <td style="text-align: center; padding: 2%;"><?php echo $row['frm_id']; ?></td>
-                                                        <td style="text-align: center; padding: 2% 5% 1% 0%"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
-                                                        <td style="text-align: center; padding: 2% 5% 1% 0%;"><?php echo $row['setor_descricao']; ?></td>
-                                                        <td style="text-align: center; padding: 2% 5% 1% 0%;"><?php echo $row['atividade_descricao']; ?></td>
-                                                        <td style="text-align: center; padding: 2% 5% 1% 0%;"><?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?></td>
+                                                        <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
+                                                        <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_validade'])); ?></td>
+                                                        <td style="text-align: center; padding: 2%"><?php echo $row['setor_descricao']; ?></td>
+                                                        <td style="text-align: center; padding: 2%;"><?php echo $row['atividade_descricao']; ?></td>
+                                                        <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?></td>
                                                         <td style="text-align: center; padding: 2%;">
                                                             <?php
                                                             // Implementar a lógica para obter o responsável (usersName)
