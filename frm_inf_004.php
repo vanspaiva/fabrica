@@ -15,10 +15,10 @@ if (isset($_SESSION["useruid"])) {
 
         if (isset($_SESSION['successMessage'])) {
             echo '<div class="alert alert-success" role="alert">' . $_SESSION['successMessage'] . '</div>';
-            unset($_SESSION['successMessage']); // Limpa a mensagem para evitar exibições repetidas
+            unset($_SESSION['successMessage']); 
         } elseif (isset($_SESSION['errorMessage'])) {
             echo '<div class="alert alert-danger" role="alert">' . $_SESSION['errorMessage'] . '</div>';
-            unset($_SESSION['errorMessage']); // Limpa a mensagem para evitar exibições repetidas
+            unset($_SESSION['errorMessage']); 
         }
 
         function getUserId($conn, $useruid)
