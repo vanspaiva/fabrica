@@ -12,16 +12,15 @@ if (isset($_SESSION["useruid"])) {
 
         if (isset($_SESSION['success_message'])) {
             echo '<div class="alert alert-success" role="alert">' . $_SESSION['success_message'] . '</div>';
-            unset($_SESSION['success_message']); // Limpa a mensagem da sessão após exibi-la
+            unset($_SESSION['success_message']);
         }
-        
+
         $sql = "SELECT * FROM frm_inf_004 WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $frmId);
         $stmt->execute();
         $result = $stmt->get_result();
         $data = $result->fetch_assoc();
-
 
         $sqlAtividades = "SELECT * FROM descricao_atividades";
         $stmtAtividades = $conn->query($sqlAtividades);
@@ -30,7 +29,6 @@ if (isset($_SESSION["useruid"])) {
         $sqlSetores = "SELECT id, descricao_setores FROM setor_arcondicionado";
         $stmtSetores = $conn->query($sqlSetores);
         $setoresData = $stmtSetores->fetch_all(MYSQLI_ASSOC);
-
 ?>
 
         <body class="bg-light-gray2">
@@ -38,7 +36,6 @@ if (isset($_SESSION["useruid"])) {
             include_once 'php/navbar.php';
             include_once 'php/lateral-nav.php';
             ?>
-
             <div class="container-fluid">
                 <div class="row d-flex justify-content-center">
                     <div class="col-sm" id="titulo-pag">
@@ -54,9 +51,7 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                             </div>
                         </div>
-
                         <br>
-
                         <div class="card">
                             <div class="card-body">
                                 <section id="main-content">
@@ -72,16 +67,29 @@ if (isset($_SESSION["useruid"])) {
                                                                 <small class="text-muted">ID não é editável</small>
                                                             </div>
                                                             <div class="form-group col-md">
-                                                                <label class="form-label text-black" for="user">User
-                                                                    Responsável</label>
+                                                                <label class="form-label text-black" for="user">User Responsável</label>
                                                                 <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
                                                             </div>
                                                         </div>
+                                                        <?php if ($_SESSION["userperm"] !== 'Colaborador') { ?>
+                                                            <div class='d-flex justify-content-around'>
+                                                                <div class='form-group col-md-3 m-2'>
+                                                                    <label class='control-label'>Status <b style='color: red;'>*</b></label><br>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusPendente" value="Pendente" <?php if ($data['frmStatus'] == 'Pendente') echo 'checked'; ?> required>
+                                                                        <label class="form-check-label" for="statusPendente">Pendente</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusConcluida" value="Concluída" <?php if ($data['frmStatus'] == 'Concluída') echo 'checked'; ?>>
+                                                                        <label class="form-check-label" for="statusConcluida">Concluído</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        <?php } ?>
 
                                                         <div class='d-flex justify-content-around'>
                                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                                <label class='control-label' style='color:black;'>Data de
-                                                                    Publicação<b style='color: red;'>*</b></label>
+                                                                <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
                                                                 <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' value="<?php echo $data['data_publicacao']; ?>" required>
                                                             </div>
                                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -91,29 +99,25 @@ if (isset($_SESSION["useruid"])) {
                                                         </div>
 
                                                         <script>
-                                                            document.getElementById('dataPublicacao').addEventListener('change',
-                                                                function() {
-                                                                    var dataPublicacao = new Date(this.value);
-                                                                    var doisAnosDepois = new Date(dataPublicacao);
-                                                                    doisAnosDepois.setFullYear(dataPublicacao.getFullYear() +
-                                                                        2);
-                                                                    doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
+                                                            document.getElementById('dataPublicacao').addEventListener('change', function() {
+                                                                var dataPublicacao = new Date(this.value);
+                                                                var doisAnosDepois = new Date(dataPublicacao);
+                                                                doisAnosDepois.setFullYear(dataPublicacao.getFullYear() + 2);
+                                                                doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
 
-                                                                    if (doisAnosDepois.getMonth() === 1 && doisAnosDepois
-                                                                        .getDate() === 29) {
-                                                                        if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
-                                                                            doisAnosDepois.setDate(28);
-                                                                        }
+                                                                if (doisAnosDepois.getMonth() === 1 && doisAnosDepois.getDate() === 29) {
+                                                                    if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
+                                                                        doisAnosDepois.setDate(28);
                                                                     }
+                                                                }
 
-                                                                    var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
-                                                                    var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
-                                                                    var ano = doisAnosDepois.getFullYear();
-                                                                    var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
+                                                                var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
+                                                                var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
+                                                                var ano = doisAnosDepois.getFullYear();
+                                                                var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
 
-                                                                    document.getElementById('dataValidade').value =
-                                                                        dataValidadeFormatada;
-                                                                });
+                                                                document.getElementById('dataValidade').value = dataValidadeFormatada;
+                                                            });
 
                                                             function isBissexto(ano) {
                                                                 return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
@@ -127,13 +131,10 @@ if (isset($_SESSION["useruid"])) {
                                                                     <?php
                                                                     foreach ($setoresData as $setor) {
                                                                         $selected = ($setor['descricao_setores'] === $data['descricao_setores']) ? 'selected' : '';
-
                                                                         echo '<option value="' . htmlspecialchars($setor["descricao_setores"]) . '" ' . $selected . '>' . htmlspecialchars($setor["descricao_setores"]) . '</option>';
                                                                     }
                                                                     ?>
                                                                 </select>
-
-
                                                             </div>
                                                             <div class='form-group col-md-3 m-2'>
                                                                 <label class='control-label'>Marca/Modelo</label>
@@ -143,7 +144,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                         <div class='form-group d-block flex-fill m-2'>
                                                             <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>" required>
+                                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["useruid"]; ?>" required>
                                                         </div>
 
                                                         <div class='d-flex justify-content-around'>
@@ -157,9 +158,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 <table class="table" style="font-size: 1rem; margin: 10px;">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th style="text-align: center; font-size: 1.2rem;">
-                                                                                Descrição das Atividades
-                                                                            </th>
+                                                                            <th style="text-align: center; font-size: 1.2rem;">Descrição das Atividades</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -175,28 +174,13 @@ if (isset($_SESSION["useruid"])) {
                                                                         }
                                                                         ?>
                                                                     </tbody>
-
                                                                 </table>
-
                                                             </div>
                                                         </div>
-
-
                                                         <br>
-
                                                         <div class="d-flex justify-content-end">
                                                             <button type="submit" name="update" id="update" class="btn btn-fab">Salvar</button>
                                                         </div>
-                                                         <script>
-                                                            document.getElementById('formprop').addEventListener('submit', function(
-                                                                event) {
-                                                                event.preventDefault();
-                                                                setTimeout(function() {
-                                                                    window.location.href = window.location.href;
-                                                                }, 1000); // Redireciona após 1 segundo (1000 milissegundos)
-
-                                                            });
-                                                        </script> 
                                                     </form>
                                                 </div>
                                             </div>
@@ -210,11 +194,12 @@ if (isset($_SESSION["useruid"])) {
             </div>
             <script src='scripts/scriptjs/scriptprop.js'></script>
             <script src='scripts/scriptjs/scriptpmo.js'></script>
-
         </body>
+
+        </html>
+
 <?php
     } else {
-        // Se o ID não estiver definido, redireciona de volta para lista-frm.php
         header("Location: lista-frm.php?error=id_not_found");
         exit();
     }

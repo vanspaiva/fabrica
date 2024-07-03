@@ -4,7 +4,6 @@ session_start();
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
-
 ?>
 
     <body class="bg-light-gray2">
@@ -15,12 +14,11 @@ if (isset($_SESSION["useruid"])) {
 
         if (isset($_SESSION['successMessage'])) {
             echo '<div class="alert alert-success" role="alert">' . $_SESSION['successMessage'] . '</div>';
-            unset($_SESSION['successMessage']); 
+            unset($_SESSION['successMessage']);
         } elseif (isset($_SESSION['errorMessage'])) {
             echo '<div class="alert alert-danger" role="alert">' . $_SESSION['errorMessage'] . '</div>';
-            unset($_SESSION['errorMessage']); 
+            unset($_SESSION['errorMessage']);
         }
-
         function getUserId($conn, $useruid)
         {
             $stmt = $conn->prepare("SELECT usersId FROM users WHERE usersUid = ?");
@@ -32,7 +30,7 @@ if (isset($_SESSION["useruid"])) {
                 $row = $result->fetch_assoc();
                 return $row['usersId'];
             } else {
-                return null; // Retorna null se nenhum usuário for encontrado
+                return null;
             }
         }
         ?>
@@ -62,21 +60,14 @@ if (isset($_SESSION["useruid"])) {
                     <div class="card">
                         <div class="card-body">
 
-                            <!-- <?php
+                              <?php
                                     $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_SESSION["useruid"] . "';");
                                     while ($row = mysqli_fetch_array($ret)) {
 
-                                        $tpconta_criacao = $_SESSION["userperm"];
-                                        $user_criacao = $_SESSION["useruid"];
-                                        $email_criador = $row['usersEmail'];
+                                       /*  $tpconta_criacao = $_SESSION["userperm"]; */
+                                        $responsavel = $_SESSION["useruid"];
 
-                                        date_default_timezone_set('UTC');
-                                        $dtz = new DateTimeZone("America/Sao_Paulo");
-                                        $dt = new DateTime("now", $dtz);
-                                        $data_criacao = $dt->format("d/m/Y") . " " . $dt->format("H:i:s");
-
-                                        $localIP = getHostByName(getHostName());
-                                    ?> -->
+                                    ?> 
 
                             <form action="includes/frm_004.inc.php" method="POST">
                                 <h4 class="text-fab">Dados de Registro</h4>
@@ -141,9 +132,9 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
 
 
-                                    <div class='form-group col-md-4 m-2'>
-                                        <label class="control-label" style="color: black;">Responsável <b style="color: red;">*</b></label>
-                                        <input class="form-control" name="responsavel" id="responsavel" style="text-transform: capitalize;" value="<?php echo $_SESSION["userfirstname"]; ?>">
+                                    <div class='form-group d-block flex-fill m-2'>
+                                    <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
+                                    <input class='form-control' name='userId' id='userId' style="text-transform: capitalize;" value="<?php echo $_SESSION["useruid"]; ?>" required readonly>
                                     </div>
 
                                     <div class='form-group col-md-2 m-2'>
@@ -161,7 +152,7 @@ if (isset($_SESSION["useruid"])) {
 
                                         if (!selecionado) {
                                             alert("Por favor, selecione ao menos uma atividade executada na manuntenção.");
-                                            event.preventDefault(); // Impede o envio do formulário
+                                            event.preventDefault(); 
                                         }
                                     }
 

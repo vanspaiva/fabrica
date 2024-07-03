@@ -2,19 +2,15 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     $dataPublicacao = $_POST['dataPublicacao'];
     $dataValidade = $_POST['dataValidade'];
     $dataManutencao = $_POST['dataManutencao'];
     $marcaModelo = $_POST['marcaModelo'];
+    $userId = $_POST['userId'];
     $setorId = $_POST['setor_id'];
     $executado = $_POST['executado'];
 
-    echo "Data de Publicação: " . htmlspecialchars($dataPublicacao) . "<br>";
-    echo "Data de Validade: " . htmlspecialchars($dataValidade) . "<br>";
-    echo "Data de Manutencao: " . htmlspecialchars($dataManutencao) . "<br>";
-    echo "Marca/Modelo: " . htmlspecialchars($marcaModelo) . "<br>";
-    echo "Setor ID: " . htmlspecialchars($setorId) . "<br>";
+    $frmStatus = '1'; 
 
     if (empty($setorId)) {
         die("Erro: Setor não foi selecionado.");
@@ -25,6 +21,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_begin_transaction($conn);
 
     try {
+        // Obter o usersId com base no usersUid da sessão
+        $sqlUserId = "SELECT usersId FROM users WHERE usersUid = ?";
+        $stmtUserId = mysqli_prepare($conn, $sqlUserId);
+        mysqli_stmt_bind_param($stmtUserId, "s", $_SESSION["useruid"]);
+        mysqli_stmt_execute($stmtUserId);
+        mysqli_stmt_bind_result($stmtUserId, $userId);
+        mysqli_stmt_fetch($stmtUserId);
+        mysqli_stmt_close($stmtUserId);
+
+        if (!$userId) {
+            throw new Exception("Erro: Usuário não encontrado.");
+        }
 
         $sqlSetor = "SELECT descricao_setores FROM setor_arcondicionado WHERE id = ?";
         $stmtSetor = mysqli_prepare($conn, $sqlSetor);
@@ -53,21 +61,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-
         $descricaoAtividadesStr = implode(", ", $descricaoAtividades);
 
-        $sqlFrmInf = "INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, data_manutencao, descricao_atividades, descricao_setores)
-                      VALUES (?, ?, ?, ?,?, ?)";
-        $stmtFrmInf = mysqli_prepare($conn, $sqlFrmInf);
-        mysqli_stmt_bind_param($stmtFrmInf, "ssssss", $dataPublicacao, $dataValidade, $marcaModelo, $dataManutencao, $descricaoAtividadesStr, $descricaoSetor);
+        $stmtInsert = $conn->prepare("INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, descricao_setores, data_manutencao, descricao_atividades, userId, frmStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmtInsert->bind_param("ssssssis", $dataPublicacao, $dataValidade, $marcaModelo, $descricaoSetor, $dataManutencao, $descricaoAtividadesStr, $userId, $frmStatus);
 
-        if (!mysqli_stmt_execute($stmtFrmInf)) {
-            throw new Exception('Erro ao executar a consulta SQL para frm_inf_004: ' . mysqli_error($conn));
+        if (!$stmtInsert->execute()) {
+            throw new Exception('Erro ao executar a consulta SQL para frm_inf_004: ' . $stmtInsert->error);
         }
 
         mysqli_commit($conn);
 
-        $_SESSION['successMessage'] = "Dados inseridos com sucesso no banco de dados.";
+        $_SESSION['successMessage'] = "Dados inseridos com sucesso.";
         header('Location: ../frm_inf_004.php');
         exit();
 
@@ -76,3 +81,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['errorMessage'] = "Erro na consulta SQL: " . $e->getMessage();
     }
 }
+?>
