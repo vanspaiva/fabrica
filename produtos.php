@@ -1,37 +1,18 @@
 <?php
 session_start();
 
-/*if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {*/
-include("php/head_index.php");
-
+if (isset($_SESSION["useruid"]) && (($_SESSION["userperm"] == 'Administrador') || ($_SESSION["userperm"] == 'Gestor(a)'))) {
+    include("php/head_tables.php");
 ?>
-<body class="bg-light-gray2">
-    <?php
-    include_once 'php/navbar.php';
-    include_once 'php/lateral-nav.php';
-    require_once 'db/dbh.php';
 
-    if (isset($_POST['search']) && isset($_POST['search_type'])) {
-        $search = $_POST['search'];
-        $search_type = $_POST['search_type'];
-        if ($search_type === 'produtos') {
-            $query = "SELECT * FROM produtos WHERE prodId = '$search'";
-        } elseif ($search_type === 'correlacao_produto') {
-            $query = "SELECT * FROM correlacao_produto WHERE correlacao_produtoId = '$search'";
-        } elseif ($search_type === 'relacionados') {
-            
-        }
-    } else {
-     
-        $query = "SELECT * FROM produtos";
-    }
-
-    
-    if (isset($query)) {
-        $ret = mysqli_query($conn, $query);
-    }
-    $cnt = 1;
-    ?>
+    <body class="bg-light-gray2">
+        <?php
+        include_once 'php/navbar.php';
+        include_once 'php/lateral-nav.php';
+        require_once 'db/dbh.php';
+        $ret = mysqli_query($conn, "SELECT * FROM produto");
+        $cnt = 1;
+        ?>
 
     <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
     <div id="main">
@@ -308,11 +289,12 @@ include("php/head_index.php");
 
     <?php include_once 'php/footer_index.php' ?>
     <?php
-    /*
+    
 } else {
     header("location: index");
     exit();
 }
-*/
+
     ?>
+
 </body>
