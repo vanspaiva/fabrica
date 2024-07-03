@@ -135,6 +135,9 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "order": [
                         [0, "desc"]
+                    ],
+                    "columnDefs": [
+                        { "width": "130px", "targets": 6 }, // define a largura da ultima coluna como 130px
                     ]
                 });
                 $('#tableEnviada').DataTable({
