@@ -44,7 +44,6 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         include_once "includes/functions.inc.php";
-
         if(($_SESSION['userperm']) == "Colaborador(a)" ) {
             $classe_css = "disabled-button";
         }
