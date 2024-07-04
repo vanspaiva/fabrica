@@ -152,7 +152,9 @@ if (isset($_SESSION["useruid"])) {
                                                     <th>
                                                         <div class="d-flex">
                                                             <a href="evolucaopcp?id=<?php echo $id; ?>">
-                                                                <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button></a>
+                                                                <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
+                                                            </a>
+                                                                <button class="btn btn-warning m-1" ><i class="bi bi-file-earmark-pdf-fill"></i></button>
                                                         </div>
                                                     </th>
                                                 </tr>
