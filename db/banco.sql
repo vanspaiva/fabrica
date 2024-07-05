@@ -781,7 +781,7 @@ tipo_atividade varchar(20)
 );
 
 ---- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
-CREATE TABLE ATIVIDADES_EXECUTADAS (
+CREATE TABLE IF NOT EXISTS ATIVIDADES_EXECUTADAS (
     id INT PRIMARY KEY AUTO_INCREMENT,
     data_manutencao DATE,
     frm_inf_004_id INT, -- Mudança aqui

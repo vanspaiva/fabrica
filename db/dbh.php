@@ -4,9 +4,10 @@
 $dbUsername = "u777557116_adminfab";
 $dbPassword = "CcIB8WQT36a";
 $dbName = "u777557116_fabrica"; */
+
 $serverName = "localhost";
 $dbUsername = "root";
-$dbPassword = "";
+$dbPassword = "86375297";
 $dbName = "fabrica";
 
 
