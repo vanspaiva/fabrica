@@ -124,8 +124,8 @@ if (isset($_SESSION["useruid"])) {
                                                     </span>";
                                                 }
                                             ?>
-                                        <td style="text-align: center; vertical-align: middle;"><?php formatData($row["form_data_publicacao"]) ?></td>
-                                        <td style="vertical-align: middle;text-align: center;"><?php formatData( $row["form_data_validade"]) ?></td>
+                                        <td style="text-align: center; vertical-align: middle;"><?php formatData($row["data_publicacao"]) ?></td>
+                                        <td style="vertical-align: middle;text-align: center;"><?php formatData( $row["data_validade"]) ?></td>
                                         <td style="vertical-align: middle;">
                                             <a href="editRegistroLimpeza003.php?id=<?php echo $row["id"]; ?>">
                                                 <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button>
