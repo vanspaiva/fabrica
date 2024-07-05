@@ -1996,7 +1996,7 @@ function insertRegistroINF003($mysqli_conection,$setor,$area_adm,$data_exec, $pe
    
 }
 
-function UpdateRegistro004($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
+function updateRegistro003($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
     
     try{    
         $sql = "UPDATE form_inf_003 SET setor = ?, area_adm = ?, data = ?, periodo = ?, responsavel = ?, tipo_limpeza = ? WHERE id = ?"; 

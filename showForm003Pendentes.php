@@ -123,8 +123,8 @@ if (isset($_SESSION["useruid"])) {
                                             }
                                             ?>
                                             </td>
-                                            <td style="text-align: center; vertical-align: middle;"><?php  formatData($row["form_data_publicacao"]);?></td>
-                                            <td style="vertical-align: middle;"><?php formatData($row["form_data_publicacao"]); ?></td>
+                                            <td style="text-align: center; vertical-align: middle;"><?php  formatData($row["data_publicacao"]);?></td>
+                                            <td style="vertical-align: middle;"><?php formatData($row["data_validade"]); ?></td>
 
                                             <td style="text-align: center; vertical-align: middle;">
                                                 <a href="aprovRegistroLimpeza003.php?id=<?php echo $row["id"]; ?>">

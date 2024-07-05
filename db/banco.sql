@@ -825,13 +825,21 @@ nome_setor VARCHAR(70) NOT NULL,
 PRIMARY KEY (`id_setor`)
 )ENGINE InnoDB DEFAULT CHARACTER SET utf8;
 
+
+INSERT INTO setores_form_inf_003 (nome_setor) Values 
+('Áreas Administrativas'),
+('Banheiro'),
+('Copa / Cozinha'),
+(' Produção');
+
+
 CREATE TABLE IF NOT EXISTS departamentos_form_inf_003(
-id INT NOT NULL AUTO_INCREMENT,
-nome VARCHAR(90) NOT NULL,
+id_departamento INT NOT NULL AUTO_INCREMENT,
+nome_departamento VARCHAR(90) NOT NULL,
 id_setor INT NOT NULL,
 PRIMARY KEY (`id`),
 FOREIGN KEY(`id_setor`) REFERENCES setores_form_inf_003(`id_setor`)
-)ENGINE InnoDB DEFAULT CHARACTER SET utf8;
+)ENGINE InnoDB DEFAULT CHARACTER SET utf8;  
 
 INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Sala de Descanso', 1),
