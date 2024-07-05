@@ -8,7 +8,7 @@
 
 $serverName = "localhost";
 $dbUsername = "root";
-$dbPassword = "";
+$dbPassword = "12152027";
 $dbName = "fabrica";
 
 
