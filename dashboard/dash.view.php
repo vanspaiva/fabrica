@@ -1,9 +1,11 @@
-<?php
+ <?php
 
-if (isset($_SESSION["useruid"])) {
+    if (isset($_SESSION["useruid"])) {
 
     require_once("includes/functions.inc.php");
+
 ?>
+
     <style>
         .flex-dashed-line {
             flex-grow: 1;
@@ -11,30 +13,17 @@ if (isset($_SESSION["useruid"])) {
             height: 1px;
             margin: 0 8px;
         }
-        .disabled-button {
-            pointer-events: none;
-            opacity: 0.5;        
-        }
     </style>
 
-    <body class="bg-light text-dark">
+     <body class="bg-light text-dark">
 
         <?php
-            include_once 'php/navbar.php';
-            include_once 'php/lateral-nav.php';
-
-            if(($_SESSION['userperm']) == "Colaborador(a)" ) {
-                $classe_css = "disabled-button";
-            }
-            else {
-                $classe_css = null;
-            }
-            
+        include_once 'php/navbar.php';
+        include_once 'php/lateral-nav.php';
         ?>
 
-        <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+        <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div class="container-fluid">
                 <div class="row">
@@ -48,7 +37,7 @@ if (isset($_SESSION["useruid"])) {
                                         <span class="text-muted text-small"><?php echo $_SESSION["userperm"]; ?></span>
                                     </div>
 
-                                </div>
+                                 </div>
 
                             </div>
                         </div>
@@ -102,165 +91,146 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                         </div>
                     </div>
-
- 
-                    <div class="col-sm my-2">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <h6 class="deactivated"><b>Módulo Registros de Limpeza</b></h6>
-                                </div>
-                                <hr>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="novoRegistro003" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
-                                        <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
-                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="row d-flex justify-content-around align-items-start">
-                    <?php
-                    if (($_SESSION["userperm"] == 'Gestor(a)') || ($_SESSION["userperm"] == 'Administrador')) {
+                 <div class="row d-flex justify-content-around align-items-start">
+                     <?php
+                        if (($_SESSION["userperm"] == 'Gestor(a)') || ($_SESSION["userperm"] == 'Administrador')) {
 
-                        $contagemCriado = 0;
-                        $contagemAndamento = 0;
-                        $contagemPausado = 0;
-                        $contagemConcluido = 0;
-                        $contagemAbertas = 0;
+                            $contagemCriado = 0;
+                            $contagemAndamento = 0;
+                            $contagemPausado = 0;
+                            $contagemConcluido = 0;
+                            $contagemAbertas = 0;
 
-                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CRIADO';");
-                        while ($row = mysqli_fetch_array($ret)) {
-                            $contagemCriado++;
+                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CRIADO';");
+                            while ($row = mysqli_fetch_array($ret)) {
+                                $contagemCriado++;
+                            }
+
+                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='EM ANDAMENTO';");
+                            while ($row = mysqli_fetch_array($ret)) {
+                                $contagemAndamento++;
+                            }
+
+                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='PAUSADO';");
+                            while ($row = mysqli_fetch_array($ret)) {
+                                $contagemPausado++;
+                            }
+
+                            $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CONCLUÍDO';");
+                            while ($row = mysqli_fetch_array($ret)) {
+                                $contagemConcluido++;
+                            }
+
+                            $contagemAbertas = $contagemCriado + $contagemAndamento + $contagemPausado;
+
+                        ?>
+                         <div class="col-sm my-1">
+                             <div class="card border-left-primary shadow py-2 d-flex justify-content-center">
+                                 <div class="card-header">
+                                     <span class="text-muted">KPI's OS</span>
+                                     <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
+                                 </div>
+                                 <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                 CONCLUÍDAS</div>
+                                             <div class="flex-dashed-line text-success"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-success"><?php echo $contagemConcluido; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                 ABERTAS</div>
+                                             <div class="flex-dashed-line text-info"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemCriado; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                 FAZENDO</div>
+                                             <div class="flex-dashed-line text-warning"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-warning"><?php echo $contagemAndamento; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                 PAUSADAS</div>
+                                             <div class="flex-dashed-line text-danger"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-danger"><?php echo $contagemPausado; ?></div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-sm my-1">
+                             <div class="card border-left-primary shadow h-100 py-2 d-flex justify-content-center">
+                                 <div class="card-header">
+                                     <span class="text-muted">KPI's OP</span>
+                                     <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
+                                 </div>
+                                 <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                 CONCLUÍDOS</div>
+                                             <div class="flex-dashed-line text-success"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-success"><?php echo "x"; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                 RETRABALHO</div>
+                                             <div class="flex-dashed-line text-info"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-info"><?php echo "x"; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                 ATRASADOS</div>
+                                             <div class="flex-dashed-line text-warning"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-warning"><?php echo "x"; ?></div>
+                                         </div>
+                                     </div>
+                                     <div class="row no-gutters align-items-center">
+                                         <div class="col mr-2 d-flex justify-content-around align-items-center">
+                                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                 PAUSADOS</div>
+                                             <div class="flex-dashed-line text-danger"></div>
+                                             <div class="h5 mb-0 font-weight-bold text-danger"><?php echo "x"; ?></div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+
+                 </div>
+             </div>
+
+
+
+
+             <hr style="border-bottom: 1px solid #fff;">
+
+         <?php
                         }
-
-                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='EM ANDAMENTO';");
-                        while ($row = mysqli_fetch_array($ret)) {
-                            $contagemAndamento++;
-                        }
-
-                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='PAUSADO';");
-                        while ($row = mysqli_fetch_array($ret)) {
-                            $contagemPausado++;
-                        }
-
-                        $ret = mysqli_query($conn, "SELECT * FROM ordenservico WHERE  osStatus='CONCLUÍDO';");
-                        while ($row = mysqli_fetch_array($ret)) {
-                            $contagemConcluido++;
-                        }
-
-                        $contagemAbertas = $contagemCriado + $contagemAndamento + $contagemPausado;
-
-                    ?>
-                        <div class="col-sm my-1">
-                            <div class="card border-left-primary shadow py-2 d-flex justify-content-center">
-                                <div class="card-header">
-                                    <span class="text-muted">KPI's OS</span>
-                                    <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
-                                </div>
-                                <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                CONCLUÍDAS</div>
-                                            <div class="flex-dashed-line text-success"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-success"><?php echo $contagemConcluido; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                ABERTAS</div>
-                                            <div class="flex-dashed-line text-info"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo $contagemCriado; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                FAZENDO</div>
-                                            <div class="flex-dashed-line text-warning"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-warning"><?php echo $contagemAndamento; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                PAUSADAS</div>
-                                            <div class="flex-dashed-line text-danger"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-danger"><?php echo $contagemPausado; ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm my-1">
-                            <div class="card border-left-primary shadow h-100 py-2 d-flex justify-content-center">
-                                <div class="card-header">
-                                    <span class="text-muted">KPI's OP</span>
-                                    <!-- <small class="text-muted">(Mês: <?php echo $monthName = getMonthName($conn, getMonthNumber($conn, hoje()));  ?>)</small> -->
-                                </div>
-                                <div class="card-body d-flex justify-content-center" style="flex-direction: column;">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                CONCLUÍDOS</div>
-                                            <div class="flex-dashed-line text-success"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-success"><?php echo "x"; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                RETRABALHO</div>
-                                            <div class="flex-dashed-line text-info"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-info"><?php echo "x"; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                ATRASADOS</div>
-                                            <div class="flex-dashed-line text-warning"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-warning"><?php echo "x"; ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2 d-flex justify-content-around align-items-center">
-                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                                PAUSADOS</div>
-                                            <div class="flex-dashed-line text-danger"></div>
-                                            <div class="h5 mb-0 font-weight-bold text-danger"><?php echo "x"; ?></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                </div>
-            </div>
+            ?>
 
 
-            
 
-            <hr style="border-bottom: 1px solid #fff;">
 
-        <?php
-                    }
+     <?php
+
+    } else {
+        header("location: login");
+        exit();
+    }
+
         ?>
-
-
-
-
-    <?php
-
-} else {
-    header("location: login");
-    exit();
-}
-
-    ?>

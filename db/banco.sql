@@ -771,27 +771,60 @@ CREATE TABLE CORRELACAO_PRODUTO (
 
 ---- Estrutura da tabela `FORMULARIO FRM.INF.004'
 
-CREATE TABLE FRM_INF_004 (
-id int primary key not null auto_increment,
-data_publicacao date, 
-data_validade date,
-modelo varchar(20) default 'springer',
-identificacao_ambiente varchar(30),
-tipo_atividade varchar(20)
+CREATE TABLE `frm_inf_004` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `data_publicacao` date DEFAULT NULL,
+  `data_validade` date DEFAULT NULL,
+  `data_manutencao` date DEFAULT NULL,
+  `modelo` varchar(20) DEFAULT 'springer',
+  `descricao_setor` text DEFAULT NULL,
+  `descricao_atividades_id` int DEFAULT NULL,
+  `frmstatus_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_descricao_atividades_id` (`descricao_atividades_id`),
+  KEY `fk_frmstatus` (`frmstatus_id`),
+  CONSTRAINT `fk_descricao_atividades_id` FOREIGN KEY (`descricao_atividades_id`) REFERENCES `descricao_atividades` (`id`),
+  CONSTRAINT `fk_frmstatus` FOREIGN KEY (`frmstatus_id`) REFERENCES `frmstatus` (`id`)
+) 
+
+---- Estrutura da tabela `SETOR_ARCONDICIONADO'
+
+CREATE TABLE SETOR_ARCONDICIONADO (
+id INT PRIMARY KEY AUTO_INCREMENT, 
+descricao_setores text
+)  
+INSERT INTO SETOR_ARCONDICIONADO (descricao_setores) VALUES
+('SALA DE REUNIÃO TERREO'),
+('SALA PCP'),
+('SALA ENGENHARIA/PROJETOS'),
+('SALA MANUTENÇÃO'),
+('SALA IMPRESSORA TITANIUM'),
+('SALA IMPRESSORAS FILAMENTO'),
+('SALA QUALIDADE INSPEÇÃO'),
+('SALA ESTOQUE CPMH'),
+('SALA ESTOQUE BRASFIX'),
+('SALA ESTOQUE OSTEOFIX'),
+('SALA REUNIÃO 1º ANDAR'),
+('SALA LOUNGE'),
+('SALA PRESIDENCIA'),
+('AUDITORIO'),
+('CPD'),
+('SALA DE JOGOS'),
+('SALA ADMINISTRATIVO/FINANCEIRO'),
+('SALA MARKETING/DIRETORIA'),
+('SALA DE DESCANSO');
+
+--  tabela frmstatus
+CREATE TABLE frmstatus (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    status VARCHAR(20) NOT NULL
 );
 
----- Estrutura da tabela `ATIVIDADES_EXECUTADAS'
-CREATE TABLE ATIVIDADES_EXECUTADAS (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    data_manutencao DATE,
-    frm_inf_004_id INT, -- Mudança aqui
-    descricao_atividade_id INT,
-    executado BOOLEAN,
-    user_id INT,
-    FOREIGN KEY (frm_inf_004_id) REFERENCES FRM_INF_004(id),
-    FOREIGN KEY (descricao_atividade_id) REFERENCES DESCRICAO_ATIVIDADES(id),
-   --FOREIGN KEY (user_id) REFERENCES USERS(id) ERRO NA TABELA USERS
-);
+-- Inserir os status
+INSERT INTO frmstatus (status) VALUES
+('Pendente'),
+('Concluída');
+
 
 ---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
 
@@ -800,6 +833,22 @@ id INT PRIMARY KEY AUTO_INCREMENT,
 descricao TEXT
 );
 
+INSERT INTO descricao_atividades (descricao) VALUES
+('Verificação e drenagem da água'),
+('Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)'),
+('Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)'),
+('Limpeza dos filtros - verificação e eliminação de sujeiras, danos e corrosão e frestas dos filtros'),
+('Trocar filtros'),
+('Verificação da fixação'),
+('Verificação de vazamentos nas ligações flexíveis'),
+('Estado de conservação do isolamento termo-acústico'),
+('Vedação dos painéis de fechamento do gabinete'),
+('Manutenção mecânica'),
+('Manutenção elétrica'),
+('outros');
+
+
+<<<<<<< HEAD
 
 /* ============================ Tabelas do FORM INF 003  ========================== */
 
@@ -855,3 +904,4 @@ INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Copa', 3),
 ('Cozinha',3)
 ('Fabrica', 4);
+=======

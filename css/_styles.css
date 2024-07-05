@@ -2793,6 +2793,7 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   width: 100%;
 }
 
+
 .fade {
   transition: opacity 0.15s linear;
 }
