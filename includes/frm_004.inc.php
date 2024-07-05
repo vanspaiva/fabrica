@@ -6,29 +6,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dataValidade = $_POST['dataValidade'];
     $dataManutencao = $_POST['dataManutencao'];
     $marcaModelo = $_POST['marcaModelo'];
-    $userId = $_POST['userId'];
+    $responsavel = $_POST['responsavel'];
     $setorId = $_POST['setor_id'];
     $executado = $_POST['executado'];
 
-    $frmStatus = '1'; 
+    $frmStatus = '1';
 
     if (empty($setorId)) {
         die("Erro: Setor não foi selecionado.");
     }
 
-    require_once '../db/dbh.php'; 
+    require_once '../db/dbh.php';
 
     mysqli_begin_transaction($conn);
 
     try {
-        // Obter o usersId com base no usersUid da sessão
+    
         $sqlUserId = "SELECT usersId FROM users WHERE usersUid = ?";
         $stmtUserId = mysqli_prepare($conn, $sqlUserId);
-        mysqli_stmt_bind_param($stmtUserId, "s", $_SESSION["useruid"]);
+        mysqli_stmt_bind_param($stmtUserId, "s", $responsavel);
         mysqli_stmt_execute($stmtUserId);
         mysqli_stmt_bind_result($stmtUserId, $userId);
         mysqli_stmt_fetch($stmtUserId);
         mysqli_stmt_close($stmtUserId);
+
+        if (!$userId) {
+            throw new Exception("Erro: Usuário não encontrado.");
+        }
+
 
         if (!$userId) {
             throw new Exception("Erro: Usuário não encontrado.");
@@ -63,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $descricaoAtividadesStr = implode(", ", $descricaoAtividades);
 
-        $stmtInsert = $conn->prepare("INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, descricao_setores, data_manutencao, descricao_atividades, userId, frmStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmtInsert = $conn->prepare("INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, descricao_setor, data_manutencao, descricao_atividades, userId, frmStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmtInsert->bind_param("ssssssis", $dataPublicacao, $dataValidade, $marcaModelo, $descricaoSetor, $dataManutencao, $descricaoAtividadesStr, $userId, $frmStatus);
 
         if (!$stmtInsert->execute()) {
@@ -75,10 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['successMessage'] = "Dados inseridos com sucesso.";
         header('Location: ../frm_inf_004.php');
         exit();
-
     } catch (Exception $e) {
         mysqli_rollback($conn);
         $_SESSION['errorMessage'] = "Erro na consulta SQL: " . $e->getMessage();
     }
 }
-?>
