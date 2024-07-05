@@ -62,7 +62,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <th>Data Manutenção</th>
                                                     <th>Setor</th>
                                                     <th>Descrição das Atividades</th>
-                                                    <th>Responsável</th>
+                                                    <!--  <th>Responsável</th> -->
                                                     <th>Status</th>
                                                     <th>Ações</th>
                                                 </tr>
@@ -75,18 +75,19 @@ if (isset($_SESSION["useruid"])) {
                                                     frm_inf_004.id AS frm_id,
                                                     frm_inf_004.data_manutencao,
                                                     setor_arcondicionado.descricao_setores AS setor_descricao,
-                                                    frm_inf_004.descricao_atividades AS atividade_descricao,
-                                                    users.usersName AS responsavel_nome,
-                                                    frmstatus.stNome AS frmStatus
+                                                    descricao_atividades.descricao AS atividade_descricao,
+                                                    frmstatus.status AS frmStatus,
+                                                    frm_inf_004.responsavel
                                                 FROM 
                                                     frm_inf_004
+                                                    LEFT JOIN 
+                                                    setor_arcondicionado ON frm_inf_004.setor_id = setor_arcondicionado.id
                                                 LEFT JOIN 
-                                                    setor_arcondicionado ON frm_inf_004.descricao_setores = setor_arcondicionado.descricao_setores
-                                                    LEFT JOIN
-                                                    users ON frm_inf_004.userId = users.usersId
+                                                    descricao_atividades ON frm_inf_004.descricao_atividades_id = descricao_atividades.id
                                                 LEFT JOIN 
-                                                    frmstatus ON frm_inf_004.frmStatus = frmstatus.stId
+                                                    frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
                                             ";
+
                                                 $result = $conn->query($query);
                                                 if ($result === false) {
                                                     echo "Erro na consulta: " . mysqli_error($conn);
