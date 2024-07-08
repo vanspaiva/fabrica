@@ -36,18 +36,16 @@ if (isset($_POST['update'])) {
             $descricaoAtividades = implode(", ", $atividadesNomes);
         }
 
-        // Corrigindo o mapeamento de status
         $frmStatus = ($_POST['frmStatus'] == 'Pendente') ? 1 : 2;
 
-        // Preparar a consulta SQL de atualização
         $sqlUpdate = "UPDATE frm_inf_004 SET 
                       data_publicacao = STR_TO_DATE(?, '%Y-%m-%d'), 
                       data_validade = STR_TO_DATE(?, '%Y-%m-%d'), 
                       modelo = ?, 
                       data_manutencao = STR_TO_DATE(?, '%Y-%m-%d'), 
                       descricao_atividades = ?, 
-                      descricao_setores = ?, 
-                      frmStatus = ? 
+                      descricao_setor = ?, 
+                      frmstatus_id = ? 
                       WHERE id = ?";
         $stmtUpdate = $conn->prepare($sqlUpdate);
 
@@ -55,10 +53,10 @@ if (isset($_POST['update'])) {
             throw new Exception('Erro na preparação da consulta SQL para atualização: ' . $conn->error);
         }
 
-        // Vincular os parâmetros à consulta preparada
+
         $stmtUpdate->bind_param('ssssssii', $dataPublicacao, $dataValidade, $modelo, $dataManutencao, $descricaoAtividades, $descricaoSetor, $frmStatus, $frmId);
 
-        // Executar a consulta
+
         if (!$stmtUpdate->execute()) {
             throw new Exception('Erro ao executar a consulta SQL para atualização: ' . $stmtUpdate->error);
         }
@@ -74,7 +72,6 @@ if (isset($_POST['update'])) {
         die("Erro na consulta SQL: " . $e->getMessage());
     }
 
-    // Fechar a consulta preparada e a conexão
     $stmtUpdate->close();
     $conn->close();
 
