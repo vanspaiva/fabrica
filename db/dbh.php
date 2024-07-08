@@ -8,7 +8,7 @@ $dbName = "u777557116_fabrica"; */
 $serverName = "localhost";
 $dbUsername = "root";
 $dbPassword = "86375297";
-$dbName = "fabrica";
+$dbName = "u777557116_fabrica";
 
 
 $conn = mysqli_connect($serverName, $dbUsername, $dbPassword, $dbName);
