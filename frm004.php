@@ -11,20 +11,11 @@ if (isset($_SESSION["useruid"])) {
         $data_publicacao = explode("-", $row["data_publicacao"]);
         $data_validade = explode("-", $row["data_validade"]);
         $data_manutencao = explode("-", $row["data_manutencao"]);
+        $responsavel = $row["responsavel"];
 
         $data_manutencao = $data_manutencao[2] . "/" . $data_manutencao[1] . "/" . $data_manutencao[0];
         $data_publicacao = $data_publicacao[2] . "/" . $data_publicacao[1] . "/" . $data_publicacao[0];
         $data_validade = $data_validade[2] . "/" . $data_validade[1] . "/" . $data_validade[0];
-
-        $sqlResponsavel = "SELECT usersName FROM users WHERE usersUid = ?";
-        $stmtResponsavel = mysqli_prepare($conn, $sqlResponsavel);
-        mysqli_stmt_bind_param($stmtResponsavel, "s", $_SESSION["useruid"]);
-        mysqli_stmt_execute($stmtResponsavel);
-        mysqli_stmt_bind_result($stmtResponsavel, $nomeResponsavel);
-        mysqli_stmt_fetch($stmtResponsavel);
-        mysqli_stmt_close($stmtResponsavel);
-
-
 
         $modelo = $row['modelo'];
         $descricaoSetor = $row["descricao_setores"];
@@ -116,7 +107,7 @@ if (isset($_SESSION["useruid"])) {
                                 </tr>
                                 <tr>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Responsável </td>
-                                    <td colspan="5"><?php echo isset($nomeResponsavel) ? htmlspecialchars($nomeResponsavel) : ''; ?></td>
+                                    <td colspan="5"><?php echo isset($responsavel) ? htmlspecialchars($responsavel) : ''; ?></td>
 
                                 <tr>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Data Manutenção </td>
