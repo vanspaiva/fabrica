@@ -60,10 +60,11 @@
     <a href="profile"> <i class="far fa-id-badge"></i> Meu Perfil</a>
     <a href='lista-os'><i class='fas fa-list fa-1x'></i> Gerenciamento de Os's</a>
     <a href='configuracoes'><i class='fas fa-cog fa-1x'></i> Configurações</a>
+    <a href='produtos'><i class="fas fa-boxes fa-1x"></i> Produtos</a>
     <a class="deactivated" href="#"> <i class="far fa-life-ring fa-1x mr-1"></i> Suporte</a>
     <a class="deactivated" href="#"> <i class="fas fa-comments fa-1x mr-1"></i> Chat</a>
     <a class="deactivated" href="#"> <i class="fas fa-bell fa-1x mr-1"></i> Notificações</a>
-    
+
 
     <?php
     if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
@@ -75,6 +76,7 @@
             </summary>
             <div>
                 <a href='users'> <i class='fas fa-user fa-1x'></i> Usuários</a>
+                <a href='mudarsenha'> <i class="fas fa-unlock-alt fa-1x"></i> Mudar Senha</a>
                 <a href='gercadastro'><i class="fas fa-user-cog fa-1x"></i> Ajustes de Cadastro</a>
                 <a href='configuracoes'><i class='fas fa-cog fa-1x'></i> Configurações</a>
 
@@ -89,6 +91,7 @@
             </summary>
             <div>
                 <a href='historico'> <i class='fas fa-history fa-1x'></i> Histórico</a>
+                <a href='logproducao'> <i class='fas fa-history fa-1x'></i> Log Produção</a>
                 <a href='pcp'> <i class="fas fa-users-cog"></i> PCP</a>
                 <!--<a href='bi'><i class="bi bi-file-bar-graph"></i> BI</a>-->
             </div>
@@ -108,6 +111,7 @@
             </summary>
             <div>
                 <a href='historico'> <i class='fas fa-history fa-1x'></i> Histórico</a>
+                <a href='logproducao'> <i class='fas fa-history fa-1x'></i> Log Produção</a>
                 <a href='pcp'> <i class="fas fa-users-cog"></i> PCP</a>
                 <!--<a href='bi'><i class="bi bi-file-bar-graph"></i> BI</a>-->
             </div>

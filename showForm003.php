@@ -72,8 +72,9 @@ if (isset($_SESSION["useruid"])) {
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                         </div> -->
                         <div class="d-flex justify-content-center p-1">
-                            <a href="registroLimpezaPdf003"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i>Exportar</button></a>
+                            <a href="registroLimpezaPdf003"><button class="btn btn-warning btn-sm" ><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>    </a>
                         </div>
+                        
                     </div>
                 </div>
             </div>

@@ -25,7 +25,8 @@ if (isset($_POST["submit"])) {
     $pwd = addslashes($_POST["password"]);
     $pwdrepeat = addslashes($_POST["confirmpassword"]);
     $permission = "3COL";
-    $aprovacao = "APROV";    
+    $aprovacao = "APROV";   
+    $dep = addslashes($_POST["dep"]);
     
 
     require_once '../db/dbh.php';
@@ -58,7 +59,7 @@ if (isset($_POST["submit"])) {
         exit();
     }
 
-    createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao);
+    createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao, $dep);
 
 } else {
     header("location: ../cadastro");

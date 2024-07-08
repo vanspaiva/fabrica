@@ -137,8 +137,78 @@ if (isset($_POST["nvetapa"])) {
     $idEncrypted = hashItemNatural($idfluxo);
 
     header("location: ../descricaofluxo?id=" . $idEncrypted);
+} else if (isset($_POST["nvsetor"])) {
+
+    $nome = addslashes($_POST['nome']);
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    novaSetor($conn, $nome);
+
+    header("location: ../config_setores");
+} else if (isset($_POST["edsetor"])) {
+
+    $id = addslashes($_POST['editid']);
+    $nome = addslashes($_POST['editnome']);
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    editarSetor($conn, $id, $nome);
+
+    header("location: ../config_setores");
+} else if (!empty($_GET['dltsetor'])) {
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    $id = addslashes($_GET['dltsetor']);
+    deleteSetor($conn, $id);
+
+    header("location: ../config_setores");
+} else if (isset($_POST["addEtapaToSetor"])) {
+
+    $idsetor = addslashes($_POST["idsetor"]);
+    $idetapa = addslashes($_POST["idetapa"]);
+    // $ordem = addslashes($_POST["ordem"]);
+    $duracao = addslashes($_POST["duracao"]);
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    novaEtapaEmSetor($conn, $idsetor, $idetapa);
+
+    $idEncrypted = hashItemNatural($idsetor);
+
+    header("location: ../descricaosetor?id=" . $idEncrypted);
+} else if (isset($_POST["editEtapaToSetor"])) {
+
+    $id = addslashes($_POST["editid"]);
+    $idsetor = addslashes($_POST["editidsetor"]);
+    $idetapa = addslashes($_POST["editidetapa"]);
+    // $ordem = addslashes($_POST["editordem"]);
+    $duracao = addslashes($_POST["editduracao"]);
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    editEtapaEmSetor($conn, $id, $idetapa);
+
+    $idEncrypted = hashItemNatural($idsetor);
+
+    header("location: ../descricaosetor?id=" . $idEncrypted);
+} else if (!empty($_GET['dltetapaemsetor'])) {
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    $id = addslashes($_GET['dltetapaemsetor']);
+    $idsetor = addslashes($_GET['idsetor']);
+    deleteEtapaEmSetor($conn, $id, $idsetor);
+
+    $idEncrypted = hashItemNatural($idsetor);
+
+    header("location: ../descricaosetor?id=" . $idEncrypted);
 } else {
     header("location: ../dash");
     exit();
 }
-

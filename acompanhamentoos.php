@@ -97,7 +97,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableOs" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -158,10 +158,10 @@ if (isset($_SESSION["useruid"])) {
                                                             //Status
                                                             $status = $row['osStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
@@ -203,7 +203,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableandamento" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -264,10 +264,10 @@ if (isset($_SESSION["useruid"])) {
                                                             //Status
                                                             $status = $row['osStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
@@ -309,7 +309,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tablepausado" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -370,10 +370,10 @@ if (isset($_SESSION["useruid"])) {
                                                             //Status
                                                             $status = $row['osStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
@@ -415,7 +415,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
-                                            <div class="content-panel">
+                                            <div class="content-panel" style="overflow-x: scroll;">
                                                 <table id="tableconcluido" class="table table-striped table-advance table-hover display responsive nowrap">
 
                                                     <thead>
@@ -476,10 +476,10 @@ if (isset($_SESSION["useruid"])) {
                                                             //Status
                                                             $status = $row['osStatus'];
                                                             if (($status == 'CRIADO') || ($status == 'PAUSADO')) {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=start"> <button class="btn btn-success btn-xs"><i class="fas fa-play-circle"></i></button></a>';
                                                             } else if ($status == 'EM ANDAMENTO') {
-                                                                $btn = '<a href="changestatus?id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
-                                                                $btn = $btn . '<a href="changestatus?id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
+                                                                $btn = '<a href="changestatus?type=os&id=' . $idOs . '&st=pause"> <button class="btn btn-danger btn-xs"><i class="fas fa-pause-circle"></i></button></a>';
+                                                                $btn = $btn . '<a href="changestatus?type=os&id=' . $idOs . '&st=stop"> <button class="btn btn-warning btn-xs"><i class="fas fa-check-circle"></i></button></a>';
                                                             } else if ($status == 'CONCLUÍDO') {
                                                                 $btn = '<button class="btn btn-success btn-xs"><i class="fas fa-check"></i></button>';
                                                             }
