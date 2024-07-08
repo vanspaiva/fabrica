@@ -59,10 +59,11 @@ if (isset($_SESSION["useruid"])) {
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
+                                                    <th>Data Publicação</th>
                                                     <th>Data Manutenção</th>
                                                     <th>Setor</th>
                                                     <th>Descrição das Atividades</th>
-                                                    <!--  <th>Responsável</th> -->
+                                                    <th>Responsável</th>
                                                     <th>Status</th>
                                                     <th>Ações</th>
                                                 </tr>
@@ -73,21 +74,18 @@ if (isset($_SESSION["useruid"])) {
                                                 $query = "
                                                 SELECT 
                                                     frm_inf_004.id AS frm_id,
+                                                    frm_inf_004.data_publicacao,
                                                     frm_inf_004.data_manutencao,
                                                     setor_arcondicionado.descricao_setores AS setor_descricao,
-                                                    descricao_atividades.descricao AS atividade_descricao,
+                                                    frm_inf_004.descricao_atividades,
                                                     frmstatus.status AS frmStatus,
                                                     frm_inf_004.responsavel
                                                 FROM 
                                                     frm_inf_004
-                                                    LEFT JOIN 
-                                                    setor_arcondicionado ON frm_inf_004.setor_id = setor_arcondicionado.id
-                                                LEFT JOIN 
-                                                    descricao_atividades ON frm_inf_004.descricao_atividades_id = descricao_atividades.id
-                                                LEFT JOIN 
-                                                    frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
+                                                    LEFT JOIN setor_arcondicionado ON setor_arcondicionado.descricao_setores = frm_inf_004.descricao_setor
+                                                    LEFT JOIN frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
                                             ";
-
+                                            
                                                 $result = $conn->query($query);
                                                 if ($result === false) {
                                                     echo "Erro na consulta: " . mysqli_error($conn);
@@ -96,11 +94,12 @@ if (isset($_SESSION["useruid"])) {
                                                 ?>
                                                         <tr>
                                                             <td style="text-align: center; padding: 2%;"><?php echo $row['frm_id']; ?></td>
+                                                            <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
                                                             <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?></td>
-                                                            <td style="text-align: center; padding: 2%"><?php echo $row['setor_descricao']; ?></td>
-                                                            <td style="text-align: center; padding: 2%;"><?php echo $row['atividade_descricao']; ?></td>
+                                                            <td style="text-align: center; padding: 2%"><?php echo $row['setor_descricao'];?></td>
+                                                                <td style="text-align: center; padding: 2%;"><?php echo $row['descricao_atividades']; ?></td>
                                                             <td style="text-align: center; padding: 2%;">
-                                                                <?php echo $row['responsavel_nome']; ?>
+                                                                <?php echo $row['responsavel']; ?>
                                                             </td>
                                                             <td style="text-align: center; padding: 2%;">
                                                                 <?php
@@ -125,6 +124,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 ?>
                                                             </td>
                                                         </tr>
+                                                        
                                                 <?php
                                                     }
                                                 }
