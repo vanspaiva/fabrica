@@ -7,9 +7,9 @@
         $value = '%' . substr($_GET['value'], -7) . '%';
 
         $sql = "SELECT d.nome_departamento 
-FROM setores_form_inf_003 AS s 
-JOIN departamentos_form_inf_003 AS d ON d.id_setor = s.id_setor 
-WHERE s.nome_setor LIKE ? ORDER BY d.nome_departamento;";
+        FROM setores_form_inf_003 AS s 
+        JOIN departamentos_form_inf_003 AS d ON d.id_setor = s.id_setor 
+        WHERE s.nome_setor LIKE ? ORDER BY d.nome_departamento;";
         
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "s", $value);

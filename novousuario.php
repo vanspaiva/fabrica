@@ -64,51 +64,30 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                 <input type="text" class="form-control" id="nome" name="nome" required>
                                                             </div>
                                                             <div class="form-group col-md-6">
-                                                                <label class="form-label text-black" for="uf">UF</label>
-                                                                <select name="uf" class="form-control" id="uf">
-                                                                    <?php
-                                                                    $retUf = mysqli_query($conn, "SELECT * FROM estados ORDER BY ufAbreviacao ASC");
-                                                                    while ($rowUf = mysqli_fetch_array($retUf)) {
-                                                                    ?>
-                                                                        <option value="<?php echo $rowUf['ufAbreviacao']; ?>"><?php echo $rowUf['ufAbreviacao']; ?></option>
-                                                                    <?php
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-row">
-                                                            <div class="form-group col-md-6">
                                                                 <label class="form-label text-black" for="email">E-mail</label>
                                                                 <input type="email" class="form-control" id="email" name="email" required>
                                                             </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label class="form-label text-black" for="uid">Usuário</label>
-                                                                <input type="text" class="form-control" id="uid" name="uid" required>
-                                                            </div>
                                                         </div>
                                                         <div class="form-row">
                                                             <div class="form-group col-md-6">
-                                                                <label class="form-label text-black" for="celular">Celular</label>
+                                                                <label class="form-label text-black" for="celular">Ramal</label>
                                                                 <input type="tel" class="form-control" id="celular" name="celular" required>
                                                             </div>
                                                             <div class="form-group col-md-6">
-                                                                <label class="form-label text-black" for="identificador">Identificador</label>
-                                                                <input type="tel" class="form-control" id="identificador" name="identificador" required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-row">
-                                                            <div class="form-group col-md-6">
                                                                 <label class="form-label text-black" for="aprov">Aprovação</label>
                                                                 <select name="aprov" class="form-control" id="aprov">
+                                                                    <option value="">Escolha uma opção</option>
                                                                     <option value="APROV">Aprovado</option>
                                                                     <option value="AGRDD">Aguardando</option>
                                                                     <option value="BLOQD">Bloqueado</option>
                                                                 </select>
                                                             </div>
+                                                        </div>
+                                                        <div class="form-row">
                                                             <div class="form-group col-md-6">
-                                                                <label class="form-label text-black" for="perm">Permissão</label>
+                                                                <label class="form-label text-black" for="perm">Cargo</label>
                                                                 <select name="perm" class="form-control" id="perm">
+                                                                    <option value="">Escolha uma opção</option>
                                                                     <?php
                                                                     $retPermIn = mysqli_query($conn, "SELECT * FROM tipocadastrointerno ORDER BY tpcadinNome ASC");
                                                                     while ($rowPermIn = mysqli_fetch_array($retPermIn)) {
@@ -126,6 +105,20 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                     }
                                                                     ?>
 
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label class="form-label text-black" for="dep">Departamento</label>
+                                                                <select name="dep" class="form-control" id="dep">
+                                                                    <option value="">Escolha uma opção</option>
+                                                                    <?php
+                                                                    $ret = mysqli_query($conn, "SELECT * FROM departamento ORDER BY nome ASC");
+                                                                    while ($row = mysqli_fetch_array($ret)) {
+                                                                    ?>
+                                                                        <option value="<?php echo $row['id']; ?>"><?php echo $row['nome']; ?></option>
+                                                                    <?php
+                                                                    }
+                                                                    ?>
                                                                 </select>
                                                             </div>
                                                         </div>
