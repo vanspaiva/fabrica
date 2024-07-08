@@ -22,6 +22,12 @@ if (isset($_SESSION["useruid"])) {
         $result = $stmt->get_result();
         $data = $result->fetch_assoc();
 
+        if ($data) {
+            $responsavel = isset($data['responsavel']) ? $data['responsavel'] : '';
+            $frmStatus = isset($data['frmStatus']) ? $data['frmStatus'] : '';
+            $descricao_setor_id = isset($data['descricao_setor']) ? $data['descricao_setor'] : '';
+        }
+
         $sqlAtividades = "SELECT * FROM descricao_atividades";
         $stmtAtividades = $conn->query($sqlAtividades);
         $atividadesData = $stmtAtividades->fetch_all(MYSQLI_ASSOC);
@@ -67,7 +73,8 @@ if (isset($_SESSION["useruid"])) {
                                                                 <small class="text-muted">ID não é editável</small>
                                                             </div>
                                                             <div class="form-group col-md">
-                                                                <label class="form-label text-black" for="user">User Responsável</label>
+                                                                <label class="form-label text-black" for="user">User
+                                                                    Responsável</label>
                                                                 <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
                                                             </div>
                                                         </div>
@@ -76,20 +83,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 <div class='form-group col-md-3 m-2'>
                                                                     <label class='control-label'>Status <b style='color: red;'>*</b></label><br>
                                                                     <div class="form-check form-check-inline">
-                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusPendente" value="Pendente" <?php if ($data['frmStatus'] == 'Pendente') echo 'checked'; ?> required>
+                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusPendente" value="Pendente" <?php if (isset($data['frmStatus']) && $data['frmStatus'] == 'Pendente') echo 'checked'; ?> required>
                                                                         <label class="form-check-label" for="statusPendente">Pendente</label>
                                                                     </div>
                                                                     <div class="form-check form-check-inline">
-                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusConcluida" value="Concluída" <?php if ($data['frmStatus'] == 'Concluída') echo 'checked'; ?>>
+                                                                        <input class="form-check-input" type="radio" name="frmStatus" id="statusConcluida" value="Concluída" <?php if (isset($data['frmStatus']) && $data['frmStatus'] == 'Concluída') echo 'checked'; ?>>
                                                                         <label class="form-check-label" for="statusConcluida">Concluído</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         <?php } ?>
 
+
                                                         <div class='d-flex justify-content-around'>
                                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                                <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
+                                                                <label class='control-label' style='color:black;'>Data de
+                                                                    Publicação<b style='color: red;'>*</b></label>
                                                                 <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' value="<?php echo $data['data_publicacao']; ?>" required>
                                                             </div>
                                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -99,98 +108,113 @@ if (isset($_SESSION["useruid"])) {
                                                         </div>
 
                                                         <script>
-                                                            document.getElementById('dataPublicacao').addEventListener('change', function() {
-                                                                var dataPublicacao = new Date(this.value);
-                                                                var doisAnosDepois = new Date(dataPublicacao);
-                                                                doisAnosDepois.setFullYear(dataPublicacao.getFullYear() + 2);
-                                                                doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
+                                                            document.getElementById('dataPublicacao').addEventListener('change',
+                                                                function() {
+                                                                    var dataPublicacao = new Date(this.value);
+                                                                    var doisAnosDepois = new Date(dataPublicacao);
+                                                                    doisAnosDepois.setFullYear(dataPublicacao.getFullYear() +
+                                                                        2);
+                                                                    doisAnosDepois.setDate(doisAnosDepois.getDate() + 1);
 
-                                                                if (doisAnosDepois.getMonth() === 1 && doisAnosDepois.getDate() === 29) {
-                                                                    if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
-                                                                        doisAnosDepois.setDate(28);
+                                                                    if (doisAnosDepois.getMonth() === 1 && doisAnosDepois
+                                                                        .getDate() === 29) {
+                                                                        if (!isBissexto(doisAnosDepois.getFullYear() + 1)) {
+                                                                            doisAnosDepois.setDate(28);
+                                                                        }
                                                                     }
-                                                                }
 
-                                                                var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
-                                                                var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
-                                                                var ano = doisAnosDepois.getFullYear();
-                                                                var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
+                                                                    var dia = ("0" + doisAnosDepois.getDate()).slice(-2);
+                                                                    var mes = ("0" + (doisAnosDepois.getMonth() + 1)).slice(-2);
+                                                                    var ano = doisAnosDepois.getFullYear();
+                                                                    var dataValidadeFormatada = ano + "-" + mes + "-" + dia;
 
-                                                                document.getElementById('dataValidade').value = dataValidadeFormatada;
-                                                            });
+                                                                    document.getElementById('dataValidade').value =
+                                                                        dataValidadeFormatada;
+                                                                });
 
                                                             function isBissexto(ano) {
                                                                 return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
                                                             }
                                                         </script>
 
-                                                        <div class='d-flex justify-content-between'>
-                                                            <div class='form-group col-md-4 m-2'>
-                                                                <label class='control-label'>Setor <b style='color: red;'>*</b></label>
-                                                                <select class="form-control" name='setor_id' id='setor_id'>
-                                                                    <?php
-                                                                    foreach ($setoresData as $setor) {
-                                                                        $selected = ($setor['descricao_setores'] === $data['descricao_setores']) ? 'selected' : '';
-                                                                        echo '<option value="' . htmlspecialchars($setor["descricao_setores"]) . '" ' . $selected . '>' . htmlspecialchars($setor["descricao_setores"]) . '</option>';
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                            <div class='form-group col-md-3 m-2'>
-                                                                <label class='control-label'>Marca/Modelo</label>
-                                                                <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
-                                                            </div>
+                                                        <div class='form-group col-md-4 m-2'>
+                                                            <label class='control-label'>Setor <b style='color: red;'>*</b></label>
+                                                            <select class="form-control" name='setor_id' id='setor_id'>
+                                                                <?php
+                                                                var_dump($setoresData); // Verifique os dados sendo passados para o select
+
+                                                                foreach ($setoresData as $setor) {
+                                                                    $selected = ($setor['descricao_setores'] == $data['descricao_setor']) ? 'selected' : '';
+                                                                    echo '<option value="' . htmlspecialchars($setor["id"]) . '" ' . $selected . '>' . htmlspecialchars($setor["descricao_setores"]) . '</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
                                                         </div>
 
-                                                        <div class='form-group d-block flex-fill m-2'>
-                                                            <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["useruid"]; ?>" required>
-                                                        </div>
 
-                                                        <div class='d-flex justify-content-around'>
-                                                            <div class='form-group col-md-3 m-2'>
-                                                                <label class='control-label'>Data de Manutenção <b style='color: red;'>*</b></label>
-                                                                <input class='form-control' name='dataManutencao' id='dataManutencao' type='date' value="<?php echo $data['data_manutencao']; ?>" required>
-                                                            </div>
+                                                        <div class='form-group col-md-3 m-2'>
+                                                            <label class='control-label'>Marca/Modelo</label>
+                                                            <input class='form-control' name='marcaModelo' id='marcaModelo' value='Springer' readonly>
                                                         </div>
-                                                        <div class='d-flex justify-content-center' style="margin-top: 50px;">
-                                                            <div class='form-group d-inline-block flex-fill m-2'>
-                                                                <table class="table" style="font-size: 1rem; margin: 10px;">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="text-align: center; font-size: 1.2rem;">Descrição das Atividades</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php
-                                                                        $checkboxIds = explode(",", $data['descricao_atividades']);
-                                                                        foreach ($atividadesData as $ativRow) {
-                                                                            $checked = in_array($ativRow['descricao'], $checkboxIds) ? "checked" : "";
-                                                                            echo "<tr>";
-                                                                            echo "<td>";
-                                                                            echo "<input type='checkbox' name='descricao_atividades[]' value='{$ativRow['id']}' $checked> {$ativRow['descricao']}<br>";
-                                                                            echo "</td>";
-                                                                            echo "</tr>";
-                                                                        }
-                                                                        ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="d-flex justify-content-end">
-                                                            <button type="submit" name="update" id="update" class="btn btn-fab">Salvar</button>
-                                                        </div>
-                                                    </form>
                                                 </div>
+
+                                                <div class='form-group d-block flex-fill m-2'>
+                                                    <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
+                                                    <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $responsavel ?>" required>
+                                                </div>
+
+                                                <div class='d-flex justify-content-around'>
+                                                    <div class='form-group col-md-3 m-2'>
+                                                        <label class='control-label'>Data de Manutenção <b style='color: red;'>*</b></label>
+                                                        <input class='form-control' name='dataManutencao' id='dataManutencao' type='date' value="<?php echo $data['data_manutencao']; ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class='d-flex justify-content-center' style="margin-top: 50px;">
+                                                    <div class='form-group d-inline-block flex-fill m-2'>
+                                                        <table class="table" style="font-size: 1rem; margin: 10px;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="text-align: center; font-size: 1.2rem;">Descrição
+                                                                        das Atividades</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php
+
+                                                                $checkboxIds = [];
+                                                                if (!empty($data['descricao_atividades'])) {
+                                                                    $checkboxIds = explode(',', $data['descricao_atividades']);
+                                                                }
+                                                                var_dump($checkboxIds);
+                                                                $checkboxIds = explode(",", $data['descricao_atividades']);
+
+                                                                foreach ($atividadesData as $ativRow) {
+                                                                    $checked = in_array($ativRow['descricao'], $checkboxIds) ? "checked" : "";
+                                                                    echo "<td>";
+                                                                    echo "<input type='checkbox' name='descricao_atividades[]' value='{$ativRow['id']}' $checked> {$ativRow['descricao']}<br>";
+                                                                    echo "</td>";
+                                                                    echo "</tr>";
+                                                                }
+                                                                ?>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="submit" name="update" id="update" class="btn btn-fab">Salvar</button>
+                                                </div>
+                                                </form>
                                             </div>
                                         </div>
-                                    </section>
-                                </section>
                             </div>
+                            </section>
+                            </section>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
             <script src='scripts/scriptjs/scriptprop.js'></script>
             <script src='scripts/scriptjs/scriptpmo.js'></script>
