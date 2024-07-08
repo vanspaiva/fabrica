@@ -778,21 +778,22 @@ CREATE TABLE `frm_inf_004` (
   `data_manutencao` date DEFAULT NULL,
   `modelo` varchar(20) DEFAULT 'springer',
   `descricao_setor` text DEFAULT NULL,
-  `descricao_atividades_id` int DEFAULT NULL,
+  `descricao_atividades` text(255),
   `frmstatus_id` int DEFAULT NULL,
+  `responsavel` varchar(255),
   PRIMARY KEY (`id`),
-  KEY `fk_descricao_atividades_id` (`descricao_atividades_id`),
-  KEY `fk_frmstatus` (`frmstatus_id`),
-  CONSTRAINT `fk_descricao_atividades_id` FOREIGN KEY (`descricao_atividades_id`) REFERENCES `descricao_atividades` (`id`),
-  CONSTRAINT `fk_frmstatus` FOREIGN KEY (`frmstatus_id`) REFERENCES `frmstatus` (`id`)
-) 
+  KEY `fk_setor` (`descricao_setor`),
+    KEY `fk_frmstatus` (`frmstatus_id`),
+    CONSTRAINT `fk_setor` FOREIGN KEY (`descricao_setor`) REFERENCES `setor_arcondicionado` (`id`),
+    CONSTRAINT `fk_frmstatus` FOREIGN KEY (`frmstatus_id`) REFERENCES `frmstatus` (`id`)
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 ---- Estrutura da tabela `SETOR_ARCONDICIONADO'
 
 CREATE TABLE SETOR_ARCONDICIONADO (
 id INT PRIMARY KEY AUTO_INCREMENT, 
 descricao_setores text
-)  
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 INSERT INTO SETOR_ARCONDICIONADO (descricao_setores) VALUES
 ('SALA DE REUNIÃO TERREO'),
 ('SALA PCP'),
@@ -818,9 +819,7 @@ INSERT INTO SETOR_ARCONDICIONADO (descricao_setores) VALUES
 CREATE TABLE frmstatus (
     id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(20) NOT NULL
-);
-
--- Inserir os status
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 INSERT INTO frmstatus (status) VALUES
 ('Pendente'),
 ('Concluída');
@@ -831,7 +830,7 @@ INSERT INTO frmstatus (status) VALUES
 CREATE TABLE DESCRICAO_ATIVIDADES (
 id INT PRIMARY KEY AUTO_INCREMENT,
 descricao TEXT
-);
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 INSERT INTO descricao_atividades (descricao) VALUES
 ('Verificação e drenagem da água'),
