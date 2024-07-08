@@ -82,6 +82,8 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
 
                                             <?php
+
+
                                             $ret = mysqli_query($conn, "SELECT p.*
                                             FROM pedidos p
                                             LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido

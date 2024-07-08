@@ -1613,12 +1613,18 @@ function hourFormat($hora)
 
 function dateFormatByHifen($data)
 {
-    $dataRaw = explode("-", $data);
-    $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+    if ($data !== null && $data !== '') {
+        $dataRaw = explode("-", $data);
 
-    return $res;
+        if (count($dataRaw) === 3) {
+            $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+
+            return $res;
+        }
+    }
+
+    return '//';
 }
-
 function dateAndHourFormat($data)
 {
     $dataRaw = explode(" ", $data);
