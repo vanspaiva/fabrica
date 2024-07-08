@@ -1013,13 +1013,19 @@ CREATE TABLE IF NOT EXISTS form_inf_003 (
     `data_validade` DATE DEFAULT '2025-10-18',
     PRIMARY KEY(`id`),
     FOREIGN KEY (`id_user_criador`) REFERENCES `users`(`usersId`)
-) DEFAULT CHARACTER SET utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 CREATE TABLE  IF NOT EXISTS setores_form_inf_003(
 id_setor INT NOT NULL AUTO_INCREMENT,
 nome_setor VARCHAR(70) NOT NULL,
 PRIMARY KEY (`id_setor`)
-)ENGINE InnoDB DEFAULT CHARACTER SET utf8;
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+INSERT INTO setores_form_inf_003 Values 
+(1,'Áreas Administrativas'),
+(2,'Banheiro'),
+(3,'Copa / Cozinha'),
+(4, 'Produção');
 
 CREATE TABLE IF NOT EXISTS departamentos_form_inf_003(
 id INT NOT NULL AUTO_INCREMENT,
@@ -1027,7 +1033,7 @@ nome VARCHAR(90) NOT NULL,
 id_setor INT NOT NULL,
 PRIMARY KEY (`id`),
 FOREIGN KEY(`id_setor`) REFERENCES setores_form_inf_003(`id_setor`)
-)ENGINE InnoDB DEFAULT CHARACTER SET utf8;
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Sala de Descanso', 1),
@@ -1051,3 +1057,10 @@ INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Copa', 3),
 ('Cozinha',3)
 ('Fabrica', 4);
+
+
+ALTER TABLE departamentos_form_inf_003
+CHANGE nome nome_departamento VARCHAR(255);
+
+ALTER TABLE departamentos_form_inf_003
+CHANGE id id_departamento INT AUTO_INCREMENT;
