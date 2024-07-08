@@ -134,7 +134,12 @@ if (isset($_SESSION["useruid"])) {
 
                                         <div class='form-group d-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" value="<?php echo $_SESSION["useruid"]; ?>" required>
+                                            <select class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" required>
+                                                <option value="">Selecione o(a) responsável</option>
+                                                <option value="Edson">Edson</option>
+                                                <option value="Kellyta">Kellyta</option>
+                                                <option value="Joilza">Joilza</option>
+                                            </select>
                                         </div>
 
                                         <div class='form-group col-md-2 m-2'>
