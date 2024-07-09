@@ -36,7 +36,7 @@ if (isset($_SESSION["useruid"])) {
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
                                 <h5 class="text-muted"><b>Formulário - FRM.INF.004</b></h5>
-                                <small class="text-muted">Gerenciamento da Manutenção</small>
+                                <small class="text-muted">Registro de Manutenção e Limpeza do Ar-Condicionado</small>
                             </div>
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
@@ -65,7 +65,6 @@ if (isset($_SESSION["useruid"])) {
                                                     <th>Setor</th>
                                                     <th>Responsável</th>
                                                     <th>Status</th>
-                                                    <th>Ações</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
