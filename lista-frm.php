@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -62,7 +63,6 @@ if (isset($_SESSION["useruid"])) {
                                                     <th>Data Publicação</th>
                                                     <th>Data Manutenção</th>
                                                     <th>Setor</th>
-                                                    <th>Descrição das Atividades</th>
                                                     <th>Responsável</th>
                                                     <th>Status</th>
                                                     <th>Ações</th>
@@ -77,7 +77,6 @@ if (isset($_SESSION["useruid"])) {
                                                     frm_inf_004.data_publicacao,
                                                     frm_inf_004.data_manutencao,
                                                     setor_arcondicionado.descricao_setores AS setor_descricao,
-                                                    frm_inf_004.descricao_atividades,
                                                     frmstatus.status AS frmStatus,
                                                     frm_inf_004.responsavel
                                                 FROM 
@@ -97,7 +96,6 @@ if (isset($_SESSION["useruid"])) {
                                                             <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_publicacao'])); ?></td>
                                                             <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_manutencao'])); ?></td>
                                                             <td style="text-align: center; padding: 2%"><?php echo $row['setor_descricao'];?></td>
-                                                                <td style="text-align: center; padding: 2%;"><?php echo $row['descricao_atividades']; ?></td>
                                                             <td style="text-align: center; padding: 2%;">
                                                                 <?php echo $row['responsavel']; ?>
                                                             </td>
@@ -110,7 +108,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 }
                                                                 ?>
                                                             </td>
-                                                            <td style="display: flex;  padding: 1.1em;">
+                                                            <td style="display: flex;  padding: 1.3em;">
                                                                 <a href="editfrm?id=<?php echo $row['frm_id']; ?>">
                                                                     <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
                                                                 <a style="padding: 0 0.3em;" href="frm004?id=<?php echo $row['frm_id']; ?>">
@@ -162,6 +160,9 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "order": [
                         [0, "desc"]
+                    ],
+                    "columnDefs": [
+                        { "width": "100px", "targets": 6},
                     ]
                 });
             });
