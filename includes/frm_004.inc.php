@@ -54,12 +54,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $descricaoAtividadesStr = implode(", ", $descricaoAtividades);
 
+    $sqlDescricao = "SELECT descricao FROM descricao_atividades WHERE id = ?";
+$stmtDescricao = mysqli_prepare($conn, $sqlDescricao);
+
+if (!$stmtDescricao) {
+    die('Erro ao preparar a consulta SQL: ' . mysqli_error($conn));
+}
+
+mysqli_stmt_bind_param($stmtDescricao, "i", $id);
+mysqli_stmt_execute($stmtDescricao);
+
+// Restante do código para lidar com o resultado da consulta...
+
+mysqli_stmt_bind_result($stmtDescricao, $descricao);
+mysqli_stmt_fetch($stmtDescricao);
+mysqli_stmt_close($stmtDescricao);
+
+
     // Preparando e executando a consulta de inserção
     $stmtInsert = $conn->prepare("INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, descricao_setor, data_manutencao, descricao_atividades, responsavel, frmstatus_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmtInsert->bind_param("sssssssi", $dataPublicacao, $dataValidade, $marcaModelo, $descricaoSetor, $dataManutencao, $descricaoAtividadesStr, $responsavel, $frmStatus);
 
     if (!$stmtInsert->execute()) {
+        mysqli_rollback($conn);
         throw new Exception('Erro ao executar a consulta SQL para frm_inf_004: ' . $stmtInsert->error);
+    }
+
+    $frmInf004Id = $stmtInsert->insert_id;
+
+    // Verificar se o ID de frm_inf_004 é válido
+    if (!$frmInf004Id) {
+        mysqli_rollback($conn);
+        die("Erro: ID de frm_inf_004 inválido.");
+    }
+
+    // Inserir dados na tabela intermediária frm_inf_004_atividades
+    $stmtIntermediaria = $conn->prepare("INSERT INTO frm_inf_004_atividades (frm_inf_004_id, descricao_atividades_id) VALUES (?, ?)");
+
+    foreach ($executado as $descricaoAtividadesId) {
+        $stmtIntermediaria->bind_param("ii", $frmInf004Id, $descricaoAtividadesId);
+
+        if (!$stmtIntermediaria->execute()) {
+            mysqli_rollback($conn);
+            throw new Exception('Erro ao executar a consulta SQL para frm_inf_004_atividades: ' . $stmtIntermediaria->error);
+        }
     }
 
     mysqli_commit($conn);
@@ -69,3 +107,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit();
 }
 ?>
+
