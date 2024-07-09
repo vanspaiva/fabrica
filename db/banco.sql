@@ -790,7 +790,7 @@ CREATE TABLE `frm_inf_004` (
 
 ---- Estrutura da tabela `SETOR_ARCONDICIONADO'
 
-CREATE TABLE IF NOT EXISTS SETOR_ARCONDICIONADO (
+CREATE TABLE SETOR_ARCONDICIONADO (
 id INT PRIMARY KEY AUTO_INCREMENT, 
 descricao_setores text
 )ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
@@ -855,7 +855,8 @@ CREATE TABLE `frm_inf_004_atividades` (
   KEY `descricao_atividades_id` (`descricao_atividades_id`),
   CONSTRAINT `frm_inf_004_atividades_ibfk_1` FOREIGN KEY (`frm_inf_004_id`) REFERENCES `frm_inf_004` (`id`),
   CONSTRAINT `frm_inf_004_atividades_ibfk_2` FOREIGN KEY (`descricao_atividades_id`) REFERENCES `descricao_atividades` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1; -- adiconar para chaves secundarias --
+
 
 
 
