@@ -93,7 +93,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
                                                             </div>
                                                         </div>
-                                                        <?php if ($_SESSION["userperm"] === 'Administrador' || $_SESSION["userperm"] === 'Gestor') { ?>
+                                                        <?php if ($_SESSION["userperm"] === 'Administrador' || $_SESSION["userperm"] === 'Gestor(a)') { ?>
                                                             <div class='d-flex justify-content-around'>
                                                                 <div class='form-group col-md-3 m-2'>
                                                                     <label class='control-label'>Status <b style='color: red;'>*</b></label><br>
@@ -107,7 +107,7 @@ if (isset($_SESSION["useruid"])) {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        <?php } ?>
+                                                        <?php } ?> 
 
 
                                                         <div class='d-flex justify-content-around'>
@@ -156,7 +156,7 @@ if (isset($_SESSION["useruid"])) {
                                                             <label class='control-label'>Setor <b style='color: red;'>*</b></label>
                                                             <select class="form-control" name='setor_id' id='setor_id'>
                                                                 <?php
-                                                                var_dump($setoresData);
+                                                                var_dump($setoresData); 
 
                                                                 foreach ($setoresData as $setor) {
                                                                     $selected = ($setor['descricao_setores'] == $data['descricao_setor']) ? 'selected' : '';
@@ -199,7 +199,7 @@ if (isset($_SESSION["useruid"])) {
                                                                         $atividadeId = $ativRow['id'];
                                                                         $descricao = $ativRow['descricao'];
                                                                 
-                                                                       
+                                                                        // Verifica se o ID da atividade está na lista de IDs do formulário
                                                                         $checked = in_array($atividadeId, $checkboxIds) ? "checked" : "";
                                                                 
                                                                         echo "<tr>";
