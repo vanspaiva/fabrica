@@ -769,7 +769,7 @@ CREATE TABLE CORRELACAO_PRODUTO (
     FOREIGN KEY (IdSecundario) REFERENCES PRODUTOS(id)
 );  
 
----- Estrutura da tabela `FORMULARIO FRM.INF.004'
+/* ============================ Tabelas do FORM INF 004  ========================== */ 
 
 CREATE TABLE `frm_inf_004` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -845,6 +845,18 @@ INSERT INTO descricao_atividades (descricao) VALUES
 ('Manutenção mecânica'),
 ('Manutenção elétrica'),
 ('outros');
+
+CREATE TABLE `frm_inf_004_atividades` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `frm_inf_004_id` int NOT NULL,
+  `descricao_atividades_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `frm_inf_004_id` (`frm_inf_004_id`),
+  KEY `descricao_atividades_id` (`descricao_atividades_id`),
+  CONSTRAINT `frm_inf_004_atividades_ibfk_1` FOREIGN KEY (`frm_inf_004_id`) REFERENCES `frm_inf_004` (`id`),
+  CONSTRAINT `frm_inf_004_atividades_ibfk_2` FOREIGN KEY (`descricao_atividades_id`) REFERENCES `descricao_atividades` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
 <<<<<<< HEAD
