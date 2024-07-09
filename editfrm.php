@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+var_dump($_SESSION["userperm"]);
+
 if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
     include("php/head_updateprop.php");
@@ -15,6 +17,7 @@ if (isset($_SESSION["useruid"])) {
             unset($_SESSION['success_message']);
         }
 
+        // Consulta para buscar os dados do formulário
         $sql = "SELECT * FROM frm_inf_004 WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $frmId);
@@ -28,10 +31,25 @@ if (isset($_SESSION["useruid"])) {
             $descricao_setor_id = isset($data['descricao_setor']) ? $data['descricao_setor'] : '';
         }
 
+        // Consulta para buscar os IDs das atividades associadas
+        $sqlAtividadesIds = "SELECT descricao_atividades_id FROM frm_inf_004_atividades WHERE frm_inf_004_id = ?";
+        $stmtAtividadesIds = $conn->prepare($sqlAtividadesIds);
+        $stmtAtividadesIds->bind_param("i", $frmId);
+        $stmtAtividadesIds->execute();
+        $resultAtividadesIds = $stmtAtividadesIds->get_result();
+
+        // Crie um array para armazenar os IDs das atividades
+        $checkboxIds = [];
+        while ($row = $resultAtividadesIds->fetch_assoc()) {
+            $checkboxIds[] = $row['descricao_atividades_id'];
+        }
+
+        // Consulta para buscar todas as atividades disponíveis
         $sqlAtividades = "SELECT * FROM descricao_atividades";
         $stmtAtividades = $conn->query($sqlAtividades);
         $atividadesData = $stmtAtividades->fetch_all(MYSQLI_ASSOC);
 
+        // Consulta para buscar todos os setores disponíveis
         $sqlSetores = "SELECT id, descricao_setores FROM setor_arcondicionado";
         $stmtSetores = $conn->query($sqlSetores);
         $setoresData = $stmtSetores->fetch_all(MYSQLI_ASSOC);
@@ -78,7 +96,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
                                                             </div>
                                                         </div>
-                                                        <?php if ($_SESSION["userperm"] !== 'Colaborador') { ?>
+                                                        <?php if ($_SESSION["userperm"] === 'Administrador' || $_SESSION["userperm"] === 'Gestor') { ?>
                                                             <div class='d-flex justify-content-around'>
                                                                 <div class='form-group col-md-3 m-2'>
                                                                     <label class='control-label'>Status <b style='color: red;'>*</b></label><br>
@@ -179,25 +197,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <?php
-
-                                                                $checkboxIds = [];
-                                                                if (!empty($data['descricao_atividades'])) {
-                                                                    $checkboxIds = explode(',', $data['descricao_atividades']);
-                                                                }
-                                                                var_dump($checkboxIds);
-                                                                $checkboxIds = explode(",", $data['descricao_atividades']);
-
-                                                                foreach ($atividadesData as $ativRow) {
-                                                                    $checked = in_array($ativRow['descricao'], $checkboxIds) ? "checked" : "";
-                                                                    echo "<td>";
-                                                                    echo "<input type='checkbox' name='descricao_atividades[]' value='{$ativRow['id']}' $checked> {$ativRow['descricao']}<br>";
-                                                                    echo "</td>";
-                                                                    echo "</tr>";
-                                                                }
-                                                                ?>
-
-                                                            </tbody>
+                                                                    <?php
+                                                                    foreach ($atividadesData as $ativRow) {
+                                                                        $atividadeId = $ativRow['id'];
+                                                                        $descricao = $ativRow['descricao'];
+                                                                
+                                                                        // Verifica se o ID da atividade está na lista de IDs do formulário
+                                                                        $checked = in_array($atividadeId, $checkboxIds) ? "checked" : "";
+                                                                
+                                                                        echo "<tr>";
+                                                                        echo "<td>";
+                                                                        echo "<input type='checkbox' name='descricao_atividades[]' value='{$atividadeId}' {$checked}> {$descricao}<br>";
+                                                                        echo "</td>";
+                                                                        echo "</tr>";
+                                                                    }
+                                                                    ?>
+                                                                </tbody>
                                                         </table>
                                                     </div>
                                                 </div>
