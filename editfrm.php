@@ -17,7 +17,7 @@ if (isset($_SESSION["useruid"])) {
             unset($_SESSION['success_message']);
         }
 
-        // Consulta para buscar os dados do formulário
+
         $sql = "SELECT * FROM frm_inf_004 WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $frmId);
@@ -31,25 +31,22 @@ if (isset($_SESSION["useruid"])) {
             $descricao_setor_id = isset($data['descricao_setor']) ? $data['descricao_setor'] : '';
         }
 
-        // Consulta para buscar os IDs das atividades associadas
         $sqlAtividadesIds = "SELECT descricao_atividades_id FROM frm_inf_004_atividades WHERE frm_inf_004_id = ?";
         $stmtAtividadesIds = $conn->prepare($sqlAtividadesIds);
         $stmtAtividadesIds->bind_param("i", $frmId);
         $stmtAtividadesIds->execute();
         $resultAtividadesIds = $stmtAtividadesIds->get_result();
 
-        // Crie um array para armazenar os IDs das atividades
+
         $checkboxIds = [];
         while ($row = $resultAtividadesIds->fetch_assoc()) {
             $checkboxIds[] = $row['descricao_atividades_id'];
         }
 
-        // Consulta para buscar todas as atividades disponíveis
         $sqlAtividades = "SELECT * FROM descricao_atividades";
         $stmtAtividades = $conn->query($sqlAtividades);
         $atividadesData = $stmtAtividades->fetch_all(MYSQLI_ASSOC);
 
-        // Consulta para buscar todos os setores disponíveis
         $sqlSetores = "SELECT id, descricao_setores FROM setor_arcondicionado";
         $stmtSetores = $conn->query($sqlSetores);
         $setoresData = $stmtSetores->fetch_all(MYSQLI_ASSOC);
@@ -159,7 +156,7 @@ if (isset($_SESSION["useruid"])) {
                                                             <label class='control-label'>Setor <b style='color: red;'>*</b></label>
                                                             <select class="form-control" name='setor_id' id='setor_id'>
                                                                 <?php
-                                                                var_dump($setoresData); // Verifique os dados sendo passados para o select
+                                                                var_dump($setoresData);
 
                                                                 foreach ($setoresData as $setor) {
                                                                     $selected = ($setor['descricao_setores'] == $data['descricao_setor']) ? 'selected' : '';
@@ -202,7 +199,7 @@ if (isset($_SESSION["useruid"])) {
                                                                         $atividadeId = $ativRow['id'];
                                                                         $descricao = $ativRow['descricao'];
                                                                 
-                                                                        // Verifica se o ID da atividade está na lista de IDs do formulário
+                                                                       
                                                                         $checked = in_array($atividadeId, $checkboxIds) ? "checked" : "";
                                                                 
                                                                         echo "<tr>";
