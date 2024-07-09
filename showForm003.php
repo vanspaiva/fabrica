@@ -44,7 +44,6 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         include_once "includes/functions.inc.php";
-
         if(($_SESSION['userperm']) == "Colaborador(a)" ) {
             $classe_css = "disabled-button";
         }
@@ -73,8 +72,9 @@ if (isset($_SESSION["useruid"])) {
                             <a href=""><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                         </div> -->
                         <div class="d-flex justify-content-center p-1">
-                            <a href="registroLimpezaPdf003"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i>Exportar</button></a>
+                            <a href="registroLimpezaPdf003"><button class="btn btn-warning btn-sm" ><i class="bi bi-file-earmark-pdf-fill"></i> PDF</button>    </a>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -125,8 +125,8 @@ if (isset($_SESSION["useruid"])) {
                                                     </span>";
                                                 }
                                             ?>
-                                        <td style="text-align: center; vertical-align: middle;"><?php formatData($row["form_data_publicacao"]) ?></td>
-                                        <td style="vertical-align: middle;text-align: center;"><?php formatData( $row["form_data_validade"]) ?></td>
+                                        <td style="text-align: center; vertical-align: middle;"><?php formatData($row["data_publicacao"]) ?></td>
+                                        <td style="vertical-align: middle;text-align: center;"><?php formatData( $row["data_validade"]) ?></td>
                                         <td style="vertical-align: middle;">
                                             <a href="editRegistroLimpeza003.php?id=<?php echo $row["id"]; ?>">
                                                 <button class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></button>

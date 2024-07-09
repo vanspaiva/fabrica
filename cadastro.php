@@ -103,18 +103,29 @@
                     <div class="card-body">
                         <form action="includes/register.inc.php" method="post">
                             <div class='form-row'>
-                                <div class='col-md'>
+                                <div class='col-md-6'>
                                     <div class='form-group'>
                                         <label class='ml-2 label-control'>Nome Completo *</label>
                                         <input class='form-control py-4' name='name' type='text' style='text-transform: capitalize;' required />
                                     </div>
                                 </div>
-                                <!-- <div class='col-md-6'>
+                                <div class="col-md-6">
                                     <div class='form-group'>
-                                        <label class='ml-2 label-control'>Usuário *</label>
-                                        <input class='form-control py-4' name='username' id='username' type='text' required onkeyup="maskUid()" style="text-transform: lowercase;" />
+                                        <label class='ml-2 label-control'>Departamento *</label>
+                                        <select class='form-select form-select-xl w-100 ' name='dep' required>
+                                            <option value="">Selecione uma Opção</option>
+                                            <?php
+                                            $ret = mysqli_query($conn, "SELECT * FROM departamento ORDER BY nome ASC");
+                                            while ($row = mysqli_fetch_array($ret)) {
+                                            ?>
+                                                <option value="<?php echo $row['id']; ?>"><?php echo $row['nome']; ?></option>
+                                            <?php
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
-                                </div> -->
+                                </div>
+
                             </div>
                             <div class='form-row'>
                                 <div class='col-md-6'>

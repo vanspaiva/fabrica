@@ -6,9 +6,9 @@
 //$dbPassword = "CcIB8WQT36a";
 //$dbName = "u777557116_bdcpmhfabrica";
 
-$serverName = "localhost";
+$serverName = "localhost:3307";
 $dbUsername = "root";
-$dbPassword = "12152027";
+$dbPassword = "";
 $dbName = "fabrica";
 
 

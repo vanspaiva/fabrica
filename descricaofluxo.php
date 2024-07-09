@@ -33,7 +33,7 @@ if (isset($_SESSION["useruid"]) && isset($_GET)) {
                                 </a>
                             </div>
                             <div class="col d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted">Fluxo: <b><?php echo $nomeFluxo; ?></b></h5>
+                                <h5 class="text-muted">Modalidade: <b><?php echo $nomeFluxo; ?></b></h5>
                                 <small class="text-muted">Controle de etapas do fluxo selecionado</small>
                             </div>
                             <div class="col">

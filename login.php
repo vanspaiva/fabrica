@@ -185,7 +185,7 @@
                                 ?>
                             </div>
                             <div class="d-flex justify-content-center py-2 my-4">
-                                <div class=""><a href="cadastro" class="btn btn-outline-secondary">Não tem uma conta? Cadastre-se</a></div>
+                                <div class=""><a href="cadastro.php" class="btn btn-outline-secondary">Não tem uma conta? Cadastre-se</a></div>
 
                             </div>
 

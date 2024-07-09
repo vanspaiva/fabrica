@@ -1,9 +1,11 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
+
+    $userId = $_GET['id'];
 
 ?>
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
@@ -81,13 +83,25 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                 </div>
                                                             </div>
                                                             <div class="form-row">
-                                                                <div class="form-group col-md-6">
+                                                                <div class="form-group col-md">
                                                                     <label class="form-label text-black" for="nome">Nome Completo</label>
                                                                     <input type="text" class="form-control" id="nome" name="nome" value="<?php echo $row['usersName']; ?>" required>
                                                                 </div>
                                                                 <div class="form-group col-md-6">
+                                                                    <label class="form-label text-black" for="aprov">Aprovação</label>
+                                                                    <select name="aprov" class="form-control" id="aprov">
+                                                                        <option value="">Escolha uma opção</option>
+                                                                        <option value="APROV" <?php if ($row['usersAprov'] == 'APROV') echo ' selected="selected"'; ?>>Aprovado</option>
+                                                                        <option value="AGRDD" <?php if ($row['usersAprov'] == 'AGRDD') echo ' selected="selected"'; ?>>Aguardando</option>
+                                                                        <option value="BLOQD" <?php if ($row['usersAprov'] == 'BLOQD') echo ' selected="selected"'; ?>>Bloqueado</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="form-group col-md-6">
                                                                     <label class="form-label text-black" for="uf">UF</label>
                                                                     <select name="uf" class="form-control" id="uf">
+                                                                        <option value="">Escolha uma opção</option>
                                                                         <?php
                                                                         $retUf = mysqli_query($conn, "SELECT * FROM estados ORDER BY ufAbreviacao ASC");
                                                                         while ($rowUf = mysqli_fetch_array($retUf)) {
@@ -97,6 +111,10 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                         }
                                                                         ?>
                                                                     </select>
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label class="form-label text-black" for="celular">Celular/Ramal</label>
+                                                                    <input type="tel" class="form-control" id="celular" name="celular" value="<?php echo $row['usersCel']; ?>" required>
                                                                 </div>
                                                             </div>
                                                             <div class="form-row">
@@ -109,28 +127,13 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                     <input type="text" class="form-control" id="uid" name="uid" value="<?php echo $row['usersUid']; ?>" required>
                                                                 </div>
                                                             </div>
+
                                                             <div class="form-row">
+
                                                                 <div class="form-group col-md-6">
-                                                                    <label class="form-label text-black" for="celular">Celular</label>
-                                                                    <input type="tel" class="form-control" id="celular" name="celular" value="<?php echo $row['usersCel']; ?>" required>
-                                                                </div>
-                                                                <div class="form-group col-md-6">
-                                                                    <label class="form-label text-black" for="identificador">Identificador</label>
-                                                                    <input type="tel" class="form-control" id="identificador" name="identificador" value="<?php echo $row['usersIdentificador']; ?>" required>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-row">
-                                                                <div class="form-group col-md-6">
-                                                                    <label class="form-label text-black" for="aprov">Aprovação</label>
-                                                                    <select name="aprov" class="form-control" id="aprov">
-                                                                        <option value="APROV" <?php if ($row['usersAprov'] == 'APROV') echo ' selected="selected"'; ?>>Aprovado</option>
-                                                                        <option value="AGRDD" <?php if ($row['usersAprov'] == 'AGRDD') echo ' selected="selected"'; ?>>Aguardando</option>
-                                                                        <option value="BLOQD" <?php if ($row['usersAprov'] == 'BLOQD') echo ' selected="selected"'; ?>>Bloqueado</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group col-md-6">
-                                                                    <label class="form-label text-black" for="perm">Permissão</label>
+                                                                    <label class="form-label text-black" for="perm">Cargo</label>
                                                                     <select name="perm" class="form-control" id="perm">
+                                                                        <option value="">Escolha uma opção</option>
                                                                         <?php
                                                                         $retPermIn = mysqli_query($conn, "SELECT * FROM tipocadastrointerno ORDER BY tpcadinNome ASC");
                                                                         while ($rowPermIn = mysqli_fetch_array($retPermIn)) {
@@ -144,6 +147,21 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                                                         while ($rowPermEx = mysqli_fetch_array($retPermEx)) {
                                                                         ?>
                                                                             <option value="<?php echo $rowPermEx['tpcadexCodCadastro']; ?>" <?php if ($row['usersPerm'] == $rowPermEx['tpcadexCodCadastro']) echo ' selected="selected"'; ?>><?php echo $rowPermEx['tpcadexNome']; ?></option>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label class="form-label text-black" for="dep">Departamento</label>
+                                                                    <select name="dep" class="form-control" id="dep">
+                                                                        <option value="">Escolha uma opção</option>
+                                                                        <?php
+                                                                        $retDep = mysqli_query($conn, "SELECT * FROM departamento ORDER BY nome ASC");
+                                                                        while ($rowDep = mysqli_fetch_array($retDep)) {
+                                                                        ?>
+                                                                            <option value="<?php echo $rowDep['id']; ?>" <?php if ($row['usersDepartamento'] == $rowDep['id']) echo ' selected="selected"'; ?>><?php echo $rowDep['nome']; ?></option>
                                                                         <?php
                                                                         }
                                                                         ?>
@@ -164,6 +182,73 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
                                 </div>
                                 <div class="card-footer"></div>
                             </div>
+
+                            <?php if ($tipoUsuario == "Colaborador(a)") {
+
+
+                                // Obtendo todas as setor
+                                $sql = "SELECT id, nome FROM setor";
+                                $result = mysqli_query($conn, $sql);
+                                $setorArray = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                                // Obtendo todas as setor associadas ao usuário
+                                $sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
+                                $stmt = mysqli_prepare($conn, $sql);
+                                mysqli_stmt_bind_param($stmt, "i", $userId);
+                                mysqli_stmt_execute($stmt);
+                                $result = mysqli_stmt_get_result($stmt);
+                                $setorAssociadas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                            ?>
+
+                                <div class="card mt-2">
+                                    <div class="card-header">
+                                        <h4 class="text-muted">Escolha Setores</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row p-3">
+                                            <div class="col border py-2">
+                                                <?php foreach ($setorAssociadas as $setor) : ?>
+                                                    <span class="badge badge-primary"><?php echo $setor['nome']; ?></span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="row py-4">
+                                            <div class="col">
+                                                <form action="processar_etapas.php" method="post">
+                                                    <input type="hidden" name="userId" value="<?php echo $userId; ?>">
+
+                                                    <label class="text-muted">Selecione os Setores:</label>
+                                                    <div class="form-group d-flex">
+                                                        <div class="row p-3">
+                                                            <?php
+                                                            // Create an array of IDs from $setorAssociadas for easy comparison
+                                                            $setorAssociadasIds = array_column($setorAssociadas, 'id');
+                                                            foreach ($setorArray as $value) :
+                                                            ?>
+
+
+
+                                                                <div class="form-check col-4">
+                                                                    <input class="form-check-input" type="checkbox" name="setor[]" value="<?php echo $value['id']; ?>" id="setor_<?php echo $value['id']; ?>" <?php echo in_array($value['id'], $setorAssociadasIds) ? 'checked' : ''; ?>>
+                                                                    <label class="form-check-label" for="setor_<?php echo $value['id']; ?>">
+                                                                        <?php echo $value['nome']; ?>
+                                                                    </label>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group d-flex justify-content-end">
+                                                        <button class="btn btn-fab" type="submit">Salvar</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+                            } ?>
                         </div>
 
                     </div>
