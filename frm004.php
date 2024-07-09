@@ -18,7 +18,7 @@ if (isset($_SESSION["useruid"])) {
         $data_validade = $data_validade[2] . "/" . $data_validade[1] . "/" . $data_validade[0];
 
         $modelo = $row['modelo'];
-        $descricaoSetor = $row["descricao_setores"];
+        $descricaoSetor = $row["descricao_setor"];
 
         $descricaoAtividadesIds = explode(',', $row["descricao_atividades"]);
         $atividadesNomes = [];
@@ -128,12 +128,15 @@ if (isset($_SESSION["useruid"])) {
                                 </tr>
                                 <tr style="height: 30px;">
                                     <td>Verificação e drenagem da água</td>
-                                    <td style="text-align: center; width: 20px;"><i class="far fa-square"></i></td>
+                                    <td style="text-align: center; width: 20px;"><i class="far fa-square">
+                                    <input type="checkbox" <?php echo in_array(1, $descricaoAtividadesIds) ? 'checked' : ''; ?>>
+                                    </i></td>
                                     <td style="width: 21%;"></td>
                                 </tr>
                                 <tr style="height: 30px;">
                                     <td>Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)</td>
-                                    <td style="text-align: center; width: 20px;"><i class="far fa-square"></i></td>
+                                    <td style="text-align: center; width: 20px;"><i class="far fa-square"></i>
+                                </td>
                                     <td style="width: 21%;"></td>
                                 </tr>
                                 <tr style="height: 30px;">
