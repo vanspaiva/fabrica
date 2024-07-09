@@ -382,7 +382,7 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OS</h4>
-                                        <div class='d-flex d-block justify-content-around'>
+                                        <div class='d-flex d-block justify-content-around' >
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>

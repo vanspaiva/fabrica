@@ -922,11 +922,3 @@ INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
 ('Copa', 3),
 ('Cozinha',3)
 ('Fabrica', 4);
-=======
-
-
-ALTER TABLE departamentos_form_inf_003
-CHANGE nome nome_departamento VARCHAR(255);
-
-ALTER TABLE departamentos_form_inf_003
-CHANGE id id_departamento INT AUTO_INCREMENT;

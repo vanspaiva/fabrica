@@ -40,6 +40,7 @@ if (isset($_SESSION["useruid"])) {
             <div class="container-fluid">
                 <div class="row py-4 d-flex justify-content-center">
                     <div class="col-sm">
+                    <div class="col-sm">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
                                 <h5 class="text-muted"><b>PCP - Planejamento e Controle da Produção</b></h5>
@@ -52,12 +53,24 @@ if (isset($_SESSION["useruid"])) {
                             <div class="card-body">
                                 <div class="content-panel" style="overflow-x: scroll;">
                                     <table id="tablePedido" class="table table-striped table-advance table-hover">
+                                <div class="content-panel" style="overflow-x: scroll;">
+                                    <table id="tablePedido" class="table table-striped table-advance table-hover">
 
                                         <thead>
                                             <tr>
-                                                <!-- <th>ID</th>
+                                                <!-- <!-- <th>ID</th>
                                                 <th>Dt Chegada</th>
                                                 <th>Cód Produto</th>
+                                                <th>Produto</th>
+                                                <th>Modalidade</th>
+                                                <th>Dr(a)</th>
+                                                <th>Pac</th>
+                                                <th>Dt Entrega</th>
+                                                <th></th> -->
+
+                                                <th>ID</th>
+                                                <th>Dt Chegada</th>
+                                                <!-- <th>Dias no PCP</th> -->
                                                 <th>Produto</th>
                                                 <th>Modalidade</th>
                                                 <th>Dr(a)</th>
@@ -80,6 +93,7 @@ if (isset($_SESSION["useruid"])) {
                                             </tr>
                                         </thead>
                                         <tbody>
+
 
                                             <?php
 
@@ -144,7 +158,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $produto; ?></th>
                                                     <th><?php echo $dr; ?></th>
                                                     <th><?php echo $pac; ?></th>
-                                                    <th><?php echo $pedido; ?></th>
+                                                    <th><?php echo "$pedido"; ?></th>
                                                     <th><?php echo $lote; ?></th>
                                                     <th class="text-center"><?php echo $diasparaproduzir; ?></th>
                                                     <th><?php echo $dataEntrega; ?></th>
@@ -156,7 +170,19 @@ if (isset($_SESSION["useruid"])) {
                                                             <a href="evolucaopcp?id=<?php echo $id; ?>">
                                                                 <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
                                                             </a>
-                                                                <button class="btn btn-warning m-1" ><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <div >
+                                                                <form class="w-100" action="exportrelatorio" method="POST">
+                                                                    <div class="col d-flex justify-content-end">
+                                                                        <input type="search" name="searchInput" class="form-control rounded p-2" placeholder="Pesquise aqui um pedido..." aria-label="Pesquise aqui um pedido..." aria-describedby="search-addon" value="<?= $pedido?>" hidden/>
+                                                                        <div class="px-2 d-flex justify-content-center align-items-center">
+                                                                            <button class="btn btn-warning m-1 " id="search-addon" type="search" value="search" name="search">
+                                                                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                                
                                                         </div>
                                                     </th>
                                                 </tr>
