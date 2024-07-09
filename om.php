@@ -171,11 +171,25 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nome Máquina: </td>
                                     <td colspan="3" style="width: 200px;"><?php echo $pedido; ?></td>
                                 </tr>
-                                <tr>
+                                <tr style="vertical-align: middle;">
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Tipo Manutenção: </td>
-                                    <td style="width: 200px;"><?php echo strtoupper($omTipoManutencao); ?></td>
+                                    <td style="
+                                    width: 200px; 
+                                    text-align: center;
+                                    align-items: center;
+                                    vertical-align: middle;">
+                                        <?php echo $omTipoManutencao; ?>
+                                    </td>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> A maquina está operacional: </td>
-                                    <td style="width: 200px;"><?php echo strtoupper($omOperacional); ?></td>
+
+                                    <td style="                             
+                                    width: 200px; 
+                                    text-align: center;
+                                    align-items: center;
+                                    vertical-align: middle;">
+                                        <?php echo $omOperacional; ?>
+                                    </td>
+
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Ação da Qualidade: </td>
                                     <td style="width: 200px;"><?php echo $omAcaoQualidade; ?></td>
                                 </tr>
