@@ -2,7 +2,7 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recebendo e validando os dados do formulário
+
     $dataPublicacao = isset($_POST['dataPublicacao']) ? $_POST['dataPublicacao'] : null;
     $dataValidade = isset($_POST['dataValidade']) ? $_POST['dataValidade'] : null;
     $dataManutencao = isset($_POST['dataManutencao']) ? $_POST['dataManutencao'] : null;
@@ -64,7 +64,6 @@ if (!$stmtDescricao) {
 mysqli_stmt_bind_param($stmtDescricao, "i", $id);
 mysqli_stmt_execute($stmtDescricao);
 
-// Restante do código para lidar com o resultado da consulta...
 
 mysqli_stmt_bind_result($stmtDescricao, $descricao);
 mysqli_stmt_fetch($stmtDescricao);

@@ -63,10 +63,7 @@ if (isset($_SESSION["useruid"])) {
                             <?php
                             $ret = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $_SESSION["useruid"] . "';");
                             while ($row = mysqli_fetch_array($ret)) {
-
-                                /*  $tpconta_criacao = $_SESSION["userperm"]; */
                                 $responsavel = $_SESSION["useruid"];
-
                             ?>
 
                                 <form action="includes/frm_004.inc.php" method="POST">
