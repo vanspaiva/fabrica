@@ -13,20 +13,26 @@ if (isset($_POST['update'])) {
 
     $frmStatus = 1; 
 
-    if ($conn->connect_error) {
+    if ($_SESSION["userperm"] === 'Administrador' || $_SESSION["userperm"] === 'Gestor(a)') {
+        if (isset($_POST['frmStatus']) && $_POST['frmStatus'] === "Concluída") {
+            $frmStatus = 2; 
+    }
+
+
+    if ($conn->connect_error) { 
         die("Conexão falhou: " . $conn->connect_error);
     }
 
     $conn->begin_transaction();
 
     try {
-        // 1. Deletar os registros antigos na tabela frm_inf_004_atividades
+
         $sqlDelete = "DELETE FROM frm_inf_004_atividades WHERE frm_inf_004_id = ?";
         $stmtDelete = $conn->prepare($sqlDelete);
         $stmtDelete->bind_param('i', $frmId);
         $stmtDelete->execute();
 
-        // 2. Inserir os novos IDs selecionados na tabela frm_inf_004_atividades
+
         $sqlInsert = "INSERT INTO frm_inf_004_atividades (frm_inf_004_id, descricao_atividades_id) VALUES (?, ?)";
         $stmtInsert = $conn->prepare($sqlInsert);
 
@@ -35,8 +41,7 @@ if (isset($_POST['update'])) {
             $stmtInsert->execute();
         }
 
-        // 3. Atualizar os dados na tabela frm_inf_004
-        // Obter a descrição do setor
+
         $sqlSetor = "SELECT descricao_setores FROM setor_arcondicionado WHERE id = ?";
         $stmtSetor = $conn->prepare($sqlSetor);
         $stmtSetor->bind_param('i', $setorId);
@@ -50,7 +55,7 @@ if (isset($_POST['update'])) {
         }
         $stmtSetor->close();
 
-        // Montar a descrição das atividades selecionadas
+
         $descricaoAtividades = "";
         if (!empty($descricaoAtividadesIds)) {
             $atividadesNomes = [];
@@ -69,7 +74,6 @@ if (isset($_POST['update'])) {
             $descricaoAtividades = implode(", ", $atividadesNomes);
         }
 
-        // Atualizar os dados na tabela frm_inf_004
         $sqlUpdate = "UPDATE frm_inf_004 SET 
                       data_publicacao = STR_TO_DATE(?, '%Y-%m-%d'), 
                       data_validade = STR_TO_DATE(?, '%Y-%m-%d'), 
@@ -103,4 +107,5 @@ if (isset($_POST['update'])) {
 } else {
     echo "Método de requisição inválido.";
 }
+}   
 ?>
