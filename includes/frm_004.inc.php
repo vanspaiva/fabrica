@@ -71,7 +71,7 @@ mysqli_stmt_fetch($stmtDescricao);
 mysqli_stmt_close($stmtDescricao);
 
 
-    // Preparando e executando a consulta de inserção
+  
     $stmtInsert = $conn->prepare("INSERT INTO frm_inf_004 (data_publicacao, data_validade, modelo, descricao_setor, data_manutencao, descricao_atividades, responsavel, frmstatus_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmtInsert->bind_param("sssssssi", $dataPublicacao, $dataValidade, $marcaModelo, $descricaoSetor, $dataManutencao, $descricaoAtividadesStr, $responsavel, $frmStatus);
 
@@ -82,13 +82,12 @@ mysqli_stmt_close($stmtDescricao);
 
     $frmInf004Id = $stmtInsert->insert_id;
 
-    // Verificar se o ID de frm_inf_004 é válido
+  
     if (!$frmInf004Id) {
         mysqli_rollback($conn);
         die("Erro: ID de frm_inf_004 inválido.");
     }
 
-    // Inserir dados na tabela intermediária frm_inf_004_atividades
     $stmtIntermediaria = $conn->prepare("INSERT INTO frm_inf_004_atividades (frm_inf_004_id, descricao_atividades_id) VALUES (?, ?)");
 
     foreach ($executado as $descricaoAtividadesId) {
