@@ -434,9 +434,9 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
-function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo)
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega = "None", $setor = "None", $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo,$tpManutenção, $mqOperacinal)
 {
-    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus, omTipoManutencao,omOperacional) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
     $stmt = mysqli_stmt_init($conn);
 
     $status = "CRIADO";
@@ -446,7 +446,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status,$tpManutenção , $mqOperacinal);
 
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -580,6 +580,19 @@ function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nm
 function uploadArquivo($conn, $tname, $pname, $osId)
 {
 
+    if(!isset($tname)){
+
+        $tname = 'none';
+
+    }
+    if(!isset($pname)){
+
+        $pname = 'none';
+
+    }
+
+
+
     //Registra nova arquivo
     $sql = "INSERT INTO filedownload (fileRealName, fileOsRef, filePath) VALUES (?,?,?);";
     $stmt = mysqli_stmt_init($conn);
@@ -645,9 +658,9 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
     mysqli_close($conn);
 }
 
-function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao)
+function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao)
 {
-    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omTipoManutencao = ?, omOperacional = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
+    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -656,7 +669,7 @@ function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
+    mysqli_stmt_bind_param($stmt, "ssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status,  $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 

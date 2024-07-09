@@ -138,17 +138,17 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OM</h4>
-                                        <div class='d-flex d-block justify-content-around'>
+<!--                                        <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>
                                                     <option value='0' selected style='color: #F6F7FA;'>Escolha um setor</option>
                                                     <?php
-                                                    $retEtapa = mysqli_query($conn, "SELECT * FROM etapasos ORDER BY etapaNome ASC;");
-                                                    while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
-                                                        <option value=" <?php echo $rowEtapa['etapaNome']; ?>"><?php echo $rowEtapa['etapaNome']; ?></option>
+                                                    //$retEtapa = mysqli_query($conn, "SELECT * FROM etapasos ORDER BY etapaNome ASC;");
+                                                    //while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
+                                                        <option value=" <?php //echo $rowEtapa['etapaNome']; ?>"><?php //echo $rowEtapa['etapaNome']; ?></option>
                                                     <?php
-                                                    }
+                                                    //}
                                                     ?>
                                                 </select>
                                             </div>
@@ -170,7 +170,7 @@ if (isset($_SESSION["useruid"])) {
                                                 var minData = year + '-' + month + '-' + day;
                                                 $('#dtentrega').attr('min', minData);
                                             </script>
-                                        </div>
+                                        </div> --> 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nº Máquina </label>
@@ -182,6 +182,52 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
                                         </div>
 
+
+
+                                    
+                                        <div class='d-flex d-block justify-content-around m-4'>
+
+                                            <div class='form-group d-inline-block flex-fill m-2'>
+                                                <label class='control-label'>Tipo Manutenção <b style='color: red;'>*</b></label>
+                                                <div>
+                                                    <div class='form-check'>
+                                                        <input class='form-check-input' type='radio' name='tipo_manutencao' id='manutencaoPreventiva' value='Manutenção Preventiva' required>
+                                                        <label class='form-check-label' for='manutencaoPreventiva'>
+                                                            Manutenção Preventiva
+                                                        </label>
+                                                    </div>
+                                                    <div class='form-check'>
+                                                        <input class='form-check-input' type='radio' name='tipo_manutencao' id='manutencaoCorretiva' value='Manutenção Corretiva' required>
+                                                        <label class='form-check-label' for='manutencaoCorretiva'>
+                                                            Manutenção Corretiva
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class='form-group d-inline-block flex-fill m-2 pl-5'>
+                                                <label class='control-label'>A maquina está operacional  ? <b style='color: red;'>*</b></label>
+                                                <div>
+                                                    <div class='form-check'>
+                                                        <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel1' value='Operável' required>
+                                                        <label class='form-check-label' for='maqOperavel1'>
+                                                            Sim
+                                                        </label>
+                                                    </div>
+                                                    <div class='form-check'>
+                                                        <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel2' value='Não Operável' required>
+                                                        <label class='form-check-label' for='maqOperavel2'>
+                                                            Não
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+
+        
 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
