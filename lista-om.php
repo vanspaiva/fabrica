@@ -64,10 +64,10 @@ if (isset($_SESSION["useruid"])) {
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Data Chegada</th>
+                                                <th style="text-align: center;">Data da Solicitação</th>
                                                 <th>User Criador</th>
                                                 <th>Status</th>
-                                                <th>Data Solicitada</th>
+                                                <!-- <th>Data Solicitada</th> -->
                                                 <th>Descricao</th>
                                                 <th></th>
                                             </tr>
@@ -84,10 +84,10 @@ if (isset($_SESSION["useruid"])) {
 
                                                 <tr>
                                                     <td><?php echo $row['omId']; ?></td>
-                                                    <td><?php echo $row['omDtCriacao']; ?></td>
+                                                    <td style="text-align: center;"><?php echo $row['omDtCriacao']; ?></td>
                                                     <td><?php echo $row['omNomeCriador']; ?></td>
                                                     <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
-                                                    <td><?php echo $row['omDtEntregasDesejada']; ?></td>
+                                                    <!-- <td><?php //echo $row['omDtEntregasDesejada']; ?></td> -->
                                                     <td><?php echo substr($row['omDescricao'], 0, 50) . '...'; ?></td>
 
 
