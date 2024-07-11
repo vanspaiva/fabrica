@@ -1,7 +1,20 @@
 <?php
+
+
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+
+
+
 if (isset($_POST["submit"])) {
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
+
+
+    $tpManutenção = addslashes($_POST['tipo_manutencao']);
+    $mqOperacinal = addslashes($_POST['maqOperavel']);
+
 
     $tp_contacriador = addslashes($_POST["tp_contacriador"]);
     $nomecriador = addslashes($_POST["nomecriador"]);
@@ -9,8 +22,10 @@ if (isset($_POST["submit"])) {
     $dtcriacao = addslashes($_POST["dtcriacao"]);
     $userip = addslashes($_POST["userip"]);
 
-    $dtentrega = addslashes($_POST["dtentrega"]);
-    $setor = addslashes($_POST["setor"]);
+    //$dtentrega = addslashes($_POST["dtentrega"]);
+    $dtentrega = "None";
+    //$setor = addslashes($_POST["setor"]);
+    $setor = "None";
     $descricao = addslashes($_POST["descricao"]);
     $grauurgencia = addslashes($_POST["grauurgencia"]);
 
@@ -47,7 +62,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo);
+    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal);
 } else {
     header("location: ../solicitacao");
     exit();

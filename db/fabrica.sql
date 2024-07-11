@@ -994,3 +994,73 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+/* ============================ Tabelas do FORM INF 003  ========================== */
+
+CREATE TABLE IF NOT EXISTS form_inf_003 (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `setor` VARCHAR(25) NOT NULL,
+    `area_adm` VARCHAR(100),
+    `data` DATE NOT NULL,
+    `periodo` VARCHAR(10),
+    `responsavel` VARCHAR(10),
+    `id_user_criador` INT,
+    `tipo_limpeza` VARCHAR(256) NOT NULL,
+    `conferido` ENUM('APROV','PEND') NOT NULL DEFAULT 'PEND',
+    `data_publicacao` DATE DEFAULT '2023-10-18',
+    `data_validade` DATE DEFAULT '2025-10-18',
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`id_user_criador`) REFERENCES `users`(`usersId`)
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+CREATE TABLE  IF NOT EXISTS setores_form_inf_003(
+id_setor INT NOT NULL AUTO_INCREMENT,
+nome_setor VARCHAR(70) NOT NULL,
+PRIMARY KEY (`id_setor`)
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+INSERT INTO setores_form_inf_003 Values 
+(1,'Áreas Administrativas'),
+(2,'Banheiro'),
+(3,'Copa / Cozinha'),
+(4, 'Produção');
+
+CREATE TABLE IF NOT EXISTS departamentos_form_inf_003(
+id INT NOT NULL AUTO_INCREMENT,
+nome VARCHAR(90) NOT NULL,
+id_setor INT NOT NULL,
+PRIMARY KEY (`id`),
+FOREIGN KEY(`id_setor`) REFERENCES setores_form_inf_003(`id_setor`)
+)ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+INSERT INTO departamentos_form_inf_003 (nome, id_setor) VALUES
+('Sala de Descanso', 1),
+('ADM/Financeiro', 1),
+('Marketing/Comercial', 1),
+('CPD', 1),
+('Sala de Jogos', 1),
+('Auditório', 1),
+('Presidência', 1),
+('Lounge', 1),
+('Sala de Reunião 1º andar', 1),
+('Sala de Reunião (Térreo)', 1),
+('Corredor dos Armários', 1),
+('Estoque CPMH', 1),
+('Estoque OSTEOFIX', 1),
+('Laje Técnica', 1)
+('Banheiro Masculino  1º andar', 2),
+('Banheiro Masculino (Térreo)',2),
+('Banheiro Feminino  1º andar', 2),
+('Banheiro Feminino (Térreo)',2)
+('Copa', 3),
+('Cozinha',3)
+('Fabrica', 4);
+
+
+ALTER TABLE departamentos_form_inf_003
+CHANGE nome nome_departamento VARCHAR(255);
+
+ALTER TABLE departamentos_form_inf_003
+CHANGE id id_departamento INT AUTO_INCREMENT;

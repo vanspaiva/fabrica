@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Estrutura para tabela `colaborador_etapas`
 --
 
-CREATE TABLE `colaborador_etapas` (
+CREATE TABLE IF NOT EXISTS `colaborador_etapas` (
   `id` int(11) NOT NULL,
   `idUser` int(11) DEFAULT NULL,
   `idEtapa` int(11) DEFAULT NULL
@@ -39,7 +39,7 @@ CREATE TABLE `colaborador_etapas` (
 -- Estrutura para tabela `correlacao_produto`
 --
 
-CREATE TABLE `correlacao_produto` (
+CREATE TABLE IF NOT EXISTS `correlacao_produto` (
   `id` int(11) NOT NULL,
   `idProdutoPrincipal` int(11) DEFAULT NULL,
   `idProdutoSecundario` int(11) DEFAULT NULL
@@ -51,7 +51,7 @@ CREATE TABLE `correlacao_produto` (
 -- Estrutura para tabela `estados`
 --
 
-CREATE TABLE `estados` (
+CREATE TABLE IF NOT EXISTS `estados` (
   `ufId` int(11) NOT NULL,
   `ufNomeExtenso` varchar(100) NOT NULL,
   `ufAbreviacao` varchar(2) NOT NULL,
@@ -97,7 +97,7 @@ INSERT INTO `estados` (`ufId`, `ufNomeExtenso`, `ufAbreviacao`, `ufRegiao`) VALU
 -- Estrutura para tabela `etapa`
 --
 
-CREATE TABLE `etapa` (
+CREATE TABLE IF NOT EXISTS `etapa` (
   `id` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
   `parametro1` text DEFAULT NULL,
@@ -210,7 +210,7 @@ INSERT INTO `etapa` (`id`, `nome`, `parametro1`, `parametro2`, `iterev`) VALUES
 -- Estrutura para tabela `etapasos`
 --
 
-CREATE TABLE `etapasos` (
+CREATE TABLE IF NOT EXISTS `etapasos` (
   `etapaId` int(11) NOT NULL,
   `etapaNome` varchar(30) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
@@ -237,7 +237,7 @@ INSERT INTO `etapasos` (`etapaId`, `etapaNome`) VALUES
 -- Estrutura para tabela `etapa_fluxo`
 --
 
-CREATE TABLE `etapa_fluxo` (
+CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
   `id` int(11) NOT NULL,
   `idfluxo` int(11) NOT NULL,
   `idetapa` int(11) NOT NULL,
@@ -284,7 +284,7 @@ INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUE
 -- Estrutura para tabela `filedownload`
 --
 
-CREATE TABLE `filedownload` (
+CREATE TABLE IF NOT EXISTS `filedownload` (
   `fileId` int(11) NOT NULL,
   `fileRealName` text NOT NULL,
   `fileOsRef` int(11) NOT NULL,
@@ -337,7 +337,7 @@ INSERT INTO `filedownload` (`fileId`, `fileRealName`, `fileOsRef`, `filePath`) V
 -- Estrutura para tabela `fluxo`
 --
 
-CREATE TABLE `fluxo` (
+CREATE TABLE IF NOT EXISTS `fluxo` (
   `id` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
@@ -416,7 +416,7 @@ INSERT INTO `fluxo` (`id`, `nome`) VALUES
 -- Estrutura para tabela `logatividades`
 --
 
-CREATE TABLE `logatividades` (
+CREATE TABLE IF NOT EXISTS `logatividades` (
   `logId` int(11) NOT NULL,
   `logOsRef` varchar(100) NOT NULL,
   `logHorario` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -504,7 +504,7 @@ INSERT INTO `logatividades` (`logId`, `logOsRef`, `logHorario`, `logStatus`, `lo
 -- Estrutura para tabela `log_atividades_producao`
 --
 
-CREATE TABLE `log_atividades_producao` (
+CREATE TABLE IF NOT EXISTS `log_atividades_producao` (
   `id` int(11) NOT NULL,
   `idRealizacaoProducao` int(11) DEFAULT NULL,
   `idEtapa` int(11) NOT NULL,
@@ -527,7 +527,7 @@ INSERT INTO `log_atividades_producao` (`id`, `idRealizacaoProducao`, `idEtapa`, 
 -- Estrutura para tabela `mesesano`
 --
 
-CREATE TABLE `mesesano` (
+CREATE TABLE IF NOT EXISTS `mesesano` (
   `mesId` int(11) NOT NULL,
   `mesNum` int(11) NOT NULL,
   `mesNome` varchar(20) NOT NULL,
@@ -558,7 +558,7 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
 -- Estrutura para tabela `ordenmanutencao`
 --
 
-CREATE TABLE `ordenmanutencao` (
+CREATE TABLE IF NOT EXISTS `ordenmanutencao` (
   `omId` int(11) NOT NULL,
   `omUserCriador` varchar(200) NOT NULL,
   `omNomeCriador` varchar(200) NOT NULL,
@@ -592,7 +592,7 @@ INSERT INTO `ordenmanutencao` (`omId`, `omUserCriador`, `omNomeCriador`, `omEmai
 -- Estrutura para tabela `ordenservico`
 --
 
-CREATE TABLE `ordenservico` (
+CREATE TABLE IF NOT EXISTS `ordenservico` (
   `osId` int(11) NOT NULL,
   `osUserCriador` varchar(200) NOT NULL,
   `osNomeCriador` varchar(200) NOT NULL,
@@ -637,7 +637,7 @@ INSERT INTO `ordenservico` (`osId`, `osUserCriador`, `osNomeCriador`, `osEmailCr
 -- Estrutura para tabela `pedidos`
 --
 
-CREATE TABLE `pedidos` (
+CREATE TABLE IF NOT EXISTS `pedidos` (
   `id` int(11) NOT NULL,
   `projetista` varchar(255) DEFAULT NULL,
   `dr` varchar(255) DEFAULT NULL,
@@ -675,7 +675,7 @@ INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `
 -- Estrutura para tabela `produto`
 --
 
-CREATE TABLE `produto` (
+CREATE TABLE IF NOT EXISTS `produto` (
   `id` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
   `codigo` varchar(50) DEFAULT NULL,
@@ -688,7 +688,7 @@ CREATE TABLE `produto` (
 -- Estrutura para tabela `produtos`
 --
 
-CREATE TABLE `produtos` (
+CREATE TABLE IF NOT EXISTS `produtos` (
   `prodId` int(11) NOT NULL,
   `prodCodCallisto` varchar(48) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `prodDescricao` varchar(128) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
@@ -834,7 +834,7 @@ INSERT INTO `produtos` (`prodId`, `prodCodCallisto`, `prodDescricao`, `prodAnvis
 -- Estrutura para tabela `realizacaoproducao`
 --
 
-CREATE TABLE `realizacaoproducao` (
+CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
   `id` int(11) NOT NULL,
   `idPedido` int(11) DEFAULT NULL,
   `idFluxo` int(11) DEFAULT NULL,
@@ -857,7 +857,7 @@ INSERT INTO `realizacaoproducao` (`id`, `idPedido`, `idFluxo`, `numOrdem`, `idEt
 -- Estrutura para tabela `setor`
 --
 
-CREATE TABLE `setor` (
+CREATE TABLE IF NOT EXISTS `setor` (
   `id` int(11) NOT NULL,
   `nome` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
@@ -868,7 +868,7 @@ CREATE TABLE `setor` (
 -- Estrutura para tabela `setor_etapa`
 --
 
-CREATE TABLE `setor_etapa` (
+CREATE TABLE IF NOT EXISTS `setor_etapa` (
   `id` int(11) NOT NULL,
   `idsetor` int(11) NOT NULL,
   `idetapa` int(11) NOT NULL
@@ -880,7 +880,7 @@ CREATE TABLE `setor_etapa` (
 -- Estrutura para tabela `statusetapa`
 --
 
-CREATE TABLE `statusetapa` (
+CREATE TABLE IF NOT EXISTS `statusetapa` (
   `id` int(11) NOT NULL,
   `nome` varchar(255) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
@@ -909,7 +909,7 @@ INSERT INTO `statusetapa` (`id`, `nome`, `tipo`, `cor`) VALUES
 -- Estrutura para tabela `statusos`
 --
 
-CREATE TABLE `statusos` (
+CREATE TABLE IF NOT EXISTS `statusos` (
   `stId` int(11) NOT NULL,
   `stNome` varchar(30) NOT NULL,
   `stPosicao` int(11) NOT NULL
@@ -931,7 +931,7 @@ INSERT INTO `statusos` (`stId`, `stNome`, `stPosicao`) VALUES
 -- Estrutura para tabela `tempo_corrido`
 --
 
-CREATE TABLE `tempo_corrido` (
+CREATE TABLE IF NOT EXISTS `tempo_corrido` (
   `id` int(11) NOT NULL,
   `idPedido` int(11) DEFAULT NULL,
   `idEtapa` int(11) DEFAULT NULL,
@@ -944,7 +944,7 @@ CREATE TABLE `tempo_corrido` (
 -- Estrutura para tabela `tipocadastroexterno`
 --
 
-CREATE TABLE `tipocadastroexterno` (
+CREATE TABLE IF NOT EXISTS `tipocadastroexterno` (
   `tpcadexId` int(11) NOT NULL,
   `tpcadexCodCadastro` varchar(10) NOT NULL,
   `tpcadexNome` varchar(30) NOT NULL
@@ -956,7 +956,7 @@ CREATE TABLE `tipocadastroexterno` (
 -- Estrutura para tabela `tipocadastrointerno`
 --
 
-CREATE TABLE `tipocadastrointerno` (
+CREATE TABLE IF NOT EXISTS `tipocadastrointerno` (
   `tpcadinId` int(11) NOT NULL,
   `tpcadinCodCadastro` varchar(10) NOT NULL,
   `tpcadinNome` varchar(20) NOT NULL
@@ -977,7 +977,7 @@ INSERT INTO `tipocadastrointerno` (`tpcadinId`, `tpcadinCodCadastro`, `tpcadinNo
 -- Estrutura para tabela `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `usersId` int(11) NOT NULL,
   `usersName` varchar(128) NOT NULL,
   `usersEmail` varchar(128) NOT NULL,
@@ -1015,7 +1015,7 @@ INSERT INTO `users` (`usersId`, `usersName`, `usersEmail`, `usersUid`, `usersPer
 -- Estrutura para tabela `user_setor`
 --
 
-CREATE TABLE `user_setor` (
+CREATE TABLE IF NOT EXISTS `user_setor` (
   `id` int(11) NOT NULL,
   `idsetor` int(11) NOT NULL,
   `iduser` int(11) NOT NULL

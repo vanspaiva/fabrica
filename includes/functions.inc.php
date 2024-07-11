@@ -340,10 +340,10 @@ function getAprov($uidExists)
     }
 }
 
-function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
+function createProduto($conn, $descricao, $codigoCllisto)
 {
 
-    $sql = "INSERT INTO produtos (prodCategoria, prodCodCallisto, prodDescricao, prodAnvisa) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO produtos (descricao, codigoCllisto) VALUES (?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -352,7 +352,7 @@ function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssss", $categoria, $cdg, $descricao, $anvisa);
+    mysqli_stmt_bind_param($stmt, "ss", $descricao, $codigoCllisto);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -360,9 +360,30 @@ function createProduto($conn, $categoria, $cdg, $descricao, $anvisa)
     exit();
 }
 
-function editProduto($conn, $prodid, $categoria, $cdg, $descricao, $anvisa)
+function  criarCorrelacaoProduto($conn, $idMaster, $IdSecundario)
 {
-    $sql = "UPDATE produtos SET prodCategoria='$categoria', prodCodCallisto='$cdg', prodDescricao='$descricao', prodAnvisa='$anvisa' WHERE prodId='$prodid'";
+
+    $sql = "INSERT INTO correlacao_produto (idMaster, IdSecundario) VALUES (?, ?)";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../produtos?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $idMaster, $IdSecundario); 
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../produtos?error=none");
+    exit();
+}
+
+
+function editProduto($conn, $prodid, $parametro1)
+{
+    $sql = "UPDATE produtos SET parametro='$parametro1' WHERE prodId='$prodid'";
 
     if (mysqli_query($conn, $sql)) {
         header("location: ../produtos?error=edit");
@@ -413,9 +434,9 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
-function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo)
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega = "None", $setor = "None", $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo,$tpManutenção, $mqOperacinal)
 {
-    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus, omTipoManutencao,omOperacional) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
     $stmt = mysqli_stmt_init($conn);
 
     $status = "CRIADO";
@@ -425,7 +446,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status,$tpManutenção , $mqOperacinal);
 
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -559,6 +580,19 @@ function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nm
 function uploadArquivo($conn, $tname, $pname, $osId)
 {
 
+    if(!isset($tname)){
+
+        $tname = 'none';
+
+    }
+    if(!isset($pname)){
+
+        $pname = 'none';
+
+    }
+
+
+
     //Registra nova arquivo
     $sql = "INSERT INTO filedownload (fileRealName, fileOsRef, filePath) VALUES (?,?,?);";
     $stmt = mysqli_stmt_init($conn);
@@ -624,9 +658,9 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
     mysqli_close($conn);
 }
 
-function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao)
+function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao)
 {
-    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omTipoManutencao = ?, omOperacional = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
+    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -635,7 +669,7 @@ function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
+    mysqli_stmt_bind_param($stmt, "ssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status,  $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -1592,12 +1626,18 @@ function hourFormat($hora)
 
 function dateFormatByHifen($data)
 {
-    $dataRaw = explode("-", $data);
-    $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+    if ($data !== null && $data !== '') {
+        $dataRaw = explode("-", $data);
 
-    return $res;
+        if (count($dataRaw) === 3) {
+            $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+
+            return $res;
+        }
+    }
+
+    return '//';
 }
-
 function dateAndHourFormat($data)
 {
     $dataRaw = explode(" ", $data);
@@ -3962,4 +4002,276 @@ function somarTempos($tempo1, $tempo2) {
 
     // Converte o resultado de volta para o formato esperado
     return converterParaFormato($segundosTotal);
+}
+/* Funções abaixo foram criadas para inserir novos produtos, atualizar e deletar produtos e correlações*/
+
+function inserirProduto($conn, $descricao, $cdg, $idFluxo) {
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "INSERT INTO PRODUTO (descricao, cdg, idFluxo) VALUES (?, ?, ?)";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção do produto.");
+        }
+
+        mysqli_stmt_bind_param($stmt, "ssi", $descricao, $cdg, $idFluxo);
+
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Produto inserido com sucesso.";
+        }
+
+        mysqli_stmt_close($stmt);
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function inserirCorrelacao($conn, $idMaster, $idSecundario) {
+    
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "INSERT INTO CORRELACAO_PRODUTO (idMaster, idSecundario) VALUES (?, ?)";
+            
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+    
+        mysqli_stmt_bind_param($stmt, "ii", $idMaster, $idSecundario);
+    
+        mysqli_stmt_execute($stmt);
+    
+        if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Correlação inserida com sucesso.";
+        }
+
+        mysqli_stmt_close($stmt);
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+    
+}
+
+function deleteProduto($conn, $idProduto) {
+
+    $stmt = mysqli_stmt_init($conn);
+    try{
+        $sql = "DELETE FROM PRODUTO WHERE id = ?";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+    
+        $stmt->bind_param("i", $idProduto); 
+
+        mysqli_stmt_bind_param($stmt, "i", $idProduto);
+
+       if (mysqli_stmt_errno($stmt)) {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        } else {
+            echo "Correlação inserida com sucesso.";
+        }
+        mysqli_stmt_close($stmt);
+
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function deleteCorrelacao($conn, $idCorrelacao) {
+    $stmt = mysqli_stmt_init($conn);
+
+    try{
+        $sql = "DELETE FROM CORRELACAO_PRODUTO WHERE id = ?";
+
+        // Prepara a declaração SQL
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para inserção da correlação.");
+        }
+
+        // Liga os parâmetros
+        mysqli_stmt_bind_param($stmt, "i", $idCorrelacao);
+
+        // Executa a declaração
+        if ($stmt->execute()) {
+            echo "Correlação deletada com sucesso.";
+        } else {
+            echo "Erro ao deletar correlação" . $conn->error;
+        }
+
+        // Fecha a declaração
+        mysqli_stmt_close($stmt);
+
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+}
+
+function updateProduto($conn, $idProduto, $descricao, $codigoCilisto, $idFluxo) {
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "UPDATE PRODUTO SET descricao = ?, codigoCilisto = ?, idFluxo = ? WHERE id = ?";
+    
+        // Prepara a declaração SQL
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para atualização do produto.");
+        }
+    
+        mysqli_stmt_bind_param($stmt, "ssii", $descricao, $codigoCilisto, $idFluxo, $idProduto);
+    
+        if(mysqli_stmt_execute($stmt)){
+            echo "Produto atualizado com sucesso";
+        } else {
+            echo "Erro ao atualizar produto: " . $conn->error;
+        }
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../produtos?error=" . $e->getMessage());
+        exit();
+    }
+    
+    }
+
+
+function updateCorrelacao($conn,$idMaster, $idSecundario){
+
+    $stmt = mysqli_stmt_init($conn);
+
+    try {
+        $sql = "UPDATE CORRELACAO_PRODUTO SET idMaster = ?, IdSecundario = ? WHERE id = ?";
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para atualização da correlação.");
+        }
+
+        mysqli_stmt_bind_param($stmt, "iii", $idMaster, $idSecundario, $idCorrelacao);
+
+        if(mysqli_stmt_execute($stmt)){
+            echo "Correlação atualizada com sucesso";
+        } else {
+            echo "Erro ao atualizar correlação: " . $conn->error;
+        }
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../correlacoes?error=" . $e->getMessage());
+        exit();
+    }
+
+}
+
+// Inserindo novo registro de Limpeza
+function insertRegistroINF003($mysqli_conection,$setor,$area_adm,$data_exec, $periodo, $responsavel, $id_usuario,$tipo_limpeza) {
+
+    $stmt = mysqli_stmt_init($mysqli_conection);
+
+    try{        
+        $sql = "INSERT INTO form_inf_003 (setor, area_adm, data, periodo, responsavel, id_user_criador, tipo_limpeza) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        if ($stmt = mysqli_prepare($mysqli_conection, $sql)) {
+            
+            mysqli_stmt_bind_param($stmt, "sssssis", $setor, $area_adm, $data_exec, $periodo, $responsavel, $id_usuario, $tipo_limpeza);
+    
+            
+            if (mysqli_stmt_execute($stmt)) {
+                echo "Record inserted successfully";
+                header("location: ../showForm003Pendentes");
+            } else {
+                echo "Error: " . mysqli_stmt_error($stmt);
+            }
+
+            mysqli_stmt_close($stmt);
+
+        } else {
+            echo "Error preparing statement: " . mysqli_error($mysqli_conection);
+        }
+    }catch(Exception $e) {
+
+        echo "Erro: ". $e->getMessage();
+    }
+   
+}
+
+function updateRegistro003($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
+    
+    try{    
+        $sql = "UPDATE form_inf_003 SET setor = ?, area_adm = ?, data = ?, periodo = ?, responsavel = ?, tipo_limpeza = ? WHERE id = ?"; 
+    
+        if ($stmt = mysqli_prepare($mysqli_conection, $sql)) {
+            mysqli_stmt_bind_param($stmt, "ssssssi", $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario);
+    
+            if (mysqli_stmt_execute($stmt)) {
+                echo "Record updated successfully";
+                header("Location: ../showForm003");
+                exit;
+            } else {
+                echo "Error: " . mysqli_stmt_error($stmt);
+            }
+            
+            mysqli_stmt_close($stmt);
+        } else {
+            echo "Error preparing statement: " . mysqli_error($mysqli_conection);
+        }
+
+    }catch(Exception $e) {
+        echo "Erro". $e->getMessage();
+    }
+}
+
+function deleteForm003($mysqli_conection,$id_deletar) {
+
+    if (isset($id_deletar)) {
+
+        $id = intval($id_deletar);
+    
+        // Preparar e executar a query de exclusão
+        $sql = "DELETE FROM form_inf_003 WHERE id = ?";
+        $stmt = mysqli_prepare($mysqli_conection, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $id);
+    
+        if (mysqli_stmt_execute($stmt)) {
+            echo "Registro deletado com sucesso.";
+            header("location: ../showForm003.php");
+        } else {
+            echo "Erro ao deletar registro: " . mysqli_stmt_error($stmt);
+        }
+    
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "ID do registro não fornecido.";
+    }
+    
+    mysqli_close($mysqli_conection);
+
+}
+
+//Formata a data de YYYY-mm-dd para dd/mm/YYYY
+function formatData($data){
+
+    $data_validade = $data;
+    $dateV = new DateTime($data_validade);
+    echo $dateV->format('d/m/Y');
 }

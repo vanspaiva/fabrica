@@ -3,9 +3,7 @@
 if (isset($_SESSION["useruid"])) {
 
     require_once("includes/functions.inc.php");
-
 ?>
-
     <style>
         .flex-dashed-line {
             flex-grow: 1;
@@ -13,17 +11,30 @@ if (isset($_SESSION["useruid"])) {
             height: 1px;
             margin: 0 8px;
         }
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.5;        
+        }
     </style>
 
     <body class="bg-light text-dark">
 
         <?php
-        include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';
+            include_once 'php/navbar.php';
+            include_once 'php/lateral-nav.php';
+
+            if(($_SESSION['userperm']) == "Colaborador(a)" ) {
+                $classe_css = "disabled-button";
+            }
+            else {
+                $classe_css = null;
+            }
+            
         ?>
 
-
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
         <div id="main">
             <div class="container-fluid">
                 <div class="row">
@@ -34,6 +45,7 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="txt-ciano-agiliza" style="font-weight: 400;">😄 Olá, <?php echo $_SESSION["userfirstname"]; ?>! Bem-vindo a <b style="font-weight: 700;">sua Dashboard </b></h5>
+
                                         <span class="text-muted text-small"><?php echo $_SESSION["userperm"] . " - " . $_SESSION["usernomedep"]; ?></span>
                                     </div>
 
@@ -69,7 +81,7 @@ if (isset($_SESSION["useruid"])) {
                 ?>
                     <div class="row mb-4">
                         <!-- Módulo Ordem Produção -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -95,10 +107,10 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                </div>
 
                         <!-- Módulo Ordem Manutenção -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -128,7 +140,7 @@ if (isset($_SESSION["useruid"])) {
                         </div>
 
                         <!-- Módulo Ordem Serviço -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -154,8 +166,53 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+
+                        <div class="col-md-6 my-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <h6 class=""><b>Módulo Registros de Limpeza</b></h6>
+                                    </div>
+                                    <hr>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="novoRegistro003" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RL </a>
+                                            <a href="showForm003.php" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                        <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Módulo Manutenção e Limpeza Ar-condicionado -->
+                        <div class="col-md-6 my-4">
+                                                         <div class="card border-left-primary shadow h-100 py-2">
+                                                             <div class="card-body">
+                                                                 <div class="row no-gutters align-items-center">
+                                                                     <h6 class=""><b>Módulo Registro Manutenção e Limpeza Ar-condicionado</b></h6>
+                                                                 </div>
+                                                                 <hr>
+                                                                 <div class="row d-flex justify-content-center my-1 py-1">
+                                                                     <div class="d-flex justify-content-between px-2">
+                                                                         <a href="frm_inf_004" class="btn btn-success mx-1"><i class="fas fa-plus"></i> Novo ML</a>
+                                                                         <a href="lista-frm" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745  solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                                                     </div>
+                                                                 </div>
+                                                                 <div class="row d-flex justify-content-center my-1 py-1">
+                                                                     <div class="d-flex justify-content-between px-2">
+                                                                         <a href="pendencia_frm" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745  solid;"><i class="fas fa-users-cog"></i> Registros Pendentes</a>
+                                                                     </div>
+                                                                 </div>
+                                                             </div>
+                                                         </div>
+                                                     </div>
+                    </div>
                 <?php
                 }
                 ?>
@@ -186,8 +243,6 @@ if (isset($_SESSION["useruid"])) {
             </div>
 
 
-
-
             
 
 
@@ -200,3 +255,4 @@ if (isset($_SESSION["useruid"])) {
 }
 
     ?>
+ 

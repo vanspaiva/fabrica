@@ -1,3 +1,18 @@
+<style>
+    #dropdown-secundario{
+        display: none;
+        color: black;
+    }
+  @media (max-width: 450px) {
+    #lista-nav {
+      display: none !important; /* Oculta o botão de toggle do dropdown */
+    }
+    #dropdown-secundario{
+        display: block;
+    }
+  }
+</style>
+
 <nav class="nav navbar py-2 mt-auto justify-content-center bg-ft" style="max-height: 30px;">
 </nav>
 <nav class="nav navbar py-2 mt-auto justify-content-center bg-sg-color">
@@ -19,7 +34,11 @@
             <div class="col-sm-4 d-flex justify-content-center">
 
             </div>
-            <div class="col-sm-4 d-flex justify-content-end">
+
+
+
+            <!-- problema no nav -->
+            <div class="col-sm-4 d-flex justify-content-end" id="lista-nav">
                 <div class="d-flex justify-content-around align-items-center">
                     <span class="px-2 text-white"><i class="fas fa-comments"></i></span>
                     <span class="px-2 text-white"><i class="fas fa-bell"></i></span>
@@ -43,6 +62,24 @@
                     </span>
                 </div>
             </div>
+
+
+            <div class="dropdown" id="dropdown-secundario">
+                <button class="btn btn-dropdown-sg dropdown-toggle" type="button" data-toggle="dropdown"><?php echo $_SESSION["userfirstname"]; ?></i>
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <span class="px-2 py-1">
+                        <h5 class="text-center text-white" style="font-size: 10pt; color: #8c8c8c;"><?php echo $_SESSION["userperm"]; ?></h5>
+                    </span>
+                    <!-- <li class="px-2 py-1"><a class="" href="index" style="color: black; text-decoration: none;"> <i class="fas fa-grip-vertical mr-1"></i> Módulos</a></li> -->
+                    <li class="px-2 py-1"><a class="" href="profile" style="color: black; text-decoration: none;"> <i class="far fa-id-badge mr-1"></i> Meu Perfil</a></li>
+                    <hr style="border: 1px solid #c1c1c1;">
+                    <li class="px-2 py-1"><a class="sairbtn" href="includes/logout.inc.php" style="text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                </ul>
+            </div>
+
+
+
         </div>
     </div>
 </nav>

@@ -10,9 +10,6 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         ?>
-
-
-
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div>
@@ -79,9 +76,7 @@ if (isset($_SESSION["useruid"])) {
 
                                             while ($row = mysqli_fetch_array($ret)) {
 
-
                                             ?>
-
                                                 <tr>
                                                     <td><?php echo $row['osId']; ?></td>
                                                     <td><?php echo $row['osDtCriacao']; ?></td>
@@ -140,6 +135,9 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "order": [
                         [0, "desc"]
+                    ],
+                    "columnDefs": [
+                        { "width": "130px", "targets": 6 }, // define a largura da ultima coluna como 130px
                     ]
                 });
                 $('#tableEnviada').DataTable({

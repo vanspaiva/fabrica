@@ -14,7 +14,7 @@
             }
         });
 
-    // Toggle the side navigation
+    // Toggle the side navigation <table id="tableProp" class="table table-striped table-advance table-hover" style="overflow-x: auto; overflow-y: auto;">
     $("#sidebarToggle").on("click", function(e) {
         e.preventDefault();
         $("body").toggleClass("sb-sidenav-toggled");

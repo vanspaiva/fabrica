@@ -38,8 +38,8 @@ if (isset($_POST["update"])) {
         $obs = addslashes($_POST["obs"]);
     }
 
-    $tipomanutencao = addslashes(($_POST["tipomanutencao"]));
-    $operacional = addslashes(($_POST["operacional"]));
+    //$tipomanutencao = addslashes(($_POST["tipomanutencao"]));
+    //$operacional = addslashes(($_POST["operacional"]));
     $acaoquali = addslashes(($_POST["acaoquali"]));
     $requalificar = addslashes(($_POST["requalificar"]));
     $resprequali = addslashes(($_POST["resprequali"]));
@@ -50,7 +50,7 @@ if (isset($_POST["update"])) {
     // echo "</pre>";
     // exit();
 
-    editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $tipomanutencao, $operacional, $acaoquali, $requalificar, $resprequali, $respmanutencao);
+    editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao);
     header("location: ../editarom?id=" . $omid);
     exit();
 } 
