@@ -600,7 +600,7 @@ CREATE TABLE IF NOT EXISTS `ordenmanutencao` (
   `omObs` text,
   `omStatus` varchar(20) NOT NULL,
   PRIMARY KEY (`omId`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
