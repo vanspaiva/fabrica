@@ -81,7 +81,7 @@ if (isset($_SESSION["useruid"])) {
                 ?>
                     <div class="row mb-4">
                         <!-- Módulo Ordem Produção -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -110,7 +110,7 @@ if (isset($_SESSION["useruid"])) {
                 </div>
 
                         <!-- Módulo Ordem Manutenção -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -140,7 +140,7 @@ if (isset($_SESSION["useruid"])) {
                         </div>
 
                         <!-- Módulo Ordem Serviço -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -168,7 +168,7 @@ if (isset($_SESSION["useruid"])) {
                         </div>
 
 
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-2">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
@@ -191,22 +191,22 @@ if (isset($_SESSION["useruid"])) {
                         </div>
 
                         <!-- Módulo Manutenção e Limpeza Ar-condicionado -->
-                        <div class="col-sm my-2">
+                        <div class="col-md-6 my-4">
                                                          <div class="card border-left-primary shadow h-100 py-2">
                                                              <div class="card-body">
                                                                  <div class="row no-gutters align-items-center">
-                                                                     <h6 class=""><b>Módulo Manutenção e Limpeza Ar-condicionado</b></h6>
+                                                                     <h6 class=""><b>Módulo Registro Manutenção e Limpeza Ar-condicionado</b></h6>
                                                                  </div>
                                                                  <hr>
                                                                  <div class="row d-flex justify-content-center my-1 py-1">
                                                                      <div class="d-flex justify-content-between px-2">
-                                                                         <a href="frm_inf_004" class="btn btn-fab mx-1"><i class="fas fa-plus"></i> Novo ML</a>
-                                                                         <a href="lista-frm" class="btn btn-outline-fab mx-1" style="border-top: 6px #3d7869 solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                                                         <a href="frm_inf_004" class="btn btn-success mx-1"><i class="fas fa-plus"></i> Novo ML</a>
+                                                                         <a href="lista-frm" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745  solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
                                                                      </div>
                                                                  </div>
                                                                  <div class="row d-flex justify-content-center my-1 py-1">
                                                                      <div class="d-flex justify-content-between px-2">
-                                                                         <a href="pendencia_frm" class="btn btn-outline-fab mx-1" style="border-top: 6px #3d7869 solid;"><i class="fas fa-users-cog"></i> Registros Pendentes</a>
+                                                                         <a href="pendencia_frm" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745  solid;"><i class="fas fa-users-cog"></i> Registros Pendentes</a>
                                                                      </div>
                                                                  </div>
                                                              </div>
