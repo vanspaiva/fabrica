@@ -930,3 +930,21 @@ CHANGE nome nome_departamento VARCHAR(255);
 
 ALTER TABLE departamentos_form_inf_003
 CHANGE id id_departamento INT AUTO_INCREMENT;
+
+
+/* ALTERAÇÃO NA TABELA DE ORDEM DE MANUTENÇÃO */
+
+ALTER TABLE ordenmanutencao
+MODIFY COLUMN omDtEntregasDesejada varchar(100) NULL;
+
+ALTER TABLE ordenmanutencao
+MODIFY COLUMN omSetor varchar(200) NULL;
+
+ALTER TABLE ordenmanutencao
+MODIFY COLUMN omOperacional varchar(100) DEFAULT NULL;
+
+ALTER TABLE ordenmanutencao
+MODIFY COLUMN omTipoManutencao varchar(100) DEFAULT NULL;
+
+ALTER TABLE logatividades
+ADD COLUMN logTipo VARCHAR(255);
