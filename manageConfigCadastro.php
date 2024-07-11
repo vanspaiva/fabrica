@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
-    include("php/head_index.php");
+    // include("php/head_index.php");
     
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
@@ -30,6 +30,11 @@ if (isset($_SESSION["useruid"]) && ($_SESSION["userperm"] == 'Administrador')) {
     if (!empty($_GET['deletestatus'])){
         $id = $_GET['deletestatus'];
         deleteStatus($conn, $id);
+    }
+
+    if (!empty($_GET['deletedep'])){
+        $id = $_GET['deletedep'];
+        deleteDepartamento($conn, $id);
     }
 
 

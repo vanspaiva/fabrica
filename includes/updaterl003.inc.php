@@ -24,7 +24,7 @@
     
         $tipo_limpeza = implode("\n", $services);
         
-        UpdateRegistro004($conn , $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario);
+        updateRegistro003($conn , $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario);
         
     }
     else{

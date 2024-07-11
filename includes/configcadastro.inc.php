@@ -55,7 +55,17 @@ if (isset($_POST["novoestado"])) {
 
     addStatusOs($conn, $nome, $posicao);
 
-} else{
+} else if (isset($_POST["novodep"])) {
+
+    $nome = addslashes($_POST['nome']);
+   
+
+    require_once '../db/dbh.php';
+    require_once 'functions.inc.php';
+
+    addDepartamento($conn, $nome);
+
+}else{
     header("location: ../gercadastro");
     exit();
 } 

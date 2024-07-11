@@ -35,7 +35,7 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                             <div class="col">
                                 <div class="d-flex justify-content-end p-1">
-                                    <span class="btn btn-fab mx-2 p-2 px-3" data-toggle="modal" data-target="#novofluxo"><i class="fas fa-plus"></i> Novo Fluxo</span>
+                                    <span class="btn btn-fab mx-2 p-2 px-3" data-toggle="modal" data-target="#novofluxo"><i class="fas fa-plus"></i> Nova Modalidade</span>
                                 </div>
                             </div>
                         </div>
@@ -97,12 +97,12 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
-        <!-- Modal Add Fluxo -->
+        <!-- Modal Add Modalidade -->
         <div class="modal fade" id="novofluxo" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #007A5A;">
-                        <h5 class="modal-title text-white">Novo Fluxo</h5>
+                        <h5 class="modal-title text-white">Nova Modalidade</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -127,12 +127,12 @@ if (isset($_SESSION["useruid"])) {
             </div>
         </div>
 
-        <!-- Modal Edit Fluxo -->
+        <!-- Modal Edit Modalidade -->
         <div class="modal fade" id="editfluxo" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #007A5A;">
-                        <h5 class="modal-title text-white">Editar Fluxo</h5>
+                        <h5 class="modal-title text-white">Editar Modalidade</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
                             <span aria-hidden="true">&times;</span>
                         </button>

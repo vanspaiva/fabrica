@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["useruid"])) {
@@ -40,13 +40,13 @@ if (isset($_SESSION["useruid"])) {
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="novaos"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir OS</button></a>
+                                        <a href="novaos?t=os"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir OS</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
                                         <a href="atividades"><button class="btn btn-outline-fab btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                                        <a href="export?t=os"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@ if (isset($_SESSION["useruid"])) {
                         <br>
                         <div class="">
                             <div class="card-body">
-                                <div class="content-panel">
+                                <div class="content-panel" style="overflow-x: scroll;">
                                     <table id="tableProp" class="table table-striped table-advance table-hover">
 
                                         <thead>
@@ -135,6 +135,9 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "order": [
                         [0, "desc"]
+                    ],
+                    "columnDefs": [
+                        { "width": "130px", "targets": 6 }, // define a largura da ultima coluna como 130px
                     ]
                 });
                 $('#tableEnviada').DataTable({
@@ -202,7 +205,8 @@ if (isset($_SESSION["useruid"])) {
                 });
             });
         </script>
-        
+
+
     <?php
 
 } else {

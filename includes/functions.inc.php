@@ -79,9 +79,9 @@ function uidExists($conn, $username, $email)
     mysqli_stmt_close($stmt);
 }
 
-function createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao)
+function createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao, $dep)
 {
-    $sql = "INSERT INTO users (usersName, usersUid, usersEmail, usersCel, usersIdentificador, usersUf, usersPwd, usersPerm, usersAprov) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (usersName, usersUid, usersEmail, usersCel, usersIdentificador, usersUf, usersPwd, usersPerm, usersAprov, usersDepartamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -92,7 +92,7 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
 
     $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-    mysqli_stmt_bind_param($stmt, "sssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao);
+    mysqli_stmt_bind_param($stmt, "ssssssssss", $name, $username, $email, $celular, $identificador, $uf, $hashedPwd, $permission, $aprovacao, $dep);
     mysqli_stmt_execute($stmt);
 
 
@@ -102,10 +102,10 @@ function createUser($conn, $name, $username, $email, $celular, $identificador, $
     exit();
 }
 
-function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $pwd)
+function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $pwd, $dep)
 {
 
-    $sql = "INSERT INTO users (usersName, usersUf, usersEmail, usersUid, usersCel, usersIdentificador, usersAprov, usersPerm, usersPwd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (usersName, usersUf, usersEmail, usersUid, usersCel, usersIdentificador, usersAprov, usersPerm, usersPwd, usersDepartamento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -116,17 +116,25 @@ function createNewUserAdm($conn, $nome, $uf, $email, $uid, $celular, $identifica
 
     $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 
-    mysqli_stmt_bind_param($stmt, "sssssssss", $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $hashedPwd);
+    mysqli_stmt_bind_param($stmt, "ssssssssss", $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $hashedPwd, $dep);
     mysqli_stmt_execute($stmt);
+
+    $userId = getLastUserId($conn);
+    if ($dep ==  2) {
+        $etapas = [5, 8, 11, 15];
+
+        inserirEtapasColaborador($conn, $userId, $etapas);
+    }
+
     mysqli_stmt_close($stmt);
 
     header("location: ../users?error=created");
     exit();
 }
 
-function editUser($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $usersid)
+function editUser($conn, $nome, $uf, $email, $uid, $celular, $identificador, $aprov, $perm, $dep, $usersid)
 {
-    $sql = "UPDATE users SET usersName='$nome', usersUf='$uf', usersEmail='$email', usersUid='$uid', usersCel='$celular', usersIdentificador='$identificador', usersAprov='$aprov', usersPerm='$perm' WHERE usersId='$usersid'";
+    $sql = "UPDATE users SET usersName='$nome', usersUf='$uf', usersEmail='$email', usersUid='$uid', usersCel='$celular', usersIdentificador='$identificador', usersAprov='$aprov', usersPerm='$perm', usersDepartamento='$dep' WHERE usersId='$usersid'";
 
 
     if (mysqli_query($conn, $sql)) {
@@ -222,6 +230,21 @@ function editPwd($conn, $user, $pwd, $confirmpwd)
     mysqli_close($conn);
 }
 
+function editPwdAdm($conn, $user, $pwd)
+{
+    $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
+
+    $sql = "UPDATE users SET usersPwd='$hashedPwd' WHERE usersUid='$user'";
+
+    if (mysqli_query($conn, $sql)) {
+
+        header("location: ../mudarsenha?error=none");
+    } else {
+        header("location: ../mudarsenha?error=stmfailed");
+    }
+    mysqli_close($conn);
+}
+
 function emptyInputLogin($username, $pwd)
 {
     $result = true;
@@ -264,6 +287,8 @@ function loginUser($conn, $username, $pwd)
         $_SESSION["useruid"] = $uidExists["usersUid"];
         $_SESSION["userperm"]  = getPermission($uidExists);
         $_SESSION["userfirstname"] = getNameUser($uidExists);
+        $_SESSION["useriddep"] = getUserIdDepartamento($uidExists);
+        $_SESSION["usernomedep"] = getUserNomeDepartamento($conn, $uidExists);
 
         header("location: ../dash");
         exit();
@@ -288,6 +313,20 @@ function getNameUser($uidExists)
     $nomeCompleto = explode(" ", $uidExists["usersName"]);
 
     return $nomeCompleto[0];
+}
+
+function getUserIdDepartamento($uidExists)
+{
+    $idDep = $uidExists["usersDepartamento"];
+    return $idDep;
+}
+
+function getUserNomeDepartamento($conn, $uidExists)
+{
+
+    $idDep = $uidExists["usersDepartamento"];
+    $nomeDep = getDepartamentoNome($conn, $idDep);
+    return $nomeDep;
 }
 
 function getAprov($uidExists)
@@ -395,8 +434,164 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega = "None", $setor = "None", $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo,$tpManutenção, $mqOperacinal)
+{
+    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus, omTipoManutencao,omOperacional) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    $status = "CRIADO";
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../lista-om?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status,$tpManutenção , $mqOperacinal);
+
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    $stmt = mysqli_stmt_init($conn);
+    $getOM = mysqli_query($conn, "SELECT * FROM ordenmanutencao ORDER BY omId DESC LIMIT 1;");
+    $rowOM = mysqli_fetch_array($getOM);
+    $omId = $rowOM['omId'];
+
+    uploadArquivo($conn, $tname, $pname, $omId);
+
+    sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nmaquina, $nomemaquina);
+    header("location: ../lista-om?error=sent");
+    exit();
+}
+
+function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nmaquina, $nomemaquina)
+{
+    $arquivo = '<!DOCTYPE html>
+        <html lang="pt-br">
+        
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Bem vindo ao Sistema Fábrica!</title>
+            <style>
+                /* Estilos para tornar o email mais atraente */
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .container {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    background-color: #EDEDED;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+        
+                h1,
+                h3 {
+                    text-align: start;
+                    padding-top: 0;
+                    margin-top: 0;
+                }
+        
+                h3 {
+                    color: rgb(0, 212, 111);
+                }
+        
+                a {
+                    color: #fff;
+                }
+        
+                .btn-container {
+                    text-align: center;
+                }
+        
+                .btn {
+                    display: inline-block;
+                    background-color: rgb(0, 212, 111);
+                    color: #fff !important;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+        
+                img {
+                    width: 180px;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .d-flex {
+                    display: flex;
+                    margin: 0;
+                    padding: 0;
+                }
+        
+                .justify-content-center {
+                    justify-content: center;
+                }
+        
+                .justify-content-around {
+                    justify-content: space-around;
+                }
+        
+                .align-items-center {
+                    align-items: center;
+                }
+        
+            </style>
+        </head>
+        
+        <body>
+        <div class="container">              
+        
+        <p>Nova criação de Ordem de Manutenção no <strong>Sistema Fábrica</strong>. Por favor entre no sistema e verifique.</p>
+
+        <p>
+            <strong>Quem criou: </strong> ' . $nomecriador . '<br>
+            <strong>Data: </strong> ' . $dtcriacao . '
+            <strong>Nº Máquina: </strong> ' . $nmaquina . '
+            <strong>Nome Máquina: </strong> ' . $nomemaquina . '
+        </p>
+        
+        <div class="btn-container">
+            <a href="http://fabrica.cpmh.com.br/" class="btn">Entar no sistema</a>
+        </div>
+        <p>Att,</p>
+        <p>Equipe de Desenvolvimento</p>
+    </div>
+        </body>
+        
+        </html>';
+
+    $assunto = "Sistema da Fábrica - Nova OM";
+    $email = "qualidade@fixhealth.com.br";
+    $returnTrue = "location: ../lista-om?error=sent";
+    $returnFalse = "";
+
+    geralSendEmailNotification($email, $assunto, $arquivo, $returnTrue, $returnFalse);
+}
+
 function uploadArquivo($conn, $tname, $pname, $osId)
 {
+
+    if(!isset($tname)){
+
+        $tname = 'none';
+
+    }
+    if(!isset($pname)){
+
+        $pname = 'none';
+
+    }
+
+
 
     //Registra nova arquivo
     $sql = "INSERT INTO filedownload (fileRealName, fileOsRef, filePath) VALUES (?,?,?);";
@@ -434,6 +629,18 @@ function deleteOs($conn, $id)
     mysqli_close($conn);
 }
 
+function deleteOM($conn, $id)
+{
+    $sql = "DELETE FROM ordenmanutencao WHERE omId='$id'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: lista-om?error=deleted");
+    } else {
+        header("location: lista-om?error=stmtfailed");
+    }
+    mysqli_close($conn);
+}
+
 function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $lote, $nped, $obs, $user)
 {
     $sql = "UPDATE ordenservico SET osSetor='$setor', osDescricao='$descricao', osLote='$lote', osNPed='$nped', osGrauUrgencia='$grau', osDtEntregaReal='$dtrealentrega', dtExecucao='$dtexecucao', osObs='$obs', osStatus='$status'  WHERE osId ='$osid'";
@@ -444,10 +651,34 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
         header("location: lista-os?error=stmtfailed");
     }
 
-    logAtividade($conn, $osid, $status, $user);
+    $type = 'os';
+
+    logAtividade($conn, $osid, $status, $user, $type);
 
     mysqli_close($conn);
 }
+
+function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao)
+{
+    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status,  $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    $type = 'om';
+    logAtividade($conn, $omid, $status, $user, $type);
+
+    mysqli_close($conn);
+}
+
 
 function concluirAtividade($conn, $id, $user)
 {
@@ -460,8 +691,8 @@ function concluirAtividade($conn, $id, $user)
     } else {
         header("location: lista-os?error=stmfailed");
     }
-
-    logAtividade($conn, $id, $status, $user);
+    $type = 'os';
+    logAtividade($conn, $id, $status, $user, $type);
 
     mysqli_close($conn);
 }
@@ -477,8 +708,8 @@ function iniciarAtividade($conn, $id, $user)
     } else {
         header("location: lista-os?error=stmfailed");
     }
-
-    logAtividade($conn, $id, $status, $user);
+    $type = 'os';
+    logAtividade($conn, $id, $status, $user, $type);
 
     mysqli_close($conn);
 }
@@ -494,15 +725,66 @@ function pausarAtividade($conn, $id, $user)
     } else {
         header("location: lista-os?error=stmfailed");
     }
-
-    logAtividade($conn, $id, $status, $user);
+    $type = 'os';
+    logAtividade($conn, $id, $status, $user, $type);
 
     mysqli_close($conn);
 }
 
-function logAtividade($conn, $id, $status, $user)
+function concluirAtividadeOM($conn, $id, $user)
 {
-    $sql = "INSERT INTO logatividades (logOsRef, logStatus, logUser) VALUES (?,?,?)";
+    $status = "CONCLUÍDO";
+
+    $sql = "UPDATE ordenmanutencao SET omStatus='$status' WHERE omId='$id'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: acompanhamentoom");
+    } else {
+        header("location: lista-om?error=stmfailed");
+    }
+    $type = 'om';
+    logAtividade($conn, $id, $status, $user, $type);
+
+    mysqli_close($conn);
+}
+
+function iniciarAtividadeOM($conn, $id, $user)
+{
+    $status = "EM ANDAMENTO";
+
+    $sql = "UPDATE ordenmanutencao SET omStatus='$status' WHERE omId='$id'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: acompanhamentoom");
+    } else {
+        header("location: lista-om?error=stmfailed");
+    }
+    $type = 'om';
+    logAtividade($conn, $id, $status, $user, $type);
+
+    mysqli_close($conn);
+}
+
+function pausarAtividadeOM($conn, $id, $user)
+{
+    $status = "PAUSADO";
+
+    $sql = "UPDATE ordenmanutencao SET omStatus='$status' WHERE omId='$id'";
+
+    if (mysqli_query($conn, $sql)) {
+        header("location: acompanhamentoom");
+    } else {
+        header("location: lista-om?error=stmfailed");
+    }
+    $type = 'om';
+    logAtividade($conn, $id, $status, $user, $type);
+
+    mysqli_close($conn);
+}
+
+function logAtividade($conn, $id, $status, $user, $type)
+{
+    $sql = "INSERT INTO logatividades (logOsRef, logStatus, logUser, logTipo) VALUES (?,?,?,?)";
     $stmt = mysqli_stmt_init($conn);
 
 
@@ -511,11 +793,12 @@ function logAtividade($conn, $id, $status, $user)
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sss", $id, $status, $user);
+    mysqli_stmt_bind_param($stmt, "ssss", $id, $status, $user, $type);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    exit();
+    // mysqli_stmt_close($stmt);
+    // exit();
 }
+
 
 function sendNotification($phone, $content)
 {
@@ -1062,6 +1345,34 @@ function deleteStatus($conn, $id)
     exit();
 }
 
+function addDepartamento($conn, $nome)
+{
+    $sql = "INSERT INTO departamento (nome) VALUES (?)";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../gercadastro?error=stmfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../gercadastro");
+    exit();
+}
+
+function deleteDepartamento($conn, $id)
+{
+    $sql = "DELETE FROM departamento WHERE id='$id';";
+
+    mysqli_query($conn, $sql);
+    header("location: gercadastro");
+    exit();
+}
+
 //Representante
 function addUfRep($conn, $rep, $user, $email, $fone, $uf, $estado, $regiao)
 {
@@ -1315,12 +1626,18 @@ function hourFormat($hora)
 
 function dateFormatByHifen($data)
 {
-    $dataRaw = explode("-", $data);
-    $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+    if ($data !== null && $data !== '') {
+        $dataRaw = explode("-", $data);
 
-    return $res;
+        if (count($dataRaw) === 3) {
+            $res = $dataRaw[2] . "/" . $dataRaw[1] . "/" . $dataRaw[0];
+
+            return $res;
+        }
+    }
+
+    return '//';
 }
-
 function dateAndHourFormat($data)
 {
     $dataRaw = explode(" ", $data);
@@ -1578,6 +1895,181 @@ function ultimoNumeroFluxo($conn, $idfluxo)
     mysqli_stmt_close($stmt);
 }
 
+function novaSetor($conn, $nome)
+{
+    $sqlProd = "INSERT INTO setor (nome) VALUES (?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_setores?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function editarSetor($conn, $id, $nome)
+{
+    $sql = "UPDATE setor SET nome= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $nome, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteSetor($conn, $id)
+{
+    $sql = "DELETE FROM setor WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_setores?error=stmtfaileddltconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getNomeSetor($conn, $id)
+{
+    $sql = "SELECT nome FROM setor WHERE id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_setores?error=stmtfailedgetnomesetor");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['nome'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function novaEtapaEmSetor($conn, $idsetor, $idetapa)
+{
+    $ordem = intval(ultimoNumeroSetor($conn, $idsetor)) + 1;
+
+    $sqlProd = "INSERT INTO setor_etapa (idsetor, idetapa) VALUES (?,?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        header("location: ../config_setores?error=stmtfailedaddconsulta");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $idsetor, $idetapa);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function ultimoNumeroSetor($conn, $idsetor)
+{
+    $sql = "SELECT COUNT(idetapa) as total_etapas FROM setor_etapa WHERE idsetor = ?;";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../config_setores?error=stmtfailedcount");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $idsetor);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['total_etapas'];
+    } else {
+        return null;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function editEtapaEmSetor($conn, $id, $idetapa)
+{
+    $sql = "UPDATE setor_etapa SET idetapa=? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $idetapa, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function deleteEtapaEmSetor($conn, $id, $idsetor)
+{
+    // Iniciar transação
+    mysqli_begin_transaction($conn);
+
+    try {
+        // Obter idsetor e ordem da etapa a ser deletada
+        $sql = "SELECT idsetor FROM setor_etapa WHERE id = ?;";
+        $stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            throw new Exception("Erro ao preparar a consulta para obter idsetor e ordem");
+        }
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($resultData)) {
+            $idsetor = $row['idsetor'];
+            $ordem = $row['id'];
+        } else {
+            throw new Exception("Etapa não encontrada");
+        }
+
+        mysqli_stmt_close($stmt);
+
+        // Deletar a etapa
+        $sqlDelete = "DELETE FROM setor_etapa WHERE id = ?;";
+        $stmtDelete = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmtDelete, $sqlDelete)) {
+            throw new Exception("Erro ao preparar a consulta para deletar a etapa");
+        }
+
+        mysqli_stmt_bind_param($stmtDelete, "i", $id);
+        mysqli_stmt_execute($stmtDelete);
+        mysqli_stmt_close($stmtDelete);
+
+        // Commit da transação
+        mysqli_commit($conn);
+    } catch (Exception $e) {
+        // Rollback da transação em caso de erro
+        mysqli_rollback($conn);
+        header("location: ../config_setores?error=" . $e->getMessage());
+        exit();
+    }
+}
+
 function arrayIdEtapas($conn, $idfluxo)
 {
     $sql = "SELECT *
@@ -1784,6 +2276,1733 @@ function deshashItemNatural($hash)
     return $id;
 }
 
+function diasFaltandoParaData($dataReferencia)
+{
+    // Definir o timezone para São Paulo
+    date_default_timezone_set('America/Sao_Paulo');
+
+    // Obter a data atual
+    $dataAtual = new DateTime();
+    $dataAtual->setTime(0, 0); // Resetar a hora para comparar apenas as datas
+
+    // Criar um objeto DateTime para a data de referência
+    $dataRef = DateTime::createFromFormat('Y-m-d', $dataReferencia);
+
+    if (!$dataRef) {
+        return "Formato de data inválido. Use o formato Y-m-d.";
+    }
+
+    $dataRef->setTime(0, 0); // Resetar a hora para comparar apenas as datas
+
+    // Verificar se a data de referência já passou
+    if ($dataRef < $dataAtual) {
+        return 0;
+    }
+
+    // Contar dias úteis
+    $diasUteis = 0;
+    $dataAtualClone = clone $dataAtual; // Clonar para não modificar o original
+
+    while ($dataAtualClone < $dataRef) {
+        // Incrementar a data atual em um dia
+        $dataAtualClone->modify('+1 day');
+
+        // Verificar se o dia não é sábado (6) ou domingo (0)
+        if ($dataAtualClone->format('N') < 6) {
+            $diasUteis++;
+        }
+    }
+
+    return $diasUteis;
+}
+
+
+
+function diasDentroFluxo($conn, $fluxo)
+{
+    $ret = mysqli_query($conn, "SELECT * FROM etapa_fluxo WHERE idfluxo = '{$fluxo}' ORDER BY ordem ASC ;");
+
+    $contagemDias = 0;
+    while ($row = mysqli_fetch_array($ret)) {
+        $duracao = $row["duracao"];
+
+        $contagemDias = $contagemDias + $duracao;
+        if (floatval($duracao) == 1) {
+            $s = "dia";
+        } else {
+            $s = "dias";
+        }
+    }
+
+    return $contagemDias;
+}
+
+function buscarFluxoPorProduto($conn, $produto)
+{
+    $fluxo = '';
+
+    // Preparar a consulta SQL
+    $stmtFluxo = $conn->prepare("SELECT id FROM fluxo WHERE nome LIKE CONCAT('%', ?, '%') LIMIT 1");
+
+    // Verificar se a preparação da declaração foi bem-sucedida
+    if ($stmtFluxo === false) {
+        return null;
+    }
+
+
+    // Vincular o parâmetro
+    $stmtFluxo->bind_param("s", $produto);
+
+    // Executar a declaração
+    $stmtFluxo->execute();
+
+    // Vincular o resultado
+    $stmtFluxo->bind_result($fluxo);
+
+    // Buscar o resultado
+    $stmtFluxo->fetch();
+
+    // Fechar a declaração
+    $stmtFluxo->close();
+
+    // Retornar o ID do fluxo
+    return $fluxo;
+}
+
+function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produto, $dataEntrega, $fluxo, $lote, $cdgprod, $qtds, $descricao, $diasparaproduzir)
+{
+    // Preparar a consulta SQL para inserção
+    $stmt = $conn->prepare("INSERT INTO pedidos (projetista, dr, pac, rep, pedido, dt, produto, dataEntrega, fluxo, lote, cdgprod, qtds, descricao, diasparaproduzir) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    // Verificar se a preparação da declaração foi bem-sucedida
+    if ($stmt === false) {
+        return ["status" => "error", "message" => "Erro ao preparar a declaração!"];
+    }
+
+    // Vincular os parâmetros
+    $stmt->bind_param("ssssssssssssss", $projetista, $dr, $pac, $rep, $pedido, $dt, $produto, $dataEntrega, $fluxo, $lote, $cdgprod, $qtds, $descricao, $diasparaproduzir);
+
+    // Executar a declaração
+    if ($stmt->execute()) {
+        $response = ["status" => "success", "message" => "Pedido inserido com sucesso!"];
+    } else {
+        $response = ["status" => "error", "message" => "Erro ao inserir o pedido!"];
+    }
+
+    // Fechar a declaração
+    $stmt->close();
+
+    // Retornar a resposta
+    return $response;
+}
+
+function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs)
+{
+    // Preparar a consulta SQL para inserção
+    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    // Verificar se a preparação da declaração foi bem-sucedida
+    if ($stmt === false) {
+        return ["status" => "error", "message" => "Erro ao preparar a declaração!"];
+    }
+
+    // Vincular os parâmetros
+    $stmt->bind_param("sssssssss", $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs);
+
+    // Executar a declaração
+    if ($stmt->execute()) {
+        $response = ["status" => "success", "message" => "Pedido inserido com sucesso!"];
+    } else {
+        $response = ["status" => "error", "message" => "Erro ao inserir o pedido!"];
+    }
+
+    // Fechar a declaração
+    $stmt->close();
+
+    // Retornar a resposta
+    return $response;
+}
+
+function reduzirString($string, $quantidadeCaracteres)
+{
+    // Verificar se a quantidade de caracteres é válida
+    if ($quantidadeCaracteres < 0) {
+        return "Quantidade de caracteres inválida.";
+    }
+
+    // Verificar se a string precisa ser truncada
+    if (strlen($string) > $quantidadeCaracteres) {
+        return substr($string, 0, $quantidadeCaracteres);
+    }
+
+    // Retornar a string original se não precisar ser truncada
+    return $string;
+}
+
+function updateFluxoPedido($conn, $id, $fluxo, $lote, $nacinter, $taxa_extra)
+{
+
+    $sql = "UPDATE pedidos SET fluxo= ?, lote= ?, nacional_internacional= ?, taxa_extra= ? WHERE id = ? ";
+    $stmt = mysqli_stmt_init($conn);
+
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "sssss", $fluxo, $lote, $nacinter, $taxa_extra, $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function novaRealizacaoProducao($conn, $idPedido, $idFluxo, $numOrdem, $idEtapa, $idStatus, $dataRealizacao)
+{
+    // Instrução SQL para inserir dados na tabela realizacaoproducao
+    $sqlProd = "INSERT INTO realizacaoproducao (idPedido, idFluxo, numOrdem, idEtapa, idStatus, dataRealizacao) VALUES (?, ?, ?, ?, ?, ?);";
+
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sqlProd)) {
+        // Redireciona para uma página de erro em caso de falha
+        header("location: ../config_producao?error=stmtfailedaddrealizacao");
+        exit();
+    }
+
+    // Liga os parâmetros à declaração preparada
+    mysqli_stmt_bind_param($stmt, "iiiiis", $idPedido, $idFluxo, $numOrdem, $idEtapa, $idStatus, $dataRealizacao);
+
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+}
+
+function obterEtapasPorFluxo($conn, $idfluxo)
+{
+    // Instrução SQL para selecionar as etapas com base no idfluxo
+    $sql = "SELECT idetapa, ordem, duracao FROM etapa_fluxo WHERE idfluxo = ? ORDER BY ordem asc;";
+
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Redireciona para uma página de erro em caso de falha
+        // header("location: ../config_etapa_fluxo?error=stmtfailed");
+        exit();
+    }
+
+    // Liga o parâmetro à declaração preparada
+    mysqli_stmt_bind_param($stmt, "i", $idfluxo);
+
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da execução da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Inicializa o array para armazenar as etapas
+    $etapas = array();
+
+    // Itera sobre o resultado e popula o array
+    while ($row = mysqli_fetch_assoc($result)) {
+        $etapas[] = array(
+            'idetapa' => $row['idetapa'],
+            'ordem' => $row['ordem'],
+            'duracao' => $row['duracao']
+        );
+    }
+
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+
+    // Retorna o array com as etapas
+    return $etapas;
+}
+
+function dataReferenciaPedido($conn, $id)
+{
+    // Instrução SQL para selecionar a data 'dt' do pedido com base no 'id'
+    $sql = "SELECT dt FROM pedidos WHERE id = ?;";
+
+    // Inicializa uma declaração preparada
+    $stmt = mysqli_stmt_init($conn);
+
+    // Verifica se a declaração preparada foi bem-sucedida
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Redireciona para uma página de erro em caso de falha
+        header("location: ../config_pedidos?error=stmtfailed");
+        exit();
+    }
+
+    // Liga o parâmetro à declaração preparada
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    // Executa a declaração preparada
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da execução da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Verifica se um registro foi encontrado
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Retorna a data 'dt' do pedido
+        $data = $row['dt'];
+    } else {
+        // Se nenhum registro foi encontrado, define a data como null
+        $data = null;
+    }
+
+    // Fecha a declaração preparada
+    mysqli_stmt_close($stmt);
+
+    // Retorna a data 'dt'
+    return $data;
+}
+
+function inserirLogAtividade($conn, $idRealizacaoProducao, $idEtapa, $idUsuario, $idStatus, $data, $hora)
+{
+    $sql = "INSERT INTO log_atividades_producao (idRealizacaoProducao, idEtapa, idUsuario, idStatus, data, hora) VALUES (?, ?, ?, ?, ?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // header("location: ../your_redirect_page.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "iiiiss", $idRealizacaoProducao, $idEtapa, $idUsuario, $idStatus, $data, $hora);
+    mysqli_stmt_execute($stmt);
+    // mysqli_stmt_close($stmt);
+}
+
+function inserirTempoCorrido($conn, $idPedido, $idEtapa, $tempoCorrido)
+{
+    $sql = "INSERT INTO tempo_corrido (idPedido, idEtapa, tempoCorrido) VALUES (?, ?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../your_redirect_page.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "iis", $idPedido, $idEtapa, $tempoCorrido);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+
+function iniciarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function pausarAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function concluirAtividadeProd($conn, $idR, $user, $etapa, $hoje, $agora, $status, $idPedido)
+{
+    $sql = "UPDATE realizacaoproducao SET idStatus='$status' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $status, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function aprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido)
+{
+    $statusAprov = 5;
+    $sql = "UPDATE realizacaoproducao SET idStatus='$statusAprov' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+function reprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido)
+{
+    $statusAprov = 7;
+    $sql = "UPDATE realizacaoproducao SET idStatus='$statusAprov' WHERE id='$idR'";
+
+    $userPerm = getUserPermission($conn, $user);
+    if (mysqli_query($conn, $sql)) {
+        if ($userPerm != "3COL") {
+            header("location: visualizarpedido?id=" . $idPedido . "&error=stmtfailed");
+        } else {
+            header("location: dash");
+        }
+    }
+
+    $statusAprov = 6;
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+    $statusAprov = 7;
+    inserirLogAtividade($conn, $idR, $etapa, $user, $statusAprov, $hoje, $agora);
+
+    mysqli_close($conn);
+}
+
+
+function getProximoStatus($statual, $type)
+{
+    $proximoStatus = '';
+
+    switch ($statual) {
+        case 1: // 'Aguardando'
+            $proximoStatus = 2; //'Fazendo';
+            break;
+        case 2: // 'Fazendo'
+            if ($type == 'pause') {
+                $proximoStatus = 3; //'Pausado';
+            } elseif ($type == 'check') {
+                $proximoStatus = 4; //'Concluído';
+            }
+            break;
+        case 3: // 'Pausado'
+            $proximoStatus = 2; //'Fazendo';
+            break;
+        case 4: // 'Concluído'
+            $proximoStatus = 4; //'Concluído'; // No next state mentioned
+            break;
+        case 5: // 'Aprovado'
+            $proximoStatus = 5; //'Aprovado'; // No next state mentioned
+            break;
+        case 6: // 'Reprovado'
+            $proximoStatus = 6; // 'Reprovado' // No next state mentioned
+            break;
+        case  7: //'Aguardando R.'
+            $proximoStatus = 8; //'Fazendo R.';
+            break;
+        case  8: //'Fazendo R.'
+            if ($type == 'pause') {
+                $proximoStatus = 9; //'Pausado R.';
+            } elseif ($type == 'check') {
+                $proximoStatus = 10; //'Concluído R.';
+            }
+            break;
+        case  9: //'Pausado R.'
+            $proximoStatus = 8; //'Fazendo R.';
+            break;
+        case  10: //'Concluído R.'
+            $proximoStatus = 10; //'Concluído R.'; // No next state mentioned
+            break;
+        default:
+            // Handle unknown statuses
+            $proximoStatus = 'Status desconhecido';
+            break;
+    }
+
+    return $proximoStatus;
+}
+
+function getIdStatusByName($conn, $nome)
+{
+    $sql = "SELECT id FROM statusetapa WHERE nome = ?";
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // Se houver um erro na preparação da declaração
+        return "Erro na declaração SQL";
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $nome);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Se houver um resultado, retorna o ID
+        return $row['id'];
+    } else {
+        // Se não houver nenhum resultado
+        return "Nenhum ID encontrado para o status: $nome";
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function contarEtapasConcluidas($conn, $idPedido)
+{
+    $count = 0;
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE pd.id = $idPedido ORDER BY r.numOrdem ASC;";
+
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+
+        if ((($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5) || ($idStatus == 6))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function contarEtapasAtrasadas($conn, $idPedido)
+{
+    $count = 0;
+    $hoje = hoje();
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE pd.id = $idPedido ORDER BY r.numOrdem ASC;";
+
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function arrayEtapasAtrasadas($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasAtrasadas($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function countEtapasAtrasadasToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function arrayEtapasHoje($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasHoje($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function countEtapasHojeToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function arrayEtapasAmanha($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            array_push($arrayRes, $row["idRealizacaoProducao"]);
+        }
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasAmanha($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function countEtapasAmanhaToColaborador($conn, $etapas)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+    WHERE r.idEtapa IN ($etapas)
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $dtRefDate = new DateTime($dtRef);
+        $hojeDate = new DateTime($hoje);
+        // Adiciona um dia à data de hoje
+        $hojeMaisUm = clone $hojeDate;
+        $hojeMaisUm->modify('+1 day');
+
+
+        if (($dtRefDate == $hojeMaisUm) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function getFirstAndLastName($fullName)
+{
+    // Divide o nome completo em partes usando espaço como delimitador
+    $nameParts = explode(' ', trim($fullName));
+
+    // Se houver apenas uma parte, retorna o próprio nome
+    if (count($nameParts) == 1) {
+        return $nameParts[0];
+    }
+
+    // Obtém a primeira e a última parte do nome
+    $firstName = $nameParts[0];
+    $lastName = $nameParts[count($nameParts) - 1];
+
+    // Retorna o primeiro e o último nome concatenados com um espaço entre eles
+    return $firstName . ' ' . $lastName;
+}
+
+function diasUteisAteHoje($data)
+{
+    // Convertendo a data de entrada e a data atual para objetos DateTime
+    $dataInicial = new DateTime($data);
+    $dataFinal = new DateTime();
+
+    // Se a data inicial for maior que a data final, retorna 0
+    if ($dataInicial > $dataFinal) {
+        return 0;
+    }
+
+    // Calcula a diferença em dias entre as duas datas
+    $intervalo = $dataInicial->diff($dataFinal);
+    $diasTotais = $intervalo->days;
+
+    $diasUteis = 0;
+
+    // Itera pelos dias entre a data inicial e a data final
+    for ($i = 0; $i <= $diasTotais; $i++) {
+        // Verifica se o dia é útil (não é sábado nem domingo)
+        $dataAtual = clone $dataInicial;
+        $dataAtual->modify("+$i day");
+
+        if ($dataAtual->format('N') < 6) {
+            $diasUteis++;
+        }
+    }
+
+    return $diasUteis;
+}
+
+function transformarArrayParaString($array)
+{
+    // Extrair apenas os valores da chave 'id'
+    $ids = array_column($array, 'id');
+
+    // Concatenar os valores em uma string separada por vírgula
+    $stringIds = implode(',', $ids);
+
+    return $stringIds;
+}
+
+
+function getUserPermission($conn, $user)
+{
+    $sql = "SELECT usersPerm FROM users WHERE usersId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $user);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row['usersPerm'];
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function getUserName($conn, $user)
+{
+    $sql = "SELECT usersName FROM users WHERE usersId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    $prepare = mysqli_stmt_prepare($stmt, $sql);
+
+
+    if (!$prepare) {
+        echo "Erro na preparação da declaração SQL: " . mysqli_stmt_error($stmt);
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $user);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        $nome = $row["usersName"];
+        $nome = getFirstAndLastName($nome);
+        return $nome;
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function getEtapaAtual($conn, $idPedido)
+{
+    // Consulta para obter o último idEtapa da tabela log_atividades_producao relacionado ao idPedido
+    $sql = "
+        SELECT 
+            log.idEtapa AS idEtapa
+        FROM 
+            log_atividades_producao log
+        JOIN 
+            realizacaoproducao rp ON log.idRealizacaoProducao = rp.id
+        WHERE 
+            rp.idPedido = ?
+        ORDER BY 
+            log.data DESC, log.hora DESC
+        LIMIT 1;
+    ";
+
+    // Preparar a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind dos parâmetros
+    mysqli_stmt_bind_param($stmt, "i", $idPedido);
+
+    // Executar a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Vincular os resultados da consulta
+    mysqli_stmt_bind_result($stmt, $ultimoIdEtapa);
+
+    // Buscar o resultado
+    mysqli_stmt_fetch($stmt);
+
+    // Fechar a declaração
+    mysqli_stmt_close($stmt);
+
+    // Verificar se o resultado é nulo
+    if ($ultimoIdEtapa === null) {
+        // Consulta para obter o primeiro idEtapa da tabela realizacaoproducao relacionado ao idPedido
+        $sql = "
+            SELECT 
+                rp.idEtapa AS idEtapa
+            FROM 
+                realizacaoproducao rp
+            WHERE 
+                rp.idPedido = ?
+            ORDER BY 
+                rp.numOrdem ASC
+            LIMIT 1;
+        ";
+
+        // Preparar a nova consulta
+        $stmt = mysqli_prepare($conn, $sql);
+
+        // Bind dos parâmetros
+        mysqli_stmt_bind_param($stmt, "i", $idPedido);
+
+        // Executar a nova consulta
+        mysqli_stmt_execute($stmt);
+
+        // Vincular os resultados da nova consulta
+        mysqli_stmt_bind_result($stmt, $primeiroIdEtapa);
+
+        // Buscar o resultado da nova consulta
+        mysqli_stmt_fetch($stmt);
+
+        // Fechar a declaração
+        mysqli_stmt_close($stmt);
+
+        // Retornar o primeiro idEtapa encontrado
+        return $primeiroIdEtapa;
+    }
+
+    // Retornar o último idEtapa encontrado na primeira consulta
+    return $ultimoIdEtapa;
+}
+
+function getRespEtapaAtual($conn, $idPedido, $etapaAtual)
+{
+    // Consulta para obter o idUsuario da tabela log_atividades_producao relacionado ao idPedido e idEtapa
+    $sql = "
+        SELECT 
+            log.idUsuario AS idUsuario
+        FROM 
+            log_atividades_producao log
+        JOIN 
+            realizacaoproducao rp ON log.idRealizacaoProducao = rp.id
+        WHERE 
+            rp.idPedido = ? AND log.idEtapa = ?
+        ORDER BY 
+            log.data DESC, log.hora DESC
+        LIMIT 1;
+    ";
+
+    // Preparar a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind dos parâmetros
+    mysqli_stmt_bind_param($stmt, "ii", $idPedido, $etapaAtual);
+
+    // Executar a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Vincular os resultados da consulta
+    mysqli_stmt_bind_result($stmt, $idUsuario);
+
+    // Buscar o resultado
+    mysqli_stmt_fetch($stmt);
+
+    // Fechar a declaração
+    mysqli_stmt_close($stmt);
+
+    if ($idUsuario === null) {
+        $idUsuario = "N/A";
+    } else {
+        $idUsuario = getUserName($conn, $idUsuario);
+    }
+
+    // Retornar o resultado
+    return $idUsuario;
+}
+
+function getProximaEtapa($conn, $idPedido, $etapaAtual)
+{
+    // Consulta para obter o id da próxima realizacao após a etapa atual
+    $sql = "
+        SELECT 
+            rp.id
+        FROM 
+            realizacaoproducao rp
+        WHERE 
+            rp.idPedido = ? AND rp.idEtapa = ?
+        ORDER BY 
+            rp.numOrdem ASC
+        LIMIT 1;
+    ";
+
+    // Preparar a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Bind dos parâmetros
+    mysqli_stmt_bind_param($stmt, "ii", $idPedido, $etapaAtual);
+
+    // Executar a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Vincular os resultados da consulta
+    mysqli_stmt_bind_result($stmt, $proximaIdRealizacao);
+
+    // Buscar o resultado da consulta
+    mysqli_stmt_fetch($stmt);
+
+    // Fechar a declaração
+    mysqli_stmt_close($stmt);
+
+    // Consulta para obter o idEtapa da próxima realização após a etapa atual
+    $sql2 = "
+        SELECT 
+            rp.idEtapa AS idEtapa
+        FROM 
+            realizacaoproducao rp
+        WHERE 
+            rp.id = ?;
+    ";
+
+    // Preparar a segunda consulta
+    $stmt2 = mysqli_prepare($conn, $sql2);
+
+    $proximaIdRealizacao = intval($proximaIdRealizacao) + 1;
+    // Bind do parâmetro
+    mysqli_stmt_bind_param($stmt2, "i", $proximaIdRealizacao);
+
+    // Executar a segunda consulta
+    mysqli_stmt_execute($stmt2);
+
+    // Vincular os resultados da segunda consulta
+    mysqli_stmt_bind_result($stmt2, $proximaIdEtapa);
+
+    // Buscar o resultado da segunda consulta
+    mysqli_stmt_fetch($stmt2);
+
+    // Fechar a segunda declaração
+    mysqli_stmt_close($stmt2);
+
+    // Retornar o próximo idEtapa encontrado
+    return $proximaIdEtapa;
+}
+
+
+function arrayEtapasFazendo($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id
+    WHERE r.idStatus = 2 OR r.idStatus = 8
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+
+        array_push($arrayRes, $row["idRealizacaoProducao"]);
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasFazendo($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id
+    WHERE r.idStatus = 2 OR r.idStatus = 8
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $count++;
+    }
+
+    return $count;
+}
+
+function arrayEtapasPausado($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id
+    WHERE r.idStatus = 3 OR r.idStatus = 9
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+
+        array_push($arrayRes, $row["idRealizacaoProducao"]);
+    }
+
+    return $arrayRes;
+}
+
+function countEtapasPausado($conn)
+{
+    $count = 0;
+    $hoje = hoje();
+
+    $sql = "SELECT 
+    r.id AS idRealizacaoProducao,
+    r.numOrdem AS ordem,
+    r.dataRealizacao AS dt,
+    r.idEtapa AS idEtapa,
+    e.nome AS nomeEtapa,
+    s.nome AS nomeStatus,
+    s.id AS idStatus,
+    s.cor AS corStatus
+    FROM pedidos AS pd 
+    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id
+    WHERE r.idStatus = 3 OR r.idStatus = 9
+    ORDER BY r.numOrdem ASC;";
+
+    $arrayRes = [];
+    $ret = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($ret)) {
+        $idStatus = $row["idStatus"];
+        $dtRef = $row["dt"];
+
+        $count++;
+    }
+
+    return $count;
+}
+
+function getAllSetorIDs($conn)
+{
+    $sql = "SELECT id FROM setor";
+    $result = mysqli_query($conn, $sql);
+
+    $ids = array();
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $ids[] = $row['id'];
+        }
+    }
+
+    return $ids;
+}
+
+function getSetorNameByID($conn, $id)
+{
+    $sql = "SELECT nome FROM setor WHERE id = ? ORDER BY id;";
+    $stmt = mysqli_prepare($conn, $sql);
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $nome);
+    mysqli_stmt_fetch($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    return $nome;
+}
+
+// Função para obter todos os idEtapa de um dado idSetor
+function getEtapasBySetor($conn, $idSetor)
+{
+    $sql = "SELECT idetapa FROM setor_etapa WHERE idsetor = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Verifica se a preparação foi bem-sucedida
+    if ($stmt) {
+        // Bind dos parâmetros
+        mysqli_stmt_bind_param($stmt, "i", $idSetor);
+
+        // Executar a consulta
+        mysqli_stmt_execute($stmt);
+
+        // Vincular os resultados da consulta
+        mysqli_stmt_bind_result($stmt, $idEtapa);
+
+        // Array para armazenar os resultados
+        $etapas = array();
+
+        // Buscar os resultados
+        while (mysqli_stmt_fetch($stmt)) {
+            $etapas[] = $idEtapa;
+        }
+
+        // Fechar a declaração
+        mysqli_stmt_close($stmt);
+
+        return $etapas;
+    } else {
+        // Retornar um array vazio ou lançar uma exceção se a preparação da consulta falhar
+        return array();
+    }
+}
+
+function getSetoresByUser($conn, $userId)
+{
+    // Define a consulta SQL
+    $sql = "SELECT s.id FROM setor s 
+            JOIN colaborador_etapas ce ON s.id = ce.idEtapa 
+            WHERE ce.idUser = ?";
+
+    // Prepara a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    // Faz a ligação dos parâmetros
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+
+    // Executa a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Inicializa um array para armazenar os IDs dos setores
+    $setores = [];
+
+    // Itera sobre os resultados e adiciona os IDs ao array
+    while ($row = mysqli_fetch_assoc($result)) {
+        $setores[] = $row['id'];
+    }
+
+    // Fecha a declaração
+    mysqli_stmt_close($stmt);
+
+    // Retorna o array de IDs dos setores
+    return $setores;
+}
+
+function subtrairDiasUteis($data, $dias)
+{
+    // Converte a data de dd/mm/yyyy para o formato Y-m-d
+    $data = DateTime::createFromFormat('Y-m-d', $data);
+
+    if (!$data) {
+        return false; // Retorna false se a data não for válida
+    }
+
+    $contador = 0;
+
+    // Loop para subtrair dias úteis
+    while ($contador < $dias) {
+        $data->modify('-1 day'); // Subtrai um dia
+
+        // Verifica se é um dia útil (não sábado ou domingo)
+        if ($data->format('N') < 6) {
+            $contador++;
+        }
+    }
+
+    // Retorna a data no formato dd/mm/yyyy
+    return $data->format('d/m/Y');
+}
+
+//MODULO DE ATUALIZAR PRAZO COM TAXA EXTRA INICIO
+// function receberDiasAntecipados($modalidade)
+// {
+//     switch ($modalidade) {
+//         case 'SMARTMOLD':
+//         case 'Implante Facial':
+//         case 'Crânio':
+//         case 'Fast CMF':
+//         case 'Fastmold (PMMA)':
+//             return 6;
+//         case 'Crânio - Titânio':
+//         case 'Crânio - PEEK':
+//         case 'ATM':
+//         case 'Reconstruções':
+//         case 'Customlife':
+//         case 'Ortognática sob medida':
+//             return 12;
+//         case 'Guias de buco':
+//             return 3;
+//         default:
+//             return null;
+//     }
+// }
+
+function somarDiasUteis($data, $dias)
+{
+    $data = new DateTime($data);
+    $diasUteis = 0;
+
+    while ($diasUteis < $dias) {
+        $data->modify('+1 day');
+        if ($data->format('N') < 6) { // 1-5 são dias úteis
+            $diasUteis++;
+        }
+    }
+
+    return $data->format('Y-m-d');
+}
+
+// function atualizarDataEntregaPedido($conn, $modalidade, $dataEntrega)
+// {
+//     // Receber dias antecipados
+//     $dias = receberDiasAntecipados($modalidade);
+//     if ($dias === null) {
+//         throw new Exception("Modalidade inválida");
+//     }
+
+//     // Subtrair 20 dias úteis da data de entrega
+//     $dataAceite = subtrairDiasUteis($dataEntrega, 20);
+
+//     // Somar os dias úteis do prazo antecipado
+//     $prazoAntecipado = somarDiasUteis($dataAceite, $dias);
+
+//     // Atualizar no banco de dados
+//     $sql = "UPDATE pedidos SET dataEntrega = ? WHERE produto = ?";
+//     $stmt = mysqli_prepare($conn, $sql);
+//     mysqli_stmt_bind_param($stmt, "ss", $prazoAntecipado, $modalidade);
+//     mysqli_stmt_execute($stmt);
+//     mysqli_stmt_close($stmt);
+
+//     return $prazoAntecipado;
+// }
+//MODULO DE ATUALIZAR PRAZO COM TAXA EXTRA FIM
+
+function getUltimaLinhaPedidos($conn)
+{
+    // Consulta SQL para obter a última linha inserida na tabela 'pedidos'
+    $sql = "SELECT * FROM pedidos ORDER BY id DESC LIMIT 1";
+
+    // Executa a consulta
+    $result = mysqli_query($conn, $sql);
+
+    // Verifica se houve resultados
+    if (mysqli_num_rows($result) > 0) {
+        // Retorna a última linha inserida
+        return mysqli_fetch_assoc($result);
+    } else {
+        // Retorna null se não houver resultados
+        return null;
+    }
+}
+
+function getDepartamentoNome($conn, $idDep)
+{
+    // Define a consulta SQL
+    $sql = "SELECT nome FROM departamento WHERE id = ?";
+
+    // Prepara a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if ($stmt === false) {
+        // Caso a preparação falhe, retorne null
+        return null;
+    }
+
+    // Faz a ligação dos parâmetros
+    mysqli_stmt_bind_param($stmt, "i", $idDep);
+
+    // Executa a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Verifica se houve resultados
+    if (mysqli_num_rows($result) > 0) {
+        // Retorna o nome do departamento
+        $row = mysqli_fetch_assoc($result);
+        return $row['nome'];
+    } else {
+        // Retorna null se não houver resultados
+        return null;
+    }
+}
+
+function inserirEtapasColaborador($conn, $userId, $etapas)
+{
+    foreach ($etapas as $idEtapa) {
+        $sql = "INSERT INTO colaborador_etapas (idUser, idEtapa) VALUES (?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $userId, $idEtapa);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+}
+
+function getLastUserId($conn)
+{
+    // Define a consulta SQL para obter o último ID da tabela users
+    $sql = "SELECT MAX(usersId) as max_id FROM users";
+
+    // Prepara a consulta
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if ($stmt === false) {
+        // Caso a preparação falhe, retorne null
+        return null;
+    }
+
+    // Executa a consulta
+    mysqli_stmt_execute($stmt);
+
+    // Obtém o resultado da consulta
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Verifica se houve resultados
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Retorna o último ID (max_id) da tabela users
+        return $row['max_id'];
+    } else {
+        // Retorna null se não houver resultados
+        return null;
+    }
+}
+
+function calcularTempoPassado($inicio, $fim) {
+    // Convertendo as strings de tempo em objetos DateTime
+    $inicioObj = DateTime::createFromFormat('H:i:s', $inicio);
+    $fimObj = DateTime::createFromFormat('H:i:s', $fim);
+
+    // Calculando a diferença entre os dois tempos
+    $diferenca = $inicioObj->diff($fimObj);
+
+    // Formatando a diferença para uma string legível
+    $tempoPassado = $diferenca->format('%H horas, %I minutos e %S segundos');
+
+    return $tempoPassado;
+}
+
+function agruparEtapas($array) {
+    // Array para armazenar os tempos somados por etapa
+    $etapas = [];
+
+    // Itera sobre o array fornecido
+    foreach ($array as $item) {
+        $etapa = $item['Etapa'];
+        $tempo = $item['Tempo'];
+
+        // Verifica se a etapa já existe no array $etapas
+        if (array_key_exists($etapa, $etapas)) {
+            // Se existe, adiciona o tempo ao tempo existente da etapa
+            $etapas[$etapa]['Tempo'] = somarTempos($etapas[$etapa]['Tempo'], $tempo);
+        } else {
+            // Se não existe, cria a entrada para a etapa com os atributos iniciais
+            $etapas[$etapa] = [
+                'Etapa' => $etapa,
+                'Tempo' => $tempo,
+                'Responsavel' => $item['Responsavel'],
+                'parametro1' => $item['parametro1'],
+                'parametro2' => $item['parametro2'],
+                'iterev' => $item['iterev'],
+            ];
+        }
+    }
+
+    // Formata o resultado como um array de arrays associativos
+    $resultado = array_values($etapas); // Remove as chaves e reindexa o array
+
+    return $resultado;
+}
+
+// Função auxiliar para somar tempos no formato "H horas, I minutos e S segundos"
+function somarTempos($tempo1, $tempo2) {
+    // Função para converter o tempo em segundos
+    function converterParaSegundos($tempo) {
+        sscanf($tempo, "%d horas, %d minutos e %d segundos", $horas, $minutos, $segundos);
+        return $horas * 3600 + $minutos * 60 + $segundos;
+    }
+
+    // Função para converter segundos de volta para o formato "H horas, I minutos e S segundos"
+    function converterParaFormato($segundos) {
+        $horas = floor($segundos / 3600);
+        $segundos %= 3600;
+        $minutos = floor($segundos / 60);
+        $segundos %= 60;
+
+        return sprintf("%02d horas, %02d minutos e %02d segundos", $horas, $minutos, $segundos);
+    }
+
+    // Converte os tempos para segundos
+    $segundos1 = converterParaSegundos($tempo1);
+    $segundos2 = converterParaSegundos($tempo2);
+
+    // Soma os tempos em segundos
+    $segundosTotal = $segundos1 + $segundos2;
+
+    // Converte o resultado de volta para o formato esperado
+    return converterParaFormato($segundosTotal);
+}
 /* Funções abaixo foram criadas para inserir novos produtos, atualizar e deletar produtos e correlações*/
 
 function inserirProduto($conn, $descricao, $cdg, $idFluxo) {
@@ -1996,7 +4215,7 @@ function insertRegistroINF003($mysqli_conection,$setor,$area_adm,$data_exec, $pe
    
 }
 
-function UpdateRegistro004($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
+function updateRegistro003($mysqli_conection, $setor, $area_adm, $data_exec, $periodo, $responsavel, $tipo_limpeza, $id_usuario) {
     
     try{    
         $sql = "UPDATE form_inf_003 SET setor = ?, area_adm = ?, data = ?, periodo = ?, responsavel = ?, tipo_limpeza = ? WHERE id = ?"; 
