@@ -1,6 +1,6 @@
 <?php
 
-$serverName = "localhost";
+$serverName = "localhost:3307";
 $dbUsername = "root";
 $dbPassword = "";
 $dbName = "fabrica";
