@@ -188,8 +188,10 @@ if (isset($_SESSION["useruid"])) {
                                         <div class="row d-flex justify-content-center my-1 py-1">
                                             <div class="d-flex justify-content-between px-2">
                                             <a href="showForm003Pendentes.php" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
+                                            <a href="cameraQRcode.php" class="btn btn-outline-dark mx-1"><i class="bi bi-qr-code-scan"></i></i> QR Code</a>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +220,7 @@ if (isset($_SESSION["useruid"])) {
                             </div>
                     
                      <?= $_SESSION["userperm"] == 'Colaborador(a)' ? "</div>" : '' ?>
-                     
+
                 <?php
                 if (($_SESSION["userperm"] == 'Colaborador(a)') && ($_SESSION["usernomedep"] == 'Produção')) {
                 ?>
