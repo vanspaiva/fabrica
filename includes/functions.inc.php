@@ -463,6 +463,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
+
 function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nmaquina, $nomemaquina)
 {
     $arquivo = '<!DOCTYPE html>

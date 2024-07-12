@@ -1,12 +1,5 @@
 <?php
 
-
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
-
-
-
 if (isset($_POST["submit"])) {
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
@@ -31,7 +24,7 @@ if (isset($_POST["submit"])) {
 
     $urlArquivo = addslashes($_POST["urlThrowback"]);
 
-    if (empty($_POST['nmaquina'])) {
+/*     if (empty($_POST['nmaquina'])) {
         $nmaquina = null;
     } else {
         $nmaquina = addslashes($_POST["nmaquina"]);
@@ -41,7 +34,7 @@ if (isset($_POST["submit"])) {
         $nomemaquina = null;
     } else {
         $nomemaquina = addslashes($_POST["nomemaquina"]);
-    }
+    } */
 
     if (empty($_POST['obs'])) {
         $obs = null;

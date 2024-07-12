@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'db/dbh.php';
+
 
 if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
     $tipo = "om";
@@ -35,12 +37,33 @@ switch ($tipo) {
         # code...S
         break;
 }
+ if (isset($_POST['id_maquina'])) {
+    $idMaquina = $_POST['id_maquina'];
+
+    $query = "SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $idMaquina);
+    $stmt->execute();
+    $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
+
+    if ($stmt->fetch()) {
+        $response = [
+            'omNomeMaquina' => $omNomeMaquina,
+            'omIdentificadorMaquina' => $omIdentificadorMaquina
+        ];
+        echo json_encode($response);
+    } else {
+        echo json_encode(['error' => 'Não há registro para o ID desta máquina']);
+    }
+
+    $stmt->close();
+    exit();
+}
+ 
 
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
-
-
 
 ?>
 
@@ -138,15 +161,18 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OM</h4>
-<!--                                        <div class='d-flex d-block justify-content-around'>
+                                        <!--                                        <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>
                                                     <option value='0' selected style='color: #F6F7FA;'>Escolha um setor</option>
                                                     <?php
                                                     //$retEtapa = mysqli_query($conn, "SELECT * FROM etapasos ORDER BY etapaNome ASC;");
-                                                    //while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
-                                                        <option value=" <?php //echo $rowEtapa['etapaNome']; ?>"><?php //echo $rowEtapa['etapaNome']; ?></option>
+                                                    //while ($rowEtapa = mysqli_fetch_array($retEtapa)) { 
+                                                    ?>
+                                                        <option value=" <?php //echo $rowEtapa['etapaNome']; 
+                                                                        ?>"><?php //echo $rowEtapa['etapaNome']; 
+                                                                            ?></option>
                                                     <?php
                                                     //}
                                                     ?>
@@ -170,21 +196,57 @@ if (isset($_SESSION["useruid"])) {
                                                 var minData = year + '-' + month + '-' + day;
                                                 $('#dtentrega').attr('min', minData);
                                             </script>
-                                        </div> --> 
-                                        <div class='d-flex d-block justify-content-around'>
-                                            <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class='control-label' style='color:black;'>Nº Máquina </label>
-                                                <input class='form-control' name='nmaquina' id='nmaquina' type='text'>
+                                        </div> -->
+
+                                        <div class='d-flex justify-content-around'>
+                                            <div class='form-group flex-fill m-2'>
+                                                <label class='control-label' style='color:black;'>Nº Máquina<b style='color: red;'>*</b></label>
+                                                <input class='form-control' name='id_maquina' id='id_maquina' type='text'>
                                             </div>
-                                            <div class='form-group d-inline-block flex-fill m-2'>
+                                            <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nome Máquina</label>
-                                                <input class='form-control' name='nomemaquina' id='nomemaquina' type='text'>
+                                                <input class='form-control' name='omNomeMaquina' id='omNomeMaquina' type='text' readonly>
+                                            </div>
+                                            <div class='form-group flex-fill m-2'>
+                                                <label class='control-label' style='color:black;'>Marca/ Modelo / N° Serie</label>
+                                                <input class='form-control' name='omIdentificadorMaquina' id='omIdentificadorMaquina' type='text' readonly>
                                             </div>
                                         </div>
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <script>
+                                            $(document).ready(function() {
+                                                $('#id_maquina').on('input', function() {
+                                                    var machineId = $(this).val();
+                                                    if (machineId) {
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: '',
+                                                            data: {
+                                                                id_maquina: machineId
+                                                            },
+                                                            success: function(response) {
+                                                                var data = JSON.parse(response);
+                                                                if (data.error) {
+                                                                    $('#omNomeMaquina').val(data.error);
+                                                                    $('#omIdentificadorMaquina').val(data.error);
+                                                                } else {
+                                                                    $('#omNomeMaquina').val(data.omNomeMaquina);
+                                                                    $('#omIdentificadorMaquina').val(data.omIdentificadorMaquina);
+                                                                }
+                                                            },
+                                                            error: function(xhr, textStatus, errorThrown) {
+                                                                console.log('Error:', errorThrown);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        $('#omNomeMaquina').val('');
+                                                        $('#omIdentificadorMaquina').val('');
+                                                    }
+                                                });
+                                            });
+                                        </script>
 
 
-
-                                    
                                         <div class='d-flex d-block justify-content-around m-4'>
 
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -206,7 +268,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
 
                                             <div class='form-group d-inline-block flex-fill m-2 pl-5'>
-                                                <label class='control-label'>A maquina está operacional  ? <b style='color: red;'>*</b></label>
+                                                <label class='control-label'>A maquina está operacional ? <b style='color: red;'>*</b></label>
                                                 <div>
                                                     <div class='form-check'>
                                                         <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel1' value='Operável' required>
@@ -224,10 +286,6 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
 
                                         </div>
-
-
-
-        
 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -428,7 +486,7 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OS</h4>
-                                        <div class='d-flex d-block justify-content-around' >
+                                        <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>
