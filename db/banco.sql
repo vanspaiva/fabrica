@@ -932,7 +932,10 @@ ALTER TABLE departamentos_form_inf_003
 CHANGE id id_departamento INT AUTO_INCREMENT;
 
 
-/* ALTERAÇÃO NA TABELA DE ORDEM DE MANUTENÇÃO */
+
+/* ===================== TABELA DE ORDEM DE MANUTENÇÃO  =======================*/
+
+/* ALTERAÇÃO NA TABELA DE ORDEM DE MANUTENÇÃO  */
 
 ALTER TABLE ordenmanutencao
 MODIFY COLUMN omDtEntregasDesejada varchar(100) NULL;
@@ -949,23 +952,23 @@ MODIFY COLUMN omTipoManutencao varchar(100) DEFAULT NULL;
 ALTER TABLE logatividades
 ADD COLUMN logTipo VARCHAR(255);
 
-/* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA */
+/* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA   */
 
 CREATE TABLE om_maquina (
     tipo varchar(50) not null,
     idMaquina varchar(50) not null,
-    omNumMaquina varchar(20) not null,
-    omNomeMaquina varchar(255) not null
+    omNomeMaquina varchar(20) not null,
+    omIdentificadorMaquina varchar(255) not null
 );
 
 
-INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNumMaquina`, `omNomeMaquina`) VALUES
+INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNomeMaquina`, `omIdentificadorMaquina`) VALUES
 ('Produção', 'AMB.001', 'Sala limpa', ''),
 ('Produção', 'MAQ.001', 'CNC', 'RODERS / RXP400DSC /'),
 ('Produção', 'MAQ.002', 'CNC', 'HASS / VF-2-SE /'),
 ('Produção', 'MAQ.003', 'CNC', 'HASS/ VF-2-SE /'),
 ('Produção', 'MAQ.004', 'CNC', 'LASERDENTA / OPENMILL500B / 00182'),
-('Produção', 'MAQ.005', 'CNC Torno Tipo Suiço', 'CITIZEN / A20-3F7 / AG5166'),
+('Produção', 'MAQ.005', 'CNC Torno Tipo Suiço', 'CITIZEN / A20-3F7 / AG5166'), 
 ('Produção', 'MAQ.006', 'Impressora 3D Filamento', 'PRUSA / ALVA /'),
 ('Produção', 'MAQ.007', 'Impressora 3D Filamento', 'PRUSA / TESLA /'),
 ('Produção', 'MAQ.008', 'Impressora 3D Filamento', 'PRUSA / BABBAGE /'),
