@@ -58,7 +58,7 @@ switch ($tipo) {
 
     $stmt->close();
     exit();
-}
+ }
  
 
 if (isset($_SESSION["useruid"])) {
