@@ -2,7 +2,6 @@
 session_start();
 require_once 'db/dbh.php';
 
-
 if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
     $tipo = "om";
 } else if (isset($_GET["t"]) && ($_GET["t"] == "os")) {
@@ -12,6 +11,34 @@ if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
 } else {
     header("location: dash");
     exit();
+}
+
+if (isset($_POST['idMaquina'])) {
+    
+    $idMaquina = $_POST['idMaquina'];
+
+    if ($idMaquina) {
+        $query = "SELECT tipo, idMaquina, omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina LIKE ? OR omNomeMaquina LIKE ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $idMaquina);
+        $stmt->execute();
+        $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
+
+        if ($stmt->fetch()) {
+            $response = [
+                'omNomeMaquina' => $omNomeMaquina,
+                'omIdentificadorMaquina' => $omIdentificadorMaquina
+            ];
+            echo json_encode($response);
+            exit;
+        } else {
+            echo json_encode(['error' => 'Não há registro dessa máquina']);
+            exit;
+        }
+    } else {
+        echo json_encode(['error' => 'Número de máquina inválido']);
+        exit;
+    }
 }
 
 switch ($tipo) {
@@ -37,29 +64,6 @@ switch ($tipo) {
         # code...S
         break;
 }
- if (isset($_POST['id_maquina'])) {
-    $idMaquina = $_POST['id_maquina'];
-
-    $query = "SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $idMaquina);
-    $stmt->execute();
-    $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
-
-    if ($stmt->fetch()) {
-        $response = [
-            'omNomeMaquina' => $omNomeMaquina,
-            'omIdentificadorMaquina' => $omIdentificadorMaquina
-        ];
-        echo json_encode($response);
-    } else {
-        echo json_encode(['error' => 'Não há registro para o ID desta máquina']);
-    }
-
-    $stmt->close();
-    exit();
- }
- 
 
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
@@ -201,7 +205,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class='d-flex justify-content-around'>
                                             <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nº Máquina<b style='color: red;'>*</b></label>
-                                                <input class='form-control' name='id_maquina' id='id_maquina' type='text'>
+                                                <input class='form-control' name='idMaquina' id='idMaquina' type='text'>
                                             </div>
                                             <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nome Máquina</label>
@@ -215,38 +219,43 @@ if (isset($_SESSION["useruid"])) {
                                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                         <script>
                                             $(document).ready(function() {
-                                                $('#id_maquina').on('input', function() {
-                                                    var machineId = $(this).val();
-                                                    if (machineId) {
-                                                        $.ajax({
-                                                            type: 'POST',
-                                                            url: '',
-                                                            data: {
-                                                                id_maquina: machineId
-                                                            },
-                                                            success: function(response) {
-                                                                var data = JSON.parse(response);
-                                                                if (data.error) {
-                                                                    $('#omNomeMaquina').val(data.error);
-                                                                    $('#omIdentificadorMaquina').val(data.error);
-                                                                } else {
-                                                                    $('#omNomeMaquina').val(data.omNomeMaquina);
-                                                                    $('#omIdentificadorMaquina').val(data.omIdentificadorMaquina);
+                                                var temporizadorDigitacao;
+                                                var tempoDeIntervalo = 800;
+
+                                                $('#idMaquina').on('keyup', function() {
+                                                    clearTimeout(temporizadorDigitacao);
+
+                                                    temporizadorDigitacao = setTimeout(function() {
+                                                        var machineId = $('#idMaquina').val();
+                                                        if (machineId) {
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: '',
+                                                                data: {
+                                                                    idMaquina: machineId
+                                                                },
+                                                                success: function(response) {
+                                                                    var data = JSON.parse(response);
+                                                                    if (data.error) {
+                                                                        $('#omNomeMaquina').val(data.error);
+                                                                        $('#omIdentificadorMaquina').val(data.error);
+                                                                    } else {
+                                                                        $('#omNomeMaquina').val(data.omNomeMaquina);
+                                                                        $('#omIdentificadorMaquina').val(data.omIdentificadorMaquina);
+                                                                    }
+                                                                },
+                                                                error: function(xhr, textStatus, errorThrown) {
+                                                                    console.log('Error:', errorThrown);
                                                                 }
-                                                            },
-                                                            error: function(xhr, textStatus, errorThrown) {
-                                                                console.log('Error:', errorThrown);
-                                                            }
-                                                        });
-                                                    } else {
-                                                        $('#omNomeMaquina').val('');
-                                                        $('#omIdentificadorMaquina').val('');
-                                                    }
+                                                            });
+                                                        } else {
+                                                            $('#omNomeMaquina').val('');
+                                                            $('#omIdentificadorMaquina').val('');
+                                                        }
+                                                    }, tempoDeIntervalo);
                                                 });
                                             });
                                         </script>
-
-
                                         <div class='d-flex d-block justify-content-around m-4'>
 
                                             <div class='form-group d-inline-block flex-fill m-2'>
