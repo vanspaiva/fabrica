@@ -15,6 +15,12 @@ if (isset($_POST["submit"])) {
     $dtcriacao = addslashes($_POST["dtcriacao"]);
     $userip = addslashes($_POST["userip"]);
 
+
+    $idMaquina = addslashes($_POST["idMaquina"]);
+    $omNomeMaquina = addslashes($_POST["omNomeMaquina"]);
+    $omIdentificadorMaquina = addslashes($_POST["omIdentificadorMaquina"]);
+
+
     //$dtentrega = addslashes($_POST["dtentrega"]);
     $dtentrega = "None";
     //$setor = addslashes($_POST["setor"]);
@@ -55,7 +61,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal);
+    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
 } else {
     header("location: ../solicitacao");
     exit();
