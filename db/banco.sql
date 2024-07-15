@@ -954,12 +954,13 @@ ADD COLUMN logTipo VARCHAR(255);
 
 /* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA   */
 
-CREATE TABLE om_maquina (
-    tipo varchar(50) not null,
-    idMaquina varchar(50) not null,
-    omNomeMaquina varchar(20) not null,
-    omIdentificadorMaquina varchar(255) not null
-);
+CREATE TABLE `om_maquina` (
+  `tipo` varchar(50) NOT NULL,
+  `idMaquina` varchar(50) NOT NULL,
+  `omNomeMaquina` varchar(100) NOT NULL,
+  `omIdentificadorMaquina` varchar(255) NOT NULL,
+  PRIMARY KEY (`idMaquina`);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNomeMaquina`, `omIdentificadorMaquina`) VALUES
