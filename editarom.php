@@ -179,16 +179,19 @@ if (isset($_SESSION["useruid"])) {
                                                             <div class='d-flex d-block justify-content-around'>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
                                                                     <label class='control-label' style='color:black;'>Nº Máquina </label>
-                                                                    <input class='form-control' name='nmaquina' id='nmaquina' type='text' value="<?php echo $row['omNumMaquina']; ?>">
+                                                                    <input class='form-control' name='idMaquina' id='idMaquina' type='text' value="<?php echo $row['idMaquina']; ?>">
                                                                 </div>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
                                                                     <label class='control-label' style='color:black;'>Nome Máquina</label>
-                                                                    <input class='form-control' name='nomemaquina' id='nomemaquina' type='text' value="<?php echo $row['omNomeMaquina']; ?>">
+                                                                    <input class='form-control' name='omNomeMaquina' id='omNomeMaquina' type='text' value="<?php echo $row['omNomeMaquina']; ?>" readonly>
+                                                                </div>
+                                                                <div class='form-group d-inline-block flex-fill m-2'>
+                                                                    <label class='control-label' style='color:black;'>Marca/ Modelo / N° Serie</label>
+                                                                    <input class='form-control' name='omIdentificadorMaquina' id='omIdentificadorMaquina' type='text' value="<?php echo $row['omIdentificadorMaquina']; ?>" readonly>
                                                                 </div>
                                                             </div>
-
                                                             <div class='d-flex d-block justify-content-around'>
-<!--                                                                 <div class='form-group d-inline-block flex-fill m-2'>
+                                                                <!--                                                                 <div class='form-group d-inline-block flex-fill m-2'>
                                                                     <label for="">Tipo de Manutenção</label>
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio" name="tipomanutencao" id="tipomanutencao1" value="preventiva" <?php if ($row['omTipoManutencao'] == 'preventiva') echo 'checked'; ?>>
@@ -197,22 +200,25 @@ if (isset($_SESSION["useruid"])) {
                                                                         </label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="tipomanutencao" id="tipomanutencao2" value="corretiva" <?php //if ($row['omTipoManutencao'] == 'corretiva') echo 'checked'; ?>>
+                                                                        <input class="form-check-input" type="radio" name="tipomanutencao" id="tipomanutencao2" value="corretiva" <?php //if ($row['omTipoManutencao'] == 'corretiva') echo 'checked'; 
+                                                                                                                                                                                    ?>>
                                                                         <label class="form-check-label" for="tipomanutencao2">
                                                                             Manutenção corretiva
                                                                         </label>
                                                                     </div>
                                                                 </div> -->
-<!--                                                                 <div class="form-group d-inline-block flex-fill m-2">
+                                                                <!--                                                                 <div class="form-group d-inline-block flex-fill m-2">
                                                                     <label for="">A maquina está operacional</label>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional1" value="sim" <?php //if ($row['omOperacional'] == 'sim') echo 'checked'; ?>>
+                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional1" value="sim" <?php //if ($row['omOperacional'] == 'sim') echo 'checked'; 
+                                                                                                                                                                        ?>>
                                                                         <label class="form-check-label" for="operacional1">
                                                                             Sim
                                                                         </label>
                                                                     </div>
                                                                     <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional2" value="não" <?php //if ($row['omOperacional'] == 'não') echo 'checked'; ?>>
+                                                                        <input class="form-check-input" type="radio" name="operacional" id="operacional2" value="não" <?php //if ($row['omOperacional'] == 'não') echo 'checked'; 
+                                                                                                                                                                        ?>>
                                                                         <label class="form-check-label" for="operacional2">
                                                                             Não
                                                                         </label>
