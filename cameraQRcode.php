@@ -31,42 +31,43 @@ if (isset($_SESSION["useruid"])) {
     include_once 'php/lateral-nav.php';
     ?>
     <main>
-        <div id="reader"></div>
-        <input class="btn" type="file" id="file-input" accept="image/*" />
+    <button id="start-scan-btn" class="btn btn-primary">Iniciar Leitura</button>
+    <div id="reader"></div>
     </main>
     <script>
- Html5Qrcode.getCameras().then(devices => {
-            if (devices && devices.length) {
-                let backCameraId = devices[0].id;
-                for (let i = 0; i < devices.length; i++) {
-                    if (devices[i].label.toLowerCase().includes('back')) {
-                        backCameraId = devices[i].id;
-                        break;
+        document.getElementById('start-scan-btn').addEventListener('click', function() {
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    let backCameraId = devices[0].id;
+                    for (let i = 0; i < devices.length; i++) {
+                        if (devices[i].label.toLowerCase().includes('back')) {
+                            backCameraId = devices[i].id;
+                            break;
+                        }
                     }
+                    const html5QrCode = new Html5Qrcode("reader");
+                    html5QrCode.start(
+                        backCameraId,
+                        {
+                            fps: 10,
+                            qrbox: 250,
+                            rememberLastUsedCamera: true,
+                            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+                        },
+                        (decodedText, decodedResult) => {
+                            console.log(`Código lido: ${decodedText}`);
+                            window.location.href = decodedText; // Redireciona para o URL lido
+                        },
+                        (errorMessage) => {
+                            console.log(`Erro na leitura: ${errorMessage}`);
+                        }
+                    ).catch(err => {
+                        console.error(`Falha ao iniciar a leitura: ${err}`);
+                    });
                 }
-                const html5QrCode = new Html5Qrcode("reader");
-                html5QrCode.start(
-                    backCameraId,
-                    {
-                        fps: 10,
-                        qrbox: 250,
-                        rememberLastUsedCamera: true,
-                        // Only support camera scan type.
-                        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
-                    },
-                    (decodedText, decodedResult) => {
-                        console.log(`Código lido: ${decodedText}`);
-                        window.location.href = decodedText; // Redireciona para o URL lido
-                    },
-                    (errorMessage) => {
-                        console.log(`Erro na leitura: ${errorMessage}`);
-                    }
-                ).catch(err => {
-                    console.error(`Falha ao iniciar a leitura: ${err}`);
-                });
-            }
-        }).catch(err => {
-            console.error(`Erro ao obter as câmeras: ${err}`);
+            }).catch(err => {
+                console.error(`Erro ao obter as câmeras: ${err}`);
+            });
         });
     </script>
 </body>
