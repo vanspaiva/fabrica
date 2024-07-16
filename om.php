@@ -212,7 +212,7 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col">
                         <table class="table table-bordered table-sm">
                             <tbody>
-                                <tr>
+<!--                                 <tr>
                                     <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> IDENTIFICAÇÃO DO SERVIÇO </td>
                                 </tr>
                                 <tr>
@@ -223,7 +223,7 @@ if (isset($_SESSION["useruid"])) {
 
                                 </tr>
                                 <tr style="height: 30px;">
-                                    <td rowspan="8"><?php echo $descricao; ?></td>
+                                    <td rowspan="8"><?php //echo $descricao; ?></td>
                                     <td style="width: 20px;"><i class="far fa-square"></i></td>
                                     <td>IMPRESSÃO TITÂNIO</td>
                                     <td></td>
@@ -275,7 +275,7 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> OBSERVAÇÕES SOBRE A EXECUÇÃO DO SERVIÇO </td>
                                 </tr>
                                 <tr style="height: 90px;">
-                                    <td colspan="5"><?php echo $obs; ?></td>
+                                    <td colspan="5"><?php //echo $obs; ?></td>
 
                                 </tr>
                                 <tr>
@@ -284,7 +284,7 @@ if (isset($_SESSION["useruid"])) {
                                 <tr style="height: 90px;">
                                     <td colspan="5">Obs.</td>
 
-                                </tr>
+                                </tr> -->
                                 <tr class="p-2">
                                     <td class="font-weight-bold p-2" colspan="3" style="text-align: center;" class="p-2"> CARIMBO LIBERAÇÃO </td>
                                     <td class="font-weight-bold p-2" colspan="2" rowspan="2" style="text-align: center;">
