@@ -220,7 +220,7 @@ if (isset($_SESSION["useruid"])) {
                                         <script>
                                             $(document).ready(function() {
                                                 var temporizadorDigitacao;
-                                                var tempoDeIntervalo = 800;
+                                                var tempoDeIntervalo = 100;
 
                                                 $('#idMaquina').on('keyup', function() {
                                                     clearTimeout(temporizadorDigitacao);
