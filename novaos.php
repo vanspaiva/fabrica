@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once 'db/dbh.php';
 
 if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
     $tipo = "om";
@@ -13,33 +12,6 @@ if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
     exit();
 }
 
-if (isset($_POST['idMaquina'])) {
-    
-    $idMaquina = $_POST['idMaquina'];
-
-    if ($idMaquina) {
-        $query = "SELECT tipo, idMaquina, omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina LIKE ? OR omNomeMaquina LIKE ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $idMaquina);
-        $stmt->execute();
-        $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
-
-        if ($stmt->fetch()) {
-            $response = [
-                'omNomeMaquina' => $omNomeMaquina,
-                'omIdentificadorMaquina' => $omIdentificadorMaquina
-            ];
-            echo json_encode($response);
-            exit;
-        } else {
-            echo json_encode(['error' => 'Não há registro dessa máquina']);
-            exit;
-        }
-    } else {
-        echo json_encode(['error' => 'Número de máquina inválido']);
-        exit;
-    }
-}
 
 switch ($tipo) {
     case 'om':
@@ -65,10 +37,10 @@ switch ($tipo) {
         break;
 }
 
+
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
-
 ?>
 
 
@@ -135,7 +107,6 @@ if (isset($_SESSION["useruid"])) {
 
                                     $localIP = getHostByName(getHostName());
                                 ?>
-
                                     <form action="includes/novaom.inc.php" method="POST" enctype='multipart/form-data'>
                                         <div hidden>
                                             <h4 class="text-fab">Dados do Usuário</h4>
@@ -202,6 +173,34 @@ if (isset($_SESSION["useruid"])) {
                                             </script>
                                         </div> -->
 
+                                        <?php 
+                                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMaquina'])) {
+                                                $idMaquina = $_POST['idMaquina'];
+
+                                            $query = "SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?";
+                                            $stmt = $conn->prepare($query);
+                                            $stmt->bind_param("s", $idMaquina);
+                                            $stmt->execute();
+                                            $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
+
+                                            if ($stmt->fetch()) {
+                                                $response = array(
+                                                    'success' => true,
+                                                    'omNomeMaquina' => $omNomeMaquina,
+                                                    'omIdentificadorMaquina' => $omIdentificadorMaquina
+                                                );
+                                                echo json_encode($response);
+                                                exit;
+                                            } else {
+                                                $response = array(
+                                                    'success' => false,
+                                                    'message' => 'Máquina não encontrada'
+                                                );
+                                                echo json_encode($response);
+                                                exit;
+                                            }
+                                        }
+                                        ?>
                                         <div class='d-flex justify-content-around'>
                                             <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nº Máquina<b style='color: red;'>*</b></label>
@@ -216,46 +215,6 @@ if (isset($_SESSION["useruid"])) {
                                                 <input class='form-control' name='omIdentificadorMaquina' id='omIdentificadorMaquina' type='text' readonly>
                                             </div>
                                         </div>
-                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                        <script>
-                                            $(document).ready(function() {
-                                                var temporizadorDigitacao;
-                                                var tempoDeIntervalo = 100;
-
-                                                $('#idMaquina').on('keyup', function() {
-                                                    clearTimeout(temporizadorDigitacao);
-
-                                                    temporizadorDigitacao = setTimeout(function() {
-                                                        var machineId = $('#idMaquina').val();
-                                                        if (machineId) {
-                                                            $.ajax({
-                                                                type: 'POST',
-                                                                url: '',
-                                                                data: {
-                                                                    idMaquina: machineId
-                                                                },
-                                                                success: function(response) {
-                                                                    var data = JSON.parse(response);
-                                                                    if (data.error) {
-                                                                        $('#omNomeMaquina').val(data.error);
-                                                                        $('#omIdentificadorMaquina').val(data.error);
-                                                                    } else {
-                                                                        $('#omNomeMaquina').val(data.omNomeMaquina);
-                                                                        $('#omIdentificadorMaquina').val(data.omIdentificadorMaquina);
-                                                                    }
-                                                                },
-                                                                error: function(xhr, textStatus, errorThrown) {
-                                                                    console.log('Error:', errorThrown);
-                                                                }
-                                                            });
-                                                        } else {
-                                                            $('#omNomeMaquina').val('');
-                                                            $('#omIdentificadorMaquina').val('');
-                                                        }
-                                                    }, tempoDeIntervalo);
-                                                });
-                                            });
-                                        </script>
                                         <div class='d-flex d-block justify-content-around m-4'>
 
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -290,6 +249,14 @@ if (isset($_SESSION["useruid"])) {
                                                         <label class='form-check-label' for='maqOperavel2'>
                                                             Não
                                                         </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='form-group d-inline-block flex-fill m-2 pl-5'>
+                                                <div>
+                                                    <div class='form-group flex-fill m-2'>
+                                                        <label class='control-label' style='color:black;'>Por quanto tempo ficará não operacional? <b style='color: red;'>*</b></label>
+                                                        <input class='form-control' name='' id='' type='text' readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -816,8 +783,7 @@ if (isset($_SESSION["useruid"])) {
                 ?>
 
             </div>
-
-
+        </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -834,6 +800,34 @@ if (isset($_SESSION["useruid"])) {
         </script>
 
         <script src="js/uploadToFirebase.js"></script>
+
+        <script>
+function fetchMachineData() {
+    var idMaquina = $('#idMaquina').val();
+    
+    $.ajax({
+        type: 'POST',
+        url: 'index.php', 
+        data: { idMaquina: idMaquina },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $('#omNomeMaquina').val(response.omNomeMaquina);
+                $('#omIdentificadorMaquina').val(response.omIdentificadorMaquina);
+            } else {
+                
+                alert(response.message);
+                $('#omNomeMaquina').val('');
+                $('#omIdentificadorMaquina').val('');
+            }
+        },
+        error: function(xhr, status, error) {
+            
+            console.error(status + ": " + error);
+        }
+    });
+}
+</script>
 
     </body>
 
