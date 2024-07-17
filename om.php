@@ -60,13 +60,14 @@ if (isset($_SESSION["useruid"])) {
         $responsavel = explode(" ", $responsavel);
         $responsavel = $responsavel[0];
 
-        //Lote        
-        $lote = $row["omNumMaquina"];
-        $lote = 23112101;
+        //N maquina        
+        $lote = $row["idMaquina"];
         //Descrição
         $descricao = $row["omDescricao"];
         //Nº Pedido
         $pedido = $row["omNomeMaquina"];
+        //modelo
+        $omIdentificadorMaquina = $row["omIdentificadorMaquina"];
         //OBS
         $obs = $row["omObs"];
 
@@ -158,10 +159,6 @@ if (isset($_SESSION["useruid"])) {
                                     <!-- <td colspan="4" style="text-align: center;"><img alt='testing' src="barcode/barcode.php?codetype=Code128&size=40&text=<?php echo $codgos; ?>&print=true" /></td> -->
                                 </tr>
                                 <tr>
-                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> SOLICITANTE </td>
-                                    <td colspan="5"><?php echo $responsavel; ?></td>
-                                </tr>
-                                <tr>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> DATA PARA ENTREGA </td>
                                     <td colspan="5"><?php echo $dataEntrega; ?></td>
                                 </tr>
@@ -169,7 +166,7 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nº Máquina: </td>
                                     <td style="width: 200px;"><?php echo $lote; ?></td>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nome Máquina: </td>
-                                    <td colspan="3" style="width: 200px;"><?php echo $pedido; ?></td>
+                                    <td colspan="3" style="width: 200px;"><?php echo $pedido; ?> (<?php echo $omIdentificadorMaquina; ?>)</td>
                                 </tr>
                                 <tr style="vertical-align: middle;">
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Tipo Manutenção: </td>
@@ -212,7 +209,7 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col">
                         <table class="table table-bordered table-sm">
                             <tbody>
-<!--                                 <tr>
+                                <!--                                 <tr>
                                     <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> IDENTIFICAÇÃO DO SERVIÇO </td>
                                 </tr>
                                 <tr>
@@ -223,7 +220,8 @@ if (isset($_SESSION["useruid"])) {
 
                                 </tr>
                                 <tr style="height: 30px;">
-                                    <td rowspan="8"><?php //echo $descricao; ?></td>
+                                    <td rowspan="8"><?php //echo $descricao; 
+                                                    ?></td>
                                     <td style="width: 20px;"><i class="far fa-square"></i></td>
                                     <td>IMPRESSÃO TITÂNIO</td>
                                     <td></td>
@@ -275,7 +273,8 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> OBSERVAÇÕES SOBRE A EXECUÇÃO DO SERVIÇO </td>
                                 </tr>
                                 <tr style="height: 90px;">
-                                    <td colspan="5"><?php //echo $obs; ?></td>
+                                    <td colspan="5"><?php //echo $obs; 
+                                                    ?></td>
 
                                 </tr>
                                 <tr>
@@ -286,7 +285,6 @@ if (isset($_SESSION["useruid"])) {
 
                                 </tr> -->
                                 <tr class="p-2">
-                                    <td class="font-weight-bold p-2" colspan="3" style="text-align: center;" class="p-2"> CARIMBO LIBERAÇÃO </td>
                                     <td class="font-weight-bold p-2" colspan="2" rowspan="2" style="text-align: center;">
                                         <div>
                                             <div class="d-flex justify-content-start">
@@ -296,15 +294,20 @@ if (isset($_SESSION["useruid"])) {
                                                 <p><i class="far fa-square"></i> Reprovado</p>
                                             </div>
                                             <div class="d-flex justify-content-start">
-                                                <p>DATA DE INSPEÇÃO: _____/_____/_____</p>
+                                                <p>DATA DE FECHAMENTO: _____/_____/_____</p>
                                             </div>
                                         </div>
+                                        <div>
                                     </td>
                                 </tr>
-                                <tr style="height: 90px;">
-
-
-                                </tr>
+                                <div class="">
+                                    <tr class="p-8 m-2"> 
+                                        <td class="font-weight-bold" style="text-align: center; padding-top: 7%">
+                                            <div class="d-flex justify-content-start">
+                                                <p>RESPONSÁVEL ___________________________________________________</p>
+                                            </div>
+                                        </td>
+                                </div>
                             </tbody>
                         </table>
                     </div>
