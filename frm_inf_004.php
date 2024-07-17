@@ -67,16 +67,16 @@ if (isset($_SESSION["useruid"])) {
                                 <form action="includes/frm_004.inc.php" method="POST">
                                     <h4 class="text-fab">Dados de Registro</h4>
 
-                                    <div class='d-flex justify-content-around'>
+                                   <div style="display: none !important;" class='d-flex justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required>
+                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required value='2023-10-18'>
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Validade</label>
-                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date'  readonly>
+                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date'  readonly value='2025-10-18'>
                                         </div>
-                                    </div>
+                                    </div> 
                                     <script>
                                         document.getElementById('dataPublicacao').addEventListener('change', function() {
 
