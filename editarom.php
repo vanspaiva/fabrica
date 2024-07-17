@@ -144,11 +144,6 @@ if (isset($_SESSION["useruid"])) {
                                                                         ?>
                                                                     </select>
                                                                 </div>
-                                                                <div class='form-group d-inline-block flex-fill m-2'>
-                                                                    <label class='control-label' style='color:black;'>Data Desejada <b style='color: red;'>*</b></label>
-                                                                    <input class='form-control' name='dtentrega' id='dtentrega' type='date' value="<?php echo $row['omDtEntregasDesejada']; ?>" required readonly>
-                                                                    <small class="text-muted">Prazo sujeito a aprovação de acordo com calendário</small>
-                                                                </div>
                                                                 <script>
                                                                     var dtToday = new Date();
                                                                     var month = dtToday.getMonth() + 1; // getMonth() is zero-based
@@ -164,17 +159,6 @@ if (isset($_SESSION["useruid"])) {
                                                                     $('#dtrealentrega').attr('min', minData);
                                                                     $('#dtexecucao').attr('min', minData);
                                                                 </script>
-                                                            </div>
-                                                            <div class="d-flex d-block justify-content-around">
-                                                                <div class='form-group d-inline-block flex-fill m-2'>
-                                                                    <label class='control-label' style='color:black;'>Data entrega <b style='color: red;'>*</b></label>
-                                                                    <input class='form-control' name='dtrealentrega' id='dtrealentrega' type='date' value="<?php echo $row['omDtEntregaReal']; ?>" required>
-                                                                </div>
-                                                                <div class='form-group d-inline-block flex-fill m-2'>
-                                                                    <label class='control-label' style='color:black;'>Data Execução Tarefa </label>
-                                                                    <input class='form-control' name='dtexecucao' id='dtexecucao' type='date' value="<?php echo $row['dtExecucao']; ?>">
-                                                                </div>
-
                                                             </div>
                                                             <div class='d-flex d-block justify-content-around'>
                                                                 <div class='form-group d-inline-block flex-fill m-2'>
