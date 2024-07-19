@@ -4,6 +4,7 @@ session_start();
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
+
 ?>
 
     <body class="bg-light-gray2">
@@ -132,7 +133,6 @@ if (isset($_SESSION["useruid"])) {
                                             return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
                                         }
                                     </script>
-
                                     <div class="container mt-5">
                                         <div class="d-flex justify-content-center">
                                             <div class="form-group mx-2">
@@ -143,8 +143,43 @@ if (isset($_SESSION["useruid"])) {
                                                 <label class="control-label" style="color:black;">Nome Máquina</label>
                                                 <input class="form-control" name="omNomeMaquina" id="omNomeMaquina" type="text" readonly>
                                             </div>
+                                            <div class="form-group mx-2">
+                                                <label class="control-label" style="color:black;">Identificador Máquina</label>
+                                                <input class="form-control" name="omIdentificadorMaquina" id="omIdentificadorMaquina" type="text" readonly>
+                                            </div>
                                         </div>
                                     </div>
+                                    <script>
+                                        document.getElementById('idMaquina').addEventListener('input', function() {
+                                            var idMaquina = this.value.trim();
+
+                                            if (idMaquina) {
+                                                fetch(`busca_maquina.php?idMaquina=${encodeURIComponent(idMaquina)}`)
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.omNomeMaquina) {
+                                                            document.getElementById('omNomeMaquina').value = data.omNomeMaquina;
+                                                            document.getElementById('omIdentificadorMaquina').value = data.omIdentificadorMaquina || 'Não disponível';
+                                                        } else if (data.error) {
+                                                            document.getElementById('omNomeMaquina').value = data.error;
+                                                            document.getElementById('omIdentificadorMaquina').value = '';
+                                                        } else {
+                                                            document.getElementById('omNomeMaquina').value = 'Máquina não encontrada';
+                                                            document.getElementById('omIdentificadorMaquina').value = '';
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Erro ao buscar dados:', error);
+                                                        document.getElementById('omNomeMaquina').value = 'Erro ao buscar dados';
+                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                    });
+                                            } else {
+                                                document.getElementById('omNomeMaquina').value = '';
+                                                document.getElementById('omIdentificadorMaquina').value = '';
+                                            }
+                                        });
+                                    </script>
+
                                     <div id="main" class="font-montserrat">
                                         <div class="container-fluid">
                                             <div class="row d-flex justify-content-center">
@@ -252,7 +287,6 @@ if (isset($_SESSION["useruid"])) {
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body" id="modalBody">
-                                                                                <!-- Conteúdo do modal será adicionado dinamicamente -->
                                                                             </div>
                                                                             <div class="modal-footer">
                                                                                 <button type="button" class="btn btn-primary">Salvar mudanças</button>
@@ -261,9 +295,30 @@ if (isset($_SESSION["useruid"])) {
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <?php
+                                                            $sql = "SELECT idMaquina, idManutencaoSemanal FROM maquina_manutencao_semanal";
+                                                            $result = $conn->query($sql);
 
+                                                            if ($result->num_rows > 0) {
+                                                                while ($row = $result->fetch_assoc()) {
+                                                                    $atividadeSql = "SELECT descricaoSemanal FROM ommanutencaosemanal WHERE id = " . $row['idManutencaoSemanal'];
+                                                                    $atividadeResult = $conn->query($atividadeSql);
+
+                                                                    $atividades = array();
+                                                                    if ($atividadeResult->num_rows > 0) {
+                                                                        while ($atividadeRow = $atividadeResult->fetch_assoc()) {
+                                                                            $atividades[] = $atividadeRow['descricaoSemanal'];
+                                                                        }
+                                                                    }
+
+                                                                    $manutencoesSemanais[] = array(
+                                                                        'atividades' => $atividades
+                                                                    );
+                                                                }
+                                                            }
+                                                            ?>
+                                                            
                                                             <script>
-                                                                // Dados das manutenções semanais
                                                                 var manutencoesSemanais = [{
                                                                         dataPrevista: "03/06 a 05/06",
                                                                         atividades: ["Limpeza interna da área de usinagem", "Verificar concentração e completar nível de óleo solúvel"]
@@ -457,7 +512,6 @@ if (isset($_SESSION["useruid"])) {
 
 
         </div>
-
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script>
