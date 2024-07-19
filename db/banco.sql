@@ -1100,8 +1100,7 @@ INSERT INTO `ommanutencaomensal` (`id`, `descricaoMensal`) VALUES
 (7, 'Limpeza ou substituição das lentes do cabeçote do laser'),
 (8, 'Limpeza ou substituição do bico do cabeçote do laser'),
 (9, 'Completar nível de água'),
-(10, 'Verificar reservatório de graxa de lubrificação'),
-(11, 'Limpeza dos filtros de ar');
+(10, 'Verificar reservatório de graxa de lubrificação');
 
 
 -
@@ -1135,7 +1134,9 @@ INSERT INTO `ommanutencaosemanal` (`id`, `descricaoSemanal`) VALUES
 (15, 'Verificar reservatório de fluido do chiller'),
 (16, 'Verificação das válvulas de argônio, oxigênio e nitrogênio'),
 (17, 'Verificar se cilindros estão devidamente amarrados na posição vertical'),
-(18, 'Limpeza do equipamento');
+(18, 'Limpeza geral do equipamento'),
+(19, 'Completar nível de óleo integral'),
+(20, 'Limpeza do equipamento');
 
 --
 -- Estrutura para tabela `omusersmanutencao`
@@ -1156,3 +1157,116 @@ INSERT INTO `omusersmanutencao` (`id`, `usersManutencao`) VALUES
 (3, 'Fernando Lima De Sousa'),
 (4, 'Jessika Karoliny Da Silva Queiros'),
 (5, 'Tania Guedes de Oliveira');
+
+
+----------------------tabelas associativas--------------------
+--
+-- Estrutura para tabela `maquina_manutencao_mensal`
+--
+
+CREATE TABLE `maquina_manutencao_mensal` (
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoMensal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `maquina_manutencao_mensal`
+--
+
+INSERT INTO `maquina_manutencao_mensal` (`idMaquina`, `idManutencaoMensal`) VALUES
+('MAQ.001', 1),
+('MAQ.002', 1),
+('MAQ.002', 3),
+('MAQ.003', 1),
+('MAQ.003', 3),
+('MAQ.005', 6),
+('MAQ.005', 5),
+('MAQ.012', 6),
+('MAQ.012', 7),
+('MAQ.012', 8),
+('MAQ.013', 9),
+('MAQ.013', 10),
+('MAQ.013', 6);
+
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `maquina_manutencao_mensal`
+--
+ALTER TABLE `maquina_manutencao_mensal`
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoMensal` (`idManutencaoMensal`);
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `maquina_manutencao_mensal`
+--
+ALTER TABLE `maquina_manutencao_mensal`
+  ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_2` FOREIGN KEY (`idManutencaoMensal`) REFERENCES `ommanutencaomensal` (`id`);
+COMMIT;
+
+--
+-- Estrutura para tabela `maquina_manutencao_semanal`
+--
+
+CREATE TABLE `maquina_manutencao_semanal` (
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoSemanal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `maquina_manutencao_semanal` (`idMaquina`, `idManutencaoSemanal`) VALUES
+('MAQ.001', 1),
+('MAQ.001', 2),
+('MAQ.001', 3),
+('MAQ.001', 4),
+('MAQ.002', 1),
+('MAQ.002', 2),
+('MAQ.002', 5),
+('MAQ.002', 6),
+('MAQ.002', 7),
+('MAQ.002', 8),
+('MAQ.002', 9),
+('MAQ.002', 19),
+('MAQ.003', 1),
+('MAQ.003', 2),
+('MAQ.003', 5),
+('MAQ.003', 6),
+('MAQ.003', 7),
+('MAQ.003', 3),
+('MAQ.003', 8),
+('MAQ.003', 9),
+('MAQ.003', 19),
+('MAQ.005', 1),
+('MAQ.005', 20),
+('MAQ.005', 11),
+('MAQ.005', 12),
+('MAQ.012', 13),
+('MAQ.012', 14),
+('MAQ.012', 15),
+('MAQ.012', 16),
+('MAQ.012', 17),
+('MAQ.013', 20);
+
+
+ALTER TABLE `maquina_manutencao_semanal`
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoSemanal` (`idManutencaoSemanal`);
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `maquina_manutencao_semanal`
+--
+ALTER TABLE `maquina_manutencao_semanal`
+  ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_2` FOREIGN KEY (`idManutencaoSemanal`) REFERENCES `ommanutencaosemanal` (`id`);
+COMMIT;
