@@ -1075,3 +1075,84 @@ INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNomeMaquina`, `omIdentificador
 ('Produção', 'MAQ.102', 'Contador de Colonias Digital', 'GLOBAL TRADE TECNOLIGA / J3V /'),
 ('Produção', 'MAQ.103', 'Maquina de Ensaios (Tração/Compressão) (', 'DONGGUAN LIXIAN INSTRUMENT SCIENTIFIC / HZ-1009A / 201912160302'),
 ('Inspeção da Qualidade', 'MAQ.104', 'Projetor de Perfil', 'EASSON / SP 4030 /');
+
+
+--
+-- Estrutura para tabela `ommanutencaomensal`
+--
+
+CREATE TABLE `ommanutencaomensal` (
+  `id` int(11) NOT NULL,
+  `descricaoMensal` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `ommanutencaomensal`
+--
+
+INSERT INTO `ommanutencaomensal` (`id`, `descricaoMensal`) VALUES
+(1, 'Limpeza externa do equipamento'),
+(2, 'Limpeza das ventoinhas de ar'),
+(3, 'Completar óleo lubrificante dos eixos'),
+(4, 'Limpeza dos filtros e ventoinhas de ar'),
+(5, 'Engraxar os eixos e barramentos'),
+(6, 'Limpeza dos filtros de ar'),
+(7, 'Limpeza ou substituição das lentes do cabeçote do laser'),
+(8, 'Limpeza ou substituição do bico do cabeçote do laser'),
+(9, 'Completar nível de água'),
+(10, 'Verificar reservatório de graxa de lubrificação'),
+(11, 'Limpeza dos filtros de ar');
+
+
+-
+-- Estrutura para tabela `ommanutencaosemanal`
+--
+
+CREATE TABLE `ommanutencaosemanal` (
+  `id` int(11) NOT NULL,
+  `descricaoSemanal` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `ommanutencaosemanal`
+--
+
+INSERT INTO `ommanutencaosemanal` (`id`, `descricaoSemanal`) VALUES
+(1, 'Limpeza interna da área de usinagem'),
+(2, 'Verificar concentração e completar nível de óleo solúvel'),
+(3, 'Limpeza da haste e do receptor da probe'),
+(4, 'Retirada de cavaco'),
+(5, 'Limpeza da probe de medição de ferramenta'),
+(6, 'Lubrificação interna da pinça de pega da ferramenta (spindle)'),
+(7, 'Verificar nível de graxa de lubrificação'),
+(8, 'Calibração completa da probe'),
+(9, 'Retirada de cavaco na saída de ar das ventoinhas traseiras.'),
+(10, 'Verificar concentração e completar nível de óleo integral'),
+(11, 'Limpeza externa do equipamento'),
+(12, 'Verificar nível de óleo de lubrificação'),
+(13, 'Limpeza geral da máquina'),
+(14, 'Lubrificação das guias'),
+(15, 'Verificar reservatório de fluido do chiller'),
+(16, 'Verificação das válvulas de argônio, oxigênio e nitrogênio'),
+(17, 'Verificar se cilindros estão devidamente amarrados na posição vertical'),
+(18, 'Limpeza do equipamento');
+
+--
+-- Estrutura para tabela `omusersmanutencao`
+--
+
+CREATE TABLE `omusersmanutencao` (
+  `id` int(11) NOT NULL,
+  `usersManutencao` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `omusersmanutencao`
+--
+
+INSERT INTO `omusersmanutencao` (`id`, `usersManutencao`) VALUES
+(1, 'Rayro Rodrigues Soares'),
+(2, 'Benjamim Wenderson Santos Soares'),
+(3, 'Fernando Lima De Sousa'),
+(4, 'Jessika Karoliny Da Silva Queiros'),
+(5, 'Tania Guedes de Oliveira');
