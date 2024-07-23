@@ -91,7 +91,7 @@ if (isset($_SESSION["useruid"])) {
                                 $responsavel = $_SESSION["useruid"];
                             ?>
 
-                                <form action="includes/" method="POST">
+                                <form action="includes/registroManutencao004.inc.php" method="POST">
                                     <h4 class="text-fab">Dados de Registro</h4>
 
                                     <div style="display: none !important;" class='d-flex justify-content-around'>
@@ -182,17 +182,6 @@ if (isset($_SESSION["useruid"])) {
 
                                     <div id="main" class="font-montserrat">
                                         <div class="container-fluid">
-                                            <div class="row d-flex justify-content-center">
-                                                <div class="col">
-                                                    <?php
-                                                    if (isset($_GET["error"])) {
-                                                        if ($_GET["error"] == "statusatualizado") {
-                                                            echo "<div class='my-2 pb-0 alert alert-success pt-3 text-center'><p>Novo status salvo com sucesso!</p></div>";
-                                                        }
-                                                    }
-                                                    ?>
-                                                </div>
-                                            </div>
                                             <div class="row py-4 d-flex justify-content-center">
                                                 <div class="col-sm-10 justify-content-start" id="">
 
@@ -275,115 +264,121 @@ if (isset($_SESSION["useruid"])) {
                                                                         </table>
                                                                     </div>
                                                                 </div>
-
                                                                 <!-- Modal -->
                                                                 <div class="modal fade" id="checkboxModal" tabindex="-1" role="dialog" aria-labelledby="checkboxModalLabel" aria-hidden="true">
                                                                     <div class="modal-dialog" role="document">
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
-                                                                                <h5 class="modal-title" id="checkboxModalLabel">Selecione as Atividades</h5>
+                                                                                <h5 class="modal-title" id="checkboxModalLabel">Atividades</h5>
                                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                     <span aria-hidden="true">&times;</span>
                                                                                 </button>
                                                                             </div>
                                                                             <div class="modal-body" id="modalBody">
+
                                                                             </div>
                                                                             <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-primary">Salvar mudanças</button>
+                                                                                <button type="button" class="btn btn-primary" id="submitModal">Enviar</button>
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <?php
-                                                            $sql = "SELECT idMaquina, idManutencaoSemanal FROM maquina_manutencao_semanal";
-                                                            $result = $conn->query($sql);
 
-                                                            if ($result->num_rows > 0) {
-                                                                while ($row = $result->fetch_assoc()) {
-                                                                    $atividadeSql = "SELECT descricaoSemanal FROM ommanutencaosemanal WHERE id = " . $row['idManutencaoSemanal'];
-                                                                    $atividadeResult = $conn->query($atividadeSql);
+                                                                <script>
+                                                                    document.getElementById('idMaquina').addEventListener('input', function() {
+                                                                        var idMaquina = this.value.trim();
+                                                                        if (idMaquina) {
+                                                                            fetch(`busca_maquina.php?idMaquina=${encodeURIComponent(idMaquina)}`)
+                                                                                .then(response => response.json())
+                                                                                .then(data => {
+                                                                                    processarDadosMaquina(data);
+                                                                                })
+                                                                                .catch(error => {
+                                                                                    console.error('Erro ao buscar dados:', error);
+                                                                                    exibirMensagemErro();
+                                                                                });
+                                                                        } else {
+                                                                            limparCampos();
+                                                                        }
+                                                                    })
 
-                                                                    $atividades = array();
-                                                                    if ($atividadeResult->num_rows > 0) {
-                                                                        while ($atividadeRow = $atividadeResult->fetch_assoc()) {
-                                                                            $atividades[] = $atividadeRow['descricaoSemanal'];
+                                                                    function processarDadosMaquina(data) {
+                                                                        if (data.omNomeMaquina && data.omNomeMaquina !== 'Máquina não encontrada') {
+                                                                            document.getElementById('omNomeMaquina').value = data.omNomeMaquina;
+                                                                            document.getElementById('omIdentificadorMaquina').value = data.omIdentificadorMaquina || 'Não disponível';
+                                                                            atualizarLinhasTabelaSemanal(data.atividadesSemanal || []);
+                                                                            atualizarLinhasTabelaMensal(data.atividadesMensal || []);
+                                                                        } else {
+                                                                            exibirMensagemNaoEncontrada();
                                                                         }
                                                                     }
 
-                                                                    $manutencoesSemanais[] = array(
-                                                                        'atividades' => $atividades
-                                                                    );
-                                                                }
-                                                            }
-                                                            ?>
-                                                            
-                                                            <script>
-                                                                var manutencoesSemanais = [{
-                                                                        dataPrevista: "03/06 a 05/06",
-                                                                        atividades: ["Limpeza interna da área de usinagem", "Verificar concentração e completar nível de óleo solúvel"]
-                                                                    },
-                                                                    {
-                                                                        dataPrevista: "10/06 a 12/06",
-                                                                        atividades: ["Limpeza interna da área de usinagem", "Verificar concentração e completar nível de óleo solúvel"]
-                                                                    },
-                                                                    {
-                                                                        dataPrevista: "17/06 a 24/06",
-                                                                        atividades: ["Limpeza interna da área de usinagem", "Verificar concentração e completar nível de óleo solúvel"]
-                                                                    },
-                                                                    {
-                                                                        dataPrevista: "24/06 a 26/06",
-                                                                        atividades: ["Limpeza interna da área de usinagem", "Verificar concentração e completar nível de óleo solúvel"]
+                                                                    function exibirMensagemErro() {
+                                                                        document.getElementById('omNomeMaquina').value = 'Erro ao buscar dados';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
                                                                     }
-                                                                ];
 
-                                                                // Função para adicionar as linhas na tabela
-                                                                function adicionarLinhasTabelaSemanal() {
-                                                                    var tableBody = document.getElementById("tableBody");
-                                                                    tableBody.innerHTML = "";
+                                                                    function exibirMensagemNaoEncontrada() {
+                                                                        document.getElementById('omNomeMaquina').value = 'Máquina não encontrada';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
+                                                                    }
 
-                                                                    manutencoesSemanais.forEach(function(manut, index) {
-                                                                        var row = document.createElement("tr");
+                                                                    function limparCampos() {
+                                                                        document.getElementById('omNomeMaquina').value = '';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
+                                                                    }
 
-                                                                        // Coluna: Data Prevista
-                                                                        var tdDataPrevista = document.createElement("td");
-                                                                        var inputDataPrevista = document.createElement("input");
-                                                                        inputDataPrevista.className = "form-control";
-                                                                        inputDataPrevista.type = "text";
-                                                                        inputDataPrevista.readOnly = true;
-                                                                        inputDataPrevista.value = manut.dataPrevista;
-                                                                        tdDataPrevista.appendChild(inputDataPrevista);
-                                                                        row.appendChild(tdDataPrevista);
+                                                                    function atualizarLinhasTabelaSemanal(atividades) {
+                                                                        atualizarTabela("tableBody", atividades, "observacaoSemanal");
+                                                                    }
 
-                                                                        // Coluna: Data e Hora Realizados
-                                                                        var tdDataRealizados = document.createElement("td");
-                                                                        var inputDataRealizados = document.createElement("input");
-                                                                        inputDataRealizados.className = "form-control";
-                                                                        inputDataRealizados.type = "datetime-local";
-                                                                        inputDataRealizados.required = true;
-                                                                        tdDataRealizados.appendChild(inputDataRealizados);
-                                                                        row.appendChild(tdDataRealizados);
+                                                                    function atualizarLinhasTabelaMensal(atividades) {
+                                                                        atualizarTabela("tableBodyMensal", atividades, "observacaoMensal");
+                                                                    }
 
-                                                                        // Coluna: Responsável
-                                                                        var tdResponsavel = document.createElement("td");
-                                                                        var inputResponsavel = document.createElement("input");
-                                                                        inputResponsavel.className = "form-control";
-                                                                        inputResponsavel.style.textTransform = "capitalize";
-                                                                        inputResponsavel.required = true;
-                                                                        tdResponsavel.appendChild(inputResponsavel);
-                                                                        row.appendChild(tdResponsavel);
+                                                                    function atualizarTabela(idTabela, atividades, nomeCampoObservacao) {
+                                                                        var datasPrevistas = obterDatasPrevistas(idTabela);
+                                                                        var tableBody = document.getElementById(idTabela);
+                                                                        tableBody.innerHTML = "";
 
-                                                                        // Coluna: Observação
-                                                                        var tdObservacao = document.createElement("td");
-                                                                        var textareaObservacao = document.createElement("textarea");
-                                                                        textareaObservacao.className = "form-control";
-                                                                        textareaObservacao.name = "observacaoSemanal";
-                                                                        textareaObservacao.type = "text";
-                                                                        tdObservacao.appendChild(textareaObservacao);
-                                                                        row.appendChild(tdObservacao);
+                                                                        datasPrevistas.forEach(function(dataPrevista) {
+                                                                            var row = document.createElement("tr");
+                                                                            row.appendChild(criarCelula("input", "form-control", "text", dataPrevista, true));
+                                                                            row.appendChild(criarCelula("input", "form-control", "datetime-local", "", false, true));
+                                                                            row.appendChild(criarCelula("input", "form-control", "text", "", false, false, "capitalize"));
+                                                                            row.appendChild(criarCelula("textarea", "form-control", "text", "", false, false, "", nomeCampoObservacao));
+                                                                            row.appendChild(criarBotaoTipo(atividades));
+                                                                            tableBody.appendChild(row);
+                                                                        });
+                                                                    }
 
-                                                                        // Coluna: Tipo (botão para abrir o modal)
-                                                                        var tdTipo = document.createElement("td");
+                                                                    function obterDatasPrevistas(idTabela) {
+                                                                        return idTabela === "tableBody" ? ["03/06 a 05/06", "10/06 a 12/06", "17/06 a 24/06", "24/06 a 26/06"] : ["03/06 a 17/06"];
+                                                                    }
+
+                                                                    function criarCelula(tag, classe, tipo, valor, desativado, required = false, transform = "", nomeCampo = "") {
+                                                                        var cell = document.createElement("td");
+                                                                        var element = document.createElement(tag);
+                                                                        element.className = classe;
+                                                                        element.type = tipo;
+                                                                        element.value = valor;
+                                                                        element.disabled = desativado;
+                                                                        element.required = required;
+                                                                        element.style.textTransform = transform;
+                                                                        element.name = nomeCampo;
+                                                                        cell.appendChild(element);
+                                                                        return cell;
+                                                                    }
+
+                                                                    function criarBotaoTipo(atividades) {
+                                                                        var td = document.createElement("td");
                                                                         var btnToggle = document.createElement("button");
                                                                         btnToggle.type = "button";
                                                                         btnToggle.className = "btn btn-primary toggle-checkboxes-btn";
@@ -391,91 +386,128 @@ if (isset($_SESSION["useruid"])) {
                                                                         btnToggle.dataset.target = "#checkboxModal";
                                                                         btnToggle.innerHTML = "Selecionar Atividades ▼";
                                                                         btnToggle.addEventListener("click", function() {
-                                                                            atualizarModal(manut.atividades);
+                                                                            atualizarModal(atividades);
                                                                         });
-                                                                        tdTipo.appendChild(btnToggle);
-                                                                        row.appendChild(tdTipo);
+                                                                        td.appendChild(btnToggle);
+                                                                        return td;
+                                                                    }
 
-                                                                        tableBody.appendChild(row);
+                                                                    function atualizarModal(atividades) {
+                                                                        var modalBody = document.getElementById("modalBody");
+                                                                        modalBody.innerHTML = "";
+
+                                                                        atividades.forEach(function(atividade) {
+                                                                            var div = document.createElement("div");
+                                                                            div.className = "form-check";
+                                                                            var input = document.createElement("input");
+                                                                            input.className = "form-check-input";
+                                                                            input.type = "checkbox";
+                                                                            input.value = atividade;
+                                                                            input.id = "check-" + atividade;
+                                                                            var label = document.createElement("label");
+                                                                            label.className = "form-check-label";
+                                                                            label.htmlFor = "check-" + atividade;
+                                                                            label.appendChild(document.createTextNode(atividade));
+                                                                            div.appendChild(input);
+                                                                            div.appendChild(label);
+                                                                            modalBody.appendChild(div);
+                                                                        });
+                                                                    }
+                                                                </script>
+                                                                <script>
+                                                                    document.getElementById('idMaquina').addEventListener('input', function() {
+                                                                        var idMaquina = this.value.trim();
+
+                                                                        if (idMaquina) {
+                                                                            fetch(`busca_maquina.php?idMaquina=${encodeURIComponent(idMaquina)}`)
+                                                                                .then(response => response.json())
+                                                                                .then(data => {
+                                                                                    processarDadosMaquina(data);
+                                                                                })
+                                                                                .catch(error => {
+                                                                                    console.error('Erro ao buscar dados:', error);
+                                                                                    exibirMensagemErro();
+                                                                                });
+                                                                        } else {
+                                                                            limparCampos();
+                                                                        }
                                                                     });
-                                                                }
 
-                                                                // Função para atualizar o conteúdo do modal com as atividades específicas
-                                                                function atualizarModal(atividades) {
-                                                                    var modalBody = document.getElementById("modalBody");
-                                                                    modalBody.innerHTML = "";
+                                                                    function processarDadosMaquina(data) {
+                                                                        if (data.omNomeMaquina && data.omNomeMaquina !== 'Máquina não encontrada') {
+                                                                            document.getElementById('omNomeMaquina').value = data.omNomeMaquina;
+                                                                            document.getElementById('omIdentificadorMaquina').value = data.omIdentificadorMaquina || 'Não disponível';
+                                                                            atualizarLinhasTabelaSemanal(data.atividadesSemanal || []);
+                                                                            atualizarLinhasTabelaMensal(data.atividadesMensal || []);
+                                                                        } else {
+                                                                            exibirMensagemNaoEncontrada();
+                                                                        }
+                                                                    }
 
-                                                                    atividades.forEach(function(atividade) {
-                                                                        var divCheck = document.createElement("div");
-                                                                        divCheck.className = "form-check";
-                                                                        var inputCheckbox = document.createElement("input");
-                                                                        inputCheckbox.className = "form-check-input";
-                                                                        inputCheckbox.type = "checkbox";
-                                                                        inputCheckbox.value = atividade;
-                                                                        var labelCheckbox = document.createElement("label");
-                                                                        labelCheckbox.className = "form-check-label";
-                                                                        labelCheckbox.innerHTML = atividade;
-                                                                        divCheck.appendChild(inputCheckbox);
-                                                                        divCheck.appendChild(labelCheckbox);
-                                                                        modalBody.appendChild(divCheck);
-                                                                    });
-                                                                }
+                                                                    function exibirMensagemErro() {
+                                                                        document.getElementById('omNomeMaquina').value = 'Erro ao buscar dados';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
+                                                                    }
 
-                                                                adicionarLinhasTabelaSemanal();
+                                                                    function exibirMensagemNaoEncontrada() {
+                                                                        document.getElementById('omNomeMaquina').value = 'Máquina não encontrada';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
+                                                                    }
 
-                                                                // Dados das manutenções mensais
-                                                                var manutencoesMensais = [{
-                                                                    dataPrevista: "03/06 a 17/06",
-                                                                    atividades: ["Verificação e drenagem da água", "Limpar bandejas e serpentinas"]
-                                                                }];
+                                                                    function limparCampos() {
+                                                                        document.getElementById('omNomeMaquina').value = '';
+                                                                        document.getElementById('omIdentificadorMaquina').value = '';
+                                                                        atualizarLinhasTabelaSemanal([]);
+                                                                        atualizarLinhasTabelaMensal([]);
+                                                                    }
 
-                                                                // Função para adicionar as linhas na tabela mensal
-                                                                function adicionarLinhasTabelaMensal() {
-                                                                    var tableBodyMensal = document.getElementById("tableBodyMensal");
-                                                                    tableBodyMensal.innerHTML = "";
+                                                                    function atualizarLinhasTabelaSemanal(atividades) {
+                                                                        atualizarTabela("tableBody", atividades, "observacaoSemanal");
+                                                                    }
 
-                                                                    manutencoesMensais.forEach(function(manut, index) {
-                                                                        var row = document.createElement("tr");
+                                                                    function atualizarLinhasTabelaMensal(atividades) {
+                                                                        atualizarTabela("tableBodyMensal", atividades, "observacaoMensal");
+                                                                    }
 
-                                                                        // Coluna: Data Prevista
-                                                                        var tdDataPrevista = document.createElement("td");
-                                                                        var inputDataPrevista = document.createElement("input");
-                                                                        inputDataPrevista.className = "form-control";
-                                                                        inputDataPrevista.type = "text";
-                                                                        inputDataPrevista.readOnly = true;
-                                                                        inputDataPrevista.value = manut.dataPrevista;
-                                                                        tdDataPrevista.appendChild(inputDataPrevista);
-                                                                        row.appendChild(tdDataPrevista);
+                                                                    function atualizarTabela(idTabela, atividades, nomeCampoObservacao) {
+                                                                        var datasPrevistas = obterDatasPrevistas(idTabela);
+                                                                        var tableBody = document.getElementById(idTabela);
+                                                                        tableBody.innerHTML = "";
+                                                                        datasPrevistas.forEach(function(dataPrevista) {
+                                                                            var row = document.createElement("tr");
+                                                                            row.appendChild(criarCelula("input", "form-control", "text", dataPrevista, true));
+                                                                            row.appendChild(criarCelula("input", "form-control", "datetime-local", "", false, true));
+                                                                            row.appendChild(criarCelula("input", "form-control", "text", "", false, false, "capitalize"));
+                                                                            row.appendChild(criarCelula("textarea", "form-control", "text", "", false, false, "", nomeCampoObservacao));
+                                                                            row.appendChild(criarBotaoTipo(atividades));
+                                                                            tableBody.appendChild(row);
+                                                                        });
+                                                                    }
 
-                                                                        // Coluna: Data e Hora Realizados
-                                                                        var tdDataRealizados = document.createElement("td");
-                                                                        var inputDataRealizados = document.createElement("input");
-                                                                        inputDataRealizados.className = "form-control";
-                                                                        inputDataRealizados.type = "datetime-local";
-                                                                        inputDataRealizados.required = true;
-                                                                        tdDataRealizados.appendChild(inputDataRealizados);
-                                                                        row.appendChild(tdDataRealizados);
+                                                                    function obterDatasPrevistas(idTabela) {
+                                                                        return idTabela === "tableBody" ? ["03/06 a 05/06", "10/06 a 12/06", "17/06 a 24/06", "24/06 a 26/06"] : ["03/06 a 17/06"];
+                                                                    }
 
-                                                                        // Coluna: Responsável
-                                                                        var tdResponsavel = document.createElement("td");
-                                                                        var inputResponsavel = document.createElement("input");
-                                                                        inputResponsavel.className = "form-control";
-                                                                        inputResponsavel.style.textTransform = "capitalize";
-                                                                        inputResponsavel.required = true;
-                                                                        tdResponsavel.appendChild(inputResponsavel);
-                                                                        row.appendChild(tdResponsavel);
+                                                                    function criarCelula(tipoElemento, className, tipo, valor, leitura, obrigatorio, transformacao, nomeCampo) {
+                                                                        var td = document.createElement("td");
+                                                                        var elemento = document.createElement(tipoElemento);
+                                                                        elemento.className = className;
+                                                                        elemento.type = tipo;
+                                                                        if (leitura) elemento.readOnly = true;
+                                                                        if (obrigatorio) elemento.required = true;
+                                                                        if (transformacao) elemento.style.textTransform = transformacao;
+                                                                        if (nomeCampo) elemento.name = nomeCampo;
+                                                                        elemento.value = valor;
+                                                                        td.appendChild(elemento);
+                                                                        return td;
+                                                                    }
 
-                                                                        // Coluna: Observação
-                                                                        var tdObservacao = document.createElement("td");
-                                                                        var textareaObservacao = document.createElement("textarea");
-                                                                        textareaObservacao.className = "form-control";
-                                                                        textareaObservacao.name = "observacaoMensal";
-                                                                        textareaObservacao.type = "text";
-                                                                        tdObservacao.appendChild(textareaObservacao);
-                                                                        row.appendChild(tdObservacao);
-
-                                                                        // Coluna: Tipo (botão para abrir o modal)
-                                                                        var tdTipo = document.createElement("td");
+                                                                    function criarBotaoTipo(atividades) {
+                                                                        var td = document.createElement("td");
                                                                         var btnToggle = document.createElement("button");
                                                                         btnToggle.type = "button";
                                                                         btnToggle.className = "btn btn-primary toggle-checkboxes-btn";
@@ -483,25 +515,113 @@ if (isset($_SESSION["useruid"])) {
                                                                         btnToggle.dataset.target = "#checkboxModal";
                                                                         btnToggle.innerHTML = "Selecionar Atividades ▼";
                                                                         btnToggle.addEventListener("click", function() {
-                                                                            atualizarModal(manut.atividades);
+                                                                            atualizarModal(atividades);
                                                                         });
-                                                                        tdTipo.appendChild(btnToggle);
-                                                                        row.appendChild(tdTipo);
+                                                                        td.appendChild(btnToggle);
+                                                                        return td;
+                                                                    }
 
-                                                                        tableBodyMensal.appendChild(row);
+                                                                    function atualizarModal(atividades) {
+                                                                        var modalBody = document.getElementById("modalBody");
+                                                                        modalBody.innerHTML = "";
+
+                                                                        atividades.forEach(function(atividade) {
+                                                                            var div = document.createElement("div");
+                                                                            div.className = "form-check";
+                                                                            var input = document.createElement("input");
+                                                                            input.className = "form-check-input";
+                                                                            input.type = "checkbox";
+                                                                            input.value = atividade;
+                                                                            input.id = "check-" + atividade;
+                                                                            var label = document.createElement("label");
+                                                                            label.className = "form-check-label";
+                                                                            label.htmlFor = "check-" + atividade;
+                                                                            label.appendChild(document.createTextNode(atividade));
+                                                                            div.appendChild(input);
+                                                                            div.appendChild(label);
+                                                                            modalBody.appendChild(div);
+                                                                        });
+                                                                    }
+
+                                                                    function coletarDadosTabela(idTabela) {
+                                                                        var tabela = document.getElementById(idTabela);
+                                                                        var linhas = tabela.getElementsByTagName('tr');
+                                                                        var dados = [];
+
+                                                                        for (var i = 0; i < linhas.length; i++) {
+                                                                            var celulas = linhas[i].getElementsByTagName('td');
+                                                                            if (celulas.length > 0) {
+                                                                                var linhaDados = {
+                                                                                    dataPrevista: celulas[0].getElementsByTagName('input')[0].value,
+                                                                                    dataRealizada: celulas[1].getElementsByTagName('input')[0].value,
+                                                                                    responsabilidade: celulas[2].getElementsByTagName('input')[0].value,
+                                                                                    observacao: celulas[3].getElementsByTagName('textarea')[0].value
+                                                                                };
+                                                                                dados.push(linhaDados);
+                                                                            }
+                                                                        }
+                                                                        return dados;
+                                                                    }
+
+                                                                    function coletarDadosModal() {
+                                                                        var checkboxes = document.querySelectorAll('#modalBody input[type="checkbox"]:checked');
+                                                                        var atividadesSelecionadas = Array.from(checkboxes).map(checkbox => checkbox.value);
+                                                                        return atividadesSelecionadas;
+                                                                    }
+
+                                                                    function enviarDados() {
+                                                                        var dadosTabelaSemanal = coletarDadosTabela("tableBody");
+                                                                        var dadosTabelaMensal = coletarDadosTabela("tableBodyMensal");
+                                                                        var atividadesSelecionadas = coletarDadosModal();
+                                                                        var idMaquina = document.getElementById('idMaquina').value.trim(); // Certifique-se de capturar o idMaquina
+
+                                                                        var formData = new FormData();
+                                                                        formData.append('dadosTabelaSemanal', JSON.stringify(dadosTabelaSemanal));
+                                                                        formData.append('dadosTabelaMensal', JSON.stringify(dadosTabelaMensal));
+                                                                        formData.append('atividadesSelecionadas', atividadesSelecionadas.join(','));
+                                                                        formData.append('idMaquina', idMaquina); // Adiciona idMaquina ao FormData
+
+                                                                        // Adicione um log para verificar o conteúdo do FormData
+                                                                        for (var pair of formData.entries()) {
+                                                                            console.log(pair[0] + ': ' + pair[1]);
+                                                                        }
+
+                                                                        fetch('includes/salvar_regManutencao004.inc.php', {
+                                                                                method: 'POST',
+                                                                                body: formData
+                                                                            })
+                                                                            .then(response => {
+                                                                                return response.text(); // Recebe a resposta como texto
+                                                                            })
+                                                                            .then(text => {
+                                                                                console.log('Resposta:', text); // Log da resposta para verificação
+                                                                                return JSON.parse(text); // Tenta analisar como JSON
+                                                                            })
+                                                                            .then(data => {
+                                                                                if (data.success) {
+                                                                                    alert(data.message);
+                                                                                } else {
+                                                                                    alert(data.message);
+                                                                                }
+                                                                            })
+                                                                            .catch(error => {
+                                                                                console.error('Erro:', error);
+                                                                                alert('Ocorreu um erro ao enviar os dados.');
+                                                                            });
+                                                                    }
+
+                                                                    document.getElementById('submitModal').addEventListener('click', function() {
+                                                                        enviarDados();
                                                                     });
-                                                                }
+                                                                </script>
 
-                                                                adicionarLinhasTabelaMensal();
-                                                            </script>
-
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <button class="btn btn-fab" type="submit" name="submit" id="submit">Enviar</button>
+                                            <button class="btn btn-fab" type="submit" name="submit" id="submit">Salvar</button>
                                 </form>
 
                         </div>
@@ -514,24 +634,14 @@ if (isset($_SESSION["useruid"])) {
         </div>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('.toggle-row-btn').click(function() {
-                    var target = $(this).data('target');
-                    $(target).toggle();
-                    var currentText = $(this).val();
-                    $(this).val(currentText === '▼' ? '▲' : '▼');
-                });
-            });
-        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
         <script src="js/scripts.js"></script>
         <script src="js/menu.js"></script>
-        <!--      <script>
+        <script>
             <?php require_once "config/firebaseConfig.php"; ?>
             const firebaseConfig = <?php echo json_encode($firebaseConfig); ?>;
-        </script> -->
+        </script>
 
         <script src="js/uploadToFirebase.js"></script>
 
