@@ -173,9 +173,9 @@ if (isset($_SESSION["useruid"])) {
                                             </script>
                                         </div> -->
 
-                                        <?php 
-                                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMaquina'])) {
-                                                $idMaquina = $_POST['idMaquina'];
+                                        <?php
+                                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMaquina'])) {
+                                            $idMaquina = $_POST['idMaquina'];
 
                                             $query = "SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?";
                                             $stmt = $conn->prepare($query);
@@ -215,6 +215,36 @@ if (isset($_SESSION["useruid"])) {
                                                 <input class='form-control' name='omIdentificadorMaquina' id='omIdentificadorMaquina' type='text' readonly>
                                             </div>
                                         </div>
+                                        <script>
+                                            document.getElementById('idMaquina').addEventListener('input', function() {
+                                                var idMaquina = this.value.trim();
+
+                                                if (idMaquina) {
+                                                    fetch(`busca_maquina.php?idMaquina=${encodeURIComponent(idMaquina)}`)
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            if (data.omNomeMaquina) {
+                                                                document.getElementById('omNomeMaquina').value = data.omNomeMaquina;
+                                                                document.getElementById('omIdentificadorMaquina').value = data.omIdentificadorMaquina || 'Não disponível';
+                                                            } else if (data.error) {
+                                                                document.getElementById('omNomeMaquina').value = data.error;
+                                                                document.getElementById('omIdentificadorMaquina').value = '';
+                                                            } else {
+                                                                document.getElementById('omNomeMaquina').value = 'Máquina não encontrada';
+                                                                document.getElementById('omIdentificadorMaquina').value = '';
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Erro ao buscar dados:', error);
+                                                            document.getElementById('omNomeMaquina').value = 'Erro ao buscar dados';
+                                                            document.getElementById('omIdentificadorMaquina').value = '';
+                                                        });
+                                                } else {
+                                                    document.getElementById('omNomeMaquina').value = '';
+                                                    document.getElementById('omIdentificadorMaquina').value = '';
+                                                }
+                                            });
+                                        </script>
                                         <div class='d-flex d-block justify-content-around m-4'>
 
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -802,32 +832,34 @@ if (isset($_SESSION["useruid"])) {
         <script src="js/uploadToFirebase.js"></script>
 
         <script>
-function fetchMachineData() {
-    var idMaquina = $('#idMaquina').val();
-    
-    $.ajax({
-        type: 'POST',
-        url: 'index.php', 
-        data: { idMaquina: idMaquina },
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) {
-                $('#omNomeMaquina').val(response.omNomeMaquina);
-                $('#omIdentificadorMaquina').val(response.omIdentificadorMaquina);
-            } else {
-                
-                alert(response.message);
-                $('#omNomeMaquina').val('');
-                $('#omIdentificadorMaquina').val('');
+            function fetchMachineData() {
+                var idMaquina = $('#idMaquina').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'index.php',
+                    data: {
+                        idMaquina: idMaquina
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#omNomeMaquina').val(response.omNomeMaquina);
+                            $('#omIdentificadorMaquina').val(response.omIdentificadorMaquina);
+                        } else {
+
+                            alert(response.message);
+                            $('#omNomeMaquina').val('');
+                            $('#omIdentificadorMaquina').val('');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+
+                        console.error(status + ": " + error);
+                    }
+                });
             }
-        },
-        error: function(xhr, status, error) {
-            
-            console.error(status + ": " + error);
-        }
-    });
-}
-</script>
+        </script>
 
     </body>
 
