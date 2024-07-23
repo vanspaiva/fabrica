@@ -165,6 +165,30 @@ if (isset($_SESSION["useruid"])) {
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Registro de Manutenção -->
+                        <div class="col-md-6 my-2">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <h6 class=""><b>Registros de Manutenção</b></h6>
+                                    </div>
+                                    <hr>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="registroManutencao004" class="btn btn-info mx-1 disabled" aria-disabled="true"><i class="fas fa-plus"></i> Nova RM </a>
+                                            <a href="lista-registroMa004.php" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;" aria-disabled="true"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                        <div class="d-flex justify-content-between px-2">
+                                            <a href="" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?> disabled" style="border-top: 6px #129aaf solid;" aria-disabled="true">Registros Pendentes</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     <?php
                 }
                     ?>
@@ -195,6 +219,7 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                     </div>
 
+
                     <!-- Registro Manutenção e Limpeza Ar-condicionado -->
                     <div class="col-md-6 my-2">
                         <div class="card border-left-primary shadow h-100 py-2">
@@ -218,31 +243,6 @@ if (isset($_SESSION["useruid"])) {
                         </div>
                     </div>
 
-                    
-                    <!-- Registro de Manutenção -->
-                     <!--<?= $_SESSION["userperm"] == 'Colaborador(a)' ? "<div class='row'>" : '' ?> -->
-
-                    <div class="col-md-6 my-2">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <h6 class=""><b>Registros de Manutenção</b></h6>
-                                </div>
-                                <hr>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="registroManutencao004" class="btn btn-info mx-1"><i class="fas fa-plus"></i> Nova RM </a>
-                                        <a href="" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;"> <i class="fas fa-list"></i> Lista de Registros</a>
-                                    </div>
-                                </div>
-                                <div class="row d-flex justify-content-center my-1 py-1">
-                                    <div class="d-flex justify-content-between px-2">
-                                        <a href="" class="btn btn-outline-info mx-1 <?php echo $classe_css; ?>" style="border-top: 6px #129aaf solid;">Registros Pendentes</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     </div>
 
                     <?= $_SESSION["userperm"] == 'Colaborador(a)' ? "</div>" : '' ?>
