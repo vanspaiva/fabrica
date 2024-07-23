@@ -266,30 +266,48 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
 
                                             <div class='form-group d-inline-block flex-fill m-2 pl-5'>
-                                                <label class='control-label'>A maquina está operacional ? <b style='color: red;'>*</b></label>
+                                                <label class='control-label'>A maquina está operacional? <b style='color: red;'>*</b></label>
                                                 <div>
                                                     <div class='form-check'>
                                                         <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel1' value='Operável' required>
-                                                        <label class='form-check-label' for='maqOperavel1'>
-                                                            Sim
-                                                        </label>
+                                                        <label class='form-check-label' for='maqOperavel1'>Sim</label>
                                                     </div>
                                                     <div class='form-check'>
                                                         <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel2' value='Não Operável' required>
-                                                        <label class='form-check-label' for='maqOperavel2'>
-                                                            Não
-                                                        </label>
+                                                        <label class='form-check-label' for='maqOperavel2'>Não</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class='form-group d-inline-block flex-fill m-2 pl-5'>
+
+                                            <div style='display: nome;' class='form-group d-inline-block flex-fill m-2 pl-5' id='naoOperacionalDiv'>
                                                 <div>
                                                     <div class='form-group flex-fill m-2'>
                                                         <label class='control-label' style='color:black;'>Por quanto tempo ficará não operacional? <b style='color: red;'>*</b></label>
-                                                        <input class='form-control' name='' id='' type='text' readonly>
+                                                        <input class='form-control' name='tempoNaoOperacional' id='tempoNaoOperacional' type='text'>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    var maqOperavel1 = document.getElementById('maqOperavel1');
+                                                    var maqOperavel2 = document.getElementById('maqOperavel2');
+                                                    var naoOperacionalDiv = document.getElementById('naoOperacionalDiv');
+
+                                                    function checkRadio() {
+                                                        if (maqOperavel2.checked) {
+                                                            naoOperacionalDiv.style.display = 'block';
+                                                        } else {
+                                                            naoOperacionalDiv.style.display = 'none';
+                                                        }
+                                                    }
+
+                                                    maqOperavel1.addEventListener('change', checkRadio);
+                                                    maqOperavel2.addEventListener('change', checkRadio);
+
+                                                    checkRadio(); // Verifica o estado inicial dos radios ao carregar a página
+                                                });
+                                            </script>
 
                                         </div>
 
