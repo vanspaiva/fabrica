@@ -1086,10 +1086,6 @@ CREATE TABLE `ommanutencaomensal` (
   `descricaoMensal` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `ommanutencaomensal`
---
-
 INSERT INTO `ommanutencaomensal` (`id`, `descricaoMensal`) VALUES
 (1, 'Limpeza externa do equipamento'),
 (2, 'Limpeza das ventoinhas de ar'),
@@ -1112,9 +1108,6 @@ CREATE TABLE `ommanutencaosemanal` (
   `descricaoSemanal` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `ommanutencaosemanal`
---
 
 INSERT INTO `ommanutencaosemanal` (`id`, `descricaoSemanal`) VALUES
 (1, 'Limpeza interna da área de usinagem'),
@@ -1168,10 +1161,6 @@ CREATE TABLE `maquina_manutencao_mensal` (
   `idMaquina` varchar(50) NOT NULL,
   `idManutencaoMensal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `maquina_manutencao_mensal`
---
 
 INSERT INTO `maquina_manutencao_mensal` (`idMaquina`, `idManutencaoMensal`) VALUES
 ('MAQ.001', 1),
@@ -1228,12 +1217,13 @@ INSERT INTO `maquina_manutencao_semanal` (`idMaquina`, `idManutencaoSemanal`) VA
 ('MAQ.001', 4),
 ('MAQ.002', 1),
 ('MAQ.002', 2),
+('MAQ.002', 3),
 ('MAQ.002', 5),
 ('MAQ.002', 6),
 ('MAQ.002', 7),
 ('MAQ.002', 8),
 ('MAQ.002', 9),
-('MAQ.002', 19),
+('MAQ.002', 18),
 ('MAQ.003', 1),
 ('MAQ.003', 2),
 ('MAQ.003', 5),
@@ -1270,3 +1260,54 @@ ALTER TABLE `maquina_manutencao_semanal`
   ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
   ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_2` FOREIGN KEY (`idManutencaoSemanal`) REFERENCES `ommanutencaosemanal` (`id`);
 COMMIT;
+
+--
+-- Estrutura para tabela `omregistromanutencao`
+--
+
+CREATE TABLE `omregistromanutencao` (
+  `id` int(11) NOT NULL,
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoSemanal` int(11) DEFAULT NULL,
+  `idManutencaoMensal` int(11) DEFAULT NULL,
+  `dataPrevista` date NOT NULL,
+  `dataRealizada` date DEFAULT NULL,
+  `responsavel` varchar(255) NOT NULL,
+  `observacao` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoSemanal` (`idManutencaoSemanal`),
+  ADD KEY `idManutencaoMensal` (`idManutencaoMensal`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  ADD CONSTRAINT `omregistromanutencao_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `omregistromanutencao_ibfk_2` FOREIGN KEY (`idManutencaoSemanal`) REFERENCES `maquina_manutencao_semanal` (`idManutencaoSemanal`),
+  ADD CONSTRAINT `omregistromanutencao_ibfk_3` FOREIGN KEY (`idManutencaoMensal`) REFERENCES `maquina_manutencao_mensal` (`idManutencaoMensal`);
+;
