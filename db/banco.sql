@@ -1190,10 +1190,6 @@ ALTER TABLE `maquina_manutencao_mensal`
   ADD KEY `idManutencaoMensal` (`idManutencaoMensal`);
 
 --
--- Restrições para tabelas despejadas
---
-
---
 -- Restrições para tabelas `maquina_manutencao_mensal`
 --
 ALTER TABLE `maquina_manutencao_mensal`
@@ -1250,10 +1246,6 @@ ALTER TABLE `maquina_manutencao_semanal`
   ADD KEY `idManutencaoSemanal` (`idManutencaoSemanal`);
 
 --
--- Restrições para tabelas despejadas
---
-
---
 -- Restrições para tabelas `maquina_manutencao_semanal`
 --
 ALTER TABLE `maquina_manutencao_semanal`
@@ -1276,9 +1268,6 @@ CREATE TABLE `omregistromanutencao` (
   `observacao` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Índices para tabelas despejadas
---
 
 --
 -- Índices de tabela `omregistromanutencao`
