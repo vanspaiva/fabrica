@@ -31,7 +31,7 @@ if (isset($_SESSION["useruid"])) {
     include_once 'php/lateral-nav.php';
     ?>
     <main>
-    <button id="start-scan-btn" class="btn btn-primary">Iniciar Leitura</button>
+    <button id="start-scan-btn" class="btn btn-primary m-5">Iniciar Leitura</button>
     <div id="reader"></div>
     </main>
     <script>
