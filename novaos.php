@@ -42,6 +42,18 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 ?>
+    <head>
+        <style>
+             .form-check-container {
+            display: flex;
+            align-items: center;
+        }
+            .tempoNaoOperacional {
+            display: none;   
+            margin-right: 8em;
+        }
+        </style>
+    </head>
 
 
     <body class="bg-light-gray2">
@@ -172,35 +184,6 @@ if (isset($_SESSION["useruid"])) {
                                                 $('#dtentrega').attr('min', minData);
                                             </script>
                                         </div> -->
-
-                                        <?php
-                                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMaquina'])) {
-                                            $idMaquina = $_POST['idMaquina'];
-
-                                            $query = "SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?";
-                                            $stmt = $conn->prepare($query);
-                                            $stmt->bind_param("s", $idMaquina);
-                                            $stmt->execute();
-                                            $stmt->bind_result($omNomeMaquina, $omIdentificadorMaquina);
-
-                                            if ($stmt->fetch()) {
-                                                $response = array(
-                                                    'success' => true,
-                                                    'omNomeMaquina' => $omNomeMaquina,
-                                                    'omIdentificadorMaquina' => $omIdentificadorMaquina
-                                                );
-                                                echo json_encode($response);
-                                                exit;
-                                            } else {
-                                                $response = array(
-                                                    'success' => false,
-                                                    'message' => 'Máquina não encontrada'
-                                                );
-                                                echo json_encode($response);
-                                                exit;
-                                            }
-                                        }
-                                        ?>
                                         <div class='d-flex justify-content-around'>
                                             <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nº Máquina<b style='color: red;'>*</b></label>
@@ -278,37 +261,32 @@ if (isset($_SESSION["useruid"])) {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div style='display: nome;' class='form-group d-inline-block flex-fill m-2 pl-5' id='naoOperacionalDiv'>
-                                                <div>
-                                                    <div class='form-group flex-fill m-2'>
-                                                        <label class='control-label' style='color:black;'>Por quanto tempo ficará não operacional? <b style='color: red;'>*</b></label>
-                                                        <input class='form-control' name='tempoNaoOperacional' id='tempoNaoOperacional' type='text'>
-                                                    </div>
+                                            <div>
+                                                <div class='form-group tempoNaoOperacional'>
+                                                    <label class='control-label' style='color:black;'>Por quanto tempo ficará não operacional? <b style='color: red;'>*</b></label>
+                                                    <input class='form-control' name='tempoNaoOperacional' id='tempoNaoOperacional' type='text'>
                                                 </div>
                                             </div>
-
                                             <script>
                                                 document.addEventListener('DOMContentLoaded', function() {
-                                                    var maqOperavel1 = document.getElementById('maqOperavel1');
-                                                    var maqOperavel2 = document.getElementById('maqOperavel2');
-                                                    var naoOperacionalDiv = document.getElementById('naoOperacionalDiv');
+                                                    var radioOperavel = document.querySelectorAll('input[name="maqOperavel"]');
+                                                    var tempoNaoOperacional = document.getElementById('tempoNaoOperacional').parentElement;
 
-                                                    function checkRadio() {
-                                                        if (maqOperavel2.checked) {
-                                                            naoOperacionalDiv.style.display = 'block';
+                                                    function toggleTempoNaoOperacional() {
+                                                        if (document.getElementById('maqOperavel2').checked) {
+                                                            tempoNaoOperacional.style.display = 'block';
                                                         } else {
-                                                            naoOperacionalDiv.style.display = 'none';
+                                                            tempoNaoOperacional.style.display = 'none';
                                                         }
                                                     }
 
-                                                    maqOperavel1.addEventListener('change', checkRadio);
-                                                    maqOperavel2.addEventListener('change', checkRadio);
+                                                    radioOperavel.forEach(function(radio) {
+                                                        radio.addEventListener('change', toggleTempoNaoOperacional);
+                                                    });
 
-                                                    checkRadio(); // Verifica o estado inicial dos radios ao carregar a página
+                                                    tempoNaoOperacional.style.display = 'none';
                                                 });
                                             </script>
-
                                         </div>
 
                                         <div class='d-flex d-block justify-content-around'>
