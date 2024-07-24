@@ -9,10 +9,23 @@ if (isset($_GET['idMaquina'])) {
         die(json_encode(array('error' => 'Connection failed: ' . $conn->connect_error)));
     }
 
+    // Normalizar o ID da máquina
+    $normalizedId = preg_replace('/\D/', '', $idMaquina); 
+    $formattedIdMaquina = "MAQ." . str_pad($normalizedId, 3, '0', STR_PAD_LEFT);
+
+    // Tenta buscar com o formato completo
     $sql = $conn->prepare("SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE idMaquina = ?");
-    $sql->bind_param("s", $idMaquina);
+    $sql->bind_param("s", $formattedIdMaquina);
     $sql->execute();
     $result = $sql->get_result();
+
+    if ($result->num_rows === 0) {
+        // Se não encontrar com o formato completo, tenta buscar só pelo número
+        $sql = $conn->prepare("SELECT omNomeMaquina, omIdentificadorMaquina FROM om_maquina WHERE REPLACE(idMaquina, 'MAQ.', '') = ?");
+        $sql->bind_param("s", $normalizedId);
+        $sql->execute();
+        $result = $sql->get_result();
+    }
 
     $data = array();
 
@@ -30,7 +43,7 @@ if (isset($_GET['idMaquina'])) {
             JOIN maquina_manutencao_semanal mms ON oms.id = mms.idManutencaoSemanal
             WHERE mms.idMaquina = ?
         ");
-        $sqlAtividadesSemanal->bind_param("s", $idMaquina);
+        $sqlAtividadesSemanal->bind_param("s", $formattedIdMaquina);
         $sqlAtividadesSemanal->execute();
         $resultAtividadesSemanal = $sqlAtividadesSemanal->get_result();
 
@@ -48,7 +61,7 @@ if (isset($_GET['idMaquina'])) {
             JOIN maquina_manutencao_mensal mmm ON omm.id = mmm.idManutencaoMensal
             WHERE mmm.idMaquina = ?
         ");
-        $sqlAtividadesMensal->bind_param("s", $idMaquina);
+        $sqlAtividadesMensal->bind_param("s", $formattedIdMaquina);
         $sqlAtividadesMensal->execute();
         $resultAtividadesMensal = $sqlAtividadesMensal->get_result();
 
