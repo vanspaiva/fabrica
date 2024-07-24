@@ -37,18 +37,18 @@ if (isset($_SESSION["useruid"])) {
         $idCdg = 1000 + $idCdg;
         $codgos = 'OM' . $idCdg;
 
-        //Solicitante 
+
         //Data para entrega
-        $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
+       /*  $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']); */
 
-        $dataBDEntrega = $dataEHoraEntrega[0];
-
+      /*   $dataBDEntrega = $dataEHoraEntrega[0]; */
+/* 
         if ($dataBDEntrega) {
             $dataBDEntrega = explode("-", $dataBDEntrega);
             $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
         } else {
             $dataEntrega = "";
-        }
+        } */
 
 
         //Responsável Abertura
@@ -75,7 +75,7 @@ if (isset($_SESSION["useruid"])) {
         $omOperacional = $row["omOperacional"];
         $omAcaoQualidade = $row["omAcaoQualidade"];
         if ($omAcaoQualidade == 'op1') {
-            $omAcaoQualidade = 'verificar a plaquinha de não operacional';
+            $omAcaoQualidade = 'verificar identificação de não operacional';
         } else if ($omAcaoQualidade == 'op2') {
             $omAcaoQualidade = 'verificar se realmente deve estar operacional';
         }
@@ -158,10 +158,10 @@ if (isset($_SESSION["useruid"])) {
                                     <td colspan="5" style="width: 200px;"><?php echo $codgos; ?></td>
                                     <!-- <td colspan="4" style="text-align: center;"><img alt='testing' src="barcode/barcode.php?codetype=Code128&size=40&text=<?php echo $codgos; ?>&print=true" /></td> -->
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> DATA PARA ENTREGA </td>
                                     <td colspan="5"><?php echo $dataEntrega; ?></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nº Máquina: </td>
                                     <td style="width: 200px;"><?php echo $lote; ?></td>
