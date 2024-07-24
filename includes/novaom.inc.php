@@ -7,7 +7,8 @@ if (isset($_POST["submit"])) {
 
     $tpManutenção = addslashes($_POST['tipo_manutencao']);
     $mqOperacinal = addslashes($_POST['maqOperavel']);
-
+    $tempoNoperacinal = addslashes($_POST['tempoNaoOperacional']);
+    
 
     $tp_contacriador = addslashes($_POST["tp_contacriador"]);
     $nomecriador = addslashes($_POST["nomecriador"]);
@@ -16,9 +17,28 @@ if (isset($_POST["submit"])) {
     $userip = addslashes($_POST["userip"]);
 
 
-    $idMaquina = addslashes($_POST["idMaquina"]);
+    $idMaquinaInput = addslashes($_POST["idMaquina"]);
     $omNomeMaquina = addslashes($_POST["omNomeMaquina"]);
     $omIdentificadorMaquina = addslashes($_POST["omIdentificadorMaquina"]);
+
+    // Normaliza o ID da máquina
+    $normalizedId = preg_replace('/\D/', '', $idMaquinaInput); // Remove tudo que não é dígito
+    $formattedIdMaquina = "MAQ." . str_pad($normalizedId, 3, '0', STR_PAD_LEFT);
+
+    // Buscar o ID da máquina na tabela om_maquina
+    $stmt = $conn->prepare("SELECT idMaquina FROM om_maquina WHERE idMaquina = ? OR REPLACE(idMaquina, 'MAQ.', '') = ?");
+    $stmt->bind_param("ss", $formattedIdMaquina, $normalizedId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $idMaquina = $row['idMaquina'];
+    } else {
+        $idMaquina = null;
+    }
+
+    $stmt->close(); 
 
 
     //$dtentrega = addslashes($_POST["dtentrega"]);
@@ -29,18 +49,6 @@ if (isset($_POST["submit"])) {
     $grauurgencia = addslashes($_POST["grauurgencia"]);
 
     $urlArquivo = addslashes($_POST["urlThrowback"]);
-
-/*     if (empty($_POST['nmaquina'])) {
-        $nmaquina = null;
-    } else {
-        $nmaquina = addslashes($_POST["nmaquina"]);
-    }
-
-    if (empty($_POST['nomemaquina'])) {
-        $nomemaquina = null;
-    } else {
-        $nomemaquina = addslashes($_POST["nomemaquina"]);
-    } */
 
     if (empty($_POST['obs'])) {
         $obs = null;
@@ -61,7 +69,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
+    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega, $setor, $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
 } else {
     header("location: ../solicitacao");
     exit();
