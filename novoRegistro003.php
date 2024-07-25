@@ -14,6 +14,13 @@ if (isset($_SESSION["useruid"])) {
     }
 ?>
 
+<style>
+    @media (max-width: 650px) {
+    .witdhResponsivo {
+        width: 200px; /* Ajuste a largura conforme necessário */
+    }
+}
+</style>
 
     <body class="bg-light-gray2">
         <?php
@@ -130,7 +137,7 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
 
                                         <div class='d-flex d-block justify-content-around'>
-                                        <div class='form-group d-inline-block flex-fill m-2'>
+                                        <div class='form-group d-inline-block flex-fill m-2 witdhResponsivo'>
                                             <label for="validationDefault04">Informe o Deprtamento: </label>
                                             <select class="custom-select" id="validationDefault04" name="area-adm" required>
                                                 <?php
@@ -239,7 +246,7 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -267,7 +274,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -295,7 +302,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -337,7 +344,7 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -365,7 +372,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -393,7 +400,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -429,7 +436,7 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -457,7 +464,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -485,7 +492,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -511,7 +518,7 @@ if (isset($_SESSION["useruid"])) {
                                             <label class='d-block control-label' style='color:black;'>Selecione os tipos de limpeza realizados <b style='color: red;'>*</b></label>
                                         </div>
                                         <div class="row mx-2">
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol>
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -539,7 +546,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="5">
                                                     <li>
                                                         <div class="form-check form-check-inline">
@@ -567,7 +574,7 @@ if (isset($_SESSION["useruid"])) {
                                                     </li>
                                                 </ol>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-lg-4 col-12">
                                                 <ol start="9">
                                                     <li>
                                                         <div class="form-check form-check-inline">
