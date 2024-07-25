@@ -446,7 +446,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $pname, $grauurgencia, $dtentrega, $obs, $status, $tpManutenção, $mqOperacinal, $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $pname, $grauurgencia, $dtentrega, $obs, $status, $tpManutenção, $mqOperacinal, $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
 
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
@@ -463,7 +463,6 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     header("location: ../lista-om?error=sent");
     exit();
 }
-
 
 function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao,$idMaquina, $omNomeMaquina)
 {
@@ -658,13 +657,12 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
     mysqli_close($conn);
 }
 
-function editOM($conn, $omid, $status, $grau, $setor, $descricao, $dtexecucao, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento)
+function editOM($conn, $omid, $status, $grau, $setor, $descricao, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento)
 {
     $sql = "UPDATE ordenmanutencao 
             SET omSetor = ?, 
                 omDescricao = ?, 
                 omGrauUrgencia = ?, 
-                dtExecucao = ?, 
                 omObs = ?, 
                 omStatus = ?, 
                 omAcaoQualidade = ?, 
@@ -684,7 +682,7 @@ function editOM($conn, $omid, $status, $grau, $setor, $descricao, $dtexecucao, $
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $setor, $descricao, $grau, $dtexecucao, $obs, $status, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento, $omid);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $setor, $descricao, $grau, $obs, $status, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento, $omid);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
