@@ -2,6 +2,10 @@
 if (isset($_POST["submit"])) {
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
+    
+    echo "<pre>";
+    var_dump($_POST);
+    echo "</pre>";
 
     $tp_contacriador = addslashes($_POST["tp_contacriador"]);
     $nomecriador = addslashes($_POST["nomecriador"]);
