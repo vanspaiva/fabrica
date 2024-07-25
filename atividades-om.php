@@ -19,7 +19,7 @@ if (isset($_SESSION["useruid"])) {
         while ($row = mysqli_fetch_array($ret)) {
             $id = $row['omId'];
 
-            //Tempo restante
+           /*  //Tempo restante
             $now = time(); // or your date as well
             $your_date = strtotime($row['dtExecucao']);
             $datediff = $now - $your_date;
@@ -34,7 +34,7 @@ if (isset($_SESSION["useruid"])) {
                 array_push($listaAmanha, $id);
             } else {
                 array_push($listaOutro, $id);
-            }
+            } */
         }
 
         ?>
