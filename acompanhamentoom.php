@@ -43,7 +43,7 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col">
                         <div class="row d-flex justify-content-around">
                             <div class="col-sm d-flex justify-content-start" style="flex-direction: column;">
-                                <h5 class="text-muted"><b>OM - Acompanhamento Data Entrega</b></h5>
+                                <h5 class="text-muted"><b>OM - Acompanhamento</b></h5>
                                 <small class="text-muted">Chegada de pedidos e realização de trabalho</small>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class="row no-gutters align-items-center py-2">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1 d-flex justify-content-center">
-                                                    Acompanhamento data entrega (TODOS ABERTOS)</div>
+                                                    TODOS ABERTOS</div>
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
@@ -105,10 +105,8 @@ if (isset($_SESSION["useruid"])) {
                                                             <th>ID</th>
                                                             <th>Status</th>
                                                             <th>Data Entrada</th>
-                                                            <th>Produto</th>
-                                                            <th>Tempo Restante</th>
-                                                            <th>Data Entrega</th>
-                                                            <th></th>
+                                                            <th>Máquina</th>
+                                                            <th>Descrição</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -128,30 +126,6 @@ if (isset($_SESSION["useruid"])) {
                                                             $data = $dataBD[2] . "/" . $dataBD[1] . "/" . $dataBD[0];
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
-                                                            //Data Entrega
-                                                            if ($row['omDtEntregaReal'] == null) {
-                                                                $dataVazia = true;
-                                                                $temporestante = null;
-                                                            } else {
-                                                                $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
-
-                                                                $dataBDEntrega = $dataEHoraEntrega[0];
-                                                                $dataBDEntrega = explode("-", $dataBDEntrega);
-                                                                $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
-
-                                                                //Tempo restante
-                                                                $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['omDtEntregaReal']);
-                                                                $datediff = $now - $your_date;
-
-                                                                $temporestante = round($datediff / (60 * 60 * 24));
-                                                                $temporestante = $temporestante * (-1);
-                                                                $temporestante = $temporestante + 1;
-                                                            }
-
-
-
                                                             //Id
                                                             $idOs = $row['omId'];
 
@@ -170,21 +144,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
                                                                 <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['omDescricao'], 0, 20) . '...'; ?></td>
-                                                                <td class="d-flex justify-content-center" <?php
-                                                                                                            if ($temporestante == null) {
-                                                                                                                echo '';
-                                                                                                            } else {
-                                                                                                                if ($temporestante <= 2) {
-                                                                                                                    echo 'style="color: red;"';
-                                                                                                                } ?>><?php echo $temporestante . ' dias';
+                                                                <td><?php echo $row['idMaquina']; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 0, 50) . '...'; ?></td>
+                                                                <!-- <td class="d-flex justify-content-center" <?php
+                                                                                                                if ($temporestante == null) {
+                                                                                                                    echo '';
+                                                                                                                } else {
+                                                                                                                    if ($temporestante <= 2) {
+                                                                                                                        echo 'style="color: red;"';
+                                                                                                                    } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
                                                                         echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
-                                                                    } ?></td>
-                                                                <td><?php echo $btn; ?></td>
+                                                                    } ?></td> -->
+                                                                <!-- <td><?php echo $btn; ?></td> -->
                                                             </tr>
                                                         <?php
                                                         } ?>
@@ -199,7 +174,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class="row no-gutters align-items-center py-2">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1 d-flex justify-content-center">
-                                                    Acompanhamento data entrega (EM ANDAMENTO)</div>
+                                                    EM ANDAMENTO</div>
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
@@ -211,10 +186,8 @@ if (isset($_SESSION["useruid"])) {
                                                             <th>ID</th>
                                                             <th>Status</th>
                                                             <th>Data Entrada</th>
-                                                            <th>Produto</th>
-                                                            <th>Tempo Restante</th>
-                                                            <th>Data Entrega</th>
-                                                            <th></th>
+                                                            <th>Máquina</th>
+                                                            <th>Descrição</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -234,30 +207,6 @@ if (isset($_SESSION["useruid"])) {
                                                             $data = $dataBD[2] . "/" . $dataBD[1] . "/" . $dataBD[0];
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
-                                                            //Data Entrega
-                                                            if ($row['omDtEntregaReal'] == null) {
-                                                                $dataVazia = true;
-                                                                $temporestante = null;
-                                                            } else {
-                                                                $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
-
-                                                                $dataBDEntrega = $dataEHoraEntrega[0];
-                                                                $dataBDEntrega = explode("-", $dataBDEntrega);
-                                                                $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
-
-                                                                //Tempo restante
-                                                                $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['omDtEntregaReal']);
-                                                                $datediff = $now - $your_date;
-
-                                                                $temporestante = round($datediff / (60 * 60 * 24));
-                                                                $temporestante = $temporestante * (-1);
-                                                                $temporestante = $temporestante + 1;
-                                                            }
-
-
-
                                                             //Id
                                                             $idOs = $row['omId'];
 
@@ -276,21 +225,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
                                                                 <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
-                                                                <td class="d-flex justify-content-center" <?php
-                                                                                                            if ($temporestante == null) {
-                                                                                                                echo '';
-                                                                                                            } else {
-                                                                                                                if ($temporestante <= 2) {
-                                                                                                                    echo 'style="color: red;"';
-                                                                                                                } ?>><?php echo $temporestante . ' dias';
+                                                                <td><?php echo $row['idMaquina']; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 50) . '...'; ?></td>
+                                                                <!-- td class="d-flex justify-content-center" <?php
+                                                                                                                if ($temporestante == null) {
+                                                                                                                    echo '';
+                                                                                                                } else {
+                                                                                                                    if ($temporestante <= 2) {
+                                                                                                                        echo 'style="color: red;"';
+                                                                                                                    } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
                                                                         echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
-                                                                    } ?></td>
-                                                                <td><?php echo $btn; ?></td>
+                                                                    } ?></td> -->
+                                                                <!--   <td><?php echo $btn; ?></td> -->
                                                             </tr>
                                                         <?php
                                                         } ?>
@@ -305,7 +255,7 @@ if (isset($_SESSION["useruid"])) {
                                         <div class="row no-gutters align-items-center py-2">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1 d-flex justify-content-center">
-                                                    Acompanhamento data entrega (PAUSADOS)</div>
+                                                    PAUSADOS</div>
                                             </div>
                                         </div>
                                         <div class="row p-2 d-flex justify-content-center">
@@ -317,10 +267,8 @@ if (isset($_SESSION["useruid"])) {
                                                             <th>ID</th>
                                                             <th>Status</th>
                                                             <th>Data Entrada</th>
-                                                            <th>Produto</th>
-                                                            <th>Tempo Restante</th>
-                                                            <th>Data Entrega</th>
-                                                            <th></th>
+                                                            <th>Máquina</th>
+                                                            <th>Descrição</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -340,29 +288,6 @@ if (isset($_SESSION["useruid"])) {
                                                             $data = $dataBD[2] . "/" . $dataBD[1] . "/" . $dataBD[0];
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
-                                                            //Data Entrega
-                                                            if ($row['omDtEntregaReal'] == null) {
-                                                                $dataVazia = true;
-                                                                $temporestante = null;
-                                                            } else {
-                                                                $dataVazia = false;
-                                                                $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']);
-
-                                                                $dataBDEntrega = $dataEHoraEntrega[0];
-                                                                $dataBDEntrega = explode("-", $dataBDEntrega);
-                                                                $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
-
-                                                                //Tempo restante
-                                                                $now = time(); // or your date as well
-                                                                $your_date = strtotime($row['omDtEntregaReal']);
-                                                                $datediff = $now - $your_date;
-
-                                                                $temporestante = round($datediff / (60 * 60 * 24));
-                                                                $temporestante = $temporestante * (-1);
-                                                                $temporestante = $temporestante + 1;
-                                                            }
-
-
 
                                                             //Id
                                                             $idOs = $row['omId'];
@@ -382,21 +307,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
                                                                 <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
-                                                                <td class="d-flex justify-content-center" <?php
-                                                                                                            if ($temporestante == null) {
-                                                                                                                echo '';
-                                                                                                            } else {
-                                                                                                                if ($temporestante <= 2) {
-                                                                                                                    echo 'style="color: red;"';
-                                                                                                                } ?>><?php echo $temporestante . ' dias';
+                                                                <td><?php echo $row['idMaquina']; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 50) . '...'; ?></td>
+                                                                <!--  <td class="d-flex justify-content-center" <?php
+                                                                                                                if ($temporestante == null) {
+                                                                                                                    echo '';
+                                                                                                                } else {
+                                                                                                                    if ($temporestante <= 2) {
+                                                                                                                        echo 'style="color: red;"';
+                                                                                                                    } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
                                                                         echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
-                                                                    } ?></td>
-                                                                <td><?php echo $btn; ?></td>
+                                                                    } ?></td> -->
+                                                                <!--   <td><?php echo $btn; ?></td> -->
                                                             </tr>
                                                         <?php
                                                         } ?>
@@ -423,10 +349,11 @@ if (isset($_SESSION["useruid"])) {
                                                             <th>ID</th>
                                                             <th>Status</th>
                                                             <th>Data Entrada</th>
-                                                            <th>Produto</th>
-                                                            <th>Tempo Restante</th>
-                                                            <th>Data Entrega</th>
-                                                            <th></th>
+                                                            <th>Máquina</th>
+                                                            <th>Descrição</th>
+                                                            <!-- <th>Tempo Restante</th>
+                                                            <th>Data Entrega</th> -->
+                                                            <!--    <th></th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -446,7 +373,7 @@ if (isset($_SESSION["useruid"])) {
                                                             $data = $dataBD[2] . "/" . $dataBD[1] . "/" . $dataBD[0];
                                                             $hora = $horaBD[0] . ":" . $horaBD[1];
 
-                                                            //Data Entrega
+                                                            /*    //Data Entrega
                                                             if ($row['omDtEntregaReal'] == null) {
                                                                 $dataVazia = true;
                                                                 $temporestante = null;
@@ -467,7 +394,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 $temporestante = $temporestante * (-1);
                                                                 $temporestante = $temporestante + 1;
                                                             }
-
+ */
 
 
                                                             //Id
@@ -488,21 +415,22 @@ if (isset($_SESSION["useruid"])) {
                                                                 <td class="d-flex justify-content-center"><?php echo $idOs; ?></td>
                                                                 <td><span class="badge bg-secondary text-white"><?php echo $row['omStatus']; ?></span></td>
                                                                 <td><?php echo $data; ?></td>
-                                                                <td><?php echo substr($row['omDescricao'], 1, 20) . '...'; ?></td>
-                                                                <td class="d-flex justify-content-center" <?php
-                                                                                                            if ($temporestante == null) {
-                                                                                                                echo '';
-                                                                                                            } else {
-                                                                                                                if ($temporestante <= 2) {
-                                                                                                                    echo 'style="color: red;"';
-                                                                                                                } ?>><?php echo $temporestante . ' dias';
+                                                                <td><?php echo $row['idMaquina']; ?></td>
+                                                                <td><?php echo substr($row['omDescricao'], 1, 50) . '...'; ?></td>
+                                                                <!-- <td class="d-flex justify-content-center" <?php
+                                                                                                                if ($temporestante == null) {
+                                                                                                                    echo '';
+                                                                                                                } else {
+                                                                                                                    if ($temporestante <= 2) {
+                                                                                                                        echo 'style="color: red;"';
+                                                                                                                    } ?>><?php echo $temporestante . ' dias';
                                                                                                                     } ?></td>
                                                                 <td><?php if ($dataVazia) {
                                                                         echo '<a href="editarom?id=' . $idOs . '" style="color: #000;">editar data</a>';
                                                                     } else {
                                                                         echo $dataEntrega;
-                                                                    } ?></td>
-                                                                <td><?php echo $btn; ?></td>
+                                                                    } ?></td> -->
+                                                                <!--     <td><?php echo $btn; ?></td> -->
                                                             </tr>
                                                         <?php
                                                         } ?>
@@ -549,7 +477,7 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                     "lengthMenu": "Mostrar _MENU_ itens",
-                    "zeroRecords": "Nenhuma proposta encontrada"
+                    "zeroRecords": "Nenhum item encontrado"
                 },
                 "order": [
                     [1, "desc"]
@@ -572,7 +500,7 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                     "lengthMenu": "Mostrar _MENU_ itens",
-                    "zeroRecords": "Nenhuma proposta encontrada"
+                    "zeroRecords": "Nenhum item encontrado"
                 },
                 "order": [
                     [1, "desc"]
@@ -595,7 +523,7 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                     "lengthMenu": "Mostrar _MENU_ itens",
-                    "zeroRecords": "Nenhuma proposta encontrada"
+                    "zeroRecords": "Nenhum item encontrado"
                 },
                 "order": [
                     [1, "desc"]
@@ -618,13 +546,12 @@ if (isset($_SESSION["useruid"])) {
                     },
                     "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
                     "lengthMenu": "Mostrar _MENU_ itens",
-                    "zeroRecords": "Nenhuma proposta encontrada"
+                    "zeroRecords": "Nenhum item encontrado"
                 },
                 "order": [
                     [1, "desc"]
                 ]
             });
-
         });
     </script>
 
