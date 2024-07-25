@@ -771,7 +771,7 @@ CREATE TABLE CORRELACAO_PRODUTO (
 
 /* ============================ Tabelas do FORM INF 004  ========================== */ 
 
-CREATE TABLE `frm_inf_004` (
+CREATE TABLE IF NOT EXISTS `frm_inf_004` (
   `id` int NOT NULL AUTO_INCREMENT,
   `data_publicacao` date DEFAULT NULL,
   `data_validade` date DEFAULT NULL,
@@ -790,10 +790,12 @@ CREATE TABLE `frm_inf_004` (
 
 ---- Estrutura da tabela `SETOR_ARCONDICIONADO'
 
-CREATE TABLE SETOR_ARCONDICIONADO (
+CREATE TABLE IF NOT EXISTS SETOR_ARCONDICIONADO (
 id INT PRIMARY KEY AUTO_INCREMENT, 
 descricao_setores text
 )ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+
 INSERT INTO SETOR_ARCONDICIONADO (descricao_setores) VALUES
 ('SALA DE REUNIÃO TERREO'),
 ('SALA PCP'),
@@ -816,10 +818,11 @@ INSERT INTO SETOR_ARCONDICIONADO (descricao_setores) VALUES
 ('SALA DE DESCANSO');
 
 --  tabela frmstatus
-CREATE TABLE frmstatus (
+CREATE TABLE IF NOT EXISTS frmstatus (
     id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(20) NOT NULL
 )ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
 INSERT INTO frmstatus (status) VALUES
 ('Pendente'),
 ('Concluída');
@@ -827,12 +830,12 @@ INSERT INTO frmstatus (status) VALUES
 
 ---- Estrutura da tabela `DESCRICAO_ATIVIDADES'
 
-CREATE TABLE DESCRICAO_ATIVIDADES (
+CREATE TABLE IF NOT EXISTS DESCRICAO_ATIVIDADES (
 id INT PRIMARY KEY AUTO_INCREMENT,
 descricao TEXT
 )ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
-INSERT INTO descricao_atividades (descricao) VALUES
+INSERT INTO DESCRICAO_ATIVIDADES (descricao) VALUES
 ('Verificação e drenagem da água'),
 ('Limpar bandejas e serpentinas - lavar as bandejas e serpentinas com remoção do biofilme (lodo), sem o uso de produtos desengraxantes e corrosivos (higienizador e bactericidas)'),
 ('Limpeza do gabinete - limpar o gabinete do condicionador e ventiladores (carcaça e rotor)'),
@@ -846,7 +849,7 @@ INSERT INTO descricao_atividades (descricao) VALUES
 ('Manutenção elétrica'),
 ('outros');
 
-CREATE TABLE `frm_inf_004_atividades` (
+CREATE TABLE IF NOT EXISTS `frm_inf_004_atividades` (
   `id` int NOT NULL AUTO_INCREMENT,
   `frm_inf_004_id` int NOT NULL,
   `descricao_atividades_id` int NOT NULL,
@@ -954,12 +957,12 @@ ADD COLUMN logTipo VARCHAR(255);
 
 /* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA   */
 
-CREATE TABLE `om_maquina` (
+CREATE TABLE IF NOT EXISTS `om_maquina` (
   `tipo` varchar(50) NOT NULL,
   `idMaquina` varchar(50) NOT NULL,
   `omNomeMaquina` varchar(100) NOT NULL,
   `omIdentificadorMaquina` varchar(255) NOT NULL,
-  PRIMARY KEY (`idMaquina`);
+  PRIMARY KEY (`idMaquina`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -1081,7 +1084,7 @@ INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNomeMaquina`, `omIdentificador
 -- Estrutura para tabela `ommanutencaomensal`
 --
 
-CREATE TABLE `ommanutencaomensal` (
+CREATE TABLE IF NOT EXISTS `ommanutencaomensal` (
   `id` int(11) NOT NULL,
   `descricaoMensal` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1103,7 +1106,7 @@ INSERT INTO `ommanutencaomensal` (`id`, `descricaoMensal`) VALUES
 -- Estrutura para tabela `ommanutencaosemanal`
 --
 
-CREATE TABLE `ommanutencaosemanal` (
+CREATE TABLE IF NOT EXISTS `ommanutencaosemanal` (
   `id` int(11) NOT NULL,
   `descricaoSemanal` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1135,7 +1138,7 @@ INSERT INTO `ommanutencaosemanal` (`id`, `descricaoSemanal`) VALUES
 -- Estrutura para tabela `omusersmanutencao`
 --
 
-CREATE TABLE `omusersmanutencao` (
+CREATE TABLE IF NOT EXISTS  `omusersmanutencao` (
   `id` int(11) NOT NULL,
   `usersManutencao` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1157,7 +1160,7 @@ INSERT INTO `omusersmanutencao` (`id`, `usersManutencao`) VALUES
 -- Estrutura para tabela `maquina_manutencao_mensal`
 --
 
-CREATE TABLE `maquina_manutencao_mensal` (
+CREATE TABLE IF NOT EXISTS `maquina_manutencao_mensal` (
   `idMaquina` varchar(50) NOT NULL,
   `idManutencaoMensal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1195,13 +1198,13 @@ ALTER TABLE `maquina_manutencao_mensal`
 ALTER TABLE `maquina_manutencao_mensal`
   ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
   ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_2` FOREIGN KEY (`idManutencaoMensal`) REFERENCES `ommanutencaomensal` (`id`);
-COMMIT;
+
 
 --
 -- Estrutura para tabela `maquina_manutencao_semanal`
 --
 
-CREATE TABLE `maquina_manutencao_semanal` (
+CREATE TABLE IF NOT EXISTS `maquina_manutencao_semanal` (
   `idMaquina` varchar(50) NOT NULL,
   `idManutencaoSemanal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1257,7 +1260,7 @@ COMMIT;
 -- Estrutura para tabela `omregistromanutencao`
 --
 
-CREATE TABLE `omregistromanutencao` (
+CREATE TABLE  IF NOT EXISTS `omregistromanutencao` (
   `id` int(11) NOT NULL,
   `idMaquina` varchar(50) NOT NULL,
   `idManutencaoSemanal` int(11) DEFAULT NULL,
