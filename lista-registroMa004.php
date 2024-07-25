@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -41,11 +40,11 @@ if (isset($_SESSION["useruid"])) {
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="FRM_INF_004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir FRM.PRO.004</button></a>
+                                        <a href="registroManutencao004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir FRM.PRO.004</button></a>
                                     </div>
-                                    <div class="d-flex justify-content-center p-1">
-                                        <a href="frm004_export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
-                                    </div>
+                                    <!--  <div class="d-flex justify-content-center p-1">
+                                        <a href=""><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -60,54 +59,60 @@ if (isset($_SESSION["useruid"])) {
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
+                                                    <th>Máquina</th>
                                                     <th>Data Prevista</th>
                                                     <th>Data Realizada</th>
                                                     <th>Responsável</th>
-                                                    <th>Status</th>
+                                                    <th></th>
+                                                    <!--   <th>Status</th> -->
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 require_once 'db/dbh.php';
-                                                $sql = "SELECT atividade FROM atividades_selecionadas";
+                                                $sql = "SELECT id, idMaquina, idManutencaoSemanal, idManutencaoMensal, dataPrevista, dataRealizada, responsavel, observacao FROM omregistromanutencao";
                                                 $result = $conn->query($sql);
-                                            
+
                                                 if ($result === false) {
                                                     echo "Erro na consulta: " . mysqli_error($conn);
                                                 } else {
                                                     while ($row = mysqli_fetch_array($result)) {
                                                 ?>
                                                         <tr>
-                                                            <td style="text-align: center; padding: 2%;"><?php echo $row['regManutencao_id']; ?></td>
-                                                            <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_prevista'])); ?></td>
-                                                            <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['data_realizada'])); ?></td>
-                                                            <td style="text-align: center; padding: 2%;">
-                                                                <?php echo $row['responsavel']; ?>
-                                                            </td>
+                                                            <td style="text-align: center; padding: 2%;"><?php echo $row['id']; ?></td>
+                                                            <td style="text-align: center; padding: 2%;"><?php echo $row['idMaquina']; ?></td>
+                                                            <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['dataPrevista'])); ?></td>
+                                                            <td style="text-align: center; padding: 2%"><?php echo date('d/m/Y', strtotime($row['dataRealizada'])); ?></td> 
+                                                            <td style="text-align: center; padding: 2%;"><?php echo $row['responsavel']; ?></td>
+                                                            <!-- 
                                                             <td style="text-align: center; padding: 2%;">
                                                                 <?php
+                                                                $sqlStatus = "SELECT id, status FROM frmstatus WHERE id = {$row['id']}";
+                                                                $resultStatus = $conn->query($sqlStatus);
+
                                                                 if ($row['frmStatus'] == 'Pendente') {
                                                                     echo '<span class="badge bg-warning text-dark">' . $row['frmStatus'] . '</span>';
                                                                 } elseif ($row['frmStatus'] == 'Concluída') {
                                                                     echo '<span class="badge bg-success text-white">' . $row['frmStatus'] . '</span>';
                                                                 }
                                                                 ?>
-                                                            </td>
-                                               <!--              <td style="display: flex;  padding: 1.3em;">
-                                                                <a href="editfrm?id=<?php echo $row['frm_id']; ?>">
+                                                            </td> -->
+                                                            <td style="display: flex;  padding: 1.3em;">
+                                                                <a style="padding: 0 0.3em;" href="">
+                                                                    <!-- <a href="editfrm?id=<?php echo $row['']; ?>">  -->
                                                                     <button class="btn btn-info btn-sm"><i class="far fa-edit"></i></button></a>
-                                                                <a style="padding: 0 0.3em;" href="frm004?id=<?php echo $row['regManutencao_id']; ?>">
+                                                                <a style="padding: 0 0.3em;" href="">
                                                                     <button class="btn btn-warning btn-sm"><i class="far fa-file-pdf"></i></button></a>
 
                                                                 <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
-                                                                    <a href="delfrm?id=<?php echo $row['frm_id']; ?>">
+                                                                    <a style="padding: 0 0.3em;" href="">
                                                                         <button class="btn btn-danger btn-sm" onClick="return confirm('Você realmente deseja deletar esse formulário?');"><i class="far fa-trash-alt"></i></button></a>
                                                                 <?php
                                                                 }
                                                                 ?>
-                                                            </td> -->
+                                                            </td>
                                                         </tr>
-                                                        
+
                                                 <?php
                                                     }
                                                 }
@@ -146,9 +151,10 @@ if (isset($_SESSION["useruid"])) {
                     "order": [
                         [0, "desc"]
                     ],
-                    "columnDefs": [
-                        { "width": "100px", "targets": 6},
-                    ]
+                    "columnDefs": [{
+                        "width": "100px",
+                        "targets": 5
+                    }, ]
                 });
             });
         </script>
