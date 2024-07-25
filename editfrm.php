@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-var_dump($_SESSION["userperm"]);
-
 if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
     include("php/head_updateprop.php");

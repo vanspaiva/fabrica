@@ -434,9 +434,9 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
-function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega = "None", $setor = "None", $descricao, $grauurgencia, $nmaquina, $nomemaquina, $obs, $tname, $urlArquivo,$tpManutenção, $mqOperacinal)
-{
-    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNumMaquina, omNomeMaquina, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus, omTipoManutencao,omOperacional) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $dtentrega = "None", $setor = "None", $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina) {
+    // Inserção na tabela
+    $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNomeArquivo, omGrauUrgencia, omDtEntregasDesejada, omObs, omStatus, omTipoManutencao, omOperacional, tempoNaoOperacional, idMaquina, omNomeMaquina, omIdentificadorMaquina) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     $stmt = mysqli_stmt_init($conn);
 
     $status = "CRIADO";
@@ -446,24 +446,26 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $nmaquina, $nomemaquina, $pname, $grauurgencia, $dtentrega, $obs, $status,$tpManutenção , $mqOperacinal);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssssss", $tp_contacriador, $nomecriador, $emailcriacao, $userip, $setor, $descricao, $pname, $grauurgencia, $dtentrega, $obs, $status, $tpManutenção, $mqOperacinal, $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
 
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
+    // Obter o ID da última ordem inserida
     $stmt = mysqli_stmt_init($conn);
     $getOM = mysqli_query($conn, "SELECT * FROM ordenmanutencao ORDER BY omId DESC LIMIT 1;");
     $rowOM = mysqli_fetch_array($getOM);
     $omId = $rowOM['omId'];
 
     uploadArquivo($conn, $tname, $pname, $omId);
-
-    sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nmaquina, $nomemaquina);
+    sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $idMaquina, $omNomeMaquina);
+    
     header("location: ../lista-om?error=sent");
     exit();
 }
 
-function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nmaquina, $nomemaquina)
+
+function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao,$idMaquina, $omNomeMaquina)
 {
     $arquivo = '<!DOCTYPE html>
         <html lang="pt-br">
@@ -555,8 +557,8 @@ function sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $nm
         <p>
             <strong>Quem criou: </strong> ' . $nomecriador . '<br>
             <strong>Data: </strong> ' . $dtcriacao . '
-            <strong>Nº Máquina: </strong> ' . $nmaquina . '
-            <strong>Nome Máquina: </strong> ' . $nomemaquina . '
+            <strong>Nº Máquina: </strong> ' . $idMaquina . '
+            <strong>Nome Máquina: </strong> ' . $omNomeMaquina . '
         </p>
         
         <div class="btn-container">
@@ -590,8 +592,6 @@ function uploadArquivo($conn, $tname, $pname, $osId)
         $pname = 'none';
 
     }
-
-
 
     //Registra nova arquivo
     $sql = "INSERT INTO filedownload (fileRealName, fileOsRef, filePath) VALUES (?,?,?);";
@@ -658,18 +658,33 @@ function editOs($conn, $osid, $status, $grau, $setor, $dtentrega, $dtrealentrega
     mysqli_close($conn);
 }
 
-function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega, $dtexecucao, $descricao, $nmaquina, $nomemaquina, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao)
+function editOM($conn, $omid, $status, $grau, $setor, $descricao, $dtexecucao, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento)
 {
-    $sql = "UPDATE ordenmanutencao SET omSetor = ?, omDescricao = ?, omNumMaquina = ?, omNomeMaquina = ?, omGrauUrgencia = ?, omDtEntregaReal = ?, dtExecucao = ?, omObs = ?, omStatus = ?, omAcaoQualidade = ?, omRequalificar = ?, omIdRespRequalificar = ?, omIdRespManutencao = ? WHERE omId = ? ";
+    $sql = "UPDATE ordenmanutencao 
+            SET omSetor = ?, 
+                omDescricao = ?, 
+                omGrauUrgencia = ?, 
+                dtExecucao = ?, 
+                omObs = ?, 
+                omStatus = ?, 
+                omAcaoQualidade = ?, 
+                omRequalificar = ?, 
+                omIdRespRequalificar = ?, 
+                omIdRespManutencao = ?, 
+                idMaquina = ?, 
+                omNomeMaquina = ?, 
+                desAlinhamento = ?, 
+                dataAlinhamento = ? 
+            WHERE omId = ?";
+
     $stmt = mysqli_stmt_init($conn);
 
-
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        // header("location: ../avaliar-caso?id=" . $casoId . "&error=stmtfailedabas");
+        echo "Erro ao preparar a query: " . mysqli_error($conn);
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "ssssssssssssss", $setor, $descricao, $nmaquina, $nomemaquina, $grau, $dtrealentrega, $dtexecucao, $obs, $status,  $acaoquali, $requalificar, $resprequali, $respmanutencao, $omid);
+    mysqli_stmt_bind_param($stmt, "sssssssssssssss", $setor, $descricao, $grau, $dtexecucao, $obs, $status, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento, $omid);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -678,7 +693,6 @@ function editOM($conn, $omid, $status, $grau, $setor, $dtentrega, $dtrealentrega
 
     mysqli_close($conn);
 }
-
 
 function concluirAtividade($conn, $id, $user)
 {

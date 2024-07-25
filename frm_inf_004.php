@@ -34,8 +34,6 @@ if (isset($_SESSION["useruid"])) {
             }
         }
         ?>
-
-
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div class="container-fluid">
@@ -69,16 +67,15 @@ if (isset($_SESSION["useruid"])) {
                                 <form action="includes/frm_004.inc.php" method="POST">
                                     <h4 class="text-fab">Dados de Registro</h4>
 
-                                    <div class='d-flex justify-content-around'>
+                                   <div style="display: none !important;" class='d-flex justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required>
+                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required  value='2023-10-18'>
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Validade</label>
-                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date' readonly>
+                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date' readonly  value='2023-10-18'>
                                         </div>
-                                    </div>
+                                    </div> 
                                     <script>
                                         document.getElementById('dataPublicacao').addEventListener('change', function() {
 
@@ -111,24 +108,60 @@ if (isset($_SESSION["useruid"])) {
                                     <div class='d-flex justify-content-between'>
                                         <div class='form-group col-md-4 m-2'>
                                             <label class='control-label'>Setor<b style='color: red;'>*</b></label>
-
-                                            <select class="form-control" name="setor_id" id="setor_id" required>
+                                            <select class="form-control" name="setor_id" id="setor_id" onchange="updateUrlWithSetor()" required>
                                                 <option value="">Selecione um Setor</option>
                                                 <?php
                                                 $sql = "SELECT id, descricao_setores FROM setor_arcondicionado";
                                                 $result = $conn->query($sql);
+
+                                                $selected_setor_id = '';
+                                                $selected_setor_description = '';
+
+                                                if (isset($_GET['setor'])) {
+                                                    $setor_param = $_GET['setor'];
+                                                    if (is_numeric($setor_param)) {
+                                                        $selected_setor_id = $setor_param;
+                                                    } else {
+                                                        $selected_setor_description = urldecode($setor_param);
+                                                    }
+                                                }
+
                                                 if ($result->num_rows > 0) {
                                                     while ($row = $result->fetch_assoc()) {
-                                                        echo '<option value="' . $row["id"] . '">' . $row["descricao_setores"] . '</option>';
+                                                        $selected = '';
+                                                        if ($selected_setor_id && $row["id"] == $selected_setor_id) {
+                                                            $selected = 'selected';
+                                                        } elseif ($selected_setor_description && $row["descricao_setores"] == $selected_setor_description) {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo '<option value="' . $row["id"] . '" ' . $selected . '>' . $row["descricao_setores"] . '</option>';
                                                     }
                                                 } else {
                                                     echo '<option value="">Nenhum setor disponível</option>';
                                                 }
                                                 ?>
                                             </select>
+                                            <script>
+                                                function updateUrlWithSetor() {
+                                                    var selectElement = document.getElementById('setor_id');
+                                                    var setorId = selectElement.value;
+                                                    if (setorId) {
+                                                        var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?setor=' + setorId;
+                                                        window.history.pushState({
+                                                            path: newUrl
+                                                        }, '', newUrl);
+                                                    }
+                                                }
+
+                                                window.onload = function() {
+                                                    var urlParams = new URLSearchParams(window.location.search);
+                                                    var setor = urlParams.get('setor');
+                                                    if (setor) {
+                                                        document.getElementById('setor_id').value = setor;
+                                                    }
+                                                }
+                                            </script>
                                         </div>
-
-
                                         <div class='form-group d-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Responsável<b style='color: red;'>*</b></label>
                                             <select class='form-control' name='responsavel' id='responsavel' style="text-transform: capitalize;" required>
@@ -219,6 +252,7 @@ if (isset($_SESSION["useruid"])) {
                     </div>
                 </div>
             </div>
+        </div>
 
 
         </div>
