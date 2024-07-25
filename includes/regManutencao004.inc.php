@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db/dbh.php'; // Certifique-se de que o arquivo contém a configuração correta para a conexão com o banco
+require_once '../db/dbh.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idMaquina = $_POST['idMaquina'];
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Erro ao preparar a instrução: ' . $conn->error);
         }
 
-        // Vincula os parâmetros e executa a instrução para cada atividade
+
         foreach ($atividades as $atividade) {
             $stmt->bind_param('sissss', $idMaquina, $atividade, $dataPrevista, $dataRealizada, $responsavel, $observacao);
             if (!$stmt->execute()) {
@@ -37,16 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Comita a transação
+
         $conn->commit();
         $_SESSION['successMessage'] = "Dados inseridos com sucesso.";
     } catch (Exception $e) {
-        // Reverte a transação em caso de erro
+
         $conn->rollback();
         $_SESSION['errorMessage'] = "Erro ao inserir dados: " . $e->getMessage();
     }
 
-    // Fecha a instrução e a conexão
+
     $stmt->close();
     $conn->close();
 
