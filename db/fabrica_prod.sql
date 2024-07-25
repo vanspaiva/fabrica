@@ -558,7 +558,7 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
 -- Estrutura para tabela `ordenmanutencao`
 --
 
-CREATE TABLE IF NOT EXISTS `ordenmanutencao` (
+  CREATE TABLE `ordenmanutencao` (
   `omId` int(11) NOT NULL,
   `omUserCriador` varchar(200) NOT NULL,
   `omNomeCriador` varchar(200) NOT NULL,
@@ -566,18 +566,26 @@ CREATE TABLE IF NOT EXISTS `ordenmanutencao` (
   `omDtCriacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `omDtUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
   `omUserIp` varchar(20) NOT NULL,
-  `omSetor` varchar(200) NOT NULL,
+  `omSetor` varchar(200) DEFAULT NULL,
   `omDescricao` varchar(200) NOT NULL,
-  `omNumMaquina` varchar(50) DEFAULT NULL,
-  `omNomeMaquina` varchar(200) DEFAULT NULL,
   `omNomeArquivo` text DEFAULT NULL,
   `omGrauUrgencia` varchar(10) NOT NULL,
-  `omDtEntregasDesejada` varchar(100) NOT NULL,
+  `omDtEntregasDesejada` varchar(100) DEFAULT NULL,
   `omDtEntregaReal` varchar(200) DEFAULT NULL,
   `dtExecucao` varchar(100) DEFAULT NULL,
   `omObs` text DEFAULT NULL,
-  `omStatus` varchar(20) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `omStatus` varchar(20) NOT NULL,
+  `omTipoManutencao` varchar(100) DEFAULT NULL,
+  `omOperacional` varchar(100) DEFAULT NULL,
+  `omAcaoQualidade` varchar(3) DEFAULT NULL,
+  `omRequalificar` varchar(3) DEFAULT NULL,
+  `omIdRespRequalificar` int(11) DEFAULT NULL,
+  `omIdRespManutencao` int(11) DEFAULT NULL,
+  `idMaquina` varchar(50) DEFAULT NULL,
+  `omNomeMaquina` varchar(100) DEFAULT NULL,
+  `omIdentificadorMaquina` varchar(255) DEFAULT NULL,
+   CONSTRAINT `fk_ordem_maquina_id` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Despejando dados para a tabela `ordenmanutencao`

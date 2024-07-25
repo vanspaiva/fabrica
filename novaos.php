@@ -12,6 +12,7 @@ if (isset($_GET["t"]) && ($_GET["t"] == "om")) {
     exit();
 }
 
+
 switch ($tipo) {
     case 'om':
         $titulo = "ORDEM DE MANUTENÇÃO";
@@ -36,13 +37,23 @@ switch ($tipo) {
         break;
 }
 
+
 if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
-
-
-
 ?>
+    <head>
+        <style>
+             .form-check-container {
+            display: flex;
+            align-items: center;
+        }
+            .tempoNaoOperacional {
+            display: none;   
+            margin-right: 8em;
+        }
+        </style>
+    </head>
 
 
     <body class="bg-light-gray2">
@@ -108,7 +119,6 @@ if (isset($_SESSION["useruid"])) {
 
                                     $localIP = getHostByName(getHostName());
                                 ?>
-
                                     <form action="includes/novaom.inc.php" method="POST" enctype='multipart/form-data'>
                                         <div hidden>
                                             <h4 class="text-fab">Dados do Usuário</h4>
@@ -138,15 +148,18 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OM</h4>
-<!--                                        <div class='d-flex d-block justify-content-around'>
+                                        <!--                                        <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>
                                                     <option value='0' selected style='color: #F6F7FA;'>Escolha um setor</option>
                                                     <?php
                                                     //$retEtapa = mysqli_query($conn, "SELECT * FROM etapasos ORDER BY etapaNome ASC;");
-                                                    //while ($rowEtapa = mysqli_fetch_array($retEtapa)) { ?>
-                                                        <option value=" <?php //echo $rowEtapa['etapaNome']; ?>"><?php //echo $rowEtapa['etapaNome']; ?></option>
+                                                    //while ($rowEtapa = mysqli_fetch_array($retEtapa)) { 
+                                                    ?>
+                                                        <option value=" <?php //echo $rowEtapa['etapaNome']; 
+                                                                        ?>"><?php //echo $rowEtapa['etapaNome']; 
+                                                                            ?></option>
                                                     <?php
                                                     //}
                                                     ?>
@@ -170,21 +183,51 @@ if (isset($_SESSION["useruid"])) {
                                                 var minData = year + '-' + month + '-' + day;
                                                 $('#dtentrega').attr('min', minData);
                                             </script>
-                                        </div> --> 
-                                        <div class='d-flex d-block justify-content-around'>
-                                            <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class='control-label' style='color:black;'>Nº Máquina </label>
-                                                <input class='form-control' name='nmaquina' id='nmaquina' type='text'>
+                                        </div> -->
+                                        <div class='d-flex justify-content-around'>
+                                            <div class='form-group flex-fill m-2'>
+                                                <label class='control-label' style='color:black;'>Nº Máquina<b style='color: red;'>*</b></label>
+                                                <input class='form-control' name='idMaquina' id='idMaquina' type='text'>
                                             </div>
-                                            <div class='form-group d-inline-block flex-fill m-2'>
+                                            <div class='form-group flex-fill m-2'>
                                                 <label class='control-label' style='color:black;'>Nome Máquina</label>
-                                                <input class='form-control' name='nomemaquina' id='nomemaquina' type='text'>
+                                                <input class='form-control' name='omNomeMaquina' id='omNomeMaquina' type='text' readonly>
+                                            </div>
+                                            <div class='form-group flex-fill m-2'>
+                                                <label class='control-label' style='color:black;'>Marca/ Modelo / N° Serie</label>
+                                                <input class='form-control' name='omIdentificadorMaquina' id='omIdentificadorMaquina' type='text' readonly>
                                             </div>
                                         </div>
+                                        <script>
+                                            document.getElementById('idMaquina').addEventListener('input', function() {
+                                                var idMaquina = this.value.trim();
 
-
-
-                                    
+                                                if (idMaquina) {
+                                                    fetch(`busca_maquina.php?idMaquina=${encodeURIComponent(idMaquina)}`)
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            if (data.omNomeMaquina) {
+                                                                document.getElementById('omNomeMaquina').value = data.omNomeMaquina;
+                                                                document.getElementById('omIdentificadorMaquina').value = data.omIdentificadorMaquina || 'Não disponível';
+                                                            } else if (data.error) {
+                                                                document.getElementById('omNomeMaquina').value = data.error;
+                                                                document.getElementById('omIdentificadorMaquina').value = '';
+                                                            } else {
+                                                                document.getElementById('omNomeMaquina').value = 'Máquina não encontrada';
+                                                                document.getElementById('omIdentificadorMaquina').value = '';
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Erro ao buscar dados:', error);
+                                                            document.getElementById('omNomeMaquina').value = 'Erro ao buscar dados';
+                                                            document.getElementById('omIdentificadorMaquina').value = '';
+                                                        });
+                                                } else {
+                                                    document.getElementById('omNomeMaquina').value = '';
+                                                    document.getElementById('omIdentificadorMaquina').value = '';
+                                                }
+                                            });
+                                        </script>
                                         <div class='d-flex d-block justify-content-around m-4'>
 
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -206,28 +249,45 @@ if (isset($_SESSION["useruid"])) {
                                             </div>
 
                                             <div class='form-group d-inline-block flex-fill m-2 pl-5'>
-                                                <label class='control-label'>A maquina está operacional  ? <b style='color: red;'>*</b></label>
+                                                <label class='control-label'>A maquina está operacional? <b style='color: red;'>*</b></label>
                                                 <div>
                                                     <div class='form-check'>
                                                         <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel1' value='Operável' required>
-                                                        <label class='form-check-label' for='maqOperavel1'>
-                                                            Sim
-                                                        </label>
+                                                        <label class='form-check-label' for='maqOperavel1'>Sim</label>
                                                     </div>
                                                     <div class='form-check'>
                                                         <input class='form-check-input' type='radio' name='maqOperavel' id='maqOperavel2' value='Não Operável' required>
-                                                        <label class='form-check-label' for='maqOperavel2'>
-                                                            Não
-                                                        </label>
+                                                        <label class='form-check-label' for='maqOperavel2'>Não</label>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div>
+                                                <div class='form-group tempoNaoOperacional'>
+                                                    <label class='control-label' style='color:black;'>Por quanto tempo ficará não operacional? <b style='color: red;'>*</b></label>
+                                                    <input class='form-control' name='tempoNaoOperacional' id='tempoNaoOperacional' type='text'>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    var radioOperavel = document.querySelectorAll('input[name="maqOperavel"]');
+                                                    var tempoNaoOperacional = document.getElementById('tempoNaoOperacional').parentElement;
 
+                                                    function toggleTempoNaoOperacional() {
+                                                        if (document.getElementById('maqOperavel2').checked) {
+                                                            tempoNaoOperacional.style.display = 'block';
+                                                        } else {
+                                                            tempoNaoOperacional.style.display = 'none';
+                                                        }
+                                                    }
+
+                                                    radioOperavel.forEach(function(radio) {
+                                                        radio.addEventListener('change', toggleTempoNaoOperacional);
+                                                    });
+
+                                                    tempoNaoOperacional.style.display = 'none';
+                                                });
+                                            </script>
                                         </div>
-
-
-
-        
 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
@@ -428,7 +488,7 @@ if (isset($_SESSION["useruid"])) {
                                             <hr>
                                         </div>
                                         <h4 class="text-fab">Dados da OS</h4>
-                                        <div class='d-flex d-block justify-content-around' >
+                                        <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
                                                 <label class='control-label'>Para qual setor se destina a tarefa? <b style='color: red;'>*</b></label>
                                                 <select class='form-control' name='setor' id='setor' required>
@@ -749,8 +809,7 @@ if (isset($_SESSION["useruid"])) {
                 ?>
 
             </div>
-
-
+        </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -767,6 +826,36 @@ if (isset($_SESSION["useruid"])) {
         </script>
 
         <script src="js/uploadToFirebase.js"></script>
+
+        <script>
+            function fetchMachineData() {
+                var idMaquina = $('#idMaquina').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'index.php',
+                    data: {
+                        idMaquina: idMaquina
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#omNomeMaquina').val(response.omNomeMaquina);
+                            $('#omIdentificadorMaquina').val(response.omIdentificadorMaquina);
+                        } else {
+
+                            alert(response.message);
+                            $('#omNomeMaquina').val('');
+                            $('#omIdentificadorMaquina').val('');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+
+                        console.error(status + ": " + error);
+                    }
+                });
+            }
+        </script>
 
     </body>
 

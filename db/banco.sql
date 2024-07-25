@@ -932,7 +932,10 @@ ALTER TABLE departamentos_form_inf_003
 CHANGE id id_departamento INT AUTO_INCREMENT;
 
 
-/* ALTERAÇÃO NA TABELA DE ORDEM DE MANUTENÇÃO */
+
+/* ===================== TABELA DE ORDEM DE MANUTENÇÃO  =======================*/
+
+/* ALTERAÇÃO NA TABELA DE ORDEM DE MANUTENÇÃO  */
 
 ALTER TABLE ordenmanutencao
 MODIFY COLUMN omDtEntregasDesejada varchar(100) NULL;
@@ -949,23 +952,24 @@ MODIFY COLUMN omTipoManutencao varchar(100) DEFAULT NULL;
 ALTER TABLE logatividades
 ADD COLUMN logTipo VARCHAR(255);
 
-/* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA */
+/* TABELA DE ORDEM DE MANUTENÇÃO REGISTRO DAS MÁQUINA   */
 
-CREATE TABLE om_maquina (
-    tipo varchar(50) not null,
-    idMaquina varchar(50) not null,
-    omNumMaquina varchar(20) not null,
-    omNomeMaquina varchar(255) not null
-);
+CREATE TABLE `om_maquina` (
+  `tipo` varchar(50) NOT NULL,
+  `idMaquina` varchar(50) NOT NULL,
+  `omNomeMaquina` varchar(100) NOT NULL,
+  `omIdentificadorMaquina` varchar(255) NOT NULL,
+  PRIMARY KEY (`idMaquina`);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
+INSERT INTO `om_maquina` (`tipo`, `idMaquina`, `omNomeMaquina`, `omIdentificadorMaquina`) VALUES
 ('Produção', 'AMB.001', 'Sala limpa', ''),
 ('Produção', 'MAQ.001', 'CNC', 'RODERS / RXP400DSC /'),
 ('Produção', 'MAQ.002', 'CNC', 'HASS / VF-2-SE /'),
 ('Produção', 'MAQ.003', 'CNC', 'HASS/ VF-2-SE /'),
 ('Produção', 'MAQ.004', 'CNC', 'LASERDENTA / OPENMILL500B / 00182'),
-('Produção', 'MAQ.005', 'CNC Torno Tipo Suiço', 'CITIZEN / A20-3F7 / AG5166'),
+('Produção', 'MAQ.005', 'CNC Torno Tipo Suiço', 'CITIZEN / A20-3F7 / AG5166'), 
 ('Produção', 'MAQ.006', 'Impressora 3D Filamento', 'PRUSA / ALVA /'),
 ('Produção', 'MAQ.007', 'Impressora 3D Filamento', 'PRUSA / TESLA /'),
 ('Produção', 'MAQ.008', 'Impressora 3D Filamento', 'PRUSA / BABBAGE /'),
@@ -973,23 +977,23 @@ INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
 ('Produção', 'MAQ.010', 'Impressora 3D Resina', 'FORMLABS / FORM3 /'),
 ('Produção', 'MAQ.011', 'Impressora 3D Resina', 'FORMLABS / TRUSTY GOOSE /'),
 ('Produção', 'MAQ.012', 'Corte a laser Metal', 'GOLDEN LASER / GF-6060 /'),
-('Produção', 'MAQ.013', 'Máquina de Eletroerosão(corte a fio)', 'FANUC / ROBOCUT A-C400iB /'),
+('Produção', 'MAQ.013', 'Máquina de Eletroerosão', 'FANUC / ROBOCUT A-C400iB /'),
 ('Produção', 'MAQ.014', 'Torno Mecânico', 'NARDINE / MS205 /'),
 ('Produção', 'MAQ.015', 'Laser CO2', 'NOVACUT / KM-5030D /'),
 ('Produção', 'MAQ.016', 'Laser Fibra (gravação)', '- / MF-30EC /'),
 ('Produção', 'MAQ.017', 'Serra de Fita', 'VITOR&BUONO / VB-1018M /'),
-('Produção', 'MAQ.018', 'Tamboreador (Total Finishing)', 'TOTAL FINISHING / CITRON3D /'),
+('Produção', 'MAQ.018', 'Tamboreador (Total Finishing', 'TOTAL FINISHING / CITRON3D /'),
 ('Produção', 'MAQ.019', 'Furadeira', 'SCHULZ PRATIKA / FSC25P / 1217500018'),
 ('Produção', 'MAQ.020', 'Lavadora Ultrassônica - Limpeza Final', 'CTA ULTRASONIC SYSTEMS / UPL 50A'),
 ('Produção', 'MAQ.021', 'Jato de Areia', 'BRASIBRAS / BR090707 /'),
-('Produção', 'MAQ.022', 'Seladora (com alavanca)', ''),
+('Produção', 'MAQ.022', 'Seladora (com alavanca', ''),
 ('Produção', 'MAQ.023', 'Prensa Térmica', ''),
 ('Produção', 'MAQ.024', 'Seladora (com pedal)', 'FLOCKCLOR / PEDAL'),
 ('Produção', 'MAQ.025', 'Impressora de Etiquetas', ''),
 ('Produção', 'MAQ.026', 'Compressor de Ar', 'ATLAS / /'),
 ('Produção', 'MAQ.027', 'Motor de Polimento', ''),
 ('Produção', 'MAQ.028', 'Politriz', 'POLIMAXX / 20000RMP'),
-('Produção', 'MAQ.029', 'Guilhotina', 'NEWTON / 5 / 5595\77'),
+('Produção', 'MAQ.029', 'Guilhotina', 'NEWTON / 5 / 559577'),
 ('Produção', 'MAQ.030', 'Prensa Hidraulica Manual (azul)', 'MARCON / MPH-15 /'),
 ('Produção', 'MAQ.031', 'Prensa Hidraulica Elétrica', 'HIDRAUMAK / PKM80'),
 ('Produção', 'MAQ.032', 'Esmeril', 'MOTOMIL / MIMI-50 / -'),
@@ -1020,11 +1024,11 @@ INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
 ('Produção', 'MAQ.052', 'Destilador', 'PILSEN/ SSDEST 5L /'),
 ('Produção', 'MAQ.053', 'Filtro', ''),
 ('Produção', 'MAQ.054', 'Sobrador Térmico', 'VONDER / STV200 / 22050262702'),
-('Produção', 'MAQ.055', 'Lixadeira de Fila', 'VONDER / LCV375 /'),
+('Produção', 'MAQ.055', 'Lixadeira de Fita', 'VONDER / LCV375 /'),
 ('Produção', 'MAQ.056', 'Tamboreador', 'CARLO DI GIORGI / CDGMAXI /'),
 ('Produção', 'MAQ.057', 'Dessecador', ''),
 ('Produção', 'MAQ.058', 'Estufa', 'OLIDEF / /'),
-('Produção', 'MAQ.059', 'Prensa Hidraulica 4 Toneladas', 'VH MIDAS DENTAL PRODUCTS / 4TON /'),
+('Produção', 'MAQ.059', 'Prensa Hidraulica 4 Toneladas ', 'VH MIDAS DENTAL PRODUCTS / 4TON /'),
 ('Produção', 'MAQ.060', 'Form Wash', 'FORMLABS / FORM WASH / HONYDEWDOVE'),
 ('Produção', 'MAQ.061', 'Form Cure', 'FORMLABS / FORM CURE / RUBYLOBSTER'),
 ('Produção', 'MAQ.062', 'Impressora 3D Resina', 'DAZZ / L120 PRO /'),
@@ -1045,4 +1049,254 @@ INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
 ('Produção', 'MAQ.077', 'Prensa Hidráulica Preta', 'MAX / VH03'),
 ('Produção', 'MAQ.078', 'Forno Industrial', 'RITON / RT-1300 /'),
 ('Produção', 'MAQ.079', 'Injetora', 'HAITIAN / SA 2000II'),
-('Produção', 'MAQ.080', 'Termoformagem', 'VACUUM FORMING')
+('Produção', 'MAQ.080', 'Termoformagem', 'VACUUM FORMING'),
+('Produção', 'MAQ.081', 'Empacotador Circular', ''),
+('Produção', 'MAQ.082', 'Empacotador Linear', ''),
+('Produção', 'MAQ.083', 'Impressora 3D Filamento', 'CREATBOT / PEEK-300 /'),
+('Produção', 'MAQ.084', 'Fonte (Eletromédicos', ''),
+('Outros', 'MAQ.085', 'Estufa Bacteriológica', '7LAB / SSB-11L'),
+('Produção', 'MAQ.086', 'Forno Infrared Redflow Oven (Eletromédicos)', ''),
+('Produção', 'MAQ.087', 'Pick and Place', 'NEODEN 4 / /'),
+('Produção', 'MAQ.088', 'Bobinadeira', ''),
+('Produção', 'MAQ.089', 'Desumidificador', 'CHKAWAI / /'),
+('Produção', 'MAQ.090', 'Serra de Fita', 'RITON / DLY18F1 /'),
+('Produção', 'MAQ.091', 'Serra de Fita', 'RITON / DLY18F1 /'),
+('Produção', 'MAQ.092', 'Capela de Fluxo Laminar', 'HIPPERQUIMICA / VERTCAL PER'),
+('Produção', 'MAQ.093', 'Destilador - Osmose ', 'PURIMATE / ORM 16F /'),
+('Produção', 'MAQ.095', 'Lavadora Ultrassônica', 'CTA ULTRASONIC SYSTEMS / UPL 50A /'),
+('Produção', 'MAQ.096', 'Projetor de Perfil', 'DIGIMESS / 400.400 / -'),
+('Produção', 'MAQ.097', 'CNC Torno Tipo Suiço', 'CITIZEN / L120E-2M12 / QF4389'),
+('Produção', 'MAQ.098', 'Destilador', 'SOLID STELL / PILSEN /'),
+('Produção', 'MAQ.099', 'CNC', 'YENADENT / D43N'),
+('Produção', 'MAQ.100', 'Estufa', 'MYLABBOR'),
+('Produção', 'MAQ.101A', 'Impressora 3D Filamento', 'CREATBOT / F160 /'),
+('Produção', 'MAQ.101B', 'Impressora 3D Filamento', 'CREATBOT / F160 /'),
+('Produção', 'MAQ.101C', 'Impressora 3D Filamento', 'CREATBOT / F160 /'),
+('Produção', 'MAQ.102', 'Contador de Colonias Digital', 'GLOBAL TRADE TECNOLIGA / J3V /'),
+('Produção', 'MAQ.103', 'Maquina de Ensaios (Tração/Compressão) (', 'DONGGUAN LIXIAN INSTRUMENT SCIENTIFIC / HZ-1009A / 201912160302'),
+('Inspeção da Qualidade', 'MAQ.104', 'Projetor de Perfil', 'EASSON / SP 4030 /');
+
+
+--
+-- Estrutura para tabela `ommanutencaomensal`
+--
+
+CREATE TABLE `ommanutencaomensal` (
+  `id` int(11) NOT NULL,
+  `descricaoMensal` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `ommanutencaomensal` (`id`, `descricaoMensal`) VALUES
+(1, 'Limpeza externa do equipamento'),
+(2, 'Limpeza das ventoinhas de ar'),
+(3, 'Completar óleo lubrificante dos eixos'),
+(4, 'Limpeza dos filtros e ventoinhas de ar'),
+(5, 'Engraxar os eixos e barramentos'),
+(6, 'Limpeza dos filtros de ar'),
+(7, 'Limpeza ou substituição das lentes do cabeçote do laser'),
+(8, 'Limpeza ou substituição do bico do cabeçote do laser'),
+(9, 'Completar nível de água'),
+(10, 'Verificar reservatório de graxa de lubrificação');
+
+
+-
+-- Estrutura para tabela `ommanutencaosemanal`
+--
+
+CREATE TABLE `ommanutencaosemanal` (
+  `id` int(11) NOT NULL,
+  `descricaoSemanal` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+INSERT INTO `ommanutencaosemanal` (`id`, `descricaoSemanal`) VALUES
+(1, 'Limpeza interna da área de usinagem'),
+(2, 'Verificar concentração e completar nível de óleo solúvel'),
+(3, 'Limpeza da haste e do receptor da probe'),
+(4, 'Retirada de cavaco'),
+(5, 'Limpeza da probe de medição de ferramenta'),
+(6, 'Lubrificação interna da pinça de pega da ferramenta (spindle)'),
+(7, 'Verificar nível de graxa de lubrificação'),
+(8, 'Calibração completa da probe'),
+(9, 'Retirada de cavaco na saída de ar das ventoinhas traseiras.'),
+(10, 'Verificar concentração e completar nível de óleo integral'),
+(11, 'Limpeza externa do equipamento'),
+(12, 'Verificar nível de óleo de lubrificação'),
+(13, 'Limpeza geral da máquina'),
+(14, 'Lubrificação das guias'),
+(15, 'Verificar reservatório de fluido do chiller'),
+(16, 'Verificação das válvulas de argônio, oxigênio e nitrogênio'),
+(17, 'Verificar se cilindros estão devidamente amarrados na posição vertical'),
+(18, 'Limpeza geral do equipamento'),
+(19, 'Completar nível de óleo integral'),
+(20, 'Limpeza do equipamento');
+
+--
+-- Estrutura para tabela `omusersmanutencao`
+--
+
+CREATE TABLE `omusersmanutencao` (
+  `id` int(11) NOT NULL,
+  `usersManutencao` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `omusersmanutencao`
+--
+
+INSERT INTO `omusersmanutencao` (`id`, `usersManutencao`) VALUES
+(1, 'Rayro Rodrigues Soares'),
+(2, 'Benjamim Wenderson Santos Soares'),
+(3, 'Fernando Lima De Sousa'),
+(4, 'Jessika Karoliny Da Silva Queiros'),
+(5, 'Tania Guedes de Oliveira');
+
+
+----------------------tabelas associativas--------------------
+--
+-- Estrutura para tabela `maquina_manutencao_mensal`
+--
+
+CREATE TABLE `maquina_manutencao_mensal` (
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoMensal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `maquina_manutencao_mensal` (`idMaquina`, `idManutencaoMensal`) VALUES
+('MAQ.001', 1),
+('MAQ.002', 1),
+('MAQ.002', 3),
+('MAQ.003', 1),
+('MAQ.003', 3),
+('MAQ.005', 6),
+('MAQ.005', 5),
+('MAQ.012', 6),
+('MAQ.012', 7),
+('MAQ.012', 8),
+('MAQ.013', 9),
+('MAQ.013', 10),
+('MAQ.013', 6);
+
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `maquina_manutencao_mensal`
+--
+ALTER TABLE `maquina_manutencao_mensal`
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoMensal` (`idManutencaoMensal`);
+
+--
+-- Restrições para tabelas `maquina_manutencao_mensal`
+--
+ALTER TABLE `maquina_manutencao_mensal`
+  ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `maquina_manutencao_mensal_ibfk_2` FOREIGN KEY (`idManutencaoMensal`) REFERENCES `ommanutencaomensal` (`id`);
+COMMIT;
+
+--
+-- Estrutura para tabela `maquina_manutencao_semanal`
+--
+
+CREATE TABLE `maquina_manutencao_semanal` (
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoSemanal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `maquina_manutencao_semanal` (`idMaquina`, `idManutencaoSemanal`) VALUES
+('MAQ.001', 1),
+('MAQ.001', 2),
+('MAQ.001', 3),
+('MAQ.001', 4),
+('MAQ.002', 1),
+('MAQ.002', 2),
+('MAQ.002', 3),
+('MAQ.002', 5),
+('MAQ.002', 6),
+('MAQ.002', 7),
+('MAQ.002', 8),
+('MAQ.002', 9),
+('MAQ.002', 18),
+('MAQ.003', 1),
+('MAQ.003', 2),
+('MAQ.003', 5),
+('MAQ.003', 6),
+('MAQ.003', 7),
+('MAQ.003', 3),
+('MAQ.003', 8),
+('MAQ.003', 9),
+('MAQ.003', 19),
+('MAQ.005', 1),
+('MAQ.005', 20),
+('MAQ.005', 11),
+('MAQ.005', 12),
+('MAQ.012', 13),
+('MAQ.012', 14),
+('MAQ.012', 15),
+('MAQ.012', 16),
+('MAQ.012', 17),
+('MAQ.013', 20);
+
+
+ALTER TABLE `maquina_manutencao_semanal`
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoSemanal` (`idManutencaoSemanal`);
+
+--
+-- Restrições para tabelas `maquina_manutencao_semanal`
+--
+ALTER TABLE `maquina_manutencao_semanal`
+  ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `maquina_manutencao_semanal_ibfk_2` FOREIGN KEY (`idManutencaoSemanal`) REFERENCES `ommanutencaosemanal` (`id`);
+COMMIT;
+
+--
+-- Estrutura para tabela `omregistromanutencao`
+--
+
+CREATE TABLE `omregistromanutencao` (
+  `id` int(11) NOT NULL,
+  `idMaquina` varchar(50) NOT NULL,
+  `idManutencaoSemanal` int(11) DEFAULT NULL,
+  `idManutencaoMensal` int(11) DEFAULT NULL,
+  `dataPrevista` date NOT NULL,
+  `dataRealizada` date DEFAULT NULL,
+  `responsavel` varchar(255) NOT NULL,
+  `observacao` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+--
+-- Índices de tabela `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idMaquina` (`idMaquina`),
+  ADD KEY `idManutencaoSemanal` (`idManutencaoSemanal`),
+  ADD KEY `idManutencaoMensal` (`idManutencaoMensal`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `omregistromanutencao`
+--
+ALTER TABLE `omregistromanutencao`
+  ADD CONSTRAINT `omregistromanutencao_ibfk_1` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`),
+  ADD CONSTRAINT `omregistromanutencao_ibfk_2` FOREIGN KEY (`idManutencaoSemanal`) REFERENCES `maquina_manutencao_semanal` (`idManutencaoSemanal`),
+  ADD CONSTRAINT `omregistromanutencao_ibfk_3` FOREIGN KEY (`idManutencaoMensal`) REFERENCES `maquina_manutencao_mensal` (`idManutencaoMensal`);
+;
