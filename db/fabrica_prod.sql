@@ -570,9 +570,6 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
   `omDescricao` varchar(200) NOT NULL,
   `omNomeArquivo` text DEFAULT NULL,
   `omGrauUrgencia` varchar(10) NOT NULL,
-  `omDtEntregasDesejada` varchar(100) DEFAULT NULL,
-  `omDtEntregaReal` varchar(200) DEFAULT NULL,
-  `dtExecucao` varchar(100) DEFAULT NULL,
   `omObs` text DEFAULT NULL,
   `omStatus` varchar(20) NOT NULL,
   `omTipoManutencao` varchar(100) DEFAULT NULL,
@@ -584,6 +581,9 @@ INSERT INTO `mesesano` (`mesId`, `mesNum`, `mesNome`, `mesAbrv`) VALUES
   `idMaquina` varchar(50) DEFAULT NULL,
   `omNomeMaquina` varchar(100) DEFAULT NULL,
   `omIdentificadorMaquina` varchar(255) DEFAULT NULL,
+  `tempoNaoOperacional` varchar(255) DEFAULT NULL,
+  `desAlinhamento` varchar(255) DEFAULT NULL,
+  `dataAlinhamento` date DEFAULT NULL
    CONSTRAINT `fk_ordem_maquina_id` FOREIGN KEY (`idMaquina`) REFERENCES `om_maquina` (`idMaquina`);
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
