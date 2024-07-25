@@ -123,12 +123,11 @@ if (isset($_SESSION["useruid"])) {
                                             <a href="lista-om" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745 solid;"> <i class="fas fa-list"></i> Lista de OM</a>
                                         </div>
                                     </div>
-                                    <div class="row d-flex justify-content-center my-1 py-1">
+                                    <!-- <div class="row d-flex justify-content-center my-1 py-1">
                                         <div class="d-flex justify-content-between px-2">
                                             <a href="atividades-om" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745 solid;"> <i class="fas fa-thumbtack"></i> Quadro de Atividades</a>
-
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="row d-flex justify-content-center my-1 py-1">
                                         <div class="d-flex justify-content-between px-2">
                                             <a href="acompanhamentoom" class="btn btn-success mx-1"><i class="fas fa-users-cog"></i> Acompanhamento OM </a>
@@ -176,8 +175,8 @@ if (isset($_SESSION["useruid"])) {
                                     <hr>
                                     <div class="row d-flex justify-content-center my-1 py-1">
                                         <div class="d-flex justify-content-between px-2">
-                                            <a href="registroManutencao004" class="btn btn-info mx-1 disabled" aria-disabled="true"><i class="fas fa-plus"></i> Nova RM </a>
-                                            <a href="lista-registroMa004.php" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;" aria-disabled="true"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                            <a href="registroManutencao004" class="btn btn-info mx-1" aria-disabled="true"><i class="fas fa-plus"></i> Nova RM </a>
+                                            <a href="lista-registroMa004" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;" aria-disabled="true"> <i class="fas fa-list"></i> Lista de Registros</a>
                                         </div>
                                     </div>
                                     <div class="row d-flex justify-content-center my-1 py-1">
@@ -237,6 +236,7 @@ if (isset($_SESSION["useruid"])) {
                                 <div class="row d-flex justify-content-center my-1 py-1">
                                     <div class="d-flex justify-content-between px-2">
                                         <a href="pendencia_frm" class="btn btn-outline-success mx-1" style="border-top: 6px #28a745  solid;"><i class="fas fa-users-cog"></i> Registros Pendentes</a>
+                                        <a href="cameraQRcode.php" class="btn btn-outline-dark mx-1"><i class="bi bi-qr-code-scan"></i></i> QR Code</a>
                                     </div>
                                 </div>
                             </div>
