@@ -7,7 +7,7 @@ if (isset($_POST["submit"])) {
 
     $tpManutenção = addslashes($_POST['tipo_manutencao']);
     $mqOperacinal = addslashes($_POST['maqOperavel']);
-    $tempoNoperacinal = addslashes($_POST['tempoNaoOperacional']);
+    $tempoNoperacional = addslashes($_POST['tempoNaoOperacional']);
     
 
     $tp_contacriador = addslashes($_POST["tp_contacriador"]);
@@ -66,7 +66,7 @@ if (isset($_POST["submit"])) {
 
 
 
-    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor, $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacinal, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
+    createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor, $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacional, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina);
 } else {
     header("location: ../solicitacao");
     exit();
