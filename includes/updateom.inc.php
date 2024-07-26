@@ -58,7 +58,7 @@ if (isset($_POST["update"])) {
     $desAlinhamento = addslashes($_POST["desAlinhamento"]);
     $dataAlinhamento = addslashes($_POST["dataAlinhamento"]);
 
-    editOM($conn, $omid, $status, $grau, $setor, $descricao, $dtexecucao, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento);
+    editOM($conn, $omid, $status, $grau, $setor, $descricao, $obs, $user, $acaoquali, $requalificar, $resprequali, $respmanutencao, $idMaquina, $omNomeMaquina, $desAlinhamento, $dataAlinhamento);
 
     header("location: ../editarom?id=" . $omid);
     exit();

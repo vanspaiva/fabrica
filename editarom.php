@@ -295,7 +295,7 @@ if (isset($_SESSION["useruid"])) {
                                                                     <div class="row">
                                                                         <div class="col-12 col-md-6 form-group">
                                                                             <label class="form-label control-label">Descreva o Alinhamento</label>
-                                                                            <textarea class="form-control" name="desAlinhamento" id="desAlinhamento" value="<?php echo $row['desAlinhamento']; ?>"></textarea>
+                                                                            <textarea class="form-control" name="desAlinhamento" id="desAlinhamento"><?php echo $row['desAlinhamento']; ?></textarea>
                                                                         </div>
                                                                         <div class="col-12 col-md-6 form-group">
                                                                             <label class="form-label control-label">Data de Realização do Alinhamento</label>
