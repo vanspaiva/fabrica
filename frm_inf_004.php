@@ -69,12 +69,11 @@ if (isset($_SESSION["useruid"])) {
 
                                    <div style="display: none !important;" class='d-flex justify-content-around'>
                                         <div class='form-group d-inline-block flex-fill m-2'>
-                                            <label class='control-label' style='color:black;'>Data de Publicação<b style='color: red;'>*</b></label>
-                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required value='2023-10-18'>
+                                            <input class='form-control' name='dataPublicacao' id='dataPublicacao' type='date' required  value='2023-10-18'>
                                         </div>
                                         <div class='form-group d-inline-block flex-fill m-2'>
                                             <label class='control-label' style='color:black;'>Validade</label>
-                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date'  readonly value='2025-10-18'>
+                                            <input class='form-control' name='dataValidade' id='dataValidade' type='date' readonly  value='2023-10-18'>
                                         </div>
                                     </div> 
                                     <script>
