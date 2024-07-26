@@ -176,7 +176,7 @@ if (isset($_SESSION["useruid"])) {
                                     <div class="row d-flex justify-content-center my-1 py-1">
                                         <div class="d-flex justify-content-between px-2">
                                             <a href="registroManutencao004" class="btn btn-info mx-1" aria-disabled="true"><i class="fas fa-plus"></i> Nova RM </a>
-                                            <a href="lista-registroMa004" class="btn btn-outline-info mx-1" style="border-top: 6px #129aaf solid;" aria-disabled="true"> <i class="fas fa-list"></i> Lista de Registros</a>
+                                            <a href="lista-registroMa004" class="btn btn-outline-info mx-1 disabled" style="border-top: 6px #129aaf solid;" aria-disabled="true"> <i class="fas fa-list"></i> Lista de Registros</a>
                                         </div>
                                     </div>
                                     <div class="row d-flex justify-content-center my-1 py-1">
