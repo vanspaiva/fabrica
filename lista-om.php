@@ -45,9 +45,9 @@ if (isset($_SESSION["useruid"])) {
                                     <div class="d-flex justify-content-center p-1">
                                         <a href="novaos?t=om"><button class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Abrir OM</button></a>
                                     </div>
-                                    <div class="d-flex justify-content-center p-1">
+                                    <!-- <div class="d-flex justify-content-center p-1">
                                         <a href="atividades-om"><button class="btn btn-outline-success btn-sm"><i class="fas fa-thumbtack"></i> Atividades</button></a>
-                                    </div>
+                                    </div> -->
                                     <div class="d-flex justify-content-center p-1">
                                         <a href="export?t=om"><button class="btn btn-outline-success btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
                                     </div>
@@ -99,7 +99,7 @@ if (isset($_SESSION["useruid"])) {
 
                                                         <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                             <a href="manageom?id=<?php echo $row['omId']; ?>">
-                                                                <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OS?');"><i class="far fa-trash-alt"></i></button></a>
+                                                                <button class="btn text-danger btn-sm" onClick="return confirm('Você realmente deseja deletar essa OM?');"><i class="far fa-trash-alt"></i></button></a>
                                                         <?php
                                                         }
                                                         ?>
