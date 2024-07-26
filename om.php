@@ -38,19 +38,6 @@ if (isset($_SESSION["useruid"])) {
         $codgos = 'OM' . $idCdg;
 
 
-        //Data para entrega
-       /*  $dataEHoraEntrega = explode(" ", $row['omDtEntregaReal']); */
-
-      /*   $dataBDEntrega = $dataEHoraEntrega[0]; */
-/* 
-        if ($dataBDEntrega) {
-            $dataBDEntrega = explode("-", $dataBDEntrega);
-            $dataEntrega = $dataBDEntrega[2] . "/" . $dataBDEntrega[1] . "/" . $dataBDEntrega[0];
-        } else {
-            $dataEntrega = "";
-        } */
-
-
         //Responsável Abertura
         $responsavel = $row["omNomeCriador"];
         $retUser = mysqli_query($conn, "SELECT * FROM users WHERE usersUid='" . $responsavel . "';");
@@ -59,6 +46,8 @@ if (isset($_SESSION["useruid"])) {
         }
         $responsavel = explode(" ", $responsavel);
         $responsavel = $responsavel[0];
+
+        $tempoNaoOperacional = $row['tempoNaoOperacional'];
 
         //N maquina        
         $lote = $row["idMaquina"];
@@ -73,6 +62,7 @@ if (isset($_SESSION["useruid"])) {
 
         $omTipoManutencao = $row["omTipoManutencao"];
         $omOperacional = $row["omOperacional"];
+   
         $omAcaoQualidade = $row["omAcaoQualidade"];
         if ($omAcaoQualidade == 'op1') {
             $omAcaoQualidade = 'verificar identificação de não operacional';
@@ -148,14 +138,14 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 80px; background-color: silver;">Assin. </td>
                                     <td style="width: 200px;"></td>
                                     <td class="font-weight-bold" style="width: 150px; background-color: silver;"> Dt. Abertura: </td>
-                                    <td style="width: 150px;"><?php echo $data; ?></td>
+                                    <td colspan="5" style="width: 150px;"><?php echo $data; ?></td>
                                 </tr>
                                 <tr>
-                                    <td class="font-weight-bold" colspan="6" style="text-align: center; background-color: silver;" class="p-2"> INFORMAÇÕES PARA O SERVIÇO </td>
+                                    <td class="font-weight-bold" colspan="8" style="text-align: center; background-color: silver;" class="p-2"> INFORMAÇÕES PARA O SERVIÇO </td>
                                 </tr>
                                 <tr>
                                     <td class="font-weight-bold" style="width: 150px; background-color: silver;"> Código: </td>
-                                    <td colspan="5" style="width: 200px;"><?php echo $codgos; ?></td>
+                                    <td colspan="8" style="width: 200px;"><?php echo $codgos; ?></td>
                                     <!-- <td colspan="4" style="text-align: center;"><img alt='testing' src="barcode/barcode.php?codetype=Code128&size=40&text=<?php echo $codgos; ?>&print=true" /></td> -->
                                 </tr>
                                 <!-- <tr>
@@ -166,7 +156,7 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nº Máquina: </td>
                                     <td style="width: 200px;"><?php echo $lote; ?></td>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Nome Máquina: </td>
-                                    <td colspan="3" style="width: 200px;"><?php echo $pedido; ?> (<?php echo $omIdentificadorMaquina; ?>)</td>
+                                    <td colspan="8" style="width: 200px;"><?php echo $pedido; ?> (<?php echo $omIdentificadorMaquina; ?>)</td>
                                 </tr>
                                 <tr style="vertical-align: middle;">
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Tipo Manutenção: </td>
@@ -184,7 +174,16 @@ if (isset($_SESSION["useruid"])) {
                                     text-align: center;
                                     align-items: center;
                                     vertical-align: middle;">
-                                        <?php echo $omOperacional; ?>
+                                        <?php echo $omOperacional; ?> 
+                                    </td>
+
+                                    <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Tempo não Operacional: </td>
+                                    <td style="                             
+                                    width: 200px; 
+                                    text-align: center;
+                                    align-items: center;
+                                    vertical-align: middle;">
+                                     <?php echo $tempoNaoOperacional; ?>
                                     </td>
 
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Ação da Qualidade: </td>
@@ -197,7 +196,7 @@ if (isset($_SESSION["useruid"])) {
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Respons. Requalificação: </td>
                                     <td style="width: 200px;"><?php echo $omIdRespRequalificar; ?></td>
                                     <td class="font-weight-bold" style="width: 150px;background-color: silver;"> Respons. Manutenção: </td>
-                                    <td style="width: 200px;"><?php echo $omIdRespManutencao; ?></td>
+                                    <td colspan="5" style="width: 200px;"><?php echo $omIdRespManutencao; ?></td>
                                 </tr>
 
                             </tbody>
@@ -209,81 +208,6 @@ if (isset($_SESSION["useruid"])) {
                     <div class="col">
                         <table class="table table-bordered table-sm">
                             <tbody>
-                                <!--                                 <tr>
-                                    <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> IDENTIFICAÇÃO DO SERVIÇO </td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-bold" style="text-align: center;"> DESCRIÇÃO DETALHADA DO SERVIÇO </td>
-                                    <td class="font-weight-bold" colspan="2" style="width: 120px; text-align: center;"> ETAPAS A REALIZAR </td>
-                                    <td class="font-weight-bold" style="text-align: center;"> OPERADOR </td>
-                                    <td class="font-weight-bold" style="width: 130px; text-align: center;"> DATA </td>
-
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td rowspan="8"><?php //echo $descricao; 
-                                                    ?></td>
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>IMPRESSÃO TITÂNIO</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>IMPRESSÃO FILAMENTO/RESINA</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>FORNO</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>USINAGEM</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>ACABAMENTO</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>LIMPEZA</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>INSPEÇÃO</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr style="height: 30px;">
-                                    <td style="width: 20px;"><i class="far fa-square"></i></td>
-                                    <td>EMBALAGEM</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> OBSERVAÇÕES SOBRE A EXECUÇÃO DO SERVIÇO </td>
-                                </tr>
-                                <tr style="height: 90px;">
-                                    <td colspan="5"><?php //echo $obs; 
-                                                    ?></td>
-
-                                </tr>
-                                <tr>
-                                    <td class="font-weight-bold" colspan="5" style="text-align: center; background-color: silver;"> INSPEÇÃO FINAL / LIBERAÇÃO </td>
-                                </tr>
-                                <tr style="height: 90px;">
-                                    <td colspan="5">Obs.</td>
-
-                                </tr> -->
                                 <tr class="p-2">
                                     <td class="font-weight-bold p-2" colspan="2" rowspan="2" style="text-align: center;">
                                         <div>
