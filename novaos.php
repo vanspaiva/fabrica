@@ -42,16 +42,18 @@ if (isset($_SESSION["useruid"])) {
     include("php/head_index.php");
     require_once 'db/dbh.php';
 ?>
+
     <head>
         <style>
-             .form-check-container {
-            display: flex;
-            align-items: center;
-        }
+            .form-check-container {
+                display: flex;
+                align-items: center;
+            }
+
             .tempoNaoOperacional {
-            display: none;   
-            margin-right: 8em;
-        }
+                display: none;
+                margin-right: 8em;
+            }
         </style>
     </head>
 
@@ -325,7 +327,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <small class="form-check-label">Pode aguardar</small>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="1" name="grauurgencia" />
+                                                    <input class="form-check-input" type="radio" value="1" name="grauurgencia" required />
                                                     <label class="form-check-label">1</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
@@ -348,6 +350,7 @@ if (isset($_SESSION["useruid"])) {
                                                     <small class="form-check-label">Executar o quanto antes</small>
                                                 </div>
                                             </div>
+
                                             <div class="col form-group d-inline-block flex-fill m-2">
                                                 <label class='control-label d-block' style='color:black;'>Arquivos necessário para a execução da tarefa devem ser anexados aqui ou possuir link de acesso presente na descrição da atividade</label>
                                                 <div class="d-flex justify-content-center p-2 border rounded bg-light">
