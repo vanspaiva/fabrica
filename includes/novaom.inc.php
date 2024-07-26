@@ -40,9 +40,6 @@ if (isset($_POST["submit"])) {
 
     $stmt->close(); 
 
-
-    //$dtentrega = addslashes($_POST["dtentrega"]);
-    $dtentrega = "None";
     //$setor = addslashes($_POST["setor"]);
     $setor = "None";
     $descricao = addslashes($_POST["descricao"]);
