@@ -373,6 +373,7 @@ function  criarCorrelacaoProduto($conn, $idMaster, $IdSecundario)
     }
 
     mysqli_stmt_bind_param($stmt, "ss", $idMaster, $IdSecundario);
+    mysqli_stmt_bind_param($stmt, "ss", $idMaster, $IdSecundario);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
