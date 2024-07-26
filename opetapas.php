@@ -20,7 +20,7 @@ if (isset($_SESSION["useruid"])) {
     }
 
     // Obtendo todos os setores
-    // print_r($setores);
+ /*    print_r($setores); */
 
     $hoje = hoje();
 
