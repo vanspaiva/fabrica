@@ -55,19 +55,8 @@ if (isset($_SESSION["useruid"])) {
 
                                         <thead>
                                             <tr>
-                                                <!-- <th>ID</th>
-                                                <th>Dt Chegada</th>
-                                                <th>Cód Produto</th>
-                                                <th>Produto</th>
-                                                <th>Modalidade</th>
-                                                <th>Dr(a)</th>
-                                                <th>Pac</th>
-                                                <th>Dt Entrega</th>
-                                                <th></th> -->
-
                                                 <th>ID</th>
                                                 <th>Dt Chegada</th>
-                                                <!-- <th>Dias no PCP</th> -->
                                                 <th>Produto</th>
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
@@ -82,11 +71,15 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
 
                                             <?php
-                                            $ret = mysqli_query($conn, "SELECT p.*
-                                            FROM pedidos p
-                                            LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
-                                            WHERE rp.idPedido IS NULL
-                                            ORDER BY p.dt ASC;");
+                                            // Ajuste a consulta para incluir o nome do fluxo
+                                            $sql = "SELECT p.*, f.nome AS nome_fluxo
+FROM pedidos p
+LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
+LEFT JOIN fluxo f ON p.fluxo = f.id
+WHERE rp.idPedido IS NULL
+ORDER BY p.dt ASC;";
+
+                                            $ret = mysqli_query($conn, $sql);
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
                                                 $dt = dateFormatByHifen($row["dt"]);
@@ -94,9 +87,8 @@ if (isset($_SESSION["useruid"])) {
                                                 $dr = reduzirString($row["dr"], 15);
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
-                                                $fluxo = $row['fluxo'];
+                                                $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
                                                 $dataEntrega = dateFormatByHifen($row["dataEntrega"]);
-
                                                 $lote = $row["lote"];
                                                 $diasparaproduzir = $row["diasparaproduzir"];
 
@@ -132,14 +124,13 @@ if (isset($_SESSION["useruid"])) {
                                                 //         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
                                                 //     }
                                                 // }
-
                                             ?>
                                                 <tr>
                                                     <th><?php echo $id; ?></th>
                                                     <th><?php echo $dt; ?></th>
                                                     <!-- <th><?php //echo $diasOnPCP; 
                                                                 ?></th> -->
-                                                    <th><?php echo $produto; ?></th>
+                                                    <td><?php echo $nomeFluxo; ?></td>
                                                     <th><?php echo $dr; ?></th>
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
@@ -154,7 +145,7 @@ if (isset($_SESSION["useruid"])) {
                                                             <a href="evolucaopcp?id=<?php echo $id; ?>">
                                                                 <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
                                                             </a>
-                                                                <button class="btn btn-warning m-1" ><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
                                                         </div>
                                                     </th>
                                                 </tr>

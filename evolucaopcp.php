@@ -73,9 +73,6 @@ if (isset($_SESSION["useruid"])) {
             $listaCdgs = explode("*", $cdgprod);
             $listaQtds = explode("*", $qtds);
             $listaDescricao = explode("*", $descricao);
-
-
-
         ?>
 
             <div id="main">
@@ -174,7 +171,30 @@ if (isset($_SESSION["useruid"])) {
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Produto</b></label>
-                                                                            <small><?php echo $row['produto']; ?></small>
+                                                                            <?php
+                                                                            // Consulta ao banco de dados para obter os fluxos ordenados por nome
+                                                                            $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
+
+                                                                            // Verifique se a consulta retornou resultados
+                                                                            if ($retStatus) {
+                                                                                while ($rowStatus = mysqli_fetch_array($retStatus)) {
+                                                                                    $idFluxo = $rowStatus['id'];
+                                                                                    $nomeFluxo = $rowStatus['nome'];
+                                                                            ?>
+                                                                                    <!-- Exibindo o nome do fluxo com base no ID -->
+                                                                                    <small>
+                                                                                        <value="<?php echo $idFluxo; ?>">
+                                                                                            <?php if ($fluxo == $idFluxo) {
+                                                                                                echo htmlspecialchars($nomeFluxo);
+                                                                                            } ?>
+                                                                                            </value>
+                                                                                    </small>
+                                                                            <?php
+                                                                                }
+                                                                            } else {
+                                                                                echo "Erro na consulta: " . mysqli_error($conn);
+                                                                            }
+                                                                            ?>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Dias p/ Produzir</b></label>
