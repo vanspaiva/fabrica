@@ -646,7 +646,7 @@ INSERT INTO `ordenservico` (`osId`, `osUserCriador`, `osNomeCriador`, `osEmailCr
 --
 
 CREATE TABLE IF NOT EXISTS `pedidos` (
-  `id` int(11) NOT NULL,
+  `id` int(11) AUTO_INCREMENT NOT NULL,
   `projetista` varchar(255) DEFAULT NULL,
   `dr` varchar(255) DEFAULT NULL,
   `pac` varchar(255) DEFAULT NULL,
@@ -669,13 +669,13 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
 --
 -- Despejando dados para a tabela `pedidos`
 --
-
+/* 
 INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `produto`, `dataEntrega`, `fluxo`, `lote`, `cdgprod`, `qtds`, `descricao`, `diasparaproduzir`, `taxa_extra`, `nacional_internacional`, `obs`) VALUES
 (1, 'Lucas', 'Doutor Teste', 'ABC', 'julianaaguiar', '125456', '2024-06-07', 'ORTOGNÁTICA', '2024-07-05', 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (2, 'Wilton', 'Farid Miguel Damen', 'GFCB', 'tatianecpmh', '12047', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 'joao.avelar', 'Sandro Lucas', 'MFRAC', 'neandrobarbosa', '12004', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, NULL, 'Teste', 'ABC', NULL, '1234', '2024-06-17', NULL, '2024-07-15', 17, '1234', NULL, NULL, NULL, 20, 0, 'nacional', ''),
-(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e');
+(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e'); */
 
 -- --------------------------------------------------------
 
