@@ -646,7 +646,7 @@ INSERT INTO `ordenservico` (`osId`, `osUserCriador`, `osNomeCriador`, `osEmailCr
 --
 
 CREATE TABLE IF NOT EXISTS `pedidos` (
-  `id` int(11) AUTO_INCREMENT NOT NULL,
+  `id` int(11) NOT NULL,
   `projetista` varchar(255) DEFAULT NULL,
   `dr` varchar(255) DEFAULT NULL,
   `pac` varchar(255) DEFAULT NULL,
