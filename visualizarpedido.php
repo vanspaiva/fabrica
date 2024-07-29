@@ -291,6 +291,37 @@ if (isset($_SESSION["useruid"])) {
                                                         <?php
                                                         }
                                                         ?>
+                                                      <!--   <script>
+                                                            function handleAction(action, pedidoId, idRealizacaoProducao, idEtapa, idStatus) {
+                                                                // Aqui você pode fazer uma solicitação AJAX para o servidor
+                                                                // Exemplo com fetch API:
+                                                                fetch('atvd', {
+                                                                        method: 'GET',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json'
+                                                                        },
+                                                                        body: JSON.stringify({
+                                                                            idPed: pedidoId,
+                                                                            idR: idRealizacaoProducao,
+                                                                            a: action,
+                                                                            etapa: idEtapa,
+                                                                            statual: idStatus
+                                                                        })
+                                                                    })
+                                                                    .then(response => response.json())
+                                                                    .then(data => {
+                                                                        // Lidar com a resposta do servidor aqui
+                                                                        console.log(data);
+                                                                        // Atualizar a UI conforme necessário
+                                                                    })
+                                                                    .catch(error => {
+                                                                        console.error('Erro:', error);
+                                                                    });
+
+                                                                // Evitar redirecionamento
+                                                                return false;
+                                                            }
+                                                        </script> -->
 
                                                     </tbody>
                                                 </table>
