@@ -1,3 +1,4 @@
+</div>
 <div class="col-sm-4 mt-2">    
     <div class="card shadow rounded py-2" style="border-top: #007A5A 7px solid;">
         <div class="card-body">
