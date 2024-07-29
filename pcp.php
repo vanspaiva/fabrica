@@ -73,11 +73,11 @@ if (isset($_SESSION["useruid"])) {
                                             <?php
                                             // Ajuste a consulta para incluir o nome do fluxo
                                             $sql = "SELECT p.*, f.nome AS nome_fluxo
-FROM pedidos p
-LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
-LEFT JOIN fluxo f ON p.fluxo = f.id
-WHERE rp.idPedido IS NULL
-ORDER BY p.dt ASC;";
+                                            FROM pedidos p
+                                            LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
+                                            LEFT JOIN fluxo f ON p.fluxo = f.id
+                                            WHERE rp.idPedido IS NULL
+                                            ORDER BY p.dt ASC;";
 
                                             $ret = mysqli_query($conn, $sql);
                                             while ($row = mysqli_fetch_array($ret)) {
@@ -142,10 +142,14 @@ ORDER BY p.dt ASC;";
                                                     </th>
                                                     <th>
                                                         <div class="d-flex">
-                                                            <a href="evolucaopcp?id=<?php echo $id; ?>">
-                                                                <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
-                                                            </a>
-                                                            <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
+                                                                <a href="evolucaopcp?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
+                                                                </a>
+                                                                <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                         </div>
                                                     </th>
                                                 </tr>
