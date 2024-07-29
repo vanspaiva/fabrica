@@ -796,10 +796,10 @@ if (isset($_SESSION["useruid"])) {
 
                                         <div class="py-4 col d-flex justify-content-center">
                                             <button class="btn btn-fab" type="submit" name="opsimple" id="submitopsimples">Enviar</button>
+
                                         </div>
 
                                     </form>
-
                                 <?php
                                 }
                                 ?>
