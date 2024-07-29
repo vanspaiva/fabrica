@@ -7,13 +7,8 @@ if (isset($_POST["update"])) {
     $id = addslashes($_POST["pedidoId"]);
     $fluxo = addslashes($_POST["fluxo"]);
     $lote = addslashes($_POST["lote"]);
-    $nacinter = addslashes($_POST["nacinter"]);
-
-    if (!empty($_POST["taxa_extra"])) {
-        $taxa_extra = addslashes($_POST["taxa_extra"]);
-    } else {
-        $taxa_extra = 0;
-    }
+    $nacinter = isset($_POST['nacinter']);
+    $taxa_extra = isset($_POST['taxa_extra']) ? $_POST['taxa_extra'] : 0;
     //receber user depois 
 
     require_once '../db/dbh.php';
@@ -118,8 +113,6 @@ if (isset($_POST["update"])) {
 
     //criar pedido
     inserirPedidoSimples($conn, $dr, $pac, $nped, $hoje, $fluxo, $lote, $dataEntrega, $diasparaproduzir,$obs);
-
-    
 
     //redirecionar para pagina de acompanhamento desse pedido
     header("location: ../pcp");
