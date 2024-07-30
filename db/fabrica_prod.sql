@@ -843,14 +843,22 @@ INSERT INTO `produtos` (`prodId`, `prodCodCallisto`, `prodDescricao`, `prodAnvis
 --
 
 CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPedido` int(11) DEFAULT NULL,
   `idFluxo` int(11) DEFAULT NULL,
   `numOrdem` int(11) DEFAULT NULL,
   `idEtapa` int(11) DEFAULT NULL,
   `idStatus` int(11) NOT NULL,
-  `dataRealizacao` date DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `fazendo` date DEFAULT NULL,
+  `dataPausado` date DEFAULT NULL,
+  `dataRealizacao` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+ALTER TABLE `realizacaoproducao`
+  ADD CONSTRAINT `realizacaoproducao_ibfk_1` FOREIGN KEY (`idPedido`) REFERENCES `pedidos` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_2` FOREIGN KEY (`idFluxo`) REFERENCES `fluxo` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_3` FOREIGN KEY (`idEtapa`) REFERENCES `etapa` (`id`);
 
 --
 -- Despejando dados para a tabela `realizacaoproducao`

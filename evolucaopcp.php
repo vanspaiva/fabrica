@@ -59,7 +59,7 @@ if (isset($_SESSION["useruid"])) {
 
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
+            
             // if (($diasFuturosNumber >= $diasFaltantesNumber)){
             //     $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
             // } else {
@@ -319,8 +319,6 @@ if (isset($_SESSION["useruid"])) {
                                                                             </div>
                                                                         </div>
 
-
-
                                                                         <div class="d-flex justify-content-end pt-4">
                                                                             <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Gerar</button>
                                                                         </div>
@@ -334,7 +332,7 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row p-4">
+<!--                                 <div class="row p-4">
                                     <div class="col p-2">
                                         <h5 class="alert alert-light text-center shadow">Produtos detalhados</h5>
                                         <div class="d-flex justify-content-center align-items-center">
@@ -363,8 +361,8 @@ if (isset($_SESSION["useruid"])) {
                                             </table>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </div> 
+                            </div>-->
                         </div>
                     </div>
                 </div>

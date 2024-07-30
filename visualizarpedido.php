@@ -27,8 +27,8 @@ if (isset($_SESSION["useruid"])) {
         p.descricao AS descricao, 
         p.dataEntrega AS dataEntrega, 
         p.dr AS dr,
-        p.pac  AS pac,
-        p.produto  AS produto,
+        p.pac AS pac,
+        p.produto AS produto,
         fx.nome AS NomeFluxo 
         FROM pedidos AS p 
         JOIN fluxo fx ON p.fluxo = fx.id 
@@ -45,26 +45,22 @@ if (isset($_SESSION["useruid"])) {
             $qtds = $row["qtds"];
             $descricao = $row["descricao"];
 
-
-            if ($diasparaproduzir < 20) {
+            if ($diasparaproduzir < 3) {
                 $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
             } else {
                 $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
             }
             $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
             $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-
             if ($diasFaltantes <= 0) {
                 $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
             } else {
                 $diasFaltantes = $diasFaltantes . ' dias';
             }
-
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
             $hoje = hoje();
-        ?>
+             ?>
 
             <div id="main">
                 <div>
@@ -129,8 +125,8 @@ if (isset($_SESSION["useruid"])) {
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Produto</b></label>
-                                                                                <small><?php echo $row['produto']; ?></small>
-                                                                            </div>
+                                                                                <small><?php echo $NomeFluxo; ?></small> <!-- Aqui exibimos o nome do fluxo -->
+                                                                            </div>  
                                                                             <div class="col d-flex" style="flex-direction: column;">
                                                                                 <label for=""><b>Dias p/ Produzir</b></label>
                                                                                 <small><?php echo $row['diasparaproduzir']; ?> dias </small>
@@ -291,38 +287,6 @@ if (isset($_SESSION["useruid"])) {
                                                         <?php
                                                         }
                                                         ?>
-                                                      <!--   <script>
-                                                            function handleAction(action, pedidoId, idRealizacaoProducao, idEtapa, idStatus) {
-                                                                // Aqui você pode fazer uma solicitação AJAX para o servidor
-                                                                // Exemplo com fetch API:
-                                                                fetch('atvd', {
-                                                                        method: 'GET',
-                                                                        headers: {
-                                                                            'Content-Type': 'application/json'
-                                                                        },
-                                                                        body: JSON.stringify({
-                                                                            idPed: pedidoId,
-                                                                            idR: idRealizacaoProducao,
-                                                                            a: action,
-                                                                            etapa: idEtapa,
-                                                                            statual: idStatus
-                                                                        })
-                                                                    })
-                                                                    .then(response => response.json())
-                                                                    .then(data => {
-                                                                        // Lidar com a resposta do servidor aqui
-                                                                        console.log(data);
-                                                                        // Atualizar a UI conforme necessário
-                                                                    })
-                                                                    .catch(error => {
-                                                                        console.error('Erro:', error);
-                                                                    });
-
-                                                                // Evitar redirecionamento
-                                                                return false;
-                                                            }
-                                                        </script> -->
-
                                                     </tbody>
                                                 </table>
                                             </div>
