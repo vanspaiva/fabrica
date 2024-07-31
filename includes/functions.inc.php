@@ -2410,8 +2410,9 @@ function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produ
 
 function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs)
 {
+    
     // Preparar a consulta SQL para inserção
-    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, taxa_extra, nacional_internacional, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, nacional_internacional, taxa_extra, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // Verificar se a preparação da declaração foi bem-sucedida
     if ($stmt === false) {
@@ -2433,7 +2434,8 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
 
     // Retornar a resposta
     return $response;
-}
+}   
+
 
 function reduzirString($string, $quantidadeCaracteres)
 {
