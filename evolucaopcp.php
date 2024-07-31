@@ -16,6 +16,38 @@ if (isset($_SESSION["useruid"])) {
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
 
+        function adicionarHorasUteis($dataInicial, $horasAdicionar)
+        {
+            $data = new DateTime($dataInicial);
+            $horasRestantes = $horasAdicionar;
+
+            while ($horasRestantes > 0) {
+                $diaDaSemana = $data->format('N'); // 1 (para segunda-feira) até 7 (para domingo)
+
+                // Se for fim de semana, adianta para a próxima segunda-feira
+                if ($diaDaSemana >= 6) {
+                    $data->modify('next monday');
+                    $diaDaSemana = 1; // Começar do início da semana
+                }
+
+                // Calcula o total de horas no dia corrente
+                $horasNoDia = 24 - $data->format('H');
+                $horasNoDia = min($horasNoDia, $horasRestantes);
+
+                // Adiciona as horas no dia
+                $data->modify("+{$horasNoDia} hours");
+                $horasRestantes -= $horasNoDia;
+
+                // Se ainda restam horas e o dia é sábado, adianta para a segunda-feira
+                if ($horasRestantes > 0 && $data->format('N') == 6) {
+                    $data->modify('next monday');
+                }
+            }
+
+            return $data->format('d-m-Y');
+        }
+        
+
         $pedidoId = $_GET['id'];
 
         $ret = mysqli_query($conn, "SELECT * FROM pedidos WHERE id='" . $pedidoId . "';");
@@ -23,33 +55,41 @@ if (isset($_SESSION["useruid"])) {
             $numPed = $row['pedido'];
             $fluxo = $row['fluxo'];
             $lote = $row["lote"];
-            $diasparaproduzir = $row["diasparaproduzir"];
             $cdgprod = $row["cdgprod"];
-            $qtds = $row["qtds"];
+            $qtds = $row["qtds"];   
             $descricao = $row["descricao"];
 
-            // id
-            // projetista
-            // dr
-            // pac
-            // rep
-            // pedido
-            // dt
-            // produto
-            // dataEntrega
-            // fluxo
-            // lote
+            $sqlDuracao = "SELECT SUM(e.duracao) AS total_duracao
+                   FROM etapa_fluxo e
+                   WHERE e.idfluxo = $fluxo;";
+            $retDuracao = mysqli_query($conn, $sqlDuracao);
+            $rowDuracao = mysqli_fetch_assoc($retDuracao);
+            $totalDuracaoHoras = isset($rowDuracao['total_duracao']) ? $rowDuracao['total_duracao'] : 0;
 
-            if ($diasparaproduzir < 20) {
+            // Converte duração em dias
+            $totalDuracaoDias = floor($totalDuracaoHoras / 24);
+
+
+            $dataAtual = date('d-m-Y');
+            $dataEntregaFormatada = adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
+            
+            if ( $dataparaproduzir < 5) {
                 $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
             } else {
                 $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
             }
-            $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
-            $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-            // $dtEx = '2024-07-05';
-            // $diasFaltantes = diasFaltandoParaData($dtEx);
-            // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
+
+            $$dataparaproduzir = 0;
+
+            $retDuracao = mysqli_query($conn, "SELECT COALESCE(SUM(e.duracao), 0) AS total_duracao FROM etapa_fluxo e WHERE e.idfluxo = $fluxo;");
+            if ($rowDuracao = mysqli_fetch_array($retDuracao)) {
+                $totalDuracaoHoras = $rowDuracao["total_duracao"];
+            }
+
+
+            $diasFaltantes = diasFaltandoParaData($row['']);
+            $diasFaltantesNumber = diasFaltandoParaData($row['']);
+
 
             if ($diasFaltantes <= 0) {
                 $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
@@ -59,7 +99,7 @@ if (isset($_SESSION["useruid"])) {
 
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-            
+
             // if (($diasFuturosNumber >= $diasFaltantesNumber)){
             //     $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
             // } else {
@@ -116,40 +156,6 @@ if (isset($_SESSION["useruid"])) {
                                                         <div class="row">
                                                             <div class="col-md">
                                                                 <div class="content-panel">
-                                                                    <!-- <div class="row">
-                                                                        <div class="col">
-                                                                            <table>
-                                                                                <tbody>
-                                                                                    <tr>
-                                                                                        <td>Nº Ped</td>
-                                                                                        <td>Dr(a)</td>
-                                                                                        <td>Pac</td>
-                                                                                    </tr>
-                                                                                    <tr>
-                                                                                        <td><?php //echo $row['pedido']; 
-                                                                                            ?></td>
-                                                                                        <td><?php //echo $row['dr']; 
-                                                                                            ?></td>
-                                                                                        <td><?php //echo $row['pac']; 
-                                                                                            ?></td>
-                                                                                    </tr>
-                                                                                    <tr>
-                                                                                        <td>Representante</td>
-                                                                                        <td>Projetista</td>
-                                                                                        <td>Produto</td>
-                                                                                    </tr>
-                                                                                    <tr>
-                                                                                        <td><?php //echo $row['rep']; 
-                                                                                            ?></td>
-                                                                                        <td><?php //echo $row['projetista']; 
-                                                                                            ?></td>
-                                                                                        <td><?php //echo $row['produto']; 
-                                                                                            ?></td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </div> -->
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Nº Ped</b></label>
@@ -198,7 +204,8 @@ if (isset($_SESSION["useruid"])) {
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Dias p/ Produzir</b></label>
-                                                                            <small><?php echo $row['diasparaproduzir']; ?> dias </small>
+                                                                            <small><?php echo $totalDuracaoDias; ?> dias
+                                                                            </small>
                                                                         </div>
                                                                     </div>
 
@@ -223,8 +230,9 @@ if (isset($_SESSION["useruid"])) {
                                                                 <div class="content-panel">
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
-                                                                            <label for=""><b>Dt Entrega (Após Aceite)</b></label>
-                                                                            <small><?php echo dateFormatByHifen($row['dataEntrega']); ?></small>
+                                                                            <label for=""><b>Dt Entrega (Após
+                                                                                    Aceite)</b></label>
+                                                                            <small><?php echo $dataEntregaFormatada; ?></small>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Dias para Entrega</b></label>
@@ -264,7 +272,8 @@ if (isset($_SESSION["useruid"])) {
                                                                             <div class="form-group col-md">
                                                                                 <label class="form-label text-black" for="pedidoId">ID</label>
                                                                                 <input type="number" class="form-control" id="pedidoId" name="pedidoId" value="<?php echo $row['id']; ?>" required readonly>
-                                                                                <small class="text-muted">ID não é editável</small>
+                                                                                <small class="text-muted">ID não é
+                                                                                    editável</small>
                                                                             </div>
                                                                             <div class="form-group col-md">
                                                                                 <label class="form-label text-black" for="user">User Responsável</label>
@@ -276,11 +285,14 @@ if (isset($_SESSION["useruid"])) {
                                                                             <div class="col form-group m-2">
                                                                                 <label class="form-label text-black" for="fluxo">Modalidade</label>
                                                                                 <select class='form-control' name='fluxo' id='fluxo' required>
-                                                                                    <option value="">Escolha uma Modalidade</option>
+                                                                                    <option value="">Escolha uma Modalidade
+                                                                                    </option>
                                                                                     <?php
                                                                                     $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
                                                                                     while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
-                                                                                        <option value="<?php echo $rowStatus['id']; ?>" <?php if ($fluxo == $rowStatus['id']) echo ' selected="selected"'; ?>><?php echo $rowStatus['nome']; ?></option>
+                                                                                        <option value="<?php echo $rowStatus['id']; ?>" <?php if ($fluxo == $rowStatus['id']) echo ' selected="selected"'; ?>>
+                                                                                            <?php echo $rowStatus['nome']; ?>
+                                                                                        </option>
                                                                                     <?php
                                                                                     }
                                                                                     ?>
@@ -332,7 +344,7 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
                                 </div>
-<!--                                 <div class="row p-4">
+                                <!--                                 <div class="row p-4">
                                     <div class="col p-2">
                                         <h5 class="alert alert-light text-center shadow">Produtos detalhados</h5>
                                         <div class="d-flex justify-content-center align-items-center">
@@ -363,11 +375,11 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                 </div> 
                             </div>-->
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-    <?php
+        <?php
             include_once 'php/footer_updateprop.php';
         }
     } else {
@@ -375,4 +387,4 @@ if (isset($_SESSION["useruid"])) {
         header("location: ../index");
         exit();
     }
-    ?>
+        ?>
