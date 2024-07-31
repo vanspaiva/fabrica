@@ -28,7 +28,7 @@ if (isset($_POST["update"])) {
     // Converte $dataRef para um objeto DateTime para manipulação fácil de datas
     $dataAtual = new DateTime($dataRef);
 
- /*  foreach ($todasEtapas as $etapa) {
+    /*  foreach ($todasEtapas as $etapa) {
      $idEtapa = $etapa['idetapa'];
      $numOrdem = $etapa['ordem'];
      $duracao = $etapa['duracao'];
@@ -101,19 +101,26 @@ if (isset($_POST["update"])) {
     } else {
         $taxa_extra = 0;
     }
+
     //receber user depois 
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
+    
     //contar hj + 20 dias uteis para ter data de entrega
- /*    $hoje = hoje();
+    /*    $hoje = hoje();
     $diasparaproduzir = 7;
     $dataEntrega = somarDiasUteis($hoje, $diasparaproduzir); */
 
-    //criar pedido
-    inserirPedidoSimples($conn, $dr, $pac, $nped, $hoje, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra,$obs);
+    $hoje = date('Y-m-d'); // Definir a data de hoje
+    $dataEntrega = null; // Inicializar a variável
+    $diasparaproduzir = 0; // Inicializar a variável
 
+
+
+    //criar pedido
+    inserirPedidoSimples($conn, $dr, $pac, $nped, $hoje, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs);
     //redirecionar para pagina de acompanhamento desse pedido
     header("location: ../pcp");
 } else {
