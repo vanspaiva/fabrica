@@ -55,19 +55,8 @@ if (isset($_SESSION["useruid"])) {
 
                                         <thead>
                                             <tr>
-                                                <!-- <th>ID</th>
-                                                <th>Dt Chegada</th>
-                                                <th>Cód Produto</th>
-                                                <th>Produto</th>
-                                                <th>Modalidade</th>
-                                                <th>Dr(a)</th>
-                                                <th>Pac</th>
-                                                <th>Dt Entrega</th>
-                                                <th></th> -->
-
                                                 <th>ID</th>
                                                 <th>Dt Chegada</th>
-                                                <!-- <th>Dias no PCP</th> -->
                                                 <th>Produto</th>
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
@@ -82,11 +71,50 @@ if (isset($_SESSION["useruid"])) {
                                         <tbody>
 
                                             <?php
-                                            $ret = mysqli_query($conn, "SELECT p.*
+                                            function adicionarHorasUteis($dataInicial, $horasAdicionar)
+                                            {
+                                                $data = new DateTime($dataInicial);
+                                                $horasRestantes = $horasAdicionar;
+
+                                                while ($horasRestantes > 0) {
+                                                    $diaDaSemana = $data->format('N'); // 1 (para segunda-feira) até 7 (para domingo)
+
+                                                    // Se for fim de semana, adianta para a próxima segunda-feira
+                                                    if ($diaDaSemana >= 6) {
+                                                        $data->modify('next monday');
+                                                        $diaDaSemana = 1; // Começar do início da semana
+                                                    }
+
+                                                    // Calcula o total de horas no dia corrente
+                                                    $horasNoDia = 24 - $data->format('H');
+                                                    $horasNoDia = min($horasNoDia, $horasRestantes);
+
+                                                    // Adiciona as horas no dia
+                                                    $data->modify("+{$horasNoDia} hours");
+                                                    $horasRestantes -= $horasNoDia;
+
+                                                    // Se ainda restam horas e o dia é sábado, adianta para a segunda-feira
+                                                    if ($horasRestantes > 0 && $data->format('N') == 6) {
+                                                        $data->modify('next monday');
+                                                    }
+                                                }
+
+                                                return $data->format('d-m-Y');
+                                            }
+                                            // Ajuste a consulta para incluir o nome do fluxo
+                                            $sql = "
+                                            SELECT p.*, f.nome AS nome_fluxo,
+                                                   COALESCE(SUM(e.duracao), 0) AS total_duracao
                                             FROM pedidos p
                                             LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
+                                            LEFT JOIN fluxo f ON p.fluxo = f.id
+                                            LEFT JOIN etapa_fluxo e ON p.fluxo = e.idfluxo
                                             WHERE rp.idPedido IS NULL
-                                            ORDER BY p.dt ASC;");
+                                            GROUP BY p.id
+                                            ORDER BY p.dt ASC;
+                                        ";
+
+                                            $ret = mysqli_query($conn, $sql);
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
                                                 $dt = dateFormatByHifen($row["dt"]);
@@ -94,13 +122,20 @@ if (isset($_SESSION["useruid"])) {
                                                 $dr = reduzirString($row["dr"], 15);
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
-                                                $fluxo = $row['fluxo'];
-                                                $dataEntrega = dateFormatByHifen($row["dataEntrega"]);
-
+                                                $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
+                                                $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]);
                                                 $lote = $row["lote"];
-                                                $diasparaproduzir = $row["diasparaproduzir"];
+                                                $totalDuracaoHoras = $row["total_duracao"]; // Total duração em horas
 
-                                                if ($diasparaproduzir < 20) {
+                                                $dataAtual = date('d-m-Y');
+                                                $dataEntregaFormatada = adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
+
+                                                // Converter a duração total em dias e horas
+                                                $dias = floor($totalDuracaoHoras / 24);
+                                                $horas = $totalDuracaoHoras % 24;
+
+                                                // Exibir o status
+                                                if ($dias < 1 && $horas < 20) {
                                                     $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
                                                 } else {
                                                     $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
@@ -132,29 +167,32 @@ if (isset($_SESSION["useruid"])) {
                                                 //         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
                                                 //     }
                                                 // }
-
                                             ?>
                                                 <tr>
                                                     <th><?php echo $id; ?></th>
                                                     <th><?php echo $dt; ?></th>
                                                     <!-- <th><?php //echo $diasOnPCP; 
                                                                 ?></th> -->
-                                                    <th><?php echo $produto; ?></th>
+                                                    <td><?php echo $nomeFluxo; ?></td>
                                                     <th><?php echo $dr; ?></th>
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $lote; ?></th>
-                                                    <th class="text-center"><?php echo $diasparaproduzir; ?></th>
-                                                    <th><?php echo $dataEntrega; ?></th>
+                                                    <th class="text-center"><?php echo $dias . " dias e " . $horas . " horas"; ?></th>
+                                                    <th><?php echo $dataEntregaFormatada; ?></th>
                                                     <th>
                                                         <div class="d-flex"><?php echo $statusPrevio; ?></div>
                                                     </th>
                                                     <th>
                                                         <div class="d-flex">
-                                                            <a href="evolucaopcp?id=<?php echo $id; ?>">
-                                                                <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
-                                                            </a>
-                                                                <button class="btn btn-warning m-1" ><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
+                                                                <a href="evolucaopcp?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
+                                                                </a>
+                                                                <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                         </div>
                                                     </th>
                                                 </tr>

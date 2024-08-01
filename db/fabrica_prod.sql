@@ -669,13 +669,13 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
 --
 -- Despejando dados para a tabela `pedidos`
 --
-
+/* 
 INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `produto`, `dataEntrega`, `fluxo`, `lote`, `cdgprod`, `qtds`, `descricao`, `diasparaproduzir`, `taxa_extra`, `nacional_internacional`, `obs`) VALUES
 (1, 'Lucas', 'Doutor Teste', 'ABC', 'julianaaguiar', '125456', '2024-06-07', 'ORTOGNÁTICA', '2024-07-05', 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (2, 'Wilton', 'Farid Miguel Damen', 'GFCB', 'tatianecpmh', '12047', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 'joao.avelar', 'Sandro Lucas', 'MFRAC', 'neandrobarbosa', '12004', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, NULL, 'Teste', 'ABC', NULL, '1234', '2024-06-17', NULL, '2024-07-15', 17, '1234', NULL, NULL, NULL, 20, 0, 'nacional', ''),
-(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e');
+(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e'); */
 
 -- --------------------------------------------------------
 
@@ -843,14 +843,22 @@ INSERT INTO `produtos` (`prodId`, `prodCodCallisto`, `prodDescricao`, `prodAnvis
 --
 
 CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPedido` int(11) DEFAULT NULL,
   `idFluxo` int(11) DEFAULT NULL,
   `numOrdem` int(11) DEFAULT NULL,
   `idEtapa` int(11) DEFAULT NULL,
   `idStatus` int(11) NOT NULL,
-  `dataRealizacao` date DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `fazendo` date DEFAULT NULL,
+  `dataPausado` date DEFAULT NULL,
+  `dataRealizacao` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+ALTER TABLE `realizacaoproducao`
+  ADD CONSTRAINT `realizacaoproducao_ibfk_1` FOREIGN KEY (`idPedido`) REFERENCES `pedidos` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_2` FOREIGN KEY (`idFluxo`) REFERENCES `fluxo` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_3` FOREIGN KEY (`idEtapa`) REFERENCES `etapa` (`id`);
 
 --
 -- Despejando dados para a tabela `realizacaoproducao`
