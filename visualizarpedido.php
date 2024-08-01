@@ -13,54 +13,164 @@ if (isset($_SESSION["useruid"])) {
 
     <body class="bg-light-gray2">
         <?php
-        include_once 'php/navbar.php';
+        include_once 'php/navbar.php';  
         include_once 'php/lateral-nav.php';
 
-        $pedidoId = $_GET['id'];
+        function calcularDiasNoFluxo($conn, $fluxo)
+        {
+            $sqlEtapas = "SELECT duracao FROM fluxo_setor WHERE idfluxo='$fluxo';";
+            $retEtapas = mysqli_query($conn, $sqlEtapas);
 
-        $sql = "SELECT p.pedido AS pedido, 
-        p.lote AS lote, 
-        p.fluxo AS fluxo, 
-        p.diasparaproduzir AS diasparaproduzir, 
-        p.cdgprod AS cdgprod, 
-        p.qtds AS qtds, 
-        p.descricao AS descricao, 
-        p.dataEntrega AS dataEntrega, 
-        p.dr AS dr,
-        p.pac AS pac,
-        p.produto AS produto,
-        fx.nome AS NomeFluxo 
-        FROM pedidos AS p 
-        JOIN fluxo fx ON p.fluxo = fx.id 
-        WHERE p.id='" . $pedidoId . "';";
+            $totalHoras = 0;
+            while ($rowEtapa = mysqli_fetch_assoc($retEtapas)) {
+                $totalHoras += $rowEtapa['duracao'];
+            }
+
+            $horasPorDia = 9; // 8h às 18h com 1h de almoço
+
+            $dias = floor($totalHoras / $horasPorDia);
+            $horasRestantes = $totalHoras % $horasPorDia;
+
+            return [
+                'dias' => $dias,
+                'horas' => $horasRestantes
+            ];
+        }
+
+        function adicionarDiasUteis($dataInicio, $dias, $horas)
+        {
+            $data = new DateTime($dataInicio);
+            $diasAdicionados = 0;
+
+            while ($diasAdicionados < $dias) {
+                $data->modify('+1 day');
+                if ($data->format('N') < 6) { // 1 = Segunda-feira, ..., 7 = Domingo
+                    $diasAdicionados++;
+                }
+            }
+
+            // Adicionar horas restantes
+            $data->modify("+$horas hours");
+
+            return $data->format('Y-m-d H:i:s');
+        }
+
+        function calcularDataConclusao($dataPedido, $diasNoFluxo)
+        {
+            $dataPedido = new DateTime($dataPedido);
+            $dias = $diasNoFluxo['dias'];
+            $horas = $diasNoFluxo['horas'];
+
+            // Adicionar dias úteis e horas restantes
+            $dataConclusao = adicionarDiasUteis($dataPedido->format('Y-m-d'), $dias, $horas);
+
+            return $dataConclusao;
+        }
+
+        function calcularDiasFaltantes($dataConclusao)
+        {
+            $hoje = new DateTime();
+            $dataConclusao = new DateTime($dataConclusao);
+
+            $interval = $hoje->diff($dataConclusao);
+            $diasFaltantes = $interval->days;
+
+            if ($hoje > $dataConclusao) {
+                $diasFaltantes = -$diasFaltantes;
+            }
+
+            return $diasFaltantes;
+        }
+
+        $pedidoId = $_GET['id'];
+        $sql = "
+            SELECT 
+                        p.pedido AS pedido, 
+                        p.lote AS lote, 
+                        p.fluxo AS fluxo, 
+                        p.cdgprod AS cdgprod, 
+                        p.qtds AS qtds, 
+                        p.dr AS dr,
+                        p.pac AS pac,
+                        p.descricao AS descricao, 
+                        p.dt AS dataPedido, 
+                        fx.nome AS NomeFluxo,
+                          GROUP_CONCAT(CONCAT(s.ordem, ':', s.idsetor, ':', s.duracao) ORDER BY s.ordem ASC SEPARATOR ';') AS etapas
+            FROM pedidos AS p
+            JOIN fluxo fx ON p.fluxo = fx.id
+            LEFT JOIN fluxo_setor s ON p.fluxo = s.idfluxo
+            WHERE p.id='" . mysqli_real_escape_string($conn, $pedidoId) . "'
+            GROUP BY p.pedido;
+        ";
 
         $ret = mysqli_query($conn, $sql);
-        while ($row = mysqli_fetch_array($ret)) {
+
+        if ($row = mysqli_fetch_array($ret)) {
             $numPed = $row['pedido'];
             $fluxo = $row['fluxo'];
             $NomeFluxo = $row['NomeFluxo'];
             $lote = $row["lote"];
-            $diasparaproduzir = $row["diasparaproduzir"];
             $cdgprod = $row["cdgprod"];
             $qtds = $row["qtds"];
             $descricao = $row["descricao"];
+            $dataPedido = $row['dataPedido'];
+
+            // Calcular os dias e horas no fluxo
+            $diasFuturos = calcularDiasNoFluxo($conn, $fluxo);
+            $dataConclusao = calcularDataConclusao($dataPedido, $diasFuturos);
+
+            // Calcular os dias faltantes
+            $diasFaltantes = calcularDiasFaltantes($dataConclusao);
+
+            // Status baseado em dias para produzir (presumido como variável existente)
+            $diasparaproduzir = $diasFuturos['dias']; // Supondo que é a mesma coisa que dias no fluxo
 
             if ($diasparaproduzir < 3) {
                 $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
             } else {
                 $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
             }
-            $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
-            $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-            if ($diasFaltantes <= 0) {
-                $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
-            } else {
-                $diasFaltantes = $diasFaltantes . ' dias';
+
+            $statusEntrega = $diasFaltantes <= 0 ? '<b class="text-danger"> Data de entrega excedida! </b>' : $diasFaltantes . ' dias faltantes';
+            $diasNoFluxo = $diasFuturos['dias'] . " dias e " . $diasFuturos['horas'] . " horas";
+
+            // Processar as etapas
+            $etapas = explode(';', $row['etapas']);
+            $etapasProcessadas = [];
+            foreach ($etapas as $etapa) {
+                list($ordem, $idetapa, $duracao) = explode(':', $etapa);
+                $etapasProcessadas[] = [
+                    'ordem' => $ordem,
+                    'idetapa' => $idetapa,
+                    'duracao' => $duracao
+                ];
             }
+
+            // Exibir as informações no HTML
+            echo "<h3>Pedido: $numPed</h3>";
+            echo "<p>Fluxo: {$row['NomeFluxo']} ($fluxo)</p>";
+            echo "<p>Lote: $lote</p>";
+            echo "<p>Código do Produto: $cdgprod</p>";
+            echo "<p>Quantidade: $qtds</p>";
+            echo "<p>Descrição: $descricao</p>";
+            echo "<p>Status: $statusPrevio</p>";
+            echo "<p>Dias Faltantes: $statusEntrega</p>";
+            echo "<p>Dias no Fluxo: $diasNoFluxo</p>";
+            echo "<p>Data de Entrega: $dataConclusao</p>";
+
+            // Exibir etapas
+            echo "<h4>Etapas do Fluxo</h4>";
+            echo "<ul>";
+            foreach ($etapasProcessadas as $etapa) {
+                echo "<li>Ordem: " . $etapa['ordem'] . " - Etapa ID: " . $etapa['idetapa'] . " - Duração: " . $etapa['duracao'] . " horas</li>";
+            }
+            echo "</ul>";
+            /* 
+
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
-            $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-            $hoje = hoje();
-             ?>
+            $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias"; */
+            /*             $hoje = hoje(); */
+        ?>
 
             <div id="main">
                 <div>
@@ -126,10 +236,10 @@ if (isset($_SESSION["useruid"])) {
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Produto</b></label>
                                                                                 <small><?php echo $NomeFluxo; ?></small> <!-- Aqui exibimos o nome do fluxo -->
-                                                                            </div>  
+                                                                            </div>
                                                                             <div class="col d-flex" style="flex-direction: column;">
                                                                                 <label for=""><b>Dias p/ Produzir</b></label>
-                                                                                <small><?php echo $row['diasparaproduzir']; ?> dias </small>
+                                                                                <small> <?php echo $diasNoFluxo ?> dias </small>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -155,7 +265,7 @@ if (isset($_SESSION["useruid"])) {
                                                                         <div class="row py-2">
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Dt Entrega (Após Aceite)</b></label>
-                                                                                <small><?php echo dateFormatByHifen($row['dataEntrega']); ?></small>
+                                                                                <small><?php echo $dataConclusao; ?></small>
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Dias para Entrega</b></label>
@@ -163,7 +273,7 @@ if (isset($_SESSION["useruid"])) {
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column;">
                                                                                 <label for=""><b>Duração do Modalidade</b></label>
-                                                                                <small><?php echo $diasFuturos; ?></small>
+                                                                                <small> <?php echo $diasNoFluxo ?></small>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row py-2">
@@ -201,83 +311,91 @@ if (isset($_SESSION["useruid"])) {
                                                     <tbody>
 
                                                         <?php
-                                                        $sql = "SELECT 
-                                                        r.id AS idRealizacaoProducao,
-                                                        r.numOrdem AS ordem,
-                                                        r.dataRealizacao AS dt,
-                                                        r.idEtapa AS idEtapa,
-                                                        e.nome AS nomeEtapa,
-                                                        s.nome AS nomeStatus,
-                                                        s.id AS idStatus,
-                                                        s.cor AS corStatus
-                                                        FROM pedidos AS pd 
-                                                        RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
-                                                        RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
-                                                        RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
-                                                        WHERE pd.id = $pedidoId ORDER BY r.numOrdem ASC;";
-
-                                                        $ret = mysqli_query($conn, $sql);
-                                                        while ($row = mysqli_fetch_array($ret)) {
-                                                            $idRealizacaoProducao = $row["idRealizacaoProducao"];
-                                                            $ordem = $row["ordem"];
-                                                            $nomeEtapa = $row["nomeEtapa"];
-                                                            $idEtapa = $row["idEtapa"];
-                                                            $nomeStatus = $row["nomeStatus"];
-                                                            $idStatus = $row["idStatus"];
-                                                            $corStatus = $row["corStatus"];
-                                                            $dtRef = $row["dt"];
-                                                            $dt = dateFormatByHifen($row["dt"]);
-                                                            $status = "";
-
-                                                            // $hoje = '2024-06-23';
-                                                            $dtRefDate = new DateTime($dtRef);
-                                                            $hojeDate = new DateTime($hoje);
-                                                            // Adiciona um dia à data de hoje
-                                                            $hojeMaisUm = clone $hojeDate;
-                                                            $hojeMaisUm->modify('+1 day');
-
-
-                                                            if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
-                                                                $color = "text-orange";
-                                                                $i = '<span class="badge bg-orange text-dark mx-2">Hoje!</span>';
-                                                            } elseif (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
-                                                                $color = "text-danger";
-                                                                $i = '';
-                                                            } elseif ($dtRefDate == $hojeMaisUm) {
-                                                                $color = "text-warning";
-                                                                $i = '<span class="badge bg-warning text-dark mx-2">Amanhã!</span>';
-                                                            } elseif (($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5)) {
-                                                                $color = "text-success";
-                                                                $i = '';
-                                                            } else {
-                                                                $color = "";
-                                                                $i = '';
-                                                            }
-
-
+                                                        $sql = "
+                                                        SELECT 
+                                                            ef.id AS idEtapaFluxo,
+                                                            ef.ordem AS ordem,
+                                                            e.id AS idEtapa,
+                                                            e.nome AS nomeEtapa,
+                                                            s.nome AS nomeStatus,
+                                                            s.id AS idStatus,
+                                                            s.cor AS corStatus,
+                                                            ef.duracao AS duracaoEtapa
+                                                        FROM etapa_fluxo AS ef
+                                                        JOIN etapa AS e ON ef.idetapa = e.id
+                                                        LEFT JOIN statusetapa AS s ON ef.idetapa = s.id
+                                                        WHERE ef.idfluxo = $fluxo
+                                                        ORDER BY ef.ordem ASC;
+                                                    ";
+                                                    
+                                                    $ret = mysqli_query($conn, $sql);
+                                                    
+                                                    // Inicializa a data de produção a partir da data do pedido
+                                                    $pedidoSql = "SELECT dt FROM pedidos WHERE id = $pedidoId";
+                                                    $pedidoRet = mysqli_query($conn, $pedidoSql);
+                                                    $pedidoRow = mysqli_fetch_array($pedidoRet);
+                                                    $dataPedido = new DateTime($pedidoRow['dt']);
+                                                    
+                                                    while ($row = mysqli_fetch_array($ret)) {
+                                                        $idEtapaFluxo = $row["idEtapaFluxo"];
+                                                        $ordem = $row["ordem"];
+                                                        $nomeEtapa = $row["nomeEtapa"];
+                                                        $idEtapa = $row["idEtapa"];
+                                                        $nomeStatus = $row["nomeStatus"];
+                                                        $idStatus = $row["idStatus"];
+                                                        $corStatus = $row["corStatus"];
+                                                        $duracaoEtapa = $row["duracaoEtapa"];
+                                                    
+                                                        // Define uma data de referência para a etapa (inicialmente a data do pedido)
+                                                        $dtRef = clone $dataPedido;
+                                                        $dtRef->modify("+$duracaoEtapa hours");
+                                                    
+                                                        // Calcular a data de conclusão da etapa
+                                                        $dataConclusao = clone $dataPedido;
+                                                        $dataConclusao->modify("+$duracaoEtapa hours");
+                                                    
+                                                        $dt = $dataConclusao->format('Y-m-d');
+                                                        $status = "";
+                                                    
+                                                        $dtRefDate = new DateTime($dtRef->format('Y-m-d'));
+                                                        $hojeDate = new DateTime();
+                                                        $hojeMaisUm = clone $hojeDate;
+                                                        $hojeMaisUm->modify('+1 day');
+                                                    
+                                                        if (($hojeDate->format('Y-m-d') == $dataConclusao->format('Y-m-d')) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+                                                            $color = "text-orange";
+                                                            $i = '<span class="badge bg-orange text-dark mx-2">Hoje!</span>';
+                                                        } elseif (($hojeDate > $dataConclusao) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+                                                            $color = "text-danger";
+                                                            $i = '';
+                                                        } elseif ($hojeMaisUm->format('Y-m-d') == $dataConclusao->format('Y-m-d')) {
+                                                            $color = "text-warning";
+                                                            $i = '<span class="badge bg-warning text-dark mx-2">Amanhã!</span>';
+                                                        } elseif (($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5)) {
+                                                            $color = "text-success";
+                                                            $i = '';
+                                                        } else {
+                                                            $color = "";
+                                                            $i = '';
+                                                        }
                                                         ?>
                                                             <tr>
                                                                 <td><?php echo $ordem; ?></td>
                                                                 <td><?php echo $nomeEtapa; ?></td>
                                                                 <td class="<?php echo $color; ?>"><b><?php echo $dt . $i; ?></b></td>
                                                                 <td class="text-center" style="color: <?php echo $corStatus; ?>;"><b><?php echo $nomeStatus; ?></b></td>
-
                                                                 <td class="text-center">
                                                                     <div class="d-flex justify-content-center">
-
                                                                         <?php if (($idStatus == 1) || ($idStatus == 7) || ($idStatus == 3) || ($idStatus == 9)) { ?>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=play&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-info btn-sm"><i class="fas fa-play fa-1x"></i> </a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 2) || ($idStatus == 8)) { ?>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=pause&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-warning btn-sm"><i class="fas fa-pause fa-1x"></i></a>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=check&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-success btn-sm"><i class="far fa-check-square fa-1x"></i></a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5)) { ?>
                                                                             <a href="#" class="btn text-success btn-sm"><i class="fas fa-check-square fa-1x"></i></a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 6)) { ?>
                                                                             <a href="#" class="btn text-danger btn-sm"><i class="fas fa-times-circle fa-1x"></i></a>
                                                                         <?php } ?>
