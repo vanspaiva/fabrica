@@ -2408,10 +2408,11 @@ function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produ
     return $response;
 }
 
-function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs)
+function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs)
 {
+    
     // Preparar a consulta SQL para inserção
-    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, nacional_internacional, taxa_extra, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // Verificar se a preparação da declaração foi bem-sucedida
     if ($stmt === false) {
@@ -2419,7 +2420,7 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
     }
 
     // Vincular os parâmetros
-    $stmt->bind_param("sssssssss", $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs);
+    $stmt->bind_param("sssssssssss", $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs);
 
     // Executar a declaração
     if ($stmt->execute()) {
@@ -2433,7 +2434,8 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
 
     // Retornar a resposta
     return $response;
-}
+}   
+
 
 function reduzirString($string, $quantidadeCaracteres)
 {

@@ -28,7 +28,7 @@ switch ($tipo) {
 
     case 'op':
         $titulo = "ORDEM DE PRODUÇÃO";
-        $nForm = "FRM.PRO.000 Rev.00";
+        $nForm = "FRM.PRO.001 Rev.00";
         $form = 3;
         break;
 
@@ -734,7 +734,7 @@ if (isset($_SESSION["useruid"])) {
 
                                         <div class='d-flex d-block justify-content-around'>
                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class='control-label' style='color:black;'>N Ped </label>
+                                                <label class='control-label' style='color:black;'>Número do Pedido </label>
                                                 <input class='form-control' name='nped' id='nped' type='text'>
                                             </div>
                                             <div class="col form-group m-2">
@@ -757,11 +757,11 @@ if (isset($_SESSION["useruid"])) {
                                                 <input type="text" class="form-control" id="lote" name="lote">
                                             </div>
                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class="form-label text-black" for="dr">Dr (a)</label>
+                                                <label class="form-label text-black" for="dr">Doutor(a)</label>
                                                 <input type="text" class="form-control" id="dr" name="dr">
                                             </div>
                                             <div class='form-group d-inline-block flex-fill m-2'>
-                                                <label class="form-label text-black" for="pac">Pac</label>
+                                                <label class="form-label text-black" for="pac">Paciente</label>
                                                 <input type="text" class="form-control" id="pac" name="pac">
                                             </div>
                                         </div>
@@ -796,10 +796,10 @@ if (isset($_SESSION["useruid"])) {
 
                                         <div class="py-4 col d-flex justify-content-center">
                                             <button class="btn btn-fab" type="submit" name="opsimple" id="submitopsimples">Enviar</button>
+
                                         </div>
 
                                     </form>
-
                                 <?php
                                 }
                                 ?>

@@ -1,4 +1,4 @@
-<?php
+    <?php
 session_start();
 
 require_once 'db/dbh.php';
@@ -43,12 +43,12 @@ if (isset($_SESSION["useruid"])) {
         reprovAtividadeQuali($conn, $idR, $user, $etapa, $hoje, $agora, $idStatus, $idPedido);
     }
 
-
+/* 
     if (($_SESSION["usernomedep"] == 'Qualidade')) {
         header("location: inspecaopedido?id=" . $idPedido);
         exit();
-    }
+    } */
 } else {
-    header("location: dash");
+/*     header("location: dash"); */
     exit();
 }

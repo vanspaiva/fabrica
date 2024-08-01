@@ -1,14 +1,14 @@
 <?php
+
 $serverName = "localhost";
 $dbUsername = "u777557116_adminfab";
 $dbPassword = "CcIB8WQT36a";
-$dbName = "u777557116_fabrica";
-
-
-/* $serverName = "localhost:3307";
-$dbUsername = "root";
-$dbPassword = "";
-$dbName = "fabrica"; */
+$dbName = "u777557116_fabrica"; 
+ 
+//$serverName = "localhost:3307";
+//$dbUsername = "root";
+//$dbPassword = "";
+//$dbName = "fabrica";
 
 
 $conn = mysqli_connect($serverName, $dbUsername, $dbPassword, $dbName);
