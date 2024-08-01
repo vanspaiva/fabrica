@@ -100,6 +100,7 @@ if (isset($_SESSION["useruid"])) {
             $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
             $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
 
+
             // if (($diasFuturosNumber >= $diasFaltantesNumber)){
             //     $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
             // } else {
