@@ -1372,3 +1372,48 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+CREATE TABLE `etapa_fluxo` (
+  `id` int(11) NOT NULL,
+  `idfluxo` int(11) NOT NULL,
+  `idetapa` int(11) NOT NULL,
+  `ordem` int(11) NOT NULL,
+  `duracao` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
+ALTER TABLE `fluxo_setor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_fluxo` (`idFluxo`),
+  ADD KEY `idsetor` (`idSetor`);
+
+--
+-- Despejando dados para a tabela `etapa_fluxo`
+--
+
+INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
+(33, 17, 13, 15, 1),
+(34, 2, 74, 1, 1),
+(35, 2, 28, 2, 1),
+(36, 2, 87, 3, 1),
+(37, 2, 88, 4, 1),
+(38, 2, 1, 5, 1),
+(39, 2, 4, 6, 1),
+(40, 2, 76, 7, 1),
+(41, 2, 33, 8, 1),
+(42, 3, 79, 1, 1),
+(43, 3, 88, 2, 1),
+(44, 3, 1, 3, 1),
+(45, 3, 31, 4, 1),
+(46, 3, 62, 5, 1),
+(47, 3, 52, 6, 1),
+(48, 3, 33, 7, 1),
+(49, 3, 16, 8, 1),
+(50, 1, 79, 1, 0),
+(51, 1, 88, 2, 48),
+(52, 1, 82, 3, 0),
+(53, 1, 31, 4, 1),
+(54, 1, 3, 5, 24),
+(55, 1, 23, 6, 1),
+(56, 1, 52, 7, 2),
+(57, 1, 35, 8, 1),
+(58, 1, 13, 9, 2);
