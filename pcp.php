@@ -6,7 +6,6 @@ if (isset($_SESSION["useruid"])) {
     $user = $_SESSION["useruid"];
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
-
 ?>
 
 
@@ -63,8 +62,8 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Num Ped</th>
                                                 <th>Lote</th>
                                                 <th>Dias P/ Prod</th>
-                                                <th>Dt Entrega</th>
-                                                <th>Situação</th>
+<!--                                                 <th>Dt Entrega</th>
+                                                <th>Situação</th> -->
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -123,7 +122,7 @@ if (isset($_SESSION["useruid"])) {
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
                                                 $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
-                                                $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]);
+                                               /*  $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]); */
                                                 $lote = $row["lote"];
                                                 $totalDuracaoHoras = $row["total_duracao"]; // Total duração em horas
 
@@ -179,10 +178,10 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $lote; ?></th>
                                                     <th class="text-center"><?php echo $dias . " dias e " . $horas . " horas"; ?></th>
-                                                    <th><?php echo $dataEntregaFormatada; ?></th>
+                                                   <!--  <th><?php echo $dataEntregaFormatada; ?></th>
                                                     <th>
                                                         <div class="d-flex"><?php echo $statusPrevio; ?></div>
-                                                    </th>
+                                                    </th> -->   
                                                     <th>
                                                         <div class="d-flex">
                                                             <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
