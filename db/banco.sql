@@ -202,36 +202,6 @@ INSERT INTO `etapasos` (`etapaId`, `etapaNome`) VALUES
 (8, 'Embalagem'),
 (10, 'Gravação');
 
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `etapa_fluxo`
---
-
-CREATE TABLE `etapa_fluxo` (
-  `id` int(11) NOT NULL,
-  `idfluxo` int(11) NOT NULL,
-  `idetapa` int(11) NOT NULL,
-  `ordem` int(11) NOT NULL,
-  `duracao` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Extraindo dados da tabela `etapa_fluxo`
---
-
-INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
-(2, 1, 1, 2, 1),
-(3, 1, 31, 3, 1),
-(4, 1, 2, 4, 2.5),
-(5, 1, 4, 5, 2.5),
-(6, 1, 33, 6, 1),
-(7, 1, 23, 7, 1),
-(9, 1, 35, 10, 1),
-(12, 1, 88, 1, 1),
-(13, 1, 13, 11, 2),
-(14, 1, 3, 9, 1),
-(17, 1, 52, 8, 1);
 
 -- --------------------------------------------------------
 
