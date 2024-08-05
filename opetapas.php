@@ -115,7 +115,7 @@
                                                                         $sql = "SELECT 
                                                                         r.id AS idRealizacaoProducao,
                                                                         r.numOrdem AS ordem,
-                                                                        r.dataRealizacao AS dt,
+                                                                         r.dataRealizacao AS dt, 
                                                                         r.idEtapa AS idEtapa,
                                                                         e.nome AS nomeEtapa,
                                                                         s.nome AS nomeStatus,
@@ -132,7 +132,7 @@
                                                                         WHERE r.idEtapa = $value
                                                                         AND r.dataRealizacao <= CURDATE()
                                                                         AND NOT r.idStatus in (4,10,5,6)
-                                                                        ORDER BY r.dataRealizacao;";
+                                                                         ORDER BY r.dataRealizacao";
 
                                                                         // echo $sql;
                                                                         // exit();
@@ -157,13 +157,13 @@
                                                                                     $atrasoColor = "text-danger";
                                                                                 } else {
                                                                                     $atrasoColor = "";
-                                                                                }
+                                                                                } 
                                                                     ?>
 
                                                                                 <tr class="<?php echo $atrasoColor; ?>">
                                                                                     <td style="font-size:  0.8rem;"><a href="<?php echo $link; ?>?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
                                                                                     <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
-                                                                                    <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
+                                                                                 <!--    <td style="font-size:  0.8rem;"><?php echo $data; ?></td> -->
                                                                                 </tr>
                                                                         <?php
                                                                             }
@@ -194,7 +194,7 @@
                                                                         $sql = "SELECT 
                                                                         r.id AS idRealizacaoProducao,
                                                                         r.numOrdem AS ordem,
-                                                                        r.dataRealizacao AS dt,
+                                                                        r.dataRealizacao AS dt, 
                                                                         r.idEtapa AS idEtapa,
                                                                         e.nome AS nomeEtapa,
                                                                         s.nome AS nomeStatus,
@@ -211,7 +211,7 @@
                                                                         WHERE r.idEtapa = $value
                                                                         AND r.dataRealizacao > CURDATE()
                                                                         AND NOT r.idStatus in (4,10,5,6)
-                                                                        ORDER BY r.dataRealizacao;";
+                                                                       ORDER BY r.dataRealizacao";
 
                                                                         // echo $sql;
                                                                         // exit();
@@ -225,9 +225,9 @@
                                                                                 $nomeEtapa = $row["nomeEtapa"];
                                                                                 $nomeStatus = $row["nomeStatus"];
                                                                                 $corStatus = $row["corStatus"];
-                                                                                $data = dateFormatByHifen($row["dt"]);
+                                                                                $data = dateFormatByHifen($row["dt"]); 
 
-                                                                                // Converter strings de data em objetos DateTime
+                                                                               // Converter strings de data em objetos DateTime
                                                                                 $dataDateTime = new DateTime($row["dt"]);
                                                                                 $hojeDateTime = new DateTime($hoje);
 
@@ -236,13 +236,13 @@
                                                                                     $atrasoColor = "text-danger";
                                                                                 } else {
                                                                                     $atrasoColor = "";
-                                                                                }
+                                                                                } 
                                                                     ?>
 
                                                                                 <tr class="<?php echo $atrasoColor; ?>">
                                                                                     <td style="font-size:  0.8rem;"><a href="<?php echo $link; ?>?id=<?php echo $pedId; ?>"><span class="btn btn-info"> <?php echo $numPed; ?> </span></a></td>
                                                                                     <td style="font-size:  0.8rem;"><?php echo $nomeFluxo; ?></td>
-                                                                                    <td style="font-size:  0.8rem;"><?php echo $data; ?></td>
+                                                                                    <td style="font-size:  0.8rem;"><?php echo $data; ?></td> 
                                                                                 </tr>
                                                                         <?php
                                                                             }
