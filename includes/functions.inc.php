@@ -4365,8 +4365,15 @@ function adicionarDiasUteis($dataInicio, $dias, $horas)
 
 function calcularDataConclusao($dataPedido, $diasNoFluxo)
 {
-    // Especificar o formato da data de entrada
-    $dataPedidoObj = DateTime::createFromFormat('d/m/Y', $dataPedido);
+    // Tentar criar a data usando o formato 'Y-m-d'
+    $dataPedidoObj = DateTime::createFromFormat('Y-m-d', $dataPedido);
+    
+    // Se falhar, tentar o formato 'd/m/Y'
+    if (!$dataPedidoObj) {
+        $dataPedidoObj = DateTime::createFromFormat('d/m/Y', $dataPedido);
+    }
+
+    // Se ainda falhar, lançar uma exceção
     if (!$dataPedidoObj) {
         throw new Exception("Failed to parse time string ($dataPedido) at position 0 (2): Unexpected character");
     }

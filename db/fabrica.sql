@@ -713,7 +713,7 @@ CREATE TABLE IF NOT EXISTS `setor` (
 --
 
 INSERT INTO `setor` (`id`, `nome`) VALUES
-(1, 'IMPRESSÃO'),
+(1, 'PROGRAMAÇÃO E IMPRESSÃO'),
 (2, 'TRATAMENTO TÉRMICO'),
 (3, 'USINAGEM'),
 (4, 'ACABAMENTO'),
