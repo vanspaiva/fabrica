@@ -701,33 +701,35 @@ CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
 -- Estrutura da tabela `setor`
 --
 
+
 DROP TABLE IF EXISTS `setor`;
 CREATE TABLE IF NOT EXISTS `setor` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `nome` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+  `duracao` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Extraindo dados da tabela `setor`
+-- Despejando dados para a tabela `setor`
 --
 
-INSERT INTO `setor` (`id`, `nome`) VALUES
-(1, 'PROGRAMAÇÃO E IMPRESSÃO'),
-(2, 'TRATAMENTO TÉRMICO'),
-(3, 'USINAGEM'),
-(4, 'ACABAMENTO'),
-(5, 'INSPEÇÃO 1'),
-(6, 'SLA E ANODIZAÇÃO'),
-(7, 'MOLDAGEM E ANODIZAÇÃO'),
-(8, 'INSPEÇÃO 2'),
-(9, 'GRAVAÇÃO'),
-(10, 'LIMPEZA'),
-(11, 'INSPEÇÃO 3'),
-(12, 'EMBALAGEM ESTÉRIL'),
-(13, 'ESTERILIZAÇÃO'),
-(14, 'EMB ROTULAGEM FINAL'),
-(15, 'LIBERAÇÃO FINAL');
+INSERT INTO `setor` (`id`, `nome`, `duracao`) VALUES
+(12, 'EMBALAGEM ESTÉRIL', 2),
+(11, 'INSPEÇÃO 3', 1),
+(10, 'LIMPEZA', 2),
+(9, 'GRAVAÇÃO', 1),
+(8, 'INSPEÇÃO 2', 1),
+(7, 'MOLDAGEM E ANODIZAÇÃO', 9),
+(6, 'SLA E ANODIZAÇÃO', 9),
+(5, 'INSPEÇÃO 1', 1),
+(4, 'ACABAMENTO', 9),
+(3, 'USINAGEM', 18),
+(2, 'TRATAMENTO TÉRMICO', 18),
+(1, 'PROGRAMAÇÃO E IMPRESSÃO', 18),
+(13, 'ESTERILIZAÇÃO', 9),
+(14, 'EMB ROTULAGEM FINAL', 2),
+(15, 'LIBERAÇÃO FINAL', 2);
+
 
 -- --------------------------------------------------------
 
@@ -1163,3 +1165,53 @@ INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
 ('Produção', 'MAQ.078', 'Forno Industrial', 'RITON / RT-1300 /'),
 ('Produção', 'MAQ.079', 'Injetora', 'HAITIAN / SA 2000II'),
 ('Produção', 'MAQ.080', 'Termoformagem', 'VACUUM FORMING')
+
+
+CREATE TABLE `op_user_resp_setor` (
+  `id` int(11) NOT NULL,
+  `nomeResp` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `op_user_resp_setor`
+--
+
+INSERT INTO `op_user_resp_setor` (`id`, `nomeResp`) VALUES
+(1, 'Jairo Ferreira da Silva Junior'),
+(2, 'Rayro Rodrigues Soares'),
+(3, 'Benjamim Wenderson Santos Soares'),
+(4, 'Fernando Lima de Sousa'),
+(5, 'Marcos Roberto Pereira Silva'),
+(6, 'Jairo Ferreira da Silva Junior'),
+(7, 'Andreina Vitor de Melo'),
+(8, 'Lyeberth Pereira de Sousa'),
+(9, 'Mônica Vanessa Soares Lopes'),
+(10, 'Jonh Everson Souza Santos'),
+(11, 'Juliana da Conceição da Silva'),
+(12, 'Luzia do Livramento Martins da Silva'),
+(13, 'Tania Guedes De Oliveira'),
+(14, 'Jessika karoliny da Silva Queiros'),
+(15, 'Davi Silva de Lima'),
+(16, 'Carolina Castro'),
+(17, 'Hellen Oliveira');
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `op_user_resp_setor`
+--
+ALTER TABLE `op_user_resp_setor`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `op_user_resp_setor`
+--
+ALTER TABLE `op_user_resp_setor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+COMMIT;
