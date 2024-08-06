@@ -434,7 +434,8 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
-function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor = "None", $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacional, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina) {
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor = "None", $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacional, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina)
+{
     // Inserção na tabela
     $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNomeArquivo, omGrauUrgencia, omObs, omStatus, omTipoManutencao, omOperacional, tempoNaoOperacional, idMaquina, omNomeMaquina, omIdentificadorMaquina) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     $stmt = mysqli_stmt_init($conn);
@@ -459,7 +460,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
 
     uploadArquivo($conn, $tname, $pname, $omId);
     sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $idMaquina, $omNomeMaquina);
-    
+
     header("location: ../lista-om?error=sent");
     exit();
 }
@@ -2408,9 +2409,9 @@ function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produ
     return $response;
 }
 
-function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote,$nacinter, $taxa_extra, $obs)
+function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $nacinter, $taxa_extra, $obs)
 {
-    
+
     // Preparar a consulta SQL para inserção
     $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, nacional_internacional, taxa_extra, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -2434,7 +2435,7 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
 
     // Retornar a resposta
     return $response;
-}   
+}
 
 
 function reduzirString($string, $quantidadeCaracteres)
@@ -4364,15 +4365,21 @@ function adicionarDiasUteis($dataInicio, $dias, $horas)
 
 function calcularDataConclusao($dataPedido, $diasNoFluxo)
 {
-    $dataPedido = new DateTime($dataPedido);
+    // Especificar o formato da data de entrada
+    $dataPedidoObj = DateTime::createFromFormat('d/m/Y', $dataPedido);
+    if (!$dataPedidoObj) {
+        throw new Exception("Failed to parse time string ($dataPedido) at position 0 (2): Unexpected character");
+    }
+    
     $dias = $diasNoFluxo['dias'];
     $horas = $diasNoFluxo['horas'];
 
     // Adicionar dias úteis e horas restantes
-    $dataConclusao = adicionarDiasUteis($dataPedido->format('d-m-Y'), $dias, $horas);
+    $dataConclusao = adicionarDiasUteis($dataPedidoObj->format('Y-m-d'), $dias, $horas);
 
     return $dataConclusao;
 }
+
 
 function calcularDiasFaltantes($dataConclusao)
 {

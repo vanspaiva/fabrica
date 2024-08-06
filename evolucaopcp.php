@@ -1,105 +1,59 @@
 <?php
 session_start();
-
 if (isset($_SESSION["useruid"])) {
-
     include("php/head_updateprop.php");
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
     $user = $_SESSION["useruid"];
-
-
 ?>
 
     <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
-
-        function adicionarHorasUteis($dataInicial, $horasAdicionar)
-        {
-            $data = new DateTime($dataInicial);
-            $horasRestantes = $horasAdicionar;
-
-            while ($horasRestantes > 0) {
-                $diaDaSemana = $data->format('N'); // 1 (para segunda-feira) até 7 (para domingo)
-
-                // Se for fim de semana, adianta para a próxima segunda-feira
-                if ($diaDaSemana >= 6) {
-                    $data->modify('next monday');
-                    $diaDaSemana = 1; // Começar do início da semana
-                }
-
-                // Calcula o total de horas no dia corrente
-                $horasNoDia = 24 - $data->format('H');
-                $horasNoDia = min($horasNoDia, $horasRestantes);
-
-                // Adiciona as horas no dia
-                $data->modify("+{$horasNoDia} hours");
-                $horasRestantes -= $horasNoDia;
-
-                // Se ainda restam horas e o dia é sábado, adianta para a segunda-feira
-                if ($horasRestantes > 0 && $data->format('N') == 6) {
-                    $data->modify('next monday');
-                }
-            }
-
-            return $data->format('d-m-Y');
-        }
-        
-
         $pedidoId = $_GET['id'];
-
         $ret = mysqli_query($conn, "SELECT * FROM pedidos WHERE id='" . $pedidoId . "';");
         while ($row = mysqli_fetch_array($ret)) {
             $numPed = $row['pedido'];
             $fluxo = $row['fluxo'];
             $lote = $row["lote"];
             $cdgprod = $row["cdgprod"];
-            $qtds = $row["qtds"];   
+            $qtds = $row["qtds"];
             $descricao = $row["descricao"];
-
+            $dataPedido = $row['dt'];
             $sqlDuracao = "SELECT SUM(e.duracao) AS total_duracao
                    FROM etapa_fluxo e
                    WHERE e.idfluxo = $fluxo;";
             $retDuracao = mysqli_query($conn, $sqlDuracao);
             $rowDuracao = mysqli_fetch_assoc($retDuracao);
             $totalDuracaoHoras = isset($rowDuracao['total_duracao']) ? $rowDuracao['total_duracao'] : 0;
-
             // Converte duração em dias
             $totalDuracaoDias = floor($totalDuracaoHoras / 24);
-
-
             $dataAtual = date('d-m-Y');
             $dataEntregaFormatada = adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
-            
-            if ( $dataparaproduzir < 5) {
-                $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
+            $diasFuturos = calcularDiasNoFluxo($conn, $fluxo);
+            $dataConclusao = calcularDataConclusao($dataPedido, $diasFuturos);
+            // Calcular os dias faltantes
+            $diasFaltantes = calcularDiasFaltantes($dataConclusao);
+            // Status baseado em dias para produzir
+            $diasparaproduzir = $diasFuturos['dias'];
+            $statusEntrega = $diasFaltantes <= 0 ? '<b class="text-danger"> Data de entrega excedida! </b>' : $diasFaltantes . ' dias faltantes';
+            $diasNoFluxo = $diasFuturos['dias'] . " dias e " . $diasFuturos['horas'] . " horas";
+
+            if ($diasparaproduzir < $diasFaltantes) {
+                $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
             } else {
                 $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
             }
-
-            $$dataparaproduzir = 0;
-
             $retDuracao = mysqli_query($conn, "SELECT COALESCE(SUM(e.duracao), 0) AS total_duracao FROM etapa_fluxo e WHERE e.idfluxo = $fluxo;");
             if ($rowDuracao = mysqli_fetch_array($retDuracao)) {
                 $totalDuracaoHoras = $rowDuracao["total_duracao"];
             }
-
-
-            $diasFaltantes = diasFaltandoParaData($row['']);
-            $diasFaltantesNumber = diasFaltandoParaData($row['']);
-
-
             if ($diasFaltantes <= 0) {
                 $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
             } else {
                 $diasFaltantes = $diasFaltantes . ' dias';
             }
-
-            $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
-            $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
 
             // if (($diasFuturosNumber >= $diasFaltantesNumber)){
             //     $statusPrevio = "<span class='alert alert-danger'><b class='text-danger'> ATRASADO </b></span>";
@@ -110,12 +64,10 @@ if (isset($_SESSION["useruid"])) {
             //         $statusPrevio = "<span class='alert alert-success'><b class='text-success'> DENTRO DO PRAZO </b></span>";
             //     }
             // }
-
             $listaCdgs = explode("*", $cdgprod);
             $listaQtds = explode("*", $qtds);
             $listaDescricao = explode("*", $descricao);
         ?>
-
             <div id="main">
                 <div>
                     <?php
@@ -126,7 +78,6 @@ if (isset($_SESSION["useruid"])) {
                     }
                     ?>
                 </div>
-
                 <div class="container-fluid">
                     <div class="row d-flex justify-content-center">
                         <div class="col-sm" id="titulo-pag">
@@ -142,7 +93,6 @@ if (isset($_SESSION["useruid"])) {
                                     </div>
                                 </div>
                             </div>
-
                             <br>
                             <div class="div">
                                 <div class="row">
@@ -181,7 +131,6 @@ if (isset($_SESSION["useruid"])) {
                                                                             <?php
                                                                             // Consulta ao banco de dados para obter os fluxos ordenados por nome
                                                                             $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
-
                                                                             // Verifique se a consulta retornou resultados
                                                                             if ($retStatus) {
                                                                                 while ($rowStatus = mysqli_fetch_array($retStatus)) {
@@ -205,11 +154,10 @@ if (isset($_SESSION["useruid"])) {
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Dias p/ Produzir</b></label>
-                                                                            <small><?php echo $totalDuracaoDias; ?> dias
+                                                                            <small><?php echo $diasNoFluxo ?>
                                                                             </small>
                                                                         </div>
                                                                     </div>
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -241,7 +189,7 @@ if (isset($_SESSION["useruid"])) {
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Duração do Modalidade</b></label>
-                                                                            <small><?php echo $diasFuturos; ?></small>
+                                                                            <small><?php echo $diasNoFluxo ?></small>
                                                                         </div>
                                                                     </div>
                                                                     <div class="row py-2">
@@ -281,7 +229,6 @@ if (isset($_SESSION["useruid"])) {
                                                                                 <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
                                                                             </div>
                                                                         </div>
-
                                                                         <div class="form-row">
                                                                             <div class="col form-group m-2">
                                                                                 <label class="form-label text-black" for="fluxo">Modalidade</label>
@@ -299,12 +246,10 @@ if (isset($_SESSION["useruid"])) {
                                                                                     ?>
                                                                                 </select>
                                                                             </div>
-
                                                                             <div class="col form-group m-2">
                                                                                 <label class="form-label text-black" for="lote">Lote</label>
                                                                                 <input type="text" class="form-control" id="lote" name="lote" value="<?php echo $row['lote']; ?>" required>
                                                                             </div>
-
                                                                         </div>
                                                                         <hr>
                                                                         <div class="form-row">
@@ -331,7 +276,6 @@ if (isset($_SESSION["useruid"])) {
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
                                                                         <div class="d-flex justify-content-end pt-4">
                                                                             <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Gerar</button>
                                                                         </div>
@@ -360,7 +304,6 @@ if (isset($_SESSION["useruid"])) {
                                                 <tbody>
                                                     <?php
                                                     foreach ($listaCdgs as $key => $cdg) {
-
                                                     ?>
                                                         <tr>
                                                             <td><?php echo $listaCdgs[$key]; ?></td>
@@ -384,8 +327,9 @@ if (isset($_SESSION["useruid"])) {
             include_once 'php/footer_updateprop.php';
         }
     } else {
-
         header("location: ../index");
         exit();
     }
+
+
         ?>
