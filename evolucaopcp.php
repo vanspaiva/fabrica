@@ -153,10 +153,15 @@ if (isset($_SESSION["useruid"])) {
                                                                             ?>
                                                                         </div>
                                                                         <div class="col d-flex" style="flex-direction: column;">
+                                                                            <label for=""><b>Data Pedido</b></label>
+                                                                            <small><?php echo $dataPedido ?>
+                                                                            </small>
+                                                                        </div>
+                                                                        <!-- <div class="col d-flex" style="flex-direction: column;">
                                                                             <label for=""><b>Dias p/ Produzir</b></label>
                                                                             <small><?php echo $diasNoFluxo ?>
                                                                             </small>
-                                                                        </div>
+                                                                        </div> -->
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -179,16 +184,15 @@ if (isset($_SESSION["useruid"])) {
                                                                 <div class="content-panel">
                                                                     <div class="row py-2">
                                                                         <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
-                                                                            <label for=""><b>Dt Entrega (Após
-                                                                                    Aceite)</b></label>
+                                                                            <label for=""><b>Data Prevista p/entrega</b></label>
                                                                             <small><?php echo $dataEntregaFormatada; ?></small>
                                                                         </div>
-                                                                        <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
+                                                                        <!-- <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                             <label for=""><b>Dias para Entrega</b></label>
                                                                             <small><?php echo $diasFaltantes; ?></small>
-                                                                        </div>
+                                                                        </div> -->
                                                                         <div class="col d-flex" style="flex-direction: column;">
-                                                                            <label for=""><b>Duração do Modalidade</b></label>
+                                                                            <label for=""><b>Dias para Produzir</b></label>
                                                                             <small><?php echo $diasNoFluxo ?></small>
                                                                         </div>
                                                                     </div>
