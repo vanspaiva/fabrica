@@ -41,7 +41,7 @@ if (isset($_SESSION["useruid"])) {
                             <div class="col-sm d-none d-sm-block">
                                 <div class="d-flex justify-content-evenly">
                                     <div class="d-flex justify-content-center p-1">
-                                        <a href="FRM_INF_004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir FRM.004</button></a>
+                                        <a href="frm_inf_004"><button class="btn btn-fab btn-sm"><i class="fas fa-plus"></i> Abrir FRM.004</button></a>
                                     </div>
                                     <div class="d-flex justify-content-center p-1">
                                         <a href="frm004_export"><button class="btn btn-outline-fab btn-sm"><i class="far fa-file-excel"></i> Exportar</button></a>
@@ -82,7 +82,11 @@ if (isset($_SESSION["useruid"])) {
                                                     frm_inf_004
                                                     LEFT JOIN setor_arcondicionado ON setor_arcondicionado.descricao_setores = frm_inf_004.descricao_setor
                                                     LEFT JOIN frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
-                                            ";
+                                                GROUP BY 
+                                                    frm_inf_004.id
+                                                ORDER BY 
+                                                    frm_inf_004.id DESC
+                                                ";
                                             
                                                 $result = $conn->query($query);
                                                 if ($result === false) {
@@ -139,33 +143,34 @@ if (isset($_SESSION["useruid"])) {
         </div>
         <?php include_once 'php/footer_index.php'; ?>
         <script>
-            $(document).ready(function() {
-                $('#tableProp').DataTable({
-                    "lengthMenu": [
-                        [20, 40, 80, -1],
-                        [20, 40, 80, "Todos"],
-                    ],
-                    "language": {
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        },
-                        "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
-                        "lengthMenu": "Mostrar _MENU_ itens",
-                        "zeroRecords": "Nenhuma proposta encontrada"
-                    },
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "columnDefs": [
-                        { "width": "100px", "targets": 6},
-                    ]
-                });
-            });
-        </script>
+    $(document).ready(function() {
+         $('#tableProp').DataTable({
+             "lengthMenu": [
+                 [20, 40, 80, -1],
+                 [20, 40, 80, "Todos"],
+             ],
+             "language": {
+                 "search": "Pesquisar:",
+                 "paginate": {
+                     "first": "Primeiro",
+                     "last": "Último",
+                     "next": "Próximo",
+                     "previous": "Anterior"
+                 },
+                 "info": "Mostrando desde _START_ até _END_ dos _TOTAL_ itens",
+                 "lengthMenu": "Mostrar _MENU_ itens",
+                 "zeroRecords": "Nenhuma proposta encontrada"
+             },
+             "order": [
+                 [0, "desc"]
+            ],
+             "columnDefs": [
+                 { "width": "100px", "targets": 6},
+           ]
+         });
+    });
+</script>
+
     <?php
 
 } else {
