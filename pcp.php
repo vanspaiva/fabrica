@@ -6,10 +6,11 @@ if (isset($_SESSION["useruid"])) {
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
 ?>
+
     <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';        
+        include_once 'php/lateral-nav.php';
         ?>
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
@@ -55,14 +56,14 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Num Ped</th>
                                                 <th>Lote</th>
                                                 <th>Dias P/ Prod</th>
-<!--                                                 <th>Dt Entrega</th>
+                                                <!--                                                 <th>Dt Entrega</th>
                                                 <th>Situação</th> -->
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            
+
                                             // Ajuste a consulta para incluir o nome do fluxo
                                             $sql = "
                                             SELECT p.*, f.nome AS nome_fluxo,
@@ -84,7 +85,7 @@ if (isset($_SESSION["useruid"])) {
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
                                                 $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
-                                               /*  $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]); */
+                                                /*  $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]); */
                                                 $lote = $row["lote"];
                                                 $totalDuracaoHoras = $row["total_duracao"]; // Total duração em horas
                                                 $fluxo = $row['fluxo'];
@@ -92,13 +93,13 @@ if (isset($_SESSION["useruid"])) {
                                                 // Calcular os dias e horas no fluxo
                                                 $diasFuturos = calcularDiasNoFluxo($conn, $fluxo);
                                                 $dataConclusao = calcularDataConclusao($dt, $diasFuturos);
-                                    
+
                                                 // Calcular os dias faltantes
                                                 $diasFaltantes = calcularDiasFaltantes($dataConclusao);
-                                    
+
                                                 // Status baseado em dias para produzir
                                                 $diasparaproduzir = $diasFuturos['dias'];
-                                    
+
                                                 $statusEntrega = $diasFaltantes <= 0 ? '<b class="text-danger"> Data de entrega excedida! </b>' : $diasFaltantes . ' dias faltantes';
                                                 $diasNoFluxo = $diasFuturos['dias'] . " dias e " . $diasFuturos['horas'] . " horas";
                                                 $dataAtual = date('d-m-Y');
@@ -146,17 +147,19 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $lote; ?></th>
                                                     <th class="text-center"><?php echo $diasNoFluxo ?></th>
-                                                   <!--  <th><?php echo $dataEntregaFormatada; ?></th>
+                                                    <!--  <th><?php echo $dataEntregaFormatada; ?></th>
                                                     <th>
                                                         <div class="d-flex"><?php echo $statusPrevio; ?></div>
-                                                    </th> -->   
+                                                    </th> -->
                                                     <th>
                                                         <div class="d-flex">
                                                             <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                                 <a href="evolucaopcp?id=<?php echo $id; ?>">
                                                                     <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
                                                                 </a>
-                                                                <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                                <a href="evolucaopcpPDF?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                                </a>
                                                             <?php
                                                             }
                                                             ?>
