@@ -168,7 +168,7 @@
                             </div>
 
 
-                            <button class='form-group mt-4 mb-0 btn btn-fab btn-block' type='submit' name='submit' id='submit'>Criar Conta</button>
+                            <button class='form-group mt-4 mb-0 btn btn-fab btn-block' type='update' name='update' id='submit'>atualizar</button>
 
                         </form>
                     </div>
