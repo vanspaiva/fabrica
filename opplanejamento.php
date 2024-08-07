@@ -44,19 +44,18 @@ if (isset($_SESSION["useruid"])) {
                         <div class="card-body">
                             <div class="content-panel">
                                 <table id="tablePedido" class="table table-striped table-advance table-hover">
-                                <thead>
+                                    <thead>
                                         <tr>
                                             <th></th>
                                             <th>Situação</th>
                                             <th>Num Ped</th>
                                             <th>Dt Aceite</th>
-                                            <th>Produto</th> <!-- Alterado para Fluxo -->
+                                            <th>Produto</th>
                                             <th class="text-center">Dias P/ Produzir</th>
                                             <th>Fases</th>
                                             <th>Etapa Atual</th>
                                             <th>Resp</th>
                                             <th>Próx Etapa</th>
-                                            <th>Dias Faltantes</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,39 +79,80 @@ if (isset($_SESSION["useruid"])) {
                                                 MIN(rp.numOrdem) AS numOrdem, 
                                                 MIN(rp.idEtapa) AS idEtapa, 
                                                 MIN(rp.dataRealizacao) AS dataRealizacao,
-                                                COUNT(rp.idEtapa) AS qtdEtapas,
-                                                fx.nome AS NomeFluxo
+                                                COUNT(rp.idEtapa) AS qtdEtapas
                                                 FROM pedidos p
                                                 JOIN realizacaoproducao rp ON p.id = rp.idPedido
-                                                JOIN fluxo fx ON p.fluxo = fx.id
                                                 GROUP BY p.id;";
                                         $ret = mysqli_query($conn, $sql);
                                         if ($ret) {
-                                            while ($row = mysqli_fetch_array($ret)) {
+                                            while ($row = mysqli_fetch_assoc($ret)) {
                                                 $ID = $row["idPedido"];
-                                                $NumPed = $row["numPedido"];
-                                                $Produto = $row["NomeFluxo"]; // Usando o nome do fluxo no lugar de Produto
-                                                $Fluxo = $row["NomeFluxo"];
-                                                $dt = $row["dt"]; // Certifique-se de que esta coluna existe na sua tabela
-                                                $qtdFasesRealizadas = contarEtapasConcluidas($conn, $ID);
-                                                $Fases =  $qtdFasesRealizadas . "/" . $row["qtdEtapas"];
-                                                
-                                                // Obtendo a duração total das etapas do fluxo
-                                                $sqlDuracao = "SELECT SUM(e.duracao) AS total_duracao
-                                                               FROM etapa_fluxo e
-                                                               WHERE e.idfluxo = " . $row['idFluxo'];
-                                                $retDuracao = mysqli_query($conn, $sqlDuracao);
-                                                $rowDuracao = mysqli_fetch_assoc($retDuracao);
-                                                $totalDuracaoHoras = isset($rowDuracao['total_duracao']) ? $rowDuracao['total_duracao'] : 0;
-                                                
-                                                // Converte duração em dias
-                                                $totalDuracaoDias = floor($totalDuracaoHoras / 24);
-                                                $DiasPProduzir = $totalDuracaoDias . ' dias';
+                                                $fluxoID = $row["Fluxo"];
+                                                $dt = $row["dt"];
+
+                                                // Obter o nome do fluxo com base no ID
+                                                $fluxoQuery = "SELECT nome FROM fluxo WHERE id = '$fluxoID'";
+                                                $fluxoResult = mysqli_query($conn, $fluxoQuery);
+                                                $fluxoData = mysqli_fetch_assoc($fluxoResult);
+                                                $nomeFluxo = $fluxoData ? $fluxoData['nome'] : 'N/A';
+
+                                                // Calcular a duração se a variável $fluxoID não estiver vazia
+                                                if (!empty($fluxoID)) {
+                                                    $duracaoQuery = "
+                                                        SELECT SUM(duracao) AS duracaoTotal
+                                                        FROM etapa_fluxo
+                                                        WHERE idfluxo = '$fluxoID'
+                                                    ";
+                                                    $duracaoResult = mysqli_query($conn, $duracaoQuery);
+                                                    $duracaoData = mysqli_fetch_assoc($duracaoResult);
+
+                                                    if ($duracaoData && isset($duracaoData['duracaoTotal'])) {
+                                                        $duracaoHoras = $duracaoData['duracaoTotal'];
+
+                                                        // Converter a Duração Total para Dias Úteis e Horas
+                                                        $horasPorDia = 9; // ajuste conforme as horas úteis por dia
+                                                        $diasTotal = $duracaoHoras / $horasPorDia;
+                                                        $diasInteiros = floor($diasTotal);
+                                                        $horasRestantes = ($diasTotal - $diasInteiros) * $horasPorDia;
+
+                                                        // Calcular a Data de Produção
+                                                        $timestampPedido = strtotime($dt); // Usando a data do pedido
+                                                        $diasCalculados = 0;
+
+                                                        while ($diasCalculados < $diasTotal) {
+                                                            $timestampPedido += 24 * 3600; // adicionar um dia
+                                                            $diaDaSemana = date('N', $timestampPedido); // 1 (segunda-feira) até 7 (domingo)
+
+                                                            if ($diaDaSemana < 6) { // dias úteis são de segunda a sexta
+                                                                $diasCalculados++;
+                                                            }
+                                                        }
+
+                                                        // Adicionar as horas restantes ao final do último dia útil
+                                                        $timestampPedido += $horasRestantes * 3600;
+
+                                                        // Subtrair um dia para ajustar a data prevista
+                                                        $timestampPedido -= 24 * 3600; // subtrair 1 dia (24 horas)
+
+                                                        $dataProducao = date('Y-m-d H:i:s', $timestampPedido);
+                                                        $dataProducaoFormatada = date('d/m/Y H:i', strtotime($dataProducao));
+
+                                                        // Exibindo as datas e durações
+                                                        $DiasPProduzir = $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas";
+                                                        $dataProducaoFormatadaExibida = $dataProducaoFormatada;
+                                                    } else {
+                                                        $DiasPProduzir = "N/A";
+                                                        $dataProducaoFormatadaExibida = "N/A";
+                                                    }
+                                                } else {
+                                                    $DiasPProduzir = "N/A";
+                                                    $dataProducaoFormatadaExibida = "N/A";
+                                                }
+
                                                 $dataEntrega = $row["dataEntrega"];
                                                 $dtAceite = subtrairDiasUteis($dataEntrega, 20);
                                                 $dataEntregaEstoque = subtrairDiasUteis($dataEntrega, 2);
                                                 $dataEntregaCliente = dateFormatByHifen($dataEntrega);
-                                                // Calcular os dias faltantes
                                                 $diasFaltantes = diasFaltandoParaData($dataEntrega);
                                                 $DiasFaltantesNumber = $diasFaltantes;
                                                 if ($DiasFaltantesNumber <= 0) {
@@ -153,19 +193,18 @@ if (isset($_SESSION["useruid"])) {
                                                         </div>
                                                     </td>
                                                     <td><?php echo $Situação; ?></td>
-                                                    <td><b><?php echo $NumPed; ?></b></td>
+                                                    <td><b><?php echo $row["numPedido"]; ?></b></td>
                                                     <td><?php echo $dt; ?></td>
-                                                    <td><?php echo $Produto; ?></td> <!-- Alterado para exibir o nome do fluxo -->
+                                                    <td><?php echo htmlspecialchars($nomeFluxo); ?></td>
                                                     <td>
                                                         <div class="d-flex justify-content-center">
                                                             <?php echo $DiasPProduzir; ?>
                                                         </div>
                                                     </td>
-                                                    <td><?php echo $Fases; ?></td>
+                                                    <td><?php echo $row["qtdEtapas"]; ?></td>
                                                     <td><?php echo $nomeEtapaAtual; ?></td>
                                                     <td><?php echo $respEtapaAtual; ?></td>
                                                     <td><?php echo $nomeproximaEtapa; ?></td>
-                                                    <td><?php echo $DiasFaltantes; ?></td>
                                                 </tr>
                                         <?php
                                             }
