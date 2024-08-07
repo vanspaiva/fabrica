@@ -872,10 +872,43 @@ INSERT INTO `realizacaoproducao` (`id`, `idPedido`, `idFluxo`, `numOrdem`, `idEt
 -- Estrutura para tabela `setor`
 --
 
-CREATE TABLE IF NOT EXISTS `setor` (
+CREATE TABLE `setor` (
   `id` int(11) NOT NULL,
-  `nome` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `nome` varchar(255) NOT NULL,
+  `duracao` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Despejando dados para a tabela `setor`
+--
+
+INSERT INTO `setor` (`id`, `nome`, `duracao`) VALUES
+(12, 'EMBALAGEM ESTÉRIL', 2),
+(11, 'INSPEÇÃO 3', 1),
+(10, 'LIMPEZA', 2),
+(9, 'GRAVAÇÃO', 1),
+(8, 'INSPEÇÃO 2', 1),
+(7, 'MOLDAGEM E ANODIZAÇÃO', 9),
+(6, 'SLA E ANODIZAÇÃO', 9),
+(5, 'INSPEÇÃO 1', 1),
+(4, 'ACABAMENTO', 9),
+(3, 'USINAGEM', 18),
+(2, 'TRATAMENTO TÉRMICO', 18),
+(1, 'PROGRAMAÇÃO E IMPRESSÃO', 18),
+(13, 'ESTERILIZAÇÃO', 9),
+(14, 'EMB ROTULAGEM FINAL', 2),
+(15, 'LIBERAÇÃO FINAL', 2);
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `setor`
+--
+ALTER TABLE `setor`
+  ADD PRIMARY KEY (`id`);
+
 
 -- --------------------------------------------------------
 
