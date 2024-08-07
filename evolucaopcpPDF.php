@@ -36,7 +36,7 @@ if (isset($_SESSION["useruid"])) {
                 $duracaoHoras = $duracaoData['duracaoTotal'];
 
                 // 3. Converter a Duração Total para Dias Úteis e Horas
-                $horasPorDia = 8; // ajuste conforme as horas úteis por dia
+                $horasPorDia = 9; // ajuste conforme as horas úteis por dia
                 $diasTotal = $duracaoHoras / $horasPorDia;
                 $diasInteiros = floor($diasTotal);
                 $horasRestantes = ($diasTotal - $diasInteiros) * $horasPorDia;
@@ -55,11 +55,14 @@ if (isset($_SESSION["useruid"])) {
                         $diasUteisAdicionados++;
                     }
                 }
+                    // Adicionar as horas restantes ao final do último dia útil
+                    $timestampPedido += $horasRestantes * 3600;
 
-                // Adicionar as horas restantes ao último dia
-                $timestampPedido += $horasRestantes * 3600;
-                $dataProducao = date('Y-m-d H:i:s', $timestampPedido);
-                $dataProducaoFormatada = date('d/m/Y H:i', strtotime($dataProducao));
+                    // Subtrair um dia para ajustar a data prevista
+                    $timestampPedido -= 24 * 3600; // subtrair 1 dia (24 horas)
+
+                    $dataProducao = date('Y-m-d', $timestampPedido);
+                    $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
 
                 // Exibindo as datas e durações
                 echo "Data do Pedido: " . date('d/m/Y', strtotime($dataPedido)) . "<br>";
@@ -184,7 +187,7 @@ if (isset($_SESSION["useruid"])) {
                                                                 <div class="row py-2">
                                                                     <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                         <label for=""><b>Data Prevista p/entrega</b></label>
-                                                                        <small><?php echo $dataEntregaFormatada; ?></small>
+                                                                        <small><?php echo $dataProducaoFormatada; ?></small>
                                                                     </div>
                                                                     <div class="col d-flex" style="flex-direction: column;">
                                                                         <label for=""><b>Dias para Produzir</b></label>
