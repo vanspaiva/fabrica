@@ -39,7 +39,7 @@
                 <div class="modal-body">
                     Seja bem-vindo ao nosso site pela primeira vez! <br>
                     Para completar seu cadastro, por favor, clique no link abaixo:
-                    <a href="pagina-de-cadastro.html" class="btn btn-primary mt-2">Completar Cadastro</a>
+                    <a href="cadastro_setor.php" class="btn btn-primary mt-2">Completar Cadastro</a>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
