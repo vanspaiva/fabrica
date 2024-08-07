@@ -2941,24 +2941,35 @@ function countEtapasAtrasadasToColaborador($conn, $etapas)
     $count = 0;
     $hoje = hoje();
 
+    // Verifica se a variável $etapas está vazia ou não contém valores válidos
+    if (empty($etapas) || !preg_match('/^\d+(,\d+)*$/', $etapas)) {
+        return $count; // Retorna 0 se não há etapas ou a lista é inválida
+    }
+
+    // Certifica-se de que $etapas é uma string válida
+    $etapas = mysqli_real_escape_string($conn, $etapas);
+
     $sql = "SELECT 
-    r.id AS idRealizacaoProducao,
-    r.numOrdem AS ordem,
-    r.dataRealizacao AS dt,
-    r.idEtapa AS idEtapa,
-    e.nome AS nomeEtapa,
-    s.nome AS nomeStatus,
-    s.id AS idStatus,
-    s.cor AS corStatus
-    FROM pedidos AS pd 
-    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
-    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
-    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
-    WHERE r.idEtapa IN ($etapas)
-    ORDER BY r.numOrdem ASC;";
+        r.id AS idRealizacaoProducao,
+        r.numOrdem AS ordem,
+        r.dataRealizacao AS dt,
+        r.idEtapa AS idEtapa,
+        e.nome AS nomeEtapa,
+        s.nome AS nomeStatus,
+        s.id AS idStatus,
+        s.cor AS corStatus
+        FROM pedidos AS pd 
+        RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+        RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+        RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+        WHERE r.idEtapa IN ($etapas)
+        ORDER BY r.numOrdem ASC;";
 
     $arrayRes = [];
     $ret = mysqli_query($conn, $sql);
+    if (!$ret) {
+        die("Erro na consulta: " . mysqli_error($conn)); // Adiciona uma mensagem de erro para depuração
+    }
     while ($row = mysqli_fetch_array($ret)) {
         $idStatus = $row["idStatus"];
         $dtRef = $row["dt"];
@@ -2968,7 +2979,6 @@ function countEtapasAtrasadasToColaborador($conn, $etapas)
         // Adiciona um dia à data de hoje
         $hojeMaisUm = clone $hojeDate;
         $hojeMaisUm->modify('+1 day');
-
 
         if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
             $count++;
