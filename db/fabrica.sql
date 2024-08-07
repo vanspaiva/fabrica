@@ -1215,3 +1215,65 @@ ALTER TABLE `op_user_resp_setor`
 ALTER TABLE `op_user_resp_setor`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
+
+
+--
+-- Estrutura para tabela `setor_resp`
+--
+
+CREATE TABLE `setor_resp` (
+  `idSetor` int(11) NOT NULL,
+  `idResp` int(11) NOT NULL,
+  `id` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `setor_resp`
+--
+
+INSERT INTO `setor_resp` (`idSetor`, `idResp`, `id`) VALUES
+(1, 1, '1'),
+(3, 5, '10'),
+(3, 6, '11'),
+(3, 4, '12'),
+(3, 5, '13'),
+(3, 6, '14'),
+(3, 2, '15'),
+(4, 7, '16'),
+(4, 3, '17'),
+(4, 8, '18'),
+(4, 9, '19'),
+(1, 2, '2'),
+(5, 10, '20'),
+(5, 11, '21'),
+(5, 12, '22'),
+(6, 13, '23'),
+(7, 13, '24'),
+(8, 10, '25'),
+(8, 11, '26'),
+(8, 12, '27'),
+(9, 14, '28'),
+(9, 9, '29'),
+(1, 3, '3'),
+(9, 13, '30'),
+(9, 15, '31'),
+(10, 14, '32'),
+(10, 9, '33'),
+(11, 10, '34'),
+(11, 11, '35'),
+(11, 12, '36'),
+(12, 14, '37'),
+(12, 15, '38'),
+(13, 14, '39'),
+(2, 6, '4'),
+(13, 15, '40'),
+(13, 16, '41'),
+(13, 17, '42'),
+(14, 14, '43'),
+(14, 15, '44'),
+(15, 16, '45'),
+(2, 2, '5'),
+(3, 4, '6'),
+(3, 5, '7'),
+(3, 6, '8'),
+(3, 2, '9');
