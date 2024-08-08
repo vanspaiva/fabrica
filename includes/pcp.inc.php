@@ -14,7 +14,7 @@ if (isset($_POST["update"])) {
     } else {
         $taxa_extra = 0;
     }
-    //receber user depois 
+
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';

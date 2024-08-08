@@ -1,6 +1,5 @@
 <?php
 
-
 if (isset($_POST["submit"])) {
 
     // $username = addslashes($_POST["username"]);
