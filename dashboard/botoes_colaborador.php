@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seu Título</title>
     <!-- Inclua Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -31,18 +30,15 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Bem-vindo!</h5>
+                    <h5 class="modal-title" id="modalLabel">Bem-vindo(a)!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Seja bem-vindo ao nosso site pela primeira vez! <br>
                     Para completar seu cadastro, por favor, clique no link abaixo:
+                    <br>
                     <a href="cadastro_setor.php" class="btn btn-primary mt-2">Completar Cadastro</a>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
@@ -66,9 +62,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (checkFirstVisit()) {
                 $('#firstVisitModal').modal('show');
-                alert("Bem-vindo ao nosso site pela primeira vez!"); // Alerta para primeira visita
+                alert("Bem-vindo(a) ao sistema da Fabrica pela primeira vez!\n\nAqui estão algumas instruções para começar:");
             } else {
-                alert("Bem-vindo de volta!"); // Alerta para visitas subsequentes
+                
             }
         });
     </script>

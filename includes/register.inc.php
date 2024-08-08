@@ -6,16 +6,17 @@ if (isset($_POST["submit"])) {
     // $username = addslashes($_POST["username"]);
     // $identificador = addslashes($_POST["identificador"]);
     // $uf = addslashes($_POST["uf"]);
-
+    
     $name = addslashes($_POST["name"]);
     $email = addslashes($_POST["email"]);
     $celular = addslashes($_POST["celular"]);
     $identificador = null;
     $uf = 'DF';
 
+
     $terms = addslashes($_POST["termsCheck"]);
 
-    if (empty($_POST["termsCheck"])) {
+    if(empty($_POST["termsCheck"])){
         header("location: ../cadastro?error=termserror");
         exit();
     }
@@ -24,16 +25,16 @@ if (isset($_POST["submit"])) {
     $pwd = addslashes($_POST["password"]);
     $pwdrepeat = addslashes($_POST["confirmpassword"]);
     $permission = "3COL";
-    $aprovacao = "APROV";
+    $aprovacao = "APROV";   
     $dep = addslashes($_POST["dep"]);
-
+    
 
     require_once '../db/dbh.php';
     require_once 'functions.inc.php';
 
     $username = cleanString(extrairNomeUsuario($email));
 
-    if (emptyInputSignup($name, $username, $email, $celular, $identificador, $uf, $pwd, $pwdrepeat) !== false) {
+    if (emptyInputSignup($name, $username, $email, $celular, $identificador, $uf, $pwd ,$pwdrepeat) !== false) {
         header("location: ../cadastro?error=emptyinput");
         exit();
     }
@@ -59,6 +60,7 @@ if (isset($_POST["submit"])) {
     }
 
     createUser($conn, $name, $username, $email, $celular, $identificador, $uf, $pwd, $permission, $aprovacao, $dep);
+
 } else {
     header("location: ../cadastro");
     exit();
