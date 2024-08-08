@@ -16,6 +16,8 @@ if (isset($_SESSION["useruid"])) {
         $qtds = $row["qtds"];
         $descricao = $row["descricao"];
         $dataPedido = $row['dt'];
+        $nacinter = $row['nacional_internacional'];
+        $taxa_extra = $row['taxa_extra'];
 
         // 2. Obter a Duração Total das Etapas para o Fluxo
         if ($fluxo) {
@@ -63,7 +65,7 @@ if (isset($_SESSION["useruid"])) {
                 $dataProducao = date('Y-m-d', $timestampPedido);
                 $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
 
-/*                 echo "Data do Pedido: " . date('d/m/Y', strtotime($dataPedido)) . "<br>";
+                /*                 echo "Data do Pedido: " . date('d/m/Y', strtotime($dataPedido)) . "<br>";
                 echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
                 echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
             } else {
@@ -272,13 +274,13 @@ if (isset($_SESSION["useruid"])) {
                                                                     <div class="form-row">
                                                                         <div class="col form-group m-2">
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="nacinter" id="nacinter1" value="nacional" required>
+                                                                                <input class="form-check-input" type="radio" name="nacional_internaciona" id="nacinter1" value="nacional" required <?php if ($nacinter === 'nacional') echo 'checked'; ?>>
                                                                                 <label class="form-check-label" for="nacinter1">
                                                                                     Nacional
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="nacinter" id="nacinter2" value="internacional" required>
+                                                                                <input class="form-check-input" type="radio" name="nacional_internaciona" id="nacinter2" value="internacional" required <?php if ($nacinter === 'internacional') echo 'checked'; ?>>
                                                                                 <label class="form-check-label" for="nacinter2">
                                                                                     Internacional
                                                                                 </label>
@@ -286,7 +288,7 @@ if (isset($_SESSION["useruid"])) {
                                                                         </div>
                                                                         <div class="col form-group m-2">
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="checkbox" value="1" id="taxa_extra" name="taxa_extra">
+                                                                                <input class="form-check-input" type="checkbox" value="1" id="taxa_extra" name="taxa_extra" <?php if ($taxa_extra == 1) echo 'checked'; ?>>
                                                                                 <label class="form-check-label" for="taxa_extra">
                                                                                     Taxa extra
                                                                                 </label>

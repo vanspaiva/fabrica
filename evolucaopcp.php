@@ -21,6 +21,8 @@ if (isset($_SESSION["useruid"])) {
             $qtds = $row["qtds"];
             $descricao = $row["descricao"];
             $dataPedido = $row['dt'];
+            $nacinter = $row['nacional_internacional'];
+            $taxa_extra = $row['taxa_extra'];
 
             // 2. Obter a Duração Total das Etapas para o Fluxo
             if ($fluxo) {
@@ -252,31 +254,31 @@ if (isset($_SESSION["useruid"])) {
                                                                 </div>
                                                                 <hr>
                                                                 <div class="form-row">
-                                                                    <div class="col form-group m-2">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="nacinter" id="nacinter1" value="nacional" required>
-                                                                            <label class="form-check-label" for="nacinter1">
-                                                                                Nacional
-                                                                            </label>
+                                                                        <div class="col form-group m-2">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio" name="nacional_internacional" id="nacinter1" value="nacional_internacional" required <?php if ($nacinter === 'nacional') echo 'checked'; ?>>
+                                                                                <label class="form-check-label" for="nacinter1">
+                                                                                    Nacional
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio" name="nacional_internacional" id="nacinter2" value="nacional_internacional" required <?php if ($nacinter === 'internacional') echo 'checked'; ?>>
+                                                                                <label class="form-check-label" for="nacinter2">
+                                                                                    Internacional
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="nacinter" id="nacinter2" value="internacional" required>
-                                                                            <label class="form-check-label" for="nacinter2">
-                                                                                Internacional
-                                                                            </label>
+                                                                        <div class="col form-group m-2">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="checkbox" value="1" id="taxa_extra" name="taxa_extra" <?php if ($taxa_extra == 1) echo 'checked'; ?>>
+                                                                                <label class="form-check-label" for="taxa_extra">
+                                                                                    Taxa extra
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col form-group m-2">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox" value="1" id="taxa_extra" name="taxa_extra">
-                                                                            <label class="form-check-label" for="taxa_extra">
-                                                                                Taxa extra
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                                 <div class="d-flex justify-content-end pt-4">
-                                                                    <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Gerar</button>
+                                                                    <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Confirma Pedido</button>
                                                                 </div>
                                                             </form>
                                                         </div>
