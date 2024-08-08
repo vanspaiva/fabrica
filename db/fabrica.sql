@@ -266,10 +266,10 @@ CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
 
 INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
 (1, 1, 79, 1, 0),
-(2, 1, 88, 2, 48),
+(2, 1, 88, 2, 18),
 (3, 1, 82, 3, 0),
 (4, 1, 31, 4, 1),
-(5, 1, 3, 5, 24),
+(5, 1, 3, 5, 9),
 (6, 1, 23, 6, 1),
 (7, 1, 52, 7, 2),
 (8, 1, 35, 8, 1),
