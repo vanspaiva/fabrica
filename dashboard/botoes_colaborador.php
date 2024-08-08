@@ -1,3 +1,9 @@
+<?php
+
+if (isset($_SESSION["useruid"])) {
+
+    require_once("includes/functions.inc.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -70,3 +76,11 @@
     </script>
 </body>
 </html>
+<?php
+
+            } else {
+                header("location: login");
+                exit();
+            }
+
+ ?>
