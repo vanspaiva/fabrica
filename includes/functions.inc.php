@@ -4411,3 +4411,4 @@ function calcularDiasFaltantes($dataConclusao)
 
     return $diasFaltantes;
 }
+
