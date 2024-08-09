@@ -6,7 +6,7 @@ $id = $_POST['id'];
 
 
 //Pesquisar no banco de dados nome do usuario referente a palavra digitada
-$result = "SELECT * FROM fluxo WHERE id='$id';";
+$result = "SELECT * FROM op_fluxo WHERE id='$id';";
 $resultado = mysqli_query($conn, $result);
 if (($resultado) and ($resultado->num_rows != 0)) {
     while ($row = mysqli_fetch_assoc($resultado)) {

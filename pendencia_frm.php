@@ -97,21 +97,24 @@ if (isset($_SESSION["useruid"])) {
                         <?php
                         require_once 'db/dbh.php';
                         $query = "
-                                                SELECT 
-                                                    frm_inf_004.id AS frm_id,
-                                                    frm_inf_004.data_publicacao,
-                                                    frm_inf_004.data_manutencao,
-                                                    setor_arcondicionado.descricao_setores AS setor_descricao,
-                                                    frmstatus.status AS frmStatus,
-                                                    frm_inf_004.responsavel
-                                                FROM 
-                                                    frm_inf_004
-                                                    LEFT JOIN setor_arcondicionado ON setor_arcondicionado.descricao_setores = frm_inf_004.descricao_setor
-                                                    LEFT JOIN frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
-                                                WHERE 
-                                                    frmstatus.status = 'Pendente'
-                                            ";
-
+                            SELECT 
+                                frm_inf_004.id AS frm_id,
+                                frm_inf_004.data_publicacao,
+                                frm_inf_004.data_manutencao,
+                                setor_arcondicionado.descricao_setores AS setor_descricao,
+                                frmstatus.status AS frmStatus,
+                                frm_inf_004.responsavel
+                            FROM 
+                                frm_inf_004.register
+                                LEFT JOIN setor_arcondicionado ON setor_arcondicionado.descricao_setores = frm_inf_004.descricao_setor
+                                LEFT JOIN frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
+                            WHERE 
+                                frmstatus.status = 'Pendente'
+                            GROUP BY 
+                                frm_inf_004.id
+                            ORDER BY 
+                                frm_inf_004.id DESC
+                        ";
 
                         $result = $conn->query($query);
                         if ($result === false) {
@@ -137,7 +140,7 @@ if (isset($_SESSION["useruid"])) {
                                     </td>
                                     <td style="text-align: center; vertical-align: middle;">
                                         <a href="editfrm.php?id=<?php echo $row['frm_id']; ?>" class="btn" onClick="return confirm('Você realmente deseja aprovar esse Registro?');">
-                                        <i class="fa-solid fa-check-double" style="color: #0b9314; font-size: 1.5em;"></i>
+                                            <i class="fa-solid fa-check-double" style="color: #0b9314; font-size: 1.5em;"></i>
                                         </a>
                                     </td>
 

@@ -268,7 +268,7 @@ if (isset($_SESSION["useruid"])) {
                                                             <th>Status</th>
                                                             <th>Data Entrada</th>
                                                             <th>Máquina</th>
-                                                            <th>Descrição</th>
+                                                            <th>Descrição</th>                                        
                                                         </tr>
                                                     </thead>
                                                     <tbody>

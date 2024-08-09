@@ -1,108 +1,127 @@
 <?php
 session_start();
+
 if (isset($_SESSION["useruid"])) {
-    include("php/head_updateprop.php");
     require_once 'db/dbh.php';
-    require_once 'includes/functions.inc.php';
-    $user = $_SESSION["useruid"];
+
+    $id = $_GET['id'];
+
+    $pedidoId = $_GET['id'];
+    $ret = mysqli_query($conn, "SELECT * FROM pedidos WHERE id='" . $pedidoId . "';");
+    if ($row = mysqli_fetch_array($ret)) {
+        $numPed = $row['pedido'];
+        $fluxo = $row['fluxo'];
+        $lote = $row["lote"];
+        $cdgprod = $row["cdgprod"];
+        $qtds = $row["qtds"];
+        $descricao = $row["descricao"];
+        $dataPedido = $row['dt'];
+        $nacinter = $row['nacional_internacional'];
+        $taxa_extra = $row['taxa_extra'];
+
+        // 2. Obter a Duração Total das Etapas para o Fluxo
+        if ($fluxo) {
+            $duracaoQuery = "
+            SELECT SUM(duracao) AS duracaoTotal
+            FROM etapa_fluxo
+            WHERE idfluxo = '$fluxo'
+            ";
+            $duracaoResult = mysqli_query($conn, $duracaoQuery);
+            $duracaoData = mysqli_fetch_assoc($duracaoResult);
+
+            if ($duracaoData) {
+                $duracaoHoras = $duracaoData['duracaoTotal'];
+
+                $horasPorDia = 9;
+                $diasInteiros = floor($duracaoHoras / $horasPorDia);
+                $horasRestantes = $duracaoHoras % $horasPorDia;
+
+                $timestampPedido = strtotime($dataPedido);
+                $diasUteisAdicionados = 0;
+
+                // Adicionar dias úteis
+                while ($diasUteisAdicionados < $diasInteiros) {
+                    $timestampPedido += 24 * 3600;
+                    $diaDaSemana = date('N', $timestampPedido);
+                    if ($diaDaSemana < 6) { // Segunda a sexta
+                        $diasUteisAdicionados++;
+                    }
+                }
+
+                // Adicionar as horas restantes
+                $horaAtual = date('G', $timestampPedido); // Hora atual no dia
+                $horaFinal = $horaAtual + $horasRestantes;
+
+                if ($horaFinal > 18) { // Se ultrapassar 18h, mover para o próximo dia útil
+                    $horaFinal -= 18; // Subtrai 18h para ajustar as horas restantes
+                    do {
+                        $timestampPedido += 24 * 3600;
+                    } while (date('N', $timestampPedido) >= 6); // Pula fins de semana
+                    $timestampPedido += $horaFinal * 3600; // Adiciona horas restantes do próximo dia
+                } else {
+                    $timestampPedido += $horasRestantes * 3600; // Adiciona horas restantes ao mesmo dia
+                }
+
+                $dataProducao = date('Y-m-d', $timestampPedido);
+                $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
+
+                /*                 echo "Data do Pedido: " . date('d/m/Y', strtotime($dataPedido)) . "<br>";
+                echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
+                echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
+            } else {
+                echo "Nenhuma duração encontrada para o fluxo especificado.";
+            }
+        }
+
+        $listaCdgs = explode("*", $cdgprod);
+        $listaQtds = explode("*", $qtds);
+        $listaDescricao = explode("*", $descricao);
+        $title = "OP - $id";
+
+        include("php/head_op.php");
 ?>
 
-    <body class="bg-light-gray2">
-        <?php
-        include_once 'php/navbar.php';
-        include_once 'php/lateral-nav.php';
-        $pedidoId = $_GET['id'];
-        $ret = mysqli_query($conn, "SELECT * FROM pedidos WHERE id='" . $pedidoId . "';");
-        if ($row = mysqli_fetch_array($ret)) {
-            $numPed = $row['pedido'];
-            $fluxo = $row['fluxo'];
-            $lote = $row["lote"];
-            $cdgprod = $row["cdgprod"];
-            $qtds = $row["qtds"];
-            $descricao = $row["descricao"];
-            $dataPedido = $row['dt'];
-            $nacinter = $row['nacional_internacional'];
-            $taxa_extra = $row['taxa_extra'];
+        <style media="print">
+            @page {
+                size: auto;
+                margin: 0;
+            }
+        </style>
 
-            // 2. Obter a Duração Total das Etapas para o Fluxo
-            if ($fluxo) {
-                $duracaoQuery = "
-                SELECT SUM(duracao) AS duracaoTotal
-                FROM etapa_fluxo
-                WHERE idfluxo = '$fluxo'
-            ";
-                $duracaoResult = mysqli_query($conn, $duracaoQuery);
-                $duracaoData = mysqli_fetch_assoc($duracaoResult);
+        <style>
+            #printOnly {
+                display: none;
+            }
 
-                if ($duracaoData) {
-                    $duracaoHoras = $duracaoData['duracaoTotal'];
-
-                    $horasPorDia = 9;
-                    $diasInteiros = floor($duracaoHoras / $horasPorDia);
-                    $horasRestantes = $duracaoHoras % $horasPorDia;
-
-                    $timestampPedido = strtotime($dataPedido);
-                    $diasUteisAdicionados = 0;
-
-                    // Adicionar dias úteis
-                    while ($diasUteisAdicionados < $diasInteiros) {
-                        $timestampPedido += 24 * 3600;
-                        $diaDaSemana = date('N', $timestampPedido);
-                        if ($diaDaSemana < 6) { // Segunda a sexta
-                            $diasUteisAdicionados++;
-                        }
-                    }
-
-                    // Adicionar as horas restantes
-                    $horaAtual = date('G', $timestampPedido); // Hora atual no dia
-                    $horaFinal = $horaAtual + $horasRestantes;
-
-                    if ($horaFinal > 18) { // Se ultrapassar 18h, mover para o próximo dia útil
-                        $horaFinal -= 18; // Subtrai 18h para ajustar as horas restantes
-                        do {
-                            $timestampPedido += 24 * 3600;
-                        } while (date('N', $timestampPedido) >= 6); // Pula fins de semana
-                        $timestampPedido += $horaFinal * 3600; // Adiciona horas restantes do próximo dia
-                    } else {
-                        $timestampPedido += $horasRestantes * 3600; // Adiciona horas restantes ao mesmo dia
-                    }
-
-                    $dataProducao = date('Y-m-d', $timestampPedido);
-                    $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
-
-                   /*  echo "Data do Pedido: " . date('d/m/Y', strtotime($dataPedido)) . "<br>";
-                    echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
-                    echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
-                } else {
-                    echo "Nenhuma duração encontrada para o fluxo especificado.";
+            @media print {
+                #printOnly {
+                    display: block;
                 }
             }
-            $listaCdgs = explode("*", $cdgprod);
-            $listaQtds = explode("*", $qtds);
-            $listaDescricao = explode("*", $descricao);
-        ?>
-            <div id="main">
-                <div>
-                    <?php
-                    if (isset($_GET["error"])) {
-                        if ($_GET["error"] == "stmfailed") {
-                            echo "<div class='my-2 pb-0 alert alert-warning pt-3 text-center'><p>Alguma coisa deu errado!</p></div>";
-                        }
-                    }
-                    ?>
+        </style>
+
+        <body class="bg-white">
+
+            <div class="faixaFab d-print-none py-2">
+                <div class="container">
+                    <div class="row d-flex align-items-center">
+                        <div class="col d-flex">
+                            <button class='button-back button-back-white' type='button' onclick='history.go(-1)'>
+                                <i class='fas fa-chevron-left fa-2x'></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <div id="main">
                 <div class="container-fluid">
                     <div class="row d-flex justify-content-center">
                         <div class="col-sm" id="titulo-pag">
                             <div class="d-flex">
-                                <div class="col-sm-1">
-                                    <div class='col-sm-1 d-flex justify-content-start align-items-start' id='back'>
-                                        <button class='button-back button-back-dark p-0 m-0 pt-2' type='button' onclick='history.go(-1)'><i class='fas fa-chevron-left fa-2x'></i></button>
-                                    </div>
-                                </div>
                                 <div class="col-sm-8 pt-2 row-padding-2">
                                     <div class="row px-3" style="color: #fff">
-                                        <h2>Informações do Pedido - <?php echo $numPed; ?> </h2>
+                                        <h2>Informações do Pedido - <?php echo  $lote; ?> </h2>
                                     </div>
                                 </div>
                             </div>
@@ -205,64 +224,63 @@ if (isset($_SESSION["useruid"])) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="text-muted">Evolução para produção</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <section id="main-content">
-                                            <section class="wrapper">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="content-panel">
-                                                            <form class="form-horizontal style-form" id="formprop" name="formprop" action="includes/pcp.inc.php" method="POST">
-                                                                <div class="form-row" hidden>
-                                                                    <div class="form-group col-md">
-                                                                        <label class="form-label text-black" for="pedidoId">ID</label>
-                                                                        <input type="number" class="form-control" id="pedidoId" name="pedidoId" value="<?php echo $row['id']; ?>" required readonly>
-                                                                        <small class="text-muted">ID não é editável</small>
-                                                                    </div>
-                                                                    <div class="form-group col-md">
-                                                                        <label class="form-label text-black" for="user">User Responsável</label>
-                                                                        <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-row">
-                                                                    <div class="col form-group m-2">
-                                                                        <label class="form-label text-black" for="fluxo">Modalidade</label>
-                                                                        <select class='form-control' name='fluxo' id='fluxo' required>
-                                                                            <option value="">Escolha uma Modalidade</option>
-                                                                            <?php
-                                                                            $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
-                                                                            while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
-                                                                                <option value="<?php echo $rowStatus['id']; ?>" <?php if ($fluxo == $rowStatus['id']) echo ' selected="selected"'; ?>><?php echo $rowStatus['nome']; ?></option>
-                                                                            <?php
-                                                                            }
-                                                                            ?>
-                                                                        </select>
+                                </br>
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="text-muted">Evolução para produção</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <section id="main-content">
+                                                <section class="wrapper">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="content-panel">
+                                                                <form class="form-horizontal style-form" id="formprop" name="formprop" action="includes/pcp.inc.php" method="POST">
+                                                                    <div class="form-row" hidden>
+                                                                        <div class="form-group col-md">
+                                                                            <label class="form-label text-black" for="pedidoId">ID</label>
+                                                                            <input type="number" class="form-control" id="pedidoId" name="pedidoId" value="<?php echo $row['id']; ?>" required readonly>
+                                                                            <small class="text-muted">ID não é editável</small>
+                                                                        </div>
+                                                                        <div class="form-group col-md">
+                                                                            <label class="form-label text-black" for="user">User Responsável</label>
+                                                                            <input type="text" class="form-control" id="user" name="user" value="<?php echo $user; ?>" required readonly>
+                                                                        </div>
                                                                     </div>
 
-                                                                    <div class="col form-group m-2">
-                                                                        <label class="form-label text-black" for="lote">Lote</label>
-                                                                        <input type="text" class="form-control" id="lote" name="lote" value="<?php echo $row['lote']; ?>" required>
-                                                                    </div>
+                                                                    <div class="form-row">
+                                                                        <div class="col form-group m-2">
+                                                                            <label class="form-label text-black" for="fluxo">Modalidade</label>
+                                                                            <select class='form-control' name='fluxo' id='fluxo' required>
+                                                                                <option value="">Escolha uma Modalidade</option>
+                                                                                <?php
+                                                                                $retStatus = mysqli_query($conn, "SELECT * FROM fluxo ORDER BY nome ASC;");
+                                                                                while ($rowStatus = mysqli_fetch_array($retStatus)) { ?>
+                                                                                    <option value="<?php echo $rowStatus['id']; ?>" <?php if ($fluxo == $rowStatus['id']) echo ' selected="selected"'; ?>><?php echo $rowStatus['nome']; ?></option>
+                                                                                <?php
+                                                                                }
+                                                                                ?>
+                                                                            </select>
+                                                                        </div>
 
-                                                                </div>
-                                                                <hr>
-                                                                <div class="form-row">
+                                                                        <div class="col form-group m-2">
+                                                                            <label class="form-label text-black" for="lote">Lote</label>
+                                                                            <input type="text" class="form-control" id="lote" name="lote" value="<?php echo $row['lote']; ?>" required>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="form-row">
                                                                         <div class="col form-group m-2">
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="nacional_internacional" id="nacinter1" value="nacional_internacional" required <?php if ($nacinter === 'nacional') echo 'checked'; ?>>
+                                                                                <input class="form-check-input" type="radio" name="nacional_internaciona" id="nacinter1" value="nacional" required <?php if ($nacinter === 'nacional') echo 'checked'; ?>>
                                                                                 <label class="form-check-label" for="nacinter1">
                                                                                     Nacional
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="nacional_internacional" id="nacinter2" value="nacional_internacional" required <?php if ($nacinter === 'internacional') echo 'checked'; ?>>
+                                                                                <input class="form-check-input" type="radio" name="nacional_internaciona" id="nacinter2" value="internacional" required <?php if ($nacinter === 'internacional') echo 'checked'; ?>>
                                                                                 <label class="form-check-label" for="nacinter2">
                                                                                     Internacional
                                                                                 </label>
@@ -277,26 +295,28 @@ if (isset($_SESSION["useruid"])) {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                <div class="d-flex justify-content-end pt-4">
-                                                                    <button type="submit" name="update" id="update" class="btn btn-fab btn-sm">Confirma Pedido</button>
-                                                                </div>
-                                                            </form>
+                                                                    <div class="d-print-none d-flex justify-content-center">
+                                                                        <button class="btn btn-fab m-2" onclick="window.print();return false;"> <i class="fas fa-print"></i> Imprimir</button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </section>
                                             </section>
-                                        </section>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                <?php
-                include_once 'php/footer_updateprop.php';
-            } else {
-                echo "Pedido não encontrado.";
-            }
-        } else {
-            header("location: ../index");
-            exit();
-        }
-                ?>
+
+        </body>
+<?php
+
+    }
+
+    include_once 'php/footer_index.php';
+} else {
+    header("location: index");
+    exit();
+}
+?>

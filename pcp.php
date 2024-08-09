@@ -1,23 +1,17 @@
 <?php
 session_start();
-
 if (isset($_SESSION["useruid"])) {
     include("php/head_tables.php");
     $user = $_SESSION["useruid"];
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
-
 ?>
-
 
     <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         ?>
-
-
-
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div>
@@ -52,7 +46,6 @@ if (isset($_SESSION["useruid"])) {
                             <div class="card-body">
                                 <div class="content-panel" style="overflow-x: scroll;">
                                     <table id="tablePedido" class="table table-striped table-advance table-hover">
-
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -63,44 +56,14 @@ if (isset($_SESSION["useruid"])) {
                                                 <th>Num Ped</th>
                                                 <th>Lote</th>
                                                 <th>Dias P/ Prod</th>
-                                                <th>Dt Entrega</th>
-                                                <th>Situação</th>
+                                                <!--<th>Dt Entrega</th>
+                                                <th>Situação</th> -->
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             <?php
-                                            function adicionarHorasUteis($dataInicial, $horasAdicionar)
-                                            {
-                                                $data = new DateTime($dataInicial);
-                                                $horasRestantes = $horasAdicionar;
 
-                                                while ($horasRestantes > 0) {
-                                                    $diaDaSemana = $data->format('N'); // 1 (para segunda-feira) até 7 (para domingo)
-
-                                                    // Se for fim de semana, adianta para a próxima segunda-feira
-                                                    if ($diaDaSemana >= 6) {
-                                                        $data->modify('next monday');
-                                                        $diaDaSemana = 1; // Começar do início da semana
-                                                    }
-
-                                                    // Calcula o total de horas no dia corrente
-                                                    $horasNoDia = 24 - $data->format('H');
-                                                    $horasNoDia = min($horasNoDia, $horasRestantes);
-
-                                                    // Adiciona as horas no dia
-                                                    $data->modify("+{$horasNoDia} hours");
-                                                    $horasRestantes -= $horasNoDia;
-
-                                                    // Se ainda restam horas e o dia é sábado, adianta para a segunda-feira
-                                                    if ($horasRestantes > 0 && $data->format('N') == 6) {
-                                                        $data->modify('next monday');
-                                                    }
-                                                }
-
-                                                return $data->format('d-m-Y');
-                                            }
                                             // Ajuste a consulta para incluir o nome do fluxo
                                             $sql = "
                                             SELECT p.*, f.nome AS nome_fluxo,
@@ -113,7 +76,6 @@ if (isset($_SESSION["useruid"])) {
                                             GROUP BY p.id
                                             ORDER BY p.dt ASC;
                                         ";
-
                                             $ret = mysqli_query($conn, $sql);
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
@@ -123,50 +85,101 @@ if (isset($_SESSION["useruid"])) {
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
                                                 $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
-                                                $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]);
+                                                /*  $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]); */
                                                 $lote = $row["lote"];
                                                 $totalDuracaoHoras = $row["total_duracao"]; // Total duração em horas
+                                                $fluxo = $row['fluxo'];
+                                                $numPed = $row['pedido'];
+                                                // Calcular os dias e horas no fluxo
+                                                if ($fluxo) {
+                                                    $duracaoQuery = "
+                                                    SELECT SUM(duracao) AS duracaoTotal
+                                                    FROM etapa_fluxo
+                                                    WHERE idfluxo = '$fluxo'
+                                                ";
+                                                    $duracaoResult = mysqli_query($conn, $duracaoQuery);
+                                                    $duracaoData = mysqli_fetch_assoc($duracaoResult);
+                                    
+                                                    if ($duracaoData) {
+                                                        $duracaoHoras = $duracaoData['duracaoTotal'];
+                                    
+                                                        $horasPorDia = 9;
+                                                        $diasInteiros = floor($duracaoHoras / $horasPorDia);
+                                                        $horasRestantes = $duracaoHoras % $horasPorDia;
+                                    
+                                                        $timestampPedido = strtotime($dt);
+                                                        $diasUteisAdicionados = 0;
+                                    
+                                                        // Adicionar dias úteis
+                                                        while ($diasUteisAdicionados < $diasInteiros) {
+                                                            $timestampPedido += 24 * 3600;
+                                                            $diaDaSemana = date('N', $timestampPedido);
+                                                            if ($diaDaSemana < 6) { // Segunda a sexta
+                                                                $diasUteisAdicionados++;
+                                                            }
+                                                        }
+                                    
+                                                        // Adicionar as horas restantes
+                                                        $horaAtual = date('G', $timestampPedido); // Hora atual no dia
+                                                        $horaFinal = $horaAtual + $horasRestantes;
+                                    
+                                                        if ($horaFinal > 18) { // Se ultrapassar 18h, mover para o próximo dia útil
+                                                            $horaFinal -= 18; // Subtrai 18h para ajustar as horas restantes
+                                                            do {
+                                                                $timestampPedido += 24 * 3600;
+                                                            } while (date('N', $timestampPedido) >= 6); // Pula fins de semana
+                                                            $timestampPedido += $horaFinal * 3600; // Adiciona horas restantes do próximo dia
+                                                        } else {
+                                                            $timestampPedido += $horasRestantes * 3600; // Adiciona horas restantes ao mesmo dia
+                                                        }
+                                    
+                                                        $dataProducao = date('Y-m-d', $timestampPedido);
+                                                        $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
+                                    
+                                                       /*  echo "Data do Pedido: " . date('d/m/Y', strtotime($dt)) . "<br>";
+                                                        echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
+                                                        echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
+                                                    } else {
+                                                        echo "Nenhuma duração encontrada para o fluxo especificado.";
+                                                    }
+                                                }
 
+                                             /*    
+                                                $statusEntrega = $diasFaltantes <= 0 ? '<b class="text-danger"> Data de entrega excedida! </b>' : $diasFaltantes . ' dias faltantes';
+                                                $diasNoFluxo = $diasFuturos['dias'] . " dias e " . $diasFuturos['horas'] . " horas";
                                                 $dataAtual = date('d-m-Y');
-                                                $dataEntregaFormatada = adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
-
+                                                $dataProducaoFormatada= adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
                                                 // Converter a duração total em dias e horas
                                                 $dias = floor($totalDuracaoHoras / 24);
                                                 $horas = $totalDuracaoHoras % 24;
-
                                                 // Exibir o status
                                                 if ($dias < 1 && $horas < 20) {
                                                     $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
                                                 } else {
                                                     $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
-                                                }
-
+                                                } */
                                                 // $diasOnPCP = calcularDiasAteHoje($conn, $dt);
-
                                                 // $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
                                                 // $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
                                                 // // $dtEx = '2024-07-09';
                                                 // // $diasFaltantes = diasFaltandoParaData($dtEx);
                                                 // // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
-
                                                 // if ($diasFaltantes <= 0) {
                                                 //     $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
                                                 // } else {
                                                 //     $diasFaltantes = $diasFaltantes . ' dias';
                                                 // }
-
-                                                // $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
-                                                // $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
-                                                // if (($diasFuturosNumber >= $diasFaltantesNumber)) {
-                                                //     $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
-                                                // } else {
-                                                //     if ($diasFaltantes < 21) {
-                                                //         $statusPrevio = "<span class='badge badge-warning'><b class='text-white'> POSSÍVEL ATRASO </b></span>";
-                                                //     } else {
-                                                //         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
-                                                //     }
-                                                // }
+                                                 /* $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
+                                                 $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
+                                                 if (($diasFuturosNumber >= $diasFaltantesNumber)) {
+                                                     $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
+                                                 } else {
+                                                     if ($diasFaltantes < 21) {
+                                                        $statusPrevio = "<span class='badge badge-warning'><b class='text-white'> POSSÍVEL ATRASO </b></span>";
+                                                   } else {
+                                                         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
+                                                     }
+                                                 } */
                                             ?>
                                                 <tr>
                                                     <th><?php echo $id; ?></th>
@@ -178,18 +191,20 @@ if (isset($_SESSION["useruid"])) {
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $lote; ?></th>
-                                                    <th class="text-center"><?php echo $dias . " dias e " . $horas . " horas"; ?></th>
-                                                    <th><?php echo $dataEntregaFormatada; ?></th>
+                                                    <th class="text-center"><?php echo$diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>"?></th>
+                                                    <!--  <th><?php echo $dataEntregaFormatada; ?></th>
                                                     <th>
                                                         <div class="d-flex"><?php echo $statusPrevio; ?></div>
-                                                    </th>
+                                                    </th> -->
                                                     <th>
                                                         <div class="d-flex">
                                                             <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
                                                                 <a href="evolucaopcp?id=<?php echo $id; ?>">
                                                                     <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
                                                                 </a>
-                                                                <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                                <a href="evolucaopcpPDF?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                                </a>
                                                             <?php
                                                             }
                                                             ?>
@@ -199,24 +214,17 @@ if (isset($_SESSION["useruid"])) {
                                             <?php
                                             }
                                             ?>
-
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
-
     </body>
-
     <?php include_once 'php/footer_index.php' ?>
-
     <script>
         $(document).ready(function() {
             $('#tablePedido').DataTable({
@@ -238,13 +246,12 @@ if (isset($_SESSION["useruid"])) {
                 },
                 "order": []
             });
-
         });
     </script>
-
 <?php
 } else {
     header("location: login");
     exit();
 }
 ?>
+F

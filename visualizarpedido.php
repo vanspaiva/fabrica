@@ -25,10 +25,11 @@ if (isset($_SESSION["useruid"])) {
         p.cdgprod AS cdgprod, 
         p.qtds AS qtds, 
         p.descricao AS descricao, 
+        p.dt AS dt,
         p.dataEntrega AS dataEntrega, 
         p.dr AS dr,
-        p.pac AS pac,
-        p.produto AS produto,
+        p.pac  AS pac,
+        p.produto  AS produto,
         fx.nome AS NomeFluxo 
         FROM pedidos AS p 
         JOIN fluxo fx ON p.fluxo = fx.id 
@@ -45,22 +46,91 @@ if (isset($_SESSION["useruid"])) {
             $qtds = $row["qtds"];
             $descricao = $row["descricao"];
 
-            if ($diasparaproduzir < 3) {
+            $dataOriginal = $row['dt'];
+            $dataFormatada = new DateTime($dataOriginal);
+            $dataFormatada = $dataFormatada->format('d-m-Y');
+
+            // 2. Obter a Duração Total das Etapas para o Fluxo
+            if ($fluxo) {
+                $duracaoQuery = "
+                SELECT SUM(duracao) AS duracaoTotal
+                FROM etapa_fluxo
+                WHERE idfluxo = '$fluxo'
+            ";
+                $duracaoResult = mysqli_query($conn, $duracaoQuery);
+                $duracaoData = mysqli_fetch_assoc($duracaoResult);
+
+                if ($duracaoData) {
+                    $duracaoHoras = $duracaoData['duracaoTotal'];
+
+                    $horasPorDia = 9;
+                    $diasInteiros = floor($duracaoHoras / $horasPorDia);
+                    $horasRestantes = $duracaoHoras % $horasPorDia;
+
+                    $timestampPedido = strtotime($dataFormatada);
+                    $diasUteisAdicionados = 0;
+
+                    // Adicionar dias úteis
+                    while ($diasUteisAdicionados < $diasInteiros) {
+                        $timestampPedido += 24 * 3600;
+                        $diaDaSemana = date('N', $timestampPedido);
+                        if ($diaDaSemana < 6) { // Segunda a sexta
+                            $diasUteisAdicionados++;
+                        }
+                    }
+
+                    // Adicionar as horas restantes
+                    $horaAtual = date('G', $timestampPedido); // Hora atual no dia
+                    $horaFinal = $horaAtual + $horasRestantes;
+
+                    if ($horaFinal > 18) { // Se ultrapassar 18h, mover para o próximo dia útil
+                        $horaFinal -= 18; // Subtrai 18h para ajustar as horas restantes
+                        do {
+                            $timestampPedido += 24 * 3600;
+                        } while (date('N', $timestampPedido) >= 6); // Pula fins de semana
+                        $timestampPedido += $horaFinal * 3600; // Adiciona horas restantes do próximo dia
+                    } else {
+                        $timestampPedido += $horasRestantes * 3600; // Adiciona horas restantes ao mesmo dia
+                    }
+
+                    $dataProducao = date('Y-m-d', $timestampPedido);
+                    $dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
+
+                    // Obter a data atual
+                    $hoje = new DateTime();
+                    $hojeFormatado = $hoje->format('Y-m-d');
+
+                    // Calcular os dias restantes
+                    $dataProducaoObj = new DateTime($dataProducao);
+                    $intervalo = $hoje->diff($dataProducaoObj);
+                    $diasRestantes = $intervalo->days;
+                    $statusPrevio = ($hoje > $dataProducaoObj) ? "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>" : "<span class='badge badge-secondary'><b> NORMAL </b></span>";
+
+/*                     echo "Dias Restantes para Produção: " . $diasRestantes . "<br>";
+                    echo "Status: " . $statusPrevio;
+                    echo "Data do Pedido: " . date('d/m/Y', strtotime($dataFormatada)) . "<br>";
+                    echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
+                    echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
+                } else {
+                    echo "Nenhuma duração encontrada para o fluxo especificado.";
+                }
+            }
+
+            if ($diasInteiros < $dataProducaoFormatada) {
                 $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
             } else {
                 $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
             }
-            $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
-            $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
-            if ($diasFaltantes <= 0) {
-                $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
+
+            if ($diasRestantes <= 0) {
+                $diasRestantes = '<b class="text-danger"> Data de entrega excedida! </b>';
             } else {
-                $diasFaltantes = $diasFaltantes . ' dias';
+                $diasRestantes = $diasRestantes . ' dias';
             }
-            $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
-            $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-            $hoje = hoje();
-             ?>
+            /*
+        $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
+        $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias"; */
+        ?>
 
             <div id="main">
                 <div>
@@ -125,11 +195,11 @@ if (isset($_SESSION["useruid"])) {
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Produto</b></label>
-                                                                                <small><?php echo $NomeFluxo; ?></small> <!-- Aqui exibimos o nome do fluxo -->
-                                                                            </div>  
+                                                                                <small><?php echo $row['NomeFluxo']; ?></small>
+                                                                            </div>
                                                                             <div class="col d-flex" style="flex-direction: column;">
-                                                                                <label for=""><b>Dias p/ Produzir</b></label>
-                                                                                <small><?php echo $row['diasparaproduzir']; ?> dias </small>
+                                                                                <label for=""><b>Data do Pedido</b></label>
+                                                                                <small><?php echo $dataFormatada; ?></small>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -154,16 +224,16 @@ if (isset($_SESSION["useruid"])) {
                                                                     <div class="content-panel">
                                                                         <div class="row py-2">
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
-                                                                                <label for=""><b>Dt Entrega (Após Aceite)</b></label>
-                                                                                <small><?php echo dateFormatByHifen($row['dataEntrega']); ?></small>
+                                                                                <label for=""><b>Data Prevista</b></label>
+                                                                                <small><?php echo $dataProducaoFormatada ?></small>
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column; border-right: 1px silver solid;">
                                                                                 <label for=""><b>Dias para Entrega</b></label>
-                                                                                <small><?php echo $diasFaltantes; ?></small>
+                                                                                <small><?php echo $diasRestantes; ?></small>
                                                                             </div>
                                                                             <div class="col d-flex" style="flex-direction: column;">
-                                                                                <label for=""><b>Duração do Modalidade</b></label>
-                                                                                <small><?php echo $diasFuturos; ?></small>
+                                                                                <label for=""><b>Tempo de Produção</b></label>
+                                                                                <small><?php echo  $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>"; ?></small>
                                                                             </div>
                                                                         </div>
                                                                         <div class="row py-2">
@@ -229,18 +299,17 @@ if (isset($_SESSION["useruid"])) {
                                                             $dt = dateFormatByHifen($row["dt"]);
                                                             $status = "";
 
-                                                            // $hoje = '2024-06-23';
-                                                            $dtRefDate = new DateTime($dtRef);
-                                                            $hojeDate = new DateTime($hoje);
-                                                            // Adiciona um dia à data de hoje
-                                                            $hojeMaisUm = clone $hojeDate;
+                                                            $hoje = new DateTime(); // Inicializando a data atual
+                                                            $hojeDate = clone $hoje; // Clonando para usar mais tarde
+                                                            $hojeMaisUm = clone $hoje;
                                                             $hojeMaisUm->modify('+1 day');
 
+                                                            $dtRefDate = new DateTime($dtRef);
 
-                                                            if (($dtRefDate == $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+                                                            if (($dtRefDate == $hoje) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
                                                                 $color = "text-orange";
                                                                 $i = '<span class="badge bg-orange text-dark mx-2">Hoje!</span>';
-                                                            } elseif (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
+                                                            } elseif (($dtRefDate < $hoje) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
                                                                 $color = "text-danger";
                                                                 $i = '';
                                                             } elseif ($dtRefDate == $hojeMaisUm) {
@@ -253,41 +322,36 @@ if (isset($_SESSION["useruid"])) {
                                                                 $color = "";
                                                                 $i = '';
                                                             }
-
-
                                                         ?>
                                                             <tr>
                                                                 <td><?php echo $ordem; ?></td>
                                                                 <td><?php echo $nomeEtapa; ?></td>
                                                                 <td class="<?php echo $color; ?>"><b><?php echo $dt . $i; ?></b></td>
                                                                 <td class="text-center" style="color: <?php echo $corStatus; ?>;"><b><?php echo $nomeStatus; ?></b></td>
-
                                                                 <td class="text-center">
                                                                     <div class="d-flex justify-content-center">
-
                                                                         <?php if (($idStatus == 1) || ($idStatus == 7) || ($idStatus == 3) || ($idStatus == 9)) { ?>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=play&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-info btn-sm"><i class="fas fa-play fa-1x"></i> </a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 2) || ($idStatus == 8)) { ?>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=pause&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-warning btn-sm"><i class="fas fa-pause fa-1x"></i></a>
                                                                             <a href="atvd?idPed=<?php echo $pedidoId; ?>&idR=<?php echo $idRealizacaoProducao; ?>&a=check&etapa=<?php echo $idEtapa; ?>&statual=<?php echo $idStatus; ?>" class="btn text-success btn-sm"><i class="far fa-check-square fa-1x"></i></a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 4) || ($idStatus == 10) || ($idStatus == 5)) { ?>
                                                                             <a href="#" class="btn text-success btn-sm"><i class="fas fa-check-square fa-1x"></i></a>
                                                                         <?php } ?>
-
                                                                         <?php if (($idStatus == 6)) { ?>
                                                                             <a href="#" class="btn text-danger btn-sm"><i class="fas fa-times-circle fa-1x"></i></a>
                                                                         <?php } ?>
                                                                     </div>
                                                                 </td>
                                                             </tr>
+                                                            <!--  <td class="<?php echo $color; ?>"><b><?php echo $dt . $i; ?></b></td>
+                                                            <td class="text-center" style="color: <?php echo $corStatus; ?>;"><b><?php echo $nomeStatus; ?></b></td> -->
                                                         <?php
                                                         }
                                                         ?>
-                                                    </tbody>
+                                                    </tbody>                                                
                                                 </table>
                                             </div>
                                         </div>
