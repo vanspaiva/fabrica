@@ -38,8 +38,8 @@ function updateCadSetor($conn, $setores, $idResp) {
         mysqli_stmt_close($stmt);
     }
 
-    $_SESSION['success_message'] = "Dados inseridos com sucesso!";
-    header("Location: botoes_colaborador.php"); // Redirecione para a página onde a mensagem será exibida
+   $_SESSION['successMessage'] = "Dados inseridos com sucesso.";
+     header("Location: ../cadastro_setor.php");  // Redirecione para a página onde a mensagem será exibida
     exit();
 }
 

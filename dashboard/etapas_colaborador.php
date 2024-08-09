@@ -2,41 +2,46 @@
 $userId = $_SESSION["userid"];
 
 
-
 // Obtendo todas as etapas associadas ao usuário
 // $sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
-$sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
+$sql = "SELECT s.id, s.nome 
+        FROM setor s 
+        JOIN setor_resp sr ON s.id = sr.idSetor 
+        WHERE sr.idResp = ?";
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $setores = mysqli_fetch_all($result, MYSQLI_ASSOC);
-$setoresIdArray = transformarArrayParaString($setores); //10,3,2,1
 
-$setoresIdArray = explode(",", $setoresIdArray); //Array ( [0] => 10 [1] => 3 [2] => 2 [3] => 1 )
+$setoresIdArray = array_column($setores, 'id'); // Extrai IDs dos setores
 
+// Obtemos as etapas associadas aos setores
 $etapas = [];
 
-foreach ($setoresIdArray as $key => $setor) {
-    $etapaId = getEtapasBySetor($conn, $setor);
-    $etapaId = implode(",", $etapaId);
-    //iteração 1: $etapaId = 88,89,90,93,91,92
-    //iteração 2: $etapaId = 87,86
-    //iteração 3: $etapaId = 26,27,28
-
-
-    array_push($etapas, $etapaId);
+foreach ($setoresIdArray as $setorId) {
+    $etapaIds = getEtapasBySetor($conn, $setorId); // Função para obter etapas por setor
+    $etapas = array_merge($etapas, $etapaIds); // Mescla as etapas
 }
-$etapasAssociadasToSQL = implode(",", $etapas);
+
+$etapasAssociadasToSQL = implode(",", $etapas); // Formata para uso em SQL
 
 ?>
+<style>
+    .custom-badge {
+        font-size: 1rem; 
+        padding: 0.5rem 1rem; 
+    }
+</style>
+
 <div class="row p-3">
     <div class="col border py-2">
         <?php foreach ($setores as $etapa) : ?>
-            <span class="badge badge-primary"><?php echo $etapa['nome']; ?></span>
+            <span class="badge badge-primary custom-badge"><?php echo htmlspecialchars($etapa['nome'], ENT_QUOTES, 'UTF-8'); ?></span>
         <?php endforeach; ?>
     </div>
 </div>
+
 
 <div class="row py-4">
     <div class="col">

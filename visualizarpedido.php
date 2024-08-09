@@ -106,11 +106,11 @@ if (isset($_SESSION["useruid"])) {
                     $diasRestantes = $intervalo->days;
                     $statusPrevio = ($hoje > $dataProducaoObj) ? "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>" : "<span class='badge badge-secondary'><b> NORMAL </b></span>";
 
-                    echo "Dias Restantes para Produção: " . $diasRestantes . "<br>";
+/*                     echo "Dias Restantes para Produção: " . $diasRestantes . "<br>";
                     echo "Status: " . $statusPrevio;
                     echo "Data do Pedido: " . date('d/m/Y', strtotime($dataFormatada)) . "<br>";
                     echo "Duração Total para Produzir: " . $diasInteiros . " dias e " . round($horasRestantes, 2) . " horas<br>";
-                    echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada;
+                    echo "Data Prevista para Produção Completa: " . $dataProducaoFormatada; */
                 } else {
                     echo "Nenhuma duração encontrada para o fluxo especificado.";
                 }

@@ -5,7 +5,7 @@ $userId = $_SESSION["userid"];
 
 // Obtendo todas as etapas associadas ao usuário
 // $sql = "SELECT e.id, e.nome FROM etapa e JOIN colaborador_etapas ce ON e.id = ce.idEtapa WHERE ce.idUser = ?";
-$sql = "SELECT s.id, s.nome FROM setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
+$sql = "SELECT s.id, s.nome FROM op_setor s JOIN colaborador_etapas ce ON s.id = ce.idEtapa WHERE ce.idUser = ?";
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
@@ -85,11 +85,11 @@ $etapasAssociadasToSQL = implode(",", $etapas);
                                                                     pd.pedido AS numPed,
                                                                     pd.id AS idPed,
                                                                     f.nome AS nomeFluxo
-                                                                    FROM pedidos AS pd 
-                                                                    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
-                                                                    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
-                                                                    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
-                                                                    RIGHT JOIN fluxo AS f ON pd.fluxo = f.id 
+                                                                    FROM op_pedidos AS pd 
+                                                                    RIGHT JOIN op_realizacao_producao AS r ON pd.id = r.idPedido 
+                                                                    RIGHT JOIN op_etapa AS e ON r.idEtapa = e.id 
+                                                                    RIGHT JOIN op_status_etapa AS s ON r.idStatus = s.id 
+                                                                    RIGHT JOIN op_fluxo AS f ON pd.fluxo = f.id 
                                                                     WHERE r.id = $value
                                                                     AND r.idEtapa IN ($etapasAssociadasToSQL);";
 

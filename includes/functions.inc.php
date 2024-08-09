@@ -3739,7 +3739,7 @@ function getEtapasBySetor($conn, $idSetor)
     }
 }
 
-function getSetoresByUser($conn, $userId)
+/* function getSetoresByUser($conn, $userId)
 {
     // Define a consulta SQL
     $sql = "SELECT s.id FROM setor s 
@@ -3771,7 +3771,7 @@ function getSetoresByUser($conn, $userId)
 
     // Retorna o array de IDs dos setores
     return $setores;
-}
+} */
 
 function subtrairDiasUteis($data, $dias)
 {
@@ -4412,3 +4412,18 @@ function calcularDiasFaltantes($dataConclusao)
     return $diasFaltantes;
 }
 
+function getSetoresByUser($conn, $userId) {
+    $sql = "SELECT idSetor FROM setor_resp WHERE idResp = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $setores = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $setores[] = $row['idSetor'];
+    }
+
+    mysqli_stmt_close($stmt);
+    return $setores;
+}

@@ -105,7 +105,7 @@ if (isset($_SESSION["useruid"])) {
                                 frmstatus.status AS frmStatus,
                                 frm_inf_004.responsavel
                             FROM 
-                                frm_inf_004
+                                frm_inf_004.register
                                 LEFT JOIN setor_arcondicionado ON setor_arcondicionado.descricao_setores = frm_inf_004.descricao_setor
                                 LEFT JOIN frmstatus ON frm_inf_004.frmstatus_id = frmstatus.id
                             WHERE 
