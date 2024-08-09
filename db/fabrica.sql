@@ -265,33 +265,15 @@ CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
 --
 
 INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
-(2, 1, 1, 2, 1),
-(3, 1, 31, 3, 1),
-(4, 1, 2, 4, 2.5),
-(5, 1, 4, 5, 2.5),
-(6, 1, 33, 6, 1),
-(7, 1, 23, 7, 1),
-(9, 1, 35, 10, 1),
-(12, 1, 88, 1, 1),
-(13, 1, 13, 11, 2),
-(14, 1, 3, 9, 1),
-(17, 1, 52, 8, 1),
-(18, 17, 72, 1, 1),
-(19, 17, 74, 2, 1),
-(20, 17, 28, 3, 1),
-(21, 17, 87, 4, 1),
-(22, 17, 88, 5, 1),
-(23, 17, 1, 6, 1),
-(24, 17, 31, 7, 1),
-(25, 17, 4, 8, 1),
-(26, 17, 65, 9, 1),
-(27, 17, 33, 10, 1),
-(28, 17, 23, 11, 1),
-(29, 17, 52, 12, 1),
-(30, 17, 35, 13, 1),
-(31, 17, 18, 14, 1),
-(32, 17, 13, 15, 1);
-
+(1, 1, 79, 1, 0),
+(2, 1, 88, 2, 18),
+(3, 1, 82, 3, 0),
+(4, 1, 31, 4, 1),
+(5, 1, 3, 5, 9),
+(6, 1, 23, 6, 1),
+(7, 1, 52, 7, 2),
+(8, 1, 35, 8, 1),
+(9, 1, 13, 9, 2);
 -- --------------------------------------------------------
 
 --
@@ -719,33 +701,35 @@ CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
 -- Estrutura da tabela `setor`
 --
 
+
 DROP TABLE IF EXISTS `setor`;
 CREATE TABLE IF NOT EXISTS `setor` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `nome` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+  `duracao` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Extraindo dados da tabela `setor`
+-- Despejando dados para a tabela `setor`
 --
 
-INSERT INTO `setor` (`id`, `nome`) VALUES
-(1, 'IMPRESSÃO'),
-(2, 'TRATAMENTO TÉRMICO'),
-(3, 'USINAGEM'),
-(4, 'ACABAMENTO'),
-(5, 'INSPEÇÃO 1'),
-(6, 'SLA E ANODIZAÇÃO'),
-(7, 'MOLDAGEM E ANODIZAÇÃO'),
-(8, 'INSPEÇÃO 2'),
-(9, 'GRAVAÇÃO'),
-(10, 'LIMPEZA'),
-(11, 'INSPEÇÃO 3'),
-(12, 'EMBALAGEM ESTÉRIL'),
-(13, 'ESTERILIZAÇÃO'),
-(14, 'EMB ROTULAGEM FINAL'),
-(15, 'LIBERAÇÃO FINAL');
+INSERT INTO `setor` (`id`, `nome`, `duracao`) VALUES
+(12, 'EMBALAGEM ESTÉRIL', 2),
+(11, 'INSPEÇÃO 3', 1),
+(10, 'LIMPEZA', 2),
+(9, 'GRAVAÇÃO', 1),
+(8, 'INSPEÇÃO 2', 1),
+(7, 'MOLDAGEM E ANODIZAÇÃO', 9),
+(6, 'SLA E ANODIZAÇÃO', 9),
+(5, 'INSPEÇÃO 1', 1),
+(4, 'ACABAMENTO', 9),
+(3, 'USINAGEM', 18),
+(2, 'TRATAMENTO TÉRMICO', 18),
+(1, 'PROGRAMAÇÃO E IMPRESSÃO', 18),
+(13, 'ESTERILIZAÇÃO', 9),
+(14, 'EMB ROTULAGEM FINAL', 2),
+(15, 'LIBERAÇÃO FINAL', 2);
+
 
 -- --------------------------------------------------------
 
@@ -1181,3 +1165,115 @@ INSERT INTO om_maquina (tipo, idMaquina, omNumMaquina, omNomeMaquina) VALUES
 ('Produção', 'MAQ.078', 'Forno Industrial', 'RITON / RT-1300 /'),
 ('Produção', 'MAQ.079', 'Injetora', 'HAITIAN / SA 2000II'),
 ('Produção', 'MAQ.080', 'Termoformagem', 'VACUUM FORMING')
+
+
+CREATE TABLE `op_user_resp_setor` (
+  `id` int(11) NOT NULL,
+  `nomeResp` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `op_user_resp_setor`
+--
+
+INSERT INTO `op_user_resp_setor` (`id`, `nomeResp`) VALUES
+(1, 'Jairo Ferreira da Silva Junior'),
+(2, 'Rayro Rodrigues Soares'),
+(3, 'Benjamim Wenderson Santos Soares'),
+(4, 'Fernando Lima de Sousa'),
+(5, 'Marcos Roberto Pereira Silva'),
+(6, 'Jairo Ferreira da Silva Junior'),
+(7, 'Andreina Vitor de Melo'),
+(8, 'Lyeberth Pereira de Sousa'),
+(9, 'Mônica Vanessa Soares Lopes'),
+(10, 'Jonh Everson Souza Santos'),
+(11, 'Juliana da Conceição da Silva'),
+(12, 'Luzia do Livramento Martins da Silva'),
+(13, 'Tania Guedes De Oliveira'),
+(14, 'Jessika karoliny da Silva Queiros'),
+(15, 'Davi Silva de Lima'),
+(16, 'Carolina Castro'),
+(17, 'Hellen Oliveira');
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `op_user_resp_setor`
+--
+ALTER TABLE `op_user_resp_setor`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `op_user_resp_setor`
+--
+ALTER TABLE `op_user_resp_setor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+COMMIT;
+
+
+--
+-- Estrutura para tabela `setor_resp`
+--
+
+CREATE TABLE `setor_resp` (
+  `idSetor` int(11) NOT NULL,
+  `idResp` int(11) NOT NULL,
+  `id` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `setor_resp`
+--
+
+INSERT INTO `setor_resp` (`idSetor`, `idResp`, `id`) VALUES
+(1, 1, '1'),
+(3, 5, '10'),
+(3, 6, '11'),
+(3, 4, '12'),
+(3, 5, '13'),
+(3, 6, '14'),
+(3, 2, '15'),
+(4, 7, '16'),
+(4, 3, '17'),
+(4, 8, '18'),
+(4, 9, '19'),
+(1, 2, '2'),
+(5, 10, '20'),
+(5, 11, '21'),
+(5, 12, '22'),
+(6, 13, '23'),
+(7, 13, '24'),
+(8, 10, '25'),
+(8, 11, '26'),
+(8, 12, '27'),
+(9, 14, '28'),
+(9, 9, '29'),
+(1, 3, '3'),
+(9, 13, '30'),
+(9, 15, '31'),
+(10, 14, '32'),
+(10, 9, '33'),
+(11, 10, '34'),
+(11, 11, '35'),
+(11, 12, '36'),
+(12, 14, '37'),
+(12, 15, '38'),
+(13, 14, '39'),
+(2, 6, '4'),
+(13, 15, '40'),
+(13, 16, '41'),
+(13, 17, '42'),
+(14, 14, '43'),
+(14, 15, '44'),
+(15, 16, '45'),
+(2, 2, '5'),
+(3, 4, '6'),
+(3, 5, '7'),
+(3, 6, '8'),
+(3, 2, '9');

@@ -1,23 +1,17 @@
 <?php
 session_start();
-
 if (isset($_SESSION["useruid"])) {
     include("php/head_tables.php");
     $user = $_SESSION["useruid"];
     require_once 'db/dbh.php';
     require_once 'includes/functions.inc.php';
-
 ?>
-
 
     <body class="bg-light-gray2">
         <?php
         include_once 'php/navbar.php';
         include_once 'php/lateral-nav.php';
         ?>
-
-
-
         <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
         <div id="main">
             <div>
@@ -52,41 +46,37 @@ if (isset($_SESSION["useruid"])) {
                             <div class="card-body">
                                 <div class="content-panel" style="overflow-x: scroll;">
                                     <table id="tablePedido" class="table table-striped table-advance table-hover">
-
                                         <thead>
                                             <tr>
-                                                <!-- <th>ID</th>
-                                                <th>Dt Chegada</th>
-                                                <th>Cód Produto</th>
-                                                <th>Produto</th>
-                                                <th>Modalidade</th>
-                                                <th>Dr(a)</th>
-                                                <th>Pac</th>
-                                                <th>Dt Entrega</th>
-                                                <th></th> -->
-
                                                 <th>ID</th>
                                                 <th>Dt Chegada</th>
-                                                <!-- <th>Dias no PCP</th> -->
                                                 <th>Produto</th>
                                                 <th>Dr(a)</th>
                                                 <th>Pac</th>
                                                 <th>Num Ped</th>
                                                 <th>Lote</th>
                                                 <th>Dias P/ Prod</th>
-                                                <th>Dt Entrega</th>
-                                                <th>Situação</th>
+                                                <!--                                                 <th>Dt Entrega</th>
+                                                <th>Situação</th> -->
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             <?php
-                                            $ret = mysqli_query($conn, "SELECT p.*
+
+                                            // Ajuste a consulta para incluir o nome do fluxo
+                                            $sql = "
+                                            SELECT p.*, f.nome AS nome_fluxo,
+                                                   COALESCE(SUM(e.duracao), 0) AS total_duracao
                                             FROM pedidos p
                                             LEFT JOIN realizacaoproducao rp ON p.id = rp.idPedido
+                                            LEFT JOIN fluxo f ON p.fluxo = f.id
+                                            LEFT JOIN etapa_fluxo e ON p.fluxo = e.idfluxo
                                             WHERE rp.idPedido IS NULL
-                                            ORDER BY p.dt ASC;");
+                                            GROUP BY p.id
+                                            ORDER BY p.dt ASC;
+                                        ";
+                                            $ret = mysqli_query($conn, $sql);
                                             while ($row = mysqli_fetch_array($ret)) {
                                                 $id = $row["id"];
                                                 $dt = dateFormatByHifen($row["dt"]);
@@ -94,35 +84,48 @@ if (isset($_SESSION["useruid"])) {
                                                 $dr = reduzirString($row["dr"], 15);
                                                 $pac = $row["pac"];
                                                 $pedido = $row["pedido"];
-                                                $fluxo = $row['fluxo'];
-                                                $dataEntrega = dateFormatByHifen($row["dataEntrega"]);
-
+                                                $nomeFluxo = $row['nome_fluxo']; // Nome do fluxo obtido da junção
+                                                /*  $dataEntregaOriginal = dateFormatByHifen($row["dataEntrega"]); */
                                                 $lote = $row["lote"];
-                                                $diasparaproduzir = $row["diasparaproduzir"];
+                                                $totalDuracaoHoras = $row["total_duracao"]; // Total duração em horas
+                                                $fluxo = $row['fluxo'];
+                                                $numPed = $row['pedido'];
+                                                // Calcular os dias e horas no fluxo
+                                                $diasFuturos = calcularDiasNoFluxo($conn, $fluxo);
+                                                $dataConclusao = calcularDataConclusao($dt, $diasFuturos);
 
-                                                if ($diasparaproduzir < 20) {
+                                                // Calcular os dias faltantes
+                                                $diasFaltantes = calcularDiasFaltantes($dataConclusao);
+
+                                                // Status baseado em dias para produzir
+                                                $diasparaproduzir = $diasFuturos['dias'];
+
+                                                $statusEntrega = $diasFaltantes <= 0 ? '<b class="text-danger"> Data de entrega excedida! </b>' : $diasFaltantes . ' dias faltantes';
+                                                $diasNoFluxo = $diasFuturos['dias'] . " dias e " . $diasFuturos['horas'] . " horas";
+                                                $dataAtual = date('d-m-Y');
+                                                $dataEntregaFormatada = adicionarHorasUteis($dataAtual, $totalDuracaoHoras);
+                                                // Converter a duração total em dias e horas
+                                                $dias = floor($totalDuracaoHoras / 24);
+                                                $horas = $totalDuracaoHoras % 24;
+                                                // Exibir o status
+                                                if ($dias < 1 && $horas < 20) {
                                                     $statusPrevio = "<span class='badge badge-warning text-black'><b class='text-white'> FORA DO PRAZO </b></span>";
                                                 } else {
                                                     $statusPrevio = "<span class='badge badge-secondary'><b> NORMAL </b></span>";
                                                 }
-
                                                 // $diasOnPCP = calcularDiasAteHoje($conn, $dt);
-
                                                 // $diasFaltantes = diasFaltandoParaData($row['dataEntrega']);
                                                 // $diasFaltantesNumber = diasFaltandoParaData($row['dataEntrega']);
                                                 // // $dtEx = '2024-07-09';
                                                 // // $diasFaltantes = diasFaltandoParaData($dtEx);
                                                 // // $diasFaltantesNumber = diasFaltandoParaData($dtEx);
-
                                                 // if ($diasFaltantes <= 0) {
                                                 //     $diasFaltantes = '<b class="text-danger"> Data de entrega excedida! </b>';
                                                 // } else {
                                                 //     $diasFaltantes = $diasFaltantes . ' dias';
                                                 // }
-
                                                 // $diasFuturosNumber = diasDentroFluxo($conn, $fluxo);
                                                 // $diasFuturos = diasDentroFluxo($conn, $fluxo) . " dias";
-
                                                 // if (($diasFuturosNumber >= $diasFaltantesNumber)) {
                                                 //     $statusPrevio = "<span class='badge badge-danger'><b class='text-white'> ATRASADO </b></span>";
                                                 // } else {
@@ -132,53 +135,51 @@ if (isset($_SESSION["useruid"])) {
                                                 //         $statusPrevio = "<span class='badge badge-success'><b class='text-white'> DENTRO DO PRAZO </b></span>";
                                                 //     }
                                                 // }
-
                                             ?>
                                                 <tr>
                                                     <th><?php echo $id; ?></th>
                                                     <th><?php echo $dt; ?></th>
                                                     <!-- <th><?php //echo $diasOnPCP; 
                                                                 ?></th> -->
-                                                    <th><?php echo $produto; ?></th>
+                                                    <td><?php echo $nomeFluxo; ?></td>
                                                     <th><?php echo $dr; ?></th>
                                                     <th><?php echo $pac; ?></th>
                                                     <th><?php echo $pedido; ?></th>
                                                     <th><?php echo $lote; ?></th>
-                                                    <th class="text-center"><?php echo $diasparaproduzir; ?></th>
-                                                    <th><?php echo $dataEntrega; ?></th>
+                                                    <th class="text-center"><?php echo $diasNoFluxo ?></th>
+                                                    <!--  <th><?php echo $dataEntregaFormatada; ?></th>
                                                     <th>
                                                         <div class="d-flex"><?php echo $statusPrevio; ?></div>
-                                                    </th>
+                                                    </th> -->
                                                     <th>
                                                         <div class="d-flex">
-                                                            <a href="evolucaopcp?id=<?php echo $id; ?>">
-                                                                <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
-                                                            </a>
-                                                                <button class="btn btn-warning m-1" ><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                            <?php if ($_SESSION["userperm"] == 'Administrador') { ?>
+                                                                <a href="evolucaopcp?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-success m-1"><i class="fas fa-calendar-plus"></i></button>
+                                                                </a>
+                                                                <a href="evolucaopcpPDF?id=<?php echo $id; ?>">
+                                                                    <button class="btn btn-warning m-1"><i class="bi bi-file-earmark-pdf-fill"></i></button>
+                                                                </a>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                         </div>
                                                     </th>
                                                 </tr>
                                             <?php
                                             }
                                             ?>
-
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
         </div>
-
     </body>
-
     <?php include_once 'php/footer_index.php' ?>
-
     <script>
         $(document).ready(function() {
             $('#tablePedido').DataTable({
@@ -200,13 +201,12 @@ if (isset($_SESSION["useruid"])) {
                 },
                 "order": []
             });
-
         });
     </script>
-
 <?php
 } else {
     header("location: login");
     exit();
 }
 ?>
+F

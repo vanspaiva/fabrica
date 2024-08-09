@@ -12,7 +12,7 @@ if (isset($_SESSION["useruid"])) {
         $setores = getSetoresByUser($conn, $userId);
         $link = 'visualizarpedido';
     } else if (($_SESSION["userperm"] == 'Colaborador(a)') && ($_SESSION["usernomedep"] == 'Qualidade')) {
-        $setores = [5,8,11,15];
+        $setores = [5,8,11];
         $link = 'inspecaopedido';
     } else {
         $setores = getAllSetorIDs($conn);
@@ -20,7 +20,7 @@ if (isset($_SESSION["useruid"])) {
     }
 
     // Obtendo todos os setores
-    // print_r($setores);
+     print_r($setores);
 
     $hoje = hoje();
 

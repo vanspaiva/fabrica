@@ -434,7 +434,8 @@ function createOS($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
     exit();
 }
 
-function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor = "None", $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacional, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina) {
+function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriacao, $userip, $setor = "None", $descricao, $grauurgencia, $obs, $tname, $urlArquivo, $tpManutenção, $mqOperacinal,  $tempoNoperacional, $idMaquina, $omNomeMaquina, $omIdentificadorMaquina)
+{
     // Inserção na tabela
     $sql = "INSERT INTO ordenmanutencao (omUserCriador, omNomeCriador, omEmailCriador, omUserIp, omSetor, omDescricao, omNomeArquivo, omGrauUrgencia, omObs, omStatus, omTipoManutencao, omOperacional, tempoNaoOperacional, idMaquina, omNomeMaquina, omIdentificadorMaquina) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     $stmt = mysqli_stmt_init($conn);
@@ -459,7 +460,7 @@ function createOM($conn, $tp_contacriador, $nomecriador, $emailcriacao, $dtcriac
 
     uploadArquivo($conn, $tname, $pname, $omId);
     sendEmailNotificationNewOM($nomecriador, $emailcriacao, $dtcriacao, $idMaquina, $omNomeMaquina);
-    
+
     header("location: ../lista-om?error=sent");
     exit();
 }
@@ -2408,10 +2409,10 @@ function inserirPedido($conn, $projetista, $dr, $pac, $rep, $pedido, $dt, $produ
     return $response;
 }
 
-function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs)
+function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs)
 {
     // Preparar a consulta SQL para inserção
-    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO pedidos (dr, pac, pedido, dt, fluxo, lote, dataEntrega, diasparaproduzir, nacional_internacional, taxa_extra,  obs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // Verificar se a preparação da declaração foi bem-sucedida
     if ($stmt === false) {
@@ -2419,7 +2420,7 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
     }
 
     // Vincular os parâmetros
-    $stmt->bind_param("sssssssss", $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $obs);
+    $stmt->bind_param("sssssssssss", $dr, $pac, $nped, $dtcriacao, $fluxo, $lote, $dataEntrega, $diasparaproduzir, $nacinter, $taxa_extra, $obs);
 
     // Executar a declaração
     if ($stmt->execute()) {
@@ -2434,6 +2435,7 @@ function inserirPedidoSimples($conn, $dr, $pac, $nped, $dtcriacao, $fluxo, $lote
     // Retornar a resposta
     return $response;
 }
+
 
 function reduzirString($string, $quantidadeCaracteres)
 {
@@ -2938,24 +2940,35 @@ function countEtapasAtrasadasToColaborador($conn, $etapas)
     $count = 0;
     $hoje = hoje();
 
+    // Verifica se a variável $etapas está vazia ou não contém valores válidos
+    if (empty($etapas) || !preg_match('/^\d+(,\d+)*$/', $etapas)) {
+        return $count; // Retorna 0 se não há etapas ou a lista é inválida
+    }
+
+    // Certifica-se de que $etapas é uma string válida
+    $etapas = mysqli_real_escape_string($conn, $etapas);
+
     $sql = "SELECT 
-    r.id AS idRealizacaoProducao,
-    r.numOrdem AS ordem,
-    r.dataRealizacao AS dt,
-    r.idEtapa AS idEtapa,
-    e.nome AS nomeEtapa,
-    s.nome AS nomeStatus,
-    s.id AS idStatus,
-    s.cor AS corStatus
-    FROM pedidos AS pd 
-    RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
-    RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
-    RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
-    WHERE r.idEtapa IN ($etapas)
-    ORDER BY r.numOrdem ASC;";
+        r.id AS idRealizacaoProducao,
+        r.numOrdem AS ordem,
+        r.dataRealizacao AS dt,
+        r.idEtapa AS idEtapa,
+        e.nome AS nomeEtapa,
+        s.nome AS nomeStatus,
+        s.id AS idStatus,
+        s.cor AS corStatus
+        FROM pedidos AS pd 
+        RIGHT JOIN realizacaoproducao AS r ON pd.id = r.idPedido 
+        RIGHT JOIN etapa AS e ON r.idEtapa = e.id 
+        RIGHT JOIN statusetapa AS s ON r.idStatus = s.id 
+        WHERE r.idEtapa IN ($etapas)
+        ORDER BY r.numOrdem ASC;";
 
     $arrayRes = [];
     $ret = mysqli_query($conn, $sql);
+    if (!$ret) {
+        die("Erro na consulta: " . mysqli_error($conn)); // Adiciona uma mensagem de erro para depuração
+    }
     while ($row = mysqli_fetch_array($ret)) {
         $idStatus = $row["idStatus"];
         $dtRef = $row["dt"];
@@ -2965,7 +2978,6 @@ function countEtapasAtrasadasToColaborador($conn, $etapas)
         // Adiciona um dia à data de hoje
         $hojeMaisUm = clone $hojeDate;
         $hojeMaisUm->modify('+1 day');
-
 
         if (($dtRefDate < $hojeDate) && (($idStatus != 4) && ($idStatus != 10) && ($idStatus != 5))) {
             $count++;
@@ -4293,3 +4305,110 @@ function formatData($data)
     $dateV = new DateTime($data_validade);
     echo $dateV->format('d/m/Y');
 }
+
+function adicionarHorasUteis($dataInicio, $horas)
+{
+    $data = new DateTime($dataInicio);
+    $horasPorDia = 9; // Horário de expediente: 8h às 18h com 1h de almoço
+
+    while ($horas > 0) {
+        $horaAtual = (int)$data->format('H');
+        $minutoAtual = (int)$data->format('i');
+        $horasRestantesNoDia = 18 - $horaAtual;
+        if ($horaAtual < 8) $horasRestantesNoDia = 10; // Se for antes das 8h
+
+        if ($horas <= $horasRestantesNoDia) {
+            $data->modify("+$horas hours");
+            $horas = 0;
+        } else {
+            $horas -= $horasRestantesNoDia;
+            $data->modify('+1 day');
+            if ($data->format('N') >= 6) {
+                // Pular fins de semana
+                $data->modify('+2 days');
+            }
+            $data->setTime(8, 0); // Início do expediente no novo dia
+        }
+    }
+
+    return $data->format('d-m-Y H:i');
+}
+
+function calcularDiasNoFluxo($conn, $fluxo)
+{
+    $sqlEtapas = "SELECT duracao FROM fluxo_setor WHERE idfluxo='$fluxo';";
+    $retEtapas = mysqli_query($conn, $sqlEtapas);
+
+    $totalHoras = 0;
+    while ($rowEtapa = mysqli_fetch_assoc($retEtapas)) {
+        $totalHoras += $rowEtapa['duracao'];
+    }
+
+    $horasPorDia = 9; // 8h às 18h com 1h de almoço
+    $dias = floor($totalHoras / $horasPorDia);
+    $horasRestantes = $totalHoras % $horasPorDia;
+
+    return [
+        'dias' => $dias,
+        'horas' => $horasRestantes
+    ];
+}
+
+function adicionarDiasUteis($dataInicio, $dias, $horas)
+{
+    $data = new DateTime($dataInicio);
+    $diasAdicionados = 0;
+
+    while ($diasAdicionados < $dias) {
+        $data->modify('+1 day');
+        if ($data->format('N') < 6) { // 1 = Segunda-feira, ..., 7 = Domingo
+            $diasAdicionados++;
+        }
+    }
+
+    // Adicionar horas restantes
+    $data->modify("+$horas hours");
+
+    return $data->format('d-m-Y');
+}
+
+function calcularDataConclusao($dataPedido, $diasNoFluxo)
+{
+    // Tentar criar a data usando o formato 'Y-m-d'
+    $dataPedidoObj = DateTime::createFromFormat('Y-m-d', $dataPedido);
+    
+    // Se falhar, tentar o formato 'd/m/Y'
+    if (!$dataPedidoObj) {
+        $dataPedidoObj = DateTime::createFromFormat('d/m/Y', $dataPedido);
+    }
+
+    // Se ainda falhar, lançar uma exceção
+    if (!$dataPedidoObj) {
+        throw new Exception("Failed to parse time string ($dataPedido) at position 0 (2): Unexpected character");
+    }
+    
+    $dias = $diasNoFluxo['dias'];
+    $horas = $diasNoFluxo['horas'];
+
+    // Adicionar dias úteis e horas restantes
+    $dataConclusao = adicionarDiasUteis($dataPedidoObj->format('Y-m-d'), $dias, $horas);
+
+    return $dataConclusao;
+}
+
+
+function calcularDiasFaltantes($dataConclusao)
+{
+    $hoje = new DateTime();
+    $dataConclusao = new DateTime($dataConclusao);
+
+    $interval = $hoje->diff($dataConclusao);
+    $diasFaltantes = $interval->days;
+
+    if ($hoje > $dataConclusao) {
+        $diasFaltantes = -$diasFaltantes;
+    }
+
+    return $diasFaltantes;
+}
+

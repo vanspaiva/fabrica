@@ -250,33 +250,15 @@ CREATE TABLE IF NOT EXISTS `etapa_fluxo` (
 --
 
 INSERT INTO `etapa_fluxo` (`id`, `idfluxo`, `idetapa`, `ordem`, `duracao`) VALUES
-(2, 1, 1, 2, 1),
-(3, 1, 31, 3, 1),
-(4, 1, 2, 4, 2.5),
-(5, 1, 4, 5, 2.5),
-(6, 1, 33, 6, 1),
-(7, 1, 23, 7, 1),
-(9, 1, 35, 10, 1),
-(12, 1, 88, 1, 1),
-(13, 1, 13, 12, 2),
-(14, 1, 3, 9, 1),
-(17, 1, 52, 8, 1),
-(18, 17, 72, 1, 1),
-(19, 17, 74, 2, 1),
-(20, 1, 1, 11, 2),
-(21, 17, 28, 3, 1),
-(22, 17, 87, 4, 1),
-(23, 17, 88, 5, 1),
-(24, 17, 1, 6, 1),
-(25, 17, 31, 7, 1),
-(26, 17, 4, 8, 1),
-(27, 17, 65, 9, 1),
-(28, 17, 33, 10, 1),
-(29, 17, 23, 11, 1),
-(30, 17, 52, 12, 1),
-(31, 17, 35, 13, 1),
-(32, 17, 18, 14, 1),
-(33, 17, 13, 15, 1);
+(1, 1, 79, 1, 0),
+(2, 1, 88, 2, 18),
+(3, 1, 82, 3, 0),
+(4, 1, 31, 4, 1),
+(5, 1, 3, 5, 9),
+(6, 1, 23, 6, 1),
+(7, 1, 52, 7, 2),
+(8, 1, 35, 8, 1),
+(9, 1, 13, 9, 2);
 
 -- --------------------------------------------------------
 
@@ -654,7 +636,6 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   `pedido` varchar(255) DEFAULT NULL,
   `dt` date DEFAULT NULL,
   `produto` varchar(255) DEFAULT NULL,
-  `dataEntrega` date DEFAULT NULL,
   `fluxo` int(11) DEFAULT NULL,
   `lote` varchar(100) DEFAULT NULL,
   `cdgprod` text DEFAULT NULL,
@@ -669,13 +650,13 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
 --
 -- Despejando dados para a tabela `pedidos`
 --
-
+/* 
 INSERT INTO `pedidos` (`id`, `projetista`, `dr`, `pac`, `rep`, `pedido`, `dt`, `produto`, `dataEntrega`, `fluxo`, `lote`, `cdgprod`, `qtds`, `descricao`, `diasparaproduzir`, `taxa_extra`, `nacional_internacional`, `obs`) VALUES
 (1, 'Lucas', 'Doutor Teste', 'ABC', 'julianaaguiar', '125456', '2024-06-07', 'ORTOGNÁTICA', '2024-07-05', 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (2, 'Wilton', 'Farid Miguel Damen', 'GFCB', 'tatianecpmh', '12047', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 'joao.avelar', 'Sandro Lucas', 'MFRAC', 'neandrobarbosa', '12004', '2024-06-07', 'CUSTOMLIFE', NULL, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, NULL, 'Teste', 'ABC', NULL, '1234', '2024-06-17', NULL, '2024-07-15', 17, '1234', NULL, NULL, NULL, 20, 0, 'nacional', ''),
-(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e');
+(5, NULL, 'Teste 1', 'Def', NULL, '1345', '2024-06-17', NULL, '2024-07-15', 17, '12445', NULL, NULL, NULL, 20, 0, 'nacional', 'e'); */
 
 -- --------------------------------------------------------
 
@@ -843,14 +824,22 @@ INSERT INTO `produtos` (`prodId`, `prodCodCallisto`, `prodDescricao`, `prodAnvis
 --
 
 CREATE TABLE IF NOT EXISTS `realizacaoproducao` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPedido` int(11) DEFAULT NULL,
   `idFluxo` int(11) DEFAULT NULL,
   `numOrdem` int(11) DEFAULT NULL,
   `idEtapa` int(11) DEFAULT NULL,
   `idStatus` int(11) NOT NULL,
-  `dataRealizacao` date DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `fazendo` date DEFAULT NULL,
+  `dataPausado` date DEFAULT NULL,
+  `dataRealizacao` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+ALTER TABLE `realizacaoproducao`
+  ADD CONSTRAINT `realizacaoproducao_ibfk_1` FOREIGN KEY (`idPedido`) REFERENCES `pedidos` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_2` FOREIGN KEY (`idFluxo`) REFERENCES `fluxo` (`id`),
+  ADD CONSTRAINT `realizacaoproducao_ibfk_3` FOREIGN KEY (`idEtapa`) REFERENCES `etapa` (`id`);
 
 --
 -- Despejando dados para a tabela `realizacaoproducao`
@@ -865,10 +854,43 @@ INSERT INTO `realizacaoproducao` (`id`, `idPedido`, `idFluxo`, `numOrdem`, `idEt
 -- Estrutura para tabela `setor`
 --
 
-CREATE TABLE IF NOT EXISTS `setor` (
+CREATE TABLE `setor` (
   `id` int(11) NOT NULL,
-  `nome` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `nome` varchar(255) NOT NULL,
+  `duracao` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Despejando dados para a tabela `setor`
+--
+
+INSERT INTO `setor` (`id`, `nome`, `duracao`) VALUES
+(12, 'EMBALAGEM ESTÉRIL', 2),
+(11, 'INSPEÇÃO 3', 1),
+(10, 'LIMPEZA', 2),
+(9, 'GRAVAÇÃO', 1),
+(8, 'INSPEÇÃO 2', 1),
+(7, 'MOLDAGEM E ANODIZAÇÃO', 9),
+(6, 'SLA E ANODIZAÇÃO', 9),
+(5, 'INSPEÇÃO 1', 1),
+(4, 'ACABAMENTO', 9),
+(3, 'USINAGEM', 18),
+(2, 'TRATAMENTO TÉRMICO', 18),
+(1, 'PROGRAMAÇÃO E IMPRESSÃO', 18),
+(13, 'ESTERILIZAÇÃO', 9),
+(14, 'EMB ROTULAGEM FINAL', 2),
+(15, 'LIBERAÇÃO FINAL', 2);
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `setor`
+--
+ALTER TABLE `setor`
+  ADD PRIMARY KEY (`id`);
+
 
 -- --------------------------------------------------------
 
@@ -1364,3 +1386,29 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+CREATE TABLE `fluxo_setor` (
+  `id` int(11) NOT NULL,
+  `idfluxo` int(11) NOT NULL,
+  `idetapa` int(11) NOT NULL,
+  `ordem` int(11) NOT NULL,
+  `duracao` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
+ALTER TABLE `fluxo_setor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_fluxo` (`idFluxo`),
+  ADD KEY `fk_setor` (`idSetor`);
+
+--
+-- Despejando dados para a tabela `etapa_fluxo`
+--
+
+INSERT INTO `fluxo_setor` (`id`, `idfluxo`, `idsetor`, `ordem`, `duracao`) VALUES
+(1, 1, 3, 1, 48),
+(2, 1, 5, 2, 1),
+(3, 1, 6, 3, 24),
+(4, 1, 9, 4, 1),
+(5, 1, 10, 5, 2),
+(6, 1, 11, 6, 1),
+(7, 1, 14, 7, 2);
